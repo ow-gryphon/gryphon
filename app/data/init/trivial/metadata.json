@@ -1,0 +1,16 @@
+{
+    "arguments": [
+        {
+            "name": "filename",
+            "type": "str",
+            "required": true,
+            "help": "Name of the file that will be created."
+        },
+        {
+            "name": "clientname",
+            "type": "str",
+            "required": true,
+            "help": "Client name to be replaced on the template notebooks."
+        }
+    ]
+}

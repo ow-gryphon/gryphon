@@ -1,0 +1,14 @@
+{
+    "init": {
+        "folder": "templates/init/",
+        "analytics": {
+            "gitRepo": ""
+        }
+    },
+    "generate": {
+        "folder": "templates/generate/"
+    },
+    "add": {
+        "folder": "templates/add/"
+    }
+}
