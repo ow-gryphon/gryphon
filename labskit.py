@@ -66,4 +66,5 @@ for name, function in functions.items():
 
 
 if __name__ == '__main__':
+
     cli()

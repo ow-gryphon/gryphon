@@ -5,7 +5,7 @@ import glob
 from setuptools import setup, find_packages
 
 
-package_files = list(map(lambda x: x[6:], glob.glob('./labskit_commands/data/**', recursive=True)))
+package_files = list(map(lambda x: x[19:], glob.glob('./labskit_commands/data/**', recursive=True)))
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

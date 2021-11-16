@@ -4,7 +4,11 @@ Module containing the code for the generate command in then CLI.
 import os
 import glob
 import click
-from .command_operations import get_destination_path, update_templates
+from .command_operations import (
+    get_destination_path,
+    update_templates,
+    copy_project_template
+)
 
 # TODO: Think about how to give some help and examples about the commands
 
@@ -13,14 +17,14 @@ PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 CURRENT_PATH = os.getcwd()
 
 
-def generate(template, extra):
+def generate(template: str, extra_parameters: dict):
     """
     Generate command from the labskit CLI.
     """
     click.echo("Generating template.")
     try:
         update_templates()
-        parse_project_template(template, extra)
+        parse_project_template(template, extra_parameters)
         # install_libraries()
     except Exception as exception:
         raise exception
@@ -65,17 +69,20 @@ def parse_project_template(template, mapper):
     and
     """
     template_path = os.path.join(PACKAGE_PATH, f"data/generate/{template}/template/")
-    location = get_destination_path("")
+    temp_path = get_destination_path(f"temp_{template}")
+    definitive_path = get_destination_path()
 
     # Copy files to a temporary folder
-    click.echo(f"Creating files at {location}")
-    temp_folder = location + f"/temp_{template}"
+    click.echo(f"Creating files at {definitive_path}")
 
-    os.system(f"mkdir -p {temp_folder}")
-    os.system(f"cp -r {template_path}/* {temp_folder}")
+    copy_project_template(
+        template=template,
+        command="generate",
+        location=temp_path
+    )
 
     # Replace patterns and rename files
-    files = glob.glob(f"{temp_folder}/**", recursive=True)
+    files = glob.glob(f"{temp_path}/**", recursive=True)
 
     for file in files:
         is_folder = os.path.isdir(file)
@@ -85,8 +92,9 @@ def parse_project_template(template, mapper):
         os.system(f"rm {file}")
 
     # Copy the processed files to the repository
-    os.system(f"cp -r {temp_folder}/* {location}")
-    os.system(f"rm -r {temp_folder}")
+    os.system(f"mkdir -p {definitive_path}")
+    os.system(f"cp -r {temp_path}/* {definitive_path}/")
+    os.system(f"rm -r {temp_path}")
 
     # TODO: Change this from bash commands (os.system) to a more pythonic way
     # so we can then catch errors and give proper feedback to the user.

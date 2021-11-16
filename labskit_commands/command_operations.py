@@ -3,6 +3,7 @@ File containing operations that are common to the commands.
 """
 
 import os
+import subprocess
 import click
 
 
@@ -42,7 +43,7 @@ def create_venv(location):
     Function to a virtual environment inside a folder.
     """
     location = get_destination_path(location)
-    print(location)
+
     # Create venv
     click.echo("Creating virtual environment.")
     os.system(f"python -m venv {location}/.venv")
@@ -56,6 +57,26 @@ def install_libraries(location=""):
 
     # Install requirements
     click.echo("Installing requirements. This may take some minutes ...")
-    os.system(f"{location}/.venv/bin/pip --disable-pip-version-check install -r "
-              f"{location}/requirements.txt -q")
+    try:
+        output = subprocess.check_output(
+            f"{location}/.venv/bin/pip --disable-pip-version-check "
+            f"install -r {location}/requirements.txt", shell=True)
+    except subprocess.CalledProcessError:
+        click.secho("Failed to install requirements", fg='red')
+        raise FileNotFoundError("Failed on pip install command.")
+
     click.secho("Installation succeeded.", fg='green')
+
+
+def copy_project_template(command, template, location):
+    """
+    Copies the templates to destination folder.
+    """
+    template_path = os.path.join(PACKAGE_PATH, f"data/{command}/{template}/template")
+    location = get_destination_path(location)
+
+    os.system(f"mkdir -p {location}")
+    os.system(f"cp -r {template_path}/* {location}")
+
+    # TODO: Change this from bash commands (os.system) to a more pythonic way
+    # so we can then catch errors and give proper feedback to the user.
