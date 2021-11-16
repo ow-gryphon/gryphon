@@ -33,8 +33,8 @@ def update_templates():
     """
     Function that updates all the templates from their git repository.
     """
-    #TODO: choose witch template registry to use (git or pypi or local artifactory)
-    #TODO: update the choosen template to match the registry
+    # TODO: choose witch template registry to use (git or pypi or local artifactory)
+    # TODO: update the chosen template to match the registry
 
 
 def create_venv(location):
@@ -42,7 +42,7 @@ def create_venv(location):
     Function to a virtual environment inside a folder.
     """
     location = get_destination_path(location)
-
+    print(location)
     # Create venv
     click.echo("Creating virtual environment.")
     os.system(f"python -m venv {location}/.venv")

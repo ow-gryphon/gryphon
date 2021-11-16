@@ -46,7 +46,7 @@ def clean_clustering_data(frame):
     expanded_filtered_frame = expanded_frame.loc[lambda f: ~np.any(f.isnull(), axis=1)]
 
     def log_single(frame, feature):
-            return np.log(frame[feature])
+        return np.log(frame[feature])
 
     # Add Log values of features.
     new_columns = {

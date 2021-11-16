@@ -13,25 +13,25 @@ with open("README.md", "r", encoding="utf-8") as fh:
 with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
 
-#TODO: Clone git repositories from config.json at the time of installation
+# TODO: Clone git repositories from config.json at the time of installation
 
 setup(
-    name = 'labskit',
-    version = '0.0.1',
-    license = 'MIT',
-    description = 'OW analytics toolkit cli',
-    long_description = long_description,
-    long_description_content_type = "text/markdown",
-    py_modules = ['labskit', 'labskit_commands'],
-    packages = find_packages(),
-    install_requires = [requirements],
+    name='labskit',
+    version='0.0.1',
+    license='MIT',
+    description='OW analytics toolkit cli',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    py_modules=['labskit', 'labskit_commands'],
+    packages=find_packages(),
+    install_requires=[requirements],
     python_requires='>=3.7',
     classifiers=[
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    entry_points = '''
+    entry_points='''
         [console_scripts]
         labskit=labskit:cli
     ''',

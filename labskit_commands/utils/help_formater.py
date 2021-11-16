@@ -2,6 +2,7 @@
 Help text generation.
 """
 
+
 def get_command_help(metadata):
     """
     Gets a complete help string about the command.
@@ -29,7 +30,7 @@ def get_template_help(template_name, metadata):
     try:
         arguments = metadata['metadata']["arguments"]
     except KeyError:
-        return help_string + "\n\tNo aditional parameters."
+        return help_string + "\n\tNo additional parameters."
 
     args = [
         f"""

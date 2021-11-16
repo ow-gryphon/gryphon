@@ -10,7 +10,7 @@ def validate_parameters(parameters, template_type, metadata):
     try:
         assert template_type in metadata
     except AssertionError:
-        message = f"Error: Template \"{template_type}\" not found.\nAvaliable options:"
+        message = f"Error: Template \"{template_type}\" not found.\nAvailable options:"
         click.secho(message, fg='red')
         click.echo(get_command_help(metadata))
         raise click.Abort()
@@ -27,14 +27,14 @@ def validate_parameters(parameters, template_type, metadata):
 
     if not num_given_parameters >= num_required_parameters:
         message = get_template_help(template_type, metadata[template_type])
-        difference =  num_required_parameters - num_given_parameters
+        difference = num_required_parameters - num_given_parameters
 
         error = f"\n\nError: Missing {difference} required template arguments:\n"
         click.secho(error, fg='red')
         click.echo(message)
         raise click.Abort()
 
-    #TODO: Validate also the case where num_given_parameters is
+    # TODO: Validate also the case where num_given_parameters is
     # strictly higher than num_required_parameters
     
     if num_given_parameters == num_required_parameters:
@@ -42,7 +42,6 @@ def validate_parameters(parameters, template_type, metadata):
             field["name"]: parameters[index]
             for index, field in enumerate(argument_metadata)
         }
-
 
     for field in metadata:
         if field.get("required", False):

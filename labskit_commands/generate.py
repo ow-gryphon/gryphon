@@ -6,7 +6,7 @@ import glob
 import click
 from .command_operations import get_destination_path, update_templates
 
-#TODO: Think about how to give some help and examples about the commands
+# TODO: Think about how to give some help and examples about the commands
 
 
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -35,26 +35,26 @@ def pattern_replacement(input_file, mapper):
     for before, after in mapper.items():
         output_file = output_file.replace(before.lower(), after)
 
+    f_in = open(input_file, "rt", encoding='UTF-8')
+    f_out = open(output_file, "wt", encoding='UTF-8')
     try:
-        fin = open(input_file, "rt", encoding='UTF-8')
-        fout = open(output_file, "wt", encoding='UTF-8')
-        for line in fin:
+        for line in f_in:
             replaced = line
 
-            #read replace each of the arguments in the string
+            # read replace each of the arguments in the string
             for before, after in mapper.items():
                 replaced = replaced.replace("{{" + before + "}}", after)
 
             # and write to output file
-            fout.write(replaced)
-        fin.close()
-        fout.close()
+            f_out.write(replaced)
+        f_in.close()
+        f_out.close()
     except UnicodeDecodeError:
         click.secho("WARNING: There are binary files inside template folder.", fg='yellow')
 
     except Exception as exception:
-        fin.close()
-        fout.close()
+        f_in.close()
+        f_out.close()
 
         raise exception
 
@@ -88,12 +88,12 @@ def parse_project_template(template, mapper):
     os.system(f"cp -r {temp_folder}/* {location}")
     os.system(f"rm -r {temp_folder}")
 
-    #TODO: Change this from bash commands (os.system) to a more pythonic way
-    # so we can then catch errors and give propper feedback to the user.
+    # TODO: Change this from bash commands (os.system) to a more pythonic way
+    # so we can then catch errors and give proper feedback to the user.
 
 
 def populate_rc_file():
     """
     Updates the needed options inside the .labskitrc file.
     """
-    #TODO: Create .labskitrc and populate it accordingly
+    # TODO: Create .labskitrc and populate it accordingly

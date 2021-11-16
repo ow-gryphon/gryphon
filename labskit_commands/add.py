@@ -5,8 +5,8 @@ import os
 import click
 from .command_operations import get_destination_path, install_libraries
 
-#TODO: Check if the given folder really is a labskit project (like by reading the .rc file)
-#TODO: Think about freeze feature (at time of handover)
+# TODO: Check if the given folder really is a labskit project (like by reading the .rc file)
+# TODO: Think about freeze feature (at time of handover)
 
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 CURRENT_PATH = os.getcwd()

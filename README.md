@@ -1,5 +1,5 @@
 # Labskit
-Labskit is a toolbox for analaytics development.
+Labskit is a toolbox for analytics development.
 
 ### Installing
 
@@ -15,7 +15,7 @@ Once installed, you can use labskit through the command line.
 #### Samples
 
 ##### init
-Inits a new project inside the folder "sample project".
+Initiates a new project inside the folder "sample project".
 ```
 labskit init analytics sample_project
 ```
