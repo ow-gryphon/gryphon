@@ -18,11 +18,10 @@ def get_destination_path(location=""):
     if relative, it appends the current folder to it, transforming
     it into a absolute path.
     """
-    try:
-        is_absolute_path = location[0] == "/"
-    except IndexError:
-        # This happens when the "location" is empty ("")
+    if len(location) == 0:
         return CURRENT_PATH
+
+    is_absolute_path = location[0] == "/"
 
     if not is_absolute_path:
         location = os.path.join(CURRENT_PATH, location)
@@ -49,7 +48,7 @@ def create_venv(location):
     os.system(f"python -m venv {location}/.venv")
 
 
-def install_libraries(location):
+def install_libraries(location=""):
     """
     Function to install the libraries from a 'requirements.txt' file
     """

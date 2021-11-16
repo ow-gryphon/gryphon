@@ -5,7 +5,7 @@ import glob
 from setuptools import setup, find_packages
 
 
-package_files = list(map(lambda x: x[6:], glob.glob('./app/data/**', recursive=True)))
+package_files = list(map(lambda x: x[6:], glob.glob('./labskit_commands/data/**', recursive=True)))
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -22,7 +22,7 @@ setup(
     description = 'OW analytics toolkit cli',
     long_description = long_description,
     long_description_content_type = "text/markdown",
-    py_modules = ['labskit', 'app'],
+    py_modules = ['labskit', 'labskit_commands'],
     packages = find_packages(),
     install_requires = [requirements],
     python_requires='>=3.7',
@@ -36,5 +36,5 @@ setup(
         labskit=labskit:cli
     ''',
     include_package_data=True,
-    package_data={'app': package_files}
+    package_data={'labskit_commands': package_files}
 )

@@ -25,7 +25,7 @@ def init(template, location):
         populate_rc_file()
         init_new_git_repo()
         create_venv(location)
-        install_libraries(location)
+        install_libraries()
         initial_git_commit()
     except Exception as exception:
         raise exception

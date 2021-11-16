@@ -13,15 +13,21 @@ CURRENT_PATH = os.getcwd()
 
 
 def add(library_name):
+    """
+    Add command from the labskit CLI.
+    """
     click.echo("Generating template.")
     try:
         append_requirement(library_name)
-        install_libraries("")
+        install_libraries()
     except Exception as exception:
         raise exception
 
 
 def append_requirement(library_name):
+    """
+    Appends a given requirement to the requirements.txt file.
+    """
     location = get_destination_path("")
     with open(f"{location}/requirements.txt", "a", encoding='UTF-8') as file:
         file.write(f"\n{library_name}")
