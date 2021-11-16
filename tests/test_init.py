@@ -1,6 +1,6 @@
 import os
 from os import path
-from labskit_commands.init import copy_project_template
+from labskit_commands.command_operations import copy_project_template
 import utils
 
 
@@ -9,7 +9,11 @@ def test_copy_project_template():
     Tests if the template folder is being properly copied.
     """
     destination_folder = "trivial_template"
-    copy_project_template("trivial", destination_folder)
+    copy_project_template(
+        command="init",
+        template="trivial",
+        location=destination_folder
+    )
     absolute_folder_path = path.join(os.getcwd(), destination_folder)
 
     try:
