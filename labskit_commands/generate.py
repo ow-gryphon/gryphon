@@ -2,6 +2,7 @@
 Module containing the code for the generate command in then CLI.
 """
 import os
+import shutil
 import glob
 import click
 from .command_operations import (
@@ -14,7 +15,6 @@ from .command_operations import (
 
 
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-CURRENT_PATH = os.getcwd()
 
 
 def generate(template: str, extra_parameters: dict):
@@ -68,7 +68,8 @@ def parse_project_template(template, mapper):
     Function that copies the template to the selected folder
     and
     """
-    template_path = os.path.join(PACKAGE_PATH, f"data/generate/{template}/template/")
+
+    template_path = os.path.join(PACKAGE_PATH, "data", "generate", template, "template")
     temp_path = get_destination_path(f"temp_{template}")
     definitive_path = get_destination_path()
 
@@ -78,26 +79,28 @@ def parse_project_template(template, mapper):
     copy_project_template(
         template=template,
         command="generate",
-        location=temp_path
+        folder=temp_path
     )
 
     # Replace patterns and rename files
-    files = glob.glob(f"{temp_path}/**", recursive=True)
+    glob_pattern = os.path.join(temp_path, "**")
+    files = glob.glob(glob_pattern, recursive=True)
 
     for file in files:
         is_folder = os.path.isdir(file)
         if is_folder:
             continue
         pattern_replacement(file, mapper)
-        os.system(f"rm {file}")
+        os.remove(file)
 
     # Copy the processed files to the repository
-    os.system(f"mkdir -p {definitive_path}")
-    os.system(f"cp -r {temp_path}/* {definitive_path}/")
-    os.system(f"rm -r {temp_path}")
-
-    # TODO: Change this from bash commands (os.system) to a more pythonic way
-    # so we can then catch errors and give proper feedback to the user.
+    os.makedirs(definitive_path, exist_ok=True)
+    shutil.copytree(
+        src=temp_path,
+        dst=definitive_path,
+        dirs_exist_ok=True
+    )
+    shutil.rmtree(temp_path)
 
 
 def populate_rc_file():

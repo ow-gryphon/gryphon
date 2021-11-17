@@ -7,9 +7,7 @@ from .command_operations import get_destination_path, install_libraries
 
 # TODO: Check if the given folder really is a labskit project (like by reading the .rc file)
 # TODO: Think about freeze feature (at time of handover)
-
-PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-CURRENT_PATH = os.getcwd()
+# TODO: Check if the provided library is a valid one.
 
 
 def add(library_name):
@@ -28,6 +26,7 @@ def append_requirement(library_name):
     """
     Appends a given requirement to the requirements.txt file.
     """
-    location = get_destination_path("")
-    with open(f"{location}/requirements.txt", "a", encoding='UTF-8') as file:
+    current_path = get_destination_path()
+    requirements_path = os.path.join(current_path, "requirements.txt")
+    with open(requirements_path, "a", encoding='UTF-8') as file:
         file.write(f"\n{library_name}")

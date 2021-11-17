@@ -22,7 +22,8 @@ class CommandLoader:
         else:
             path = TEMPLATES_FOLDER
 
-        self._folders = glob.glob(f"{path}/{command_name}/*")
+        glob_pattern = os.path.join(path, command_name, "*")
+        self._folders = glob.glob(glob_pattern)
 
         if len(self._folders) == 0:
             self.template_data = {}
@@ -43,13 +44,14 @@ class CommandLoader:
     @staticmethod
     def get_leaf_folder_name(path):
         """Gets the name of the leaf node."""
-        return path.split("/")[-1]
+        return os.path.basename(path)
 
     @staticmethod
     def load_metadata(path):
         """Loads the metadata file inside template folder."""
         try:
-            with open(f"{path}/metadata.json", encoding='UTF-8') as file:
+            filename = os.path.join(path, "metadata.json")
+            with open(filename, encoding='UTF-8') as file:
                 return json.load(file)
         except FileNotFoundError:
             click.secho(

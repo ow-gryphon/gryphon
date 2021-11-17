@@ -3,15 +3,15 @@ File containing operations that are common to the commands.
 """
 
 import os
+import shutil
 import subprocess
 import click
 
 
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-CURRENT_PATH = os.getcwd()
 
 
-def get_destination_path(location=""):
+def get_destination_path(folder=None):
     """
     Function that helps to define the full path to a directory.
 
@@ -19,15 +19,15 @@ def get_destination_path(location=""):
     if relative, it appends the current folder to it, transforming
     it into a absolute path.
     """
-    if len(location) == 0:
-        return CURRENT_PATH
+    if folder is None:
+        return os.getcwd()
 
-    is_absolute_path = location[0] == "/"
+    is_absolute_path = os.path.isabs(folder)
 
     if not is_absolute_path:
-        location = os.path.join(CURRENT_PATH, location)
+        folder = os.path.abspath(folder)
 
-    return location
+    return folder
 
 
 def update_templates():
@@ -38,29 +38,32 @@ def update_templates():
     # TODO: update the chosen template to match the registry
 
 
-def create_venv(location):
+def create_venv(folder=None):
     """
     Function to a virtual environment inside a folder.
     """
-    location = get_destination_path(location)
+    target_folder = get_destination_path(folder)
+    venv_path = os.path.join(target_folder, ".venv")
 
     # Create venv
     click.echo("Creating virtual environment.")
-    os.system(f"python -m venv {location}/.venv")
+    os.system(f"python -m venv {venv_path}")
 
 
-def install_libraries(location=""):
+def install_libraries(folder=None):
     """
     Function to install the libraries from a 'requirements.txt' file
     """
-    location = get_destination_path(location)
+    target_folder = get_destination_path(folder)
+    pip_path = os.path.join(target_folder, ".venv", "bin", "pip")
+    requirements_path = os.path.join(target_folder, "requirements.txt")
 
     # Install requirements
     click.echo("Installing requirements. This may take some minutes ...")
     try:
         output = subprocess.check_output(
-            f"{location}/.venv/bin/pip --disable-pip-version-check "
-            f"install -r {location}/requirements.txt", shell=True)
+            f"{pip_path} --disable-pip-version-check "
+            f"install -r {requirements_path}", shell=True)
     except subprocess.CalledProcessError:
         click.secho("Failed to install requirements", fg='red')
         raise FileNotFoundError("Failed on pip install command.")
@@ -68,15 +71,16 @@ def install_libraries(location=""):
     click.secho("Installation succeeded.", fg='green')
 
 
-def copy_project_template(command, template, location):
+def copy_project_template(command: str, template: str, folder: str):
     """
     Copies the templates to destination folder.
     """
-    template_path = os.path.join(PACKAGE_PATH, f"data/{command}/{template}/template")
-    location = get_destination_path(location)
+    template_path = os.path.join(PACKAGE_PATH, "data", command, template, "template")
+    target_path = get_destination_path(folder)
 
-    os.system(f"mkdir -p {location}")
-    os.system(f"cp -r {template_path}/* {location}")
-
-    # TODO: Change this from bash commands (os.system) to a more pythonic way
-    # so we can then catch errors and give proper feedback to the user.
+    os.makedirs(target_path, exist_ok=True)
+    shutil.copytree(
+        src=template_path,
+        dst=target_path,
+        dirs_exist_ok=True
+    )

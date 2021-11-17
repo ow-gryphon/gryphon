@@ -8,7 +8,7 @@ import labskit_commands
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands/data")
+DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands", "data")
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -36,11 +36,11 @@ def generate(template, extra):
 @click.argument('extra', nargs=-1)
 def init(template, location, extra):
     """Creates a starter repository for analytics projects."""
-    extra = labskit_commands.utils.validate_parameters(extra, template, commands["init"].get_metadata())
+    extra_parameters = labskit_commands.utils.validate_parameters(extra, template, commands["init"].get_metadata())
     labskit_commands.init(
         template=template,
         location=location,
-        **extra
+        **extra_parameters
     )
 
 
@@ -66,5 +66,4 @@ for name, function in functions.items():
 
 
 if __name__ == '__main__':
-
     cli()

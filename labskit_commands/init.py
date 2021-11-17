@@ -11,7 +11,6 @@ from .command_operations import (
 )
 
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-CURRENT_PATH = os.getcwd()
 
 
 def init(template, location, **kwargs):
@@ -27,12 +26,12 @@ def init(template, location, **kwargs):
         copy_project_template(
             template=template,
             command="init",
-            location=location
+            folder=location
         )
         populate_rc_file()
-        init_new_git_repo()
-        create_venv(location=location)
-        install_libraries(location=location)
+        create_venv(folder=location)
+        install_libraries(folder=location)
+        init_new_git_repo(folder=location)
         initial_git_commit()
     except Exception as exception:
         raise exception
@@ -45,9 +44,9 @@ def populate_rc_file():
     # TODO: Create .labskitrc and populate it accordingly
 
 
-def init_new_git_repo():
+def init_new_git_repo(folder):
     """Init new git repository on folder."""
-    # TODO: Init new git repository with a proper name.
+    os.chdir(folder)
     os.system("git init")
 
 

@@ -12,7 +12,7 @@ def test_copy_project_template():
     copy_project_template(
         command="init",
         template="trivial",
-        location=destination_folder
+        folder=destination_folder
     )
     absolute_folder_path = path.join(os.getcwd(), destination_folder)
 
@@ -23,4 +23,3 @@ def test_copy_project_template():
 
     finally:
         utils.remove_folder(absolute_folder_path)
-
