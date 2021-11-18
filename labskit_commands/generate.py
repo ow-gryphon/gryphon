@@ -69,7 +69,6 @@ def parse_project_template(template, mapper):
     and
     """
 
-    template_path = os.path.join(PACKAGE_PATH, "data", "generate", template, "template")
     temp_path = get_destination_path(f"temp_{template}")
     definitive_path = get_destination_path()
 
