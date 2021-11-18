@@ -3,6 +3,7 @@ File containing operations that are common to the commands.
 """
 
 import os
+import platform
 import shutil
 import subprocess
 import click
@@ -55,7 +56,13 @@ def install_libraries(folder=None):
     Function to install the libraries from a 'requirements.txt' file
     """
     target_folder = get_destination_path(folder)
-    pip_path = os.path.join(target_folder, ".venv", "bin", "pip")
+    
+    if platform.system() == "Windows":
+        pip_path = os.path.join(target_folder, ".venv", "Scripts", "pip")
+    else:
+        pip_path = os.path.join(target_folder, ".venv", "bin", "pip")
+
+
     requirements_path = os.path.join(target_folder, "requirements.txt")
 
     # Install requirements

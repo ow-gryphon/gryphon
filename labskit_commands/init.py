@@ -31,8 +31,8 @@ def init(template, location, **kwargs):
         populate_rc_file()
         create_venv(folder=location)
         install_libraries(folder=location)
-        init_new_git_repo(folder=location)
-        initial_git_commit()
+        # init_new_git_repo(folder=location)
+        # initial_git_commit()
     except Exception as exception:
         raise exception
 
