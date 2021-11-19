@@ -3,11 +3,13 @@ from os import path
 import shutil
 import pytest
 
+TEST_FOLDER = os.path.abspath("tests")
+
 
 def test_full_journey_1():
     folder = "sample_project"
     file_name = "segmentation"
-    absolute_path = os.path.abspath(folder)
+    absolute_path = os.path.join(TEST_FOLDER, folder)
     shutil.rmtree(absolute_path, ignore_errors=True)
     try:
         os.system(f"labskit init analytics {folder}")

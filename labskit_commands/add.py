@@ -14,12 +14,9 @@ def add(library_name):
     """
     Add command from the labskit CLI.
     """
-    click.echo("Generating template.")
-    try:
-        append_requirement(library_name)
-        install_libraries()
-    except Exception as exception:
-        raise exception
+    click.echo("Adding required lib.")
+    append_requirement(library_name)
+    install_libraries()
 
 
 def append_requirement(library_name):

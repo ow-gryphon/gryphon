@@ -9,6 +9,8 @@ from labskit_commands.command_operations import (
     get_destination_path
 )
 
+TEST_FOLDER = os.path.abspath("tests")
+
 
 def remove_folder(folder):
     """
@@ -31,7 +33,7 @@ def create_folder_with_venv(folder_name, requirements=None):
     create_folder(folder_name)
     create_venv(folder_name)
     if requirements is None:
-        requirements = os.path.join(os.getcwd(), "data", "sample_requirements.txt")
+        requirements = os.path.join(TEST_FOLDER, "data", "sample_requirements.txt")
 
     destination = get_destination_path(folder_name)
     shutil.copyfile(

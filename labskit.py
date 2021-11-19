@@ -55,7 +55,7 @@ commands = {}
 # Extends each of the command docstrings
 for name, function in functions.items():
 
-    commands[name] = labskit_commands.utils.CommandLoader(name, package_path=DATA_PATH)
+    commands[name] = labskit_commands.utils.CommandLoader(name, templates_path=DATA_PATH)
     metadata = commands[name].get_metadata()
 
     # Add command specific help

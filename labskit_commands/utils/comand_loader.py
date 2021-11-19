@@ -9,16 +9,18 @@ import glob
 import click
 
 
-TEMPLATES_FOLDER = os.path.join(os.getcwd(), "data")
+TEMPLATES_FOLDER = os.path.abspath("data")
+PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
+DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands", "data")
 
 
 class CommandLoader:
     """Class that loads commands and metadata from the ./data folder."""
 
-    def __init__(self, command_name, package_path=None):
+    def __init__(self, command_name, templates_path=None):
         self.command = command_name
-        if package_path is not None:
-            path = package_path
+        if templates_path is not None:
+            path = templates_path
         else:
             path = TEMPLATES_FOLDER
 

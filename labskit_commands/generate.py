@@ -22,12 +22,8 @@ def generate(template: str, extra_parameters: dict):
     Generate command from the labskit CLI.
     """
     click.echo("Generating template.")
-    try:
-        update_templates()
-        parse_project_template(template, extra_parameters)
-        # install_libraries()
-    except Exception as exception:
-        raise exception
+    update_templates()
+    parse_project_template(template, extra_parameters)
 
 
 def pattern_replacement(input_file, mapper):

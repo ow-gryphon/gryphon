@@ -11,6 +11,7 @@ import click
 
 
 PACKAGE_PATH = path.dirname(path.realpath(__file__))
+VENV = ".venv"
 
 
 def get_destination_path(folder=None):
@@ -45,7 +46,7 @@ def create_venv(folder=None):
     Function to a virtual environment inside a folder.
     """
     target_folder = get_destination_path(folder)
-    venv_path = path.join(target_folder, ".venv")
+    venv_path = path.join(target_folder, VENV)
 
     # Create venv
     click.echo("Creating virtual environment.")
@@ -65,13 +66,13 @@ def install_libraries(folder=None):
 
     if platform.system() == "Windows":
         # On windows the venv folder structure is different from unix
-        pip_path = path.join(target_folder, ".venv", "Scripts", "pip")
+        pip_path = path.join(target_folder, VENV, "Scripts", "pip")
 
         # On windows "" double quotes are needed to avoid problems with special chars
         pip_path = escape_windows_path(pip_path)
         requirements_path = escape_windows_path(requirements_path)
     else:
-        pip_path = path.join(target_folder, ".venv", "bin", "pip")
+        pip_path = path.join(target_folder, VENV, "bin", "pip")
 
     # Install requirements
     click.echo("Installing requirements. This may take some minutes ...")
