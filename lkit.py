@@ -2,7 +2,7 @@
 LKit .
 """
 import os
-import PyInquirer as piq
+import questionary
 import labskit_commands
 from labskit_commands import utils
 
@@ -21,7 +21,7 @@ def add():
             message='Type the python library you want to install:'
         )
     ]
-    response = piq.prompt(questions)
+    response = questionary.prompt(questions)
     labskit_commands.add(
         library_name=response['library_name']
     )
@@ -39,7 +39,7 @@ def generate():
             choices=metadata.keys()
         )
     ]
-    responses = piq.prompt(base_questions)
+    responses = questionary.prompt(base_questions)
     template = responses['template']
 
     metadata = metadata[template]["metadata"]
@@ -52,7 +52,7 @@ def generate():
         for field in metadata.get("arguments", [])
     ]
 
-    extra_parameters = piq.prompt(extra_questions)
+    extra_parameters = questionary.prompt(extra_questions)
 
     labskit_commands.generate(
         template=template,
@@ -76,7 +76,7 @@ def init():
             message='Path to render the template (absolute or relative to the current folder):',
         )
     ]
-    responses = piq.prompt(base_questions)
+    responses = questionary.prompt(base_questions)
     template = responses['template']
     location = responses['location']
 
@@ -91,7 +91,7 @@ def init():
         for field in metadata.get("arguments", [])
     ]
 
-    extra_parameters = piq.prompt(extra_questions)
+    extra_parameters = questionary.prompt(extra_questions)
 
     labskit_commands.init(
         template=template,
@@ -125,7 +125,8 @@ def main():
             choices=commands.keys()
         )
     ]
-    response = piq.prompt(questions)
+
+    response = questionary.prompt(questions)
 
     command = functions[response['command']]
     command()
