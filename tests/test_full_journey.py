@@ -12,7 +12,7 @@ def test_full_journey_1():
     absolute_path = os.path.join(TEST_FOLDER, folder)
     shutil.rmtree(absolute_path, ignore_errors=True)
     try:
-        os.system(f"labskit init analytics {folder}")
+        os.system(f"labskit init analytics {absolute_path}")
         os.chdir(absolute_path)
         os.system(f"labskit generate mlclustering {file_name}")
 

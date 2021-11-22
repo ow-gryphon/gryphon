@@ -22,7 +22,7 @@ setup(
     description='OW analytics toolkit cli',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    py_modules=['lkit', 'labskit_commands'],
+    py_modules=['lkit', 'labskit', 'labskit_commands'],
     packages=find_packages(),
     install_requires=[requirements],
     python_requires='>=3.7',
