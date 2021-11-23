@@ -5,6 +5,7 @@ import os
 import questionary
 import labskit_commands
 from labskit_commands import utils
+from labskit_commands import questions
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -12,18 +13,24 @@ PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands", "data")
 
 
+def confirmation(message=None):
+    message = "Confirm to proceed with the actions from above?" if message is None else message
+    go_ahead = questionary.confirm(message=message).ask()
+
+    if not go_ahead:
+        print("Exiting.")
+        exit(1)
+
+
 def add():
     """add templates based on arguments and configurations."""
-    questions = [
-        dict(
-            type='input',
-            name='library_name',
-            message='Type the python library you want to install:'
-        )
-    ]
-    response = questionary.prompt(questions)
+
+    response = questionary.prompt(questions.add)['library_name']
+
+    confirmation(f"Confirm that you want to install the \"{response}\" library to the current project.")
+
     labskit_commands.add(
-        library_name=response['library_name']
+        library_name=response
     )
 
 
@@ -31,28 +38,18 @@ def generate():
     """generates templates based on arguments and configurations."""
 
     metadata = commands["generate"].get_metadata()
-    base_questions = [
-        dict(
-            type='list',
-            name='template',
-            message='Choose the desired template:.',
-            choices=metadata.keys()
-        )
-    ]
-    responses = questionary.prompt(base_questions)
+
+    questions_1 = questions.generate_1(metadata)
+    responses = questionary.prompt(questions_1)
+
     template = responses['template']
+    template_metadata = metadata[template]["metadata"]
 
-    metadata = metadata[template]["metadata"]
-    extra_questions = [
-        dict(
-            type='input',
-            name=field['name'],
-            message=field['help']
-        )
-        for field in metadata.get("arguments", [])
-    ]
-
+    extra_questions = questions.generate_2(template_metadata)
     extra_parameters = questionary.prompt(extra_questions)
+
+    confirmation(f"Confirm that you want to render the \"{template}\" template inside the current project."
+                 f"\nUsing the following arguments: {extra_parameters}")
 
     labskit_commands.generate(
         template=template,
@@ -63,35 +60,27 @@ def generate():
 def init():
     """Creates a starter repository for analytics projects."""
     metadata = commands["init"].get_metadata()
-    base_questions = [
-        dict(
-            type='list',
-            name='template',
-            message='Choose the desired template:.',
-            choices=metadata.keys()
-        ),
-        dict(
-            type='input',
-            name='location',
-            message='Path to render the template (absolute or relative to the current folder):',
-        )
-    ]
+
+    base_questions = questions.init_1(metadata.keys())
     responses = questionary.prompt(base_questions)
+
     template = responses['template']
     location = responses['location']
 
-    metadata = metadata[template]["metadata"]
+    template_metadata = metadata[template]["metadata"]
+    arguments = template_metadata.get("arguments", [])
 
-    extra_questions = [
-        dict(
-            type='input',
-            name=field['name'],
-            message=field['help']
-        )
-        for field in metadata.get("arguments", [])
-    ]
-
+    extra_questions = questions.init_2(arguments)
     extra_parameters = questionary.prompt(extra_questions)
+
+    message = f"\n\nConfirm that you want to start a new \"{template}\" project" \
+              f"\nInside the folder \"{location}\""
+
+    confirmation(
+        message + f"\nUsing the following arguments: {extra_parameters}"
+        if extra_parameters else
+        message
+    )
 
     labskit_commands.init(
         template=template,
@@ -108,7 +97,7 @@ functions = {
 
 commands = {}
 
-# Extends each of the command docstrings
+# reads every command metadata
 for name, function in functions.items():
     commands[name] = utils.CommandLoader(
         command_name=name,
@@ -117,19 +106,14 @@ for name, function in functions.items():
 
 
 def main():
-    questions = [
-        dict(
-            type='list',
-            name='command',
-            message='Choose what you want to do.',
-            choices=commands.keys()
-        )
-    ]
+    command_question = questions.main_questions(commands.keys())
+    response = questionary.prompt(command_question)
 
-    response = questionary.prompt(questions)
-
-    command = functions[response['command']]
-    command()
+    try:
+        command = functions[response['command']]
+        command()
+    except KeyError:
+        pass
 
 
 if __name__ == '__main__':
