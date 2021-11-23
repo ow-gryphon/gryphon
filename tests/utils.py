@@ -33,10 +33,14 @@ def create_folder_with_venv(folder_name, requirements=None):
     create_folder(folder_name)
     create_venv(folder_name)
     if requirements is None:
-        requirements = os.path.join(TEST_FOLDER, "data", "sample_requirements.txt")
+        requirements = os.path.join(get_data_folder(), "sample_requirements.txt")
 
     destination = get_destination_path(folder_name)
     shutil.copyfile(
         src=requirements,
         dst=os.path.join(destination, "requirements.txt")
     )
+
+
+def get_data_folder():
+    return os.path.join(TEST_FOLDER, "data")

@@ -22,7 +22,8 @@ def test_full_journey_1():
         assert path.isdir(path.join(absolute_path, "tests"))
 
         assert path.isfile(path.join(absolute_path, "src", f"clustering_{file_name}.py"))
-
     except Exception as e:
-        shutil.rmtree(absolute_path, ignore_errors=True)
         pytest.fail("Raised exception", e)
+    finally:
+        shutil.rmtree(absolute_path, ignore_errors=True)
+

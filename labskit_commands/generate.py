@@ -59,14 +59,14 @@ def pattern_replacement(input_file, mapper):
         raise exception
 
 
-def parse_project_template(template, mapper):
+def parse_project_template(template, mapper, destination_folder=""):
     """
     Function that copies the template to the selected folder
     and
     """
 
     temp_path = get_destination_path(f"temp_{template}")
-    definitive_path = get_destination_path()
+    definitive_path = get_destination_path(destination_folder)
 
     # Copy files to a temporary folder
     click.echo(f"Creating files at {definitive_path}")
