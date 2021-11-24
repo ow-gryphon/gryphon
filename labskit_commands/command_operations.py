@@ -100,3 +100,24 @@ def copy_project_template(command: str, template: str, folder: str):
         dst=target_path,
         dirs_exist_ok=True
     )
+
+
+def init_new_git_repo(folder):
+    """Init new git repository on folder."""
+    prev_folder = os.getcwd()
+    try:
+        os.chdir(folder)
+        os.system("git init")
+    finally:
+        os.chdir(prev_folder)
+
+
+def initial_git_commit(folder):
+    """Does the first git commit."""
+    prev_folder = os.getcwd()
+    try:
+        os.chdir(folder)
+        os.system("git add .")
+        os.system("git commit -m 'Initial commit'")
+    finally:
+        os.chdir(prev_folder)

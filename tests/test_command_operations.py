@@ -1,17 +1,23 @@
 """
 Module containing tests about the functions in the file command_operations.py
 """
+import os
 from os import path
+import shutil
 import glob
+import subprocess
 import pytest
 from .utils import create_folder, remove_folder, create_folder_with_venv
 from labskit_commands.command_operations import (
     create_venv,
     install_libraries,
-    copy_project_template
+    copy_project_template,
+    init_new_git_repo,
+    initial_git_commit
 )
 
 VENV = ".venv"
+CWD = os.path.abspath("")
 
 
 def test_create_venv_1():
@@ -112,3 +118,63 @@ def test_copy_project_template():
 
     finally:
         remove_folder(absolute_folder_path)
+
+
+def test_git_init_1():
+    test_folder = "repo_test"
+    init_folder = os.getcwd()
+    sample_file = path.join(CWD, "tests", "data", "sample_template")
+    destination_file = path.join(CWD, test_folder, "sample_template")
+    git_path = path.join(CWD, test_folder, ".git")
+    remove_folder(test_folder)
+    try:
+        create_folder(test_folder)
+        shutil.copyfile(
+            src=sample_file,
+            dst=destination_file,
+        )
+        assert not path.isdir(git_path)
+        init_new_git_repo(test_folder)
+        assert path.isdir(git_path)
+        os.chdir(test_folder)
+        logs = subprocess.run(
+            ['git', 'log'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        ).stdout.decode()
+
+        assert "does not have any commits yet" in logs
+
+    finally:
+        os.chdir(init_folder)
+        remove_folder(test_folder)
+
+
+def test_git_commit_1():
+    test_folder = "repo_test"
+    init_folder = os.getcwd()
+    sample_file = path.join(CWD, "tests", "data", "sample_template")
+    destination_file = path.join(CWD, test_folder, "sample_template")
+    git_path = path.join(CWD, test_folder, ".git")
+
+    create_folder(test_folder)
+    shutil.copyfile(
+        src=sample_file,
+        dst=destination_file,
+    )
+    try:
+        init_new_git_repo(test_folder)
+        assert path.isdir(git_path)
+        initial_git_commit(test_folder)
+
+        os.chdir(test_folder)
+        logs = subprocess.run(
+            ['git', 'log'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        ).stdout.decode()
+        print(logs)
+        assert "Initial commit" in logs
+    finally:
+        os.chdir(init_folder)
+        remove_folder(test_folder)
