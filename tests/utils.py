@@ -16,7 +16,7 @@ def remove_folder(folder):
     """
     Removes a folder (location relative to cwd or absolute).
     """
-    shutil.rmtree(folder)
+    shutil.rmtree(folder, ignore_errors=True)
 
 
 def create_folder(folder):

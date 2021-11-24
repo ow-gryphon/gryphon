@@ -3,7 +3,7 @@ from os import path
 import shutil
 import pytest
 
-TEST_FOLDER = os.path.abspath("tests")
+TEST_FOLDER = os.path.abspath("")
 
 
 def test_full_journey_1():
@@ -25,5 +25,5 @@ def test_full_journey_1():
     except Exception as e:
         pytest.fail("Raised exception", e)
     finally:
+        os.chdir(TEST_FOLDER)
         shutil.rmtree(absolute_path, ignore_errors=True)
-
