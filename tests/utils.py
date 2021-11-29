@@ -3,13 +3,17 @@ Utility functions for the test suite.
 """
 
 import os
+from os import path
+import platform
 import shutil
 from labskit_commands.command_operations import (
     create_venv,
-    get_destination_path
+    get_destination_path,
+    escape_windows_path
 )
 
 TEST_FOLDER = os.path.abspath("tests")
+VENV = ".venv"
 
 
 def remove_folder(folder):
@@ -44,3 +48,27 @@ def create_folder_with_venv(folder_name, requirements=None):
 
 def get_data_folder():
     return os.path.join(TEST_FOLDER, "data")
+
+
+def get_pip_path(base_folder=""):
+    if platform.system() == "Windows":
+        # On windows the venv folder structure is different from unix
+        pip_path = path.join(base_folder, VENV, "Scripts", "pip")
+        pip_path = escape_windows_path(pip_path)
+    else:
+        pip_path = path.join(base_folder, VENV, "bin", "pip")
+
+    return pip_path
+
+
+def get_requirements_path(base_folder):
+    requirements_path = path.join(base_folder, "requirements.txt")
+
+    if platform.system() == "Windows":
+        requirements_path = escape_windows_path(requirements_path)
+
+    return requirements_path
+
+
+def get_venv_path(base_folder):
+    return path.join(base_folder, VENV)

@@ -1,16 +1,11 @@
 import os
 from os import path
-import shutil
-
-import pytest
-
-from labskit_commands.generate import (parse_project_template, pattern_replacement)
-from .utils import get_data_folder
-
-
-@pytest.fixture
-def data_folder():
-    return get_data_folder()
+from labskit_commands.generate import (
+    generate,
+    parse_project_template,
+    pattern_replacement
+)
+from .utils import create_folder_with_venv
 
 
 def test_generate_1(data_folder):
@@ -74,27 +69,50 @@ def test_generate_3(data_folder):
         assert len(contents) == 0
 
 
-def test_generate_4():
+def test_generate_4(setup, teardown):
     """
     Tests the template replacement: missing replacement patterns
     """
-    sub_folder = "sub_folder"
+    cwd = setup()
     parameter = "test"
-    destination_folder = path.join(os.getcwd(), sub_folder)
+
     expected_files = [
-        path.join(destination_folder, "readme_mlclustering.md"),
-        path.join(destination_folder, "tests", "mlclustering", f"test_clustering_{parameter}.py"),
-        path.join(destination_folder, "src", f"clustering_{parameter}.py"),
+        path.join(cwd, "readme_mlclustering.md"),
+        path.join(cwd, "tests", "mlclustering", f"test_clustering_{parameter}.py"),
+        path.join(cwd, "src", f"clustering_{parameter}.py"),
     ]
 
     try:
         parse_project_template(
             template="mlclustering",
-            mapper={"fileName": parameter},
-            destination_folder=sub_folder
+            mapper={"fileName": parameter}
         )
 
         for file in expected_files:
             assert path.isfile(file)
+
     finally:
-        shutil.rmtree(destination_folder)
+        teardown()
+
+
+def test_generate_5(setup, teardown, get_pip_libraries):
+    try:
+        file_name = "test"
+        _ = setup()
+        create_folder_with_venv(".")
+        libraries = get_pip_libraries()
+        assert "sklearn" not in libraries
+
+        generate(
+            template="mlclustering",
+            requirements=["scikit-learn"],
+            extra_parameters={"fileName": file_name}
+        )
+
+        libraries = get_pip_libraries()
+        assert "sklearn" in libraries
+        assert path.isfile("readme_mlclustering.md")
+        assert path.isfile(path.join("src", f"clustering_{file_name}.py"))
+
+    finally:
+        teardown()
