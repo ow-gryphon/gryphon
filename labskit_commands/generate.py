@@ -8,7 +8,9 @@ import click
 from .command_operations import (
     get_destination_path,
     update_templates,
-    copy_project_template
+    copy_project_template,
+    append_requirement,
+    install_libraries
 )
 
 # TODO: Think about how to give some help and examples about the commands
@@ -17,13 +19,17 @@ from .command_operations import (
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
-def generate(template: str, extra_parameters: dict):
+def generate(template: str, requirements: list, extra_parameters: dict):
     """
     Generate command from the labskit CLI.
     """
     click.echo("Generating template.")
     update_templates()
     parse_project_template(template, extra_parameters)
+
+    for r in requirements:
+        append_requirement(r)
+        install_libraries()
 
 
 def pattern_replacement(input_file, mapper):

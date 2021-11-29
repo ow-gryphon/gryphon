@@ -28,7 +28,8 @@ def add(library_name):
 def generate(template, extra):
     """generates templates based on arguments and configurations."""
     extra = labskit_commands.utils.validate_parameters(extra, template, commands["generate"].get_metadata())
-    labskit_commands.generate(template, extra)
+    metadata = commands["generate"].get_metadata()
+    labskit_commands.generate(template, metadata.get("dependencies", []), extra_parameters=extra)
 
 
 @click.argument("template")

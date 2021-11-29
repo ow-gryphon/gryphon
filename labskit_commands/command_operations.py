@@ -76,13 +76,20 @@ def install_libraries(folder=None):
 
     # Install requirements
     click.echo("Installing requirements. This may take some minutes ...")
+
+    if not os.path.isfile(pip_path):
+        raise RuntimeError(f"virtualenv not found inside folder. Should be at {pip_path}")
+
+    if not os.path.isfile(requirements_path):
+        raise FileNotFoundError("requirements.txt file not found.")
+
     try:
         subprocess.check_output(
             f"{pip_path} --disable-pip-version-check "
             f"install -r {requirements_path}", shell=True)
     except subprocess.CalledProcessError:
         click.secho("Failed to install requirements", fg='red')
-        raise FileNotFoundError("Failed on pip install command.")
+        raise RuntimeError("Failed on pip install command.")
 
     click.secho("Installation succeeded.", fg='green')
 
@@ -121,3 +128,13 @@ def initial_git_commit(folder):
         os.system("git commit -m 'Initial commit'")
     finally:
         os.chdir(prev_folder)
+
+
+def append_requirement(library_name):
+    """
+    Appends a given requirement to the requirements.txt file.
+    """
+    current_path = get_destination_path()
+    requirements_path = os.path.join(current_path, "requirements.txt")
+    with open(requirements_path, "a", encoding='UTF-8') as file:
+        file.write(f"\n{library_name}")

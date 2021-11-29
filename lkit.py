@@ -53,7 +53,8 @@ def generate():
 
     labskit_commands.generate(
         template=template,
-        extra_parameters=extra_parameters
+        extra_parameters=extra_parameters,
+        requirements=template_metadata.get("requirements")
     )
 
 
