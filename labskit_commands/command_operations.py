@@ -11,6 +11,7 @@ import click
 
 
 PACKAGE_PATH = path.dirname(path.realpath(__file__))
+VENV = ".venv"
 
 
 def get_destination_path(folder=None):
@@ -45,7 +46,7 @@ def create_venv(folder=None):
     Function to a virtual environment inside a folder.
     """
     target_folder = get_destination_path(folder)
-    venv_path = path.join(target_folder, ".venv")
+    venv_path = path.join(target_folder, VENV)
 
     # Create venv
     click.echo("Creating virtual environment.")
@@ -65,23 +66,30 @@ def install_libraries(folder=None):
 
     if platform.system() == "Windows":
         # On windows the venv folder structure is different from unix
-        pip_path = path.join(target_folder, ".venv", "Scripts", "pip")
+        pip_path = path.join(target_folder, VENV, "Scripts", "pip")
 
         # On windows "" double quotes are needed to avoid problems with special chars
         pip_path = escape_windows_path(pip_path)
         requirements_path = escape_windows_path(requirements_path)
     else:
-        pip_path = path.join(target_folder, ".venv", "bin", "pip")
+        pip_path = path.join(target_folder, VENV, "bin", "pip")
 
     # Install requirements
     click.echo("Installing requirements. This may take some minutes ...")
+
+    if not os.path.isfile(pip_path):
+        raise RuntimeError(f"virtualenv not found inside folder. Should be at {pip_path}")
+
+    if not os.path.isfile(requirements_path):
+        raise FileNotFoundError("requirements.txt file not found.")
+
     try:
         subprocess.check_output(
             f"{pip_path} --disable-pip-version-check "
             f"install -r {requirements_path}", shell=True)
     except subprocess.CalledProcessError:
         click.secho("Failed to install requirements", fg='red')
-        raise FileNotFoundError("Failed on pip install command.")
+        raise RuntimeError("Failed on pip install command.")
 
     click.secho("Installation succeeded.", fg='green')
 
@@ -99,3 +107,34 @@ def copy_project_template(command: str, template: str, folder: str):
         dst=target_path,
         dirs_exist_ok=True
     )
+
+
+def init_new_git_repo(folder):
+    """Init new git repository on folder."""
+    prev_folder = os.getcwd()
+    try:
+        os.chdir(folder)
+        os.system("git init")
+    finally:
+        os.chdir(prev_folder)
+
+
+def initial_git_commit(folder):
+    """Does the first git commit."""
+    prev_folder = os.getcwd()
+    try:
+        os.chdir(folder)
+        os.system("git add .")
+        os.system("git commit -m 'Initial commit'")
+    finally:
+        os.chdir(prev_folder)
+
+
+def append_requirement(library_name):
+    """
+    Appends a given requirement to the requirements.txt file.
+    """
+    current_path = get_destination_path()
+    requirements_path = os.path.join(current_path, "requirements.txt")
+    with open(requirements_path, "a", encoding='UTF-8') as file:
+        file.write(f"\n{library_name}")

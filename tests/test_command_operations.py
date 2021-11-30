@@ -1,112 +1,169 @@
 """
 Module containing tests about the functions in the file command_operations.py
 """
+import os
 from os import path
-import glob
+import shutil
+import subprocess
 import pytest
-import utils
+from .utils import (
+    create_folder_with_venv,
+    get_venv_path
+)
 from labskit_commands.command_operations import (
     create_venv,
     install_libraries,
-    copy_project_template
+    copy_project_template,
+    init_new_git_repo,
+    initial_git_commit
 )
 
+VENV = ".venv"
+CWD = os.path.abspath("")
 
-def test_create_venv_1():
+
+def test_create_venv_1(setup, teardown):
     """
     Test case:
     A venv is created successfully, in a previously created folder.
     """
-    folder_name = "test_temp"
-
-    utils.create_folder(folder_name)
-    abs_path = path.abspath(folder_name)
+    cwd = setup()
     try:
-        create_venv(folder_name)
+        create_venv(cwd)
 
-        venv_path = path.join(abs_path, ".venv")
+        venv_path = get_venv_path(base_folder=cwd)
 
         assert path.isdir(venv_path)
 
     finally:
-        utils.remove_folder(abs_path)
+        teardown()
 
 
-def test_create_venv_2():
+def test_create_venv_2(setup, teardown):
     """
     Test case:
     A venv is created in a folder that does not exists previously.
     """
-    folder_name = "not_exists"
-    folder_path = path.abspath(folder_name)
+    cwd = setup()
     try:
-        create_venv(folder_path)
+        create_venv(cwd)
 
-        venv_path = path.join(folder_path, ".venv")
+        venv_path = get_venv_path(cwd)
         assert path.isdir(venv_path)
     finally:
-        utils.remove_folder(folder_path)
+        teardown()
 
 
-def test_install_libraries_1():
+def test_install_libraries_1(setup, teardown, get_pip_libraries):
     """
     Test case:
     In a prepared folder with venv, install libraries from the requirements.txt
     """
-    folder_name = "install_libs_test"
-    folder_path = path.abspath(folder_name)
+    cwd = setup()
 
-    utils.create_folder_with_venv(folder_path)
+    create_folder_with_venv(cwd)
     try:
-        install_libraries(folder_path)
-        venv_path = path.join(folder_path, ".venv")
+        install_libraries(cwd)
+        venv_path = get_venv_path(cwd)
         assert path.isdir(venv_path)
 
-        glob_pattern = path.join(venv_path, "lib*", "python*", "site-packages", "*")
-        lib_folders = glob.glob(glob_pattern)
-        libs = list(map(path.basename, lib_folders))
+        libs = get_pip_libraries()
         assert "pandas" in libs
         assert "numpy" in libs
 
     finally:
-        utils.remove_folder(folder_path)
+        teardown()
 
 
-def test_install_libraries_2():
+def test_install_libraries_2(setup, teardown):
     """
     Test case:
     In an empty folder try install libraries from the requirements.txt
     should raise error.
     """
-    folder_name = "install_libs_test"
-    folder_path = path.abspath(folder_name)
+    folder_path = setup()
 
-    utils.create_folder(folder_path)
     try:
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(RuntimeError):
             install_libraries(folder_path)
 
     finally:
-        utils.remove_folder(folder_path)
+        teardown()
 
 
-def test_copy_project_template():
+def test_copy_project_template(setup, teardown):
     """
     Tests if the template folder is being properly copied.
     """
-    destination_folder = "trivial_template"
+    pwd = setup()
+
     copy_project_template(
         command="init",
         template="trivial",
-        folder=destination_folder
+        folder=pwd
     )
 
-    absolute_folder_path = path.abspath(destination_folder)
-
     try:
-        assert path.isdir(absolute_folder_path)
-        assert path.isfile(path.join(absolute_folder_path, "requirements.txt"))
-        assert path.isfile(path.join(absolute_folder_path, "sample_template"))
+        assert path.isdir(pwd)
+        assert path.isfile(path.join(pwd, "requirements.txt"))
+        assert path.isfile(path.join(pwd, "sample_template"))
 
     finally:
-        utils.remove_folder(absolute_folder_path)
+        teardown()
+
+
+def test_git_init_1(setup, teardown):
+    sample_file = path.join(os.getcwd(), "tests", "data", "sample_template")
+    cwd = setup()
+
+    destination_file = path.join(cwd, "sample_template")
+    git_path = path.join(cwd, ".git")
+
+    try:
+        shutil.copyfile(
+            src=sample_file,
+            dst=destination_file,
+        )
+        assert not path.isdir(git_path)
+
+        init_new_git_repo(cwd)
+
+        assert path.isdir(git_path)
+
+        logs = subprocess.run(
+            ['git', 'log'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        ).stdout.decode()
+
+        assert "does not have any commits yet" in logs
+
+    finally:
+        teardown()
+
+
+def test_git_commit_1(setup, teardown):
+    sample_file = path.join(os.getcwd(), "tests", "data", "sample_template")
+    cwd = setup()
+
+    destination_file = path.join(cwd, "sample_template")
+    git_path = path.join(cwd, ".git")
+
+    shutil.copyfile(
+        src=sample_file,
+        dst=destination_file,
+    )
+    try:
+        init_new_git_repo(cwd)
+        assert path.isdir(git_path)
+
+        initial_git_commit(cwd)
+        logs = subprocess.run(
+            ['git', 'log'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        ).stdout.decode()
+        assert "Initial commit" in logs
+
+    finally:
+        teardown()

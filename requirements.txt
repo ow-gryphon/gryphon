@@ -1,4 +1,7 @@
 click>=8.0.1
 virtualenv
+questionary
+
 pylint
 pytest
+pytest-cov

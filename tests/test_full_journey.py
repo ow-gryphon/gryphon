@@ -1,26 +1,26 @@
 import os
 from os import path
-import shutil
 import pytest
 
+TEST_FOLDER = os.path.abspath("")
 
-def test_full_journey_1():
-    folder = "sample_project"
+
+def test_full_journey_1(setup, teardown):
     file_name = "segmentation"
-    absolute_path = os.path.abspath(folder)
-    shutil.rmtree(absolute_path, ignore_errors=True)
+    project_folder = "project"
+    cwd = setup()
     try:
-        os.system(f"labskit init analytics {folder}")
-        os.chdir(absolute_path)
+        os.system(f"labskit init analytics {project_folder}")
+        os.chdir(project_folder)
         os.system(f"labskit generate mlclustering {file_name}")
 
-        assert path.isdir(absolute_path)
-        assert path.isdir(path.join(absolute_path, "src"))
-        assert path.isdir(path.join(absolute_path, "notebooks"))
-        assert path.isdir(path.join(absolute_path, "tests"))
-
-        assert path.isfile(path.join(absolute_path, "src", f"clustering_{file_name}.py"))
+        assert path.isdir(path.join(cwd, project_folder))
+        assert path.isdir(path.join(cwd, project_folder, "src"))
+        assert path.isdir(path.join(cwd, project_folder, "notebooks"))
+        assert path.isdir(path.join(cwd, project_folder, "tests"))
+        assert path.isfile(path.join(cwd, project_folder, "src", f"clustering_{file_name}.py"))
 
     except Exception as e:
-        shutil.rmtree(absolute_path, ignore_errors=True)
         pytest.fail("Raised exception", e)
+    finally:
+        teardown()
