@@ -60,7 +60,7 @@ def install_libraries(folder=None):
         pip_path = path.join(target_folder, VENV, "Scripts", "pip")
 
         # On windows "" double quotes are needed to avoid problems with special chars
-        pip_path = escape_windows_path(pip_path)
+        # pip_path = escape_windows_path(pip_path)
         requirements_path = escape_windows_path(requirements_path)
     else:
         pip_path = path.join(target_folder, VENV, "bin", "pip")
