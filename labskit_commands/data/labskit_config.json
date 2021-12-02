@@ -9,7 +9,7 @@
         "folder": "templates/add/"
     },
     "git_registry": {
-        "open-source": "",
+        "open-source": "https://github.com/vittorfp/template_registry.git",
         "ow-private": ""
     },
     "local_registry": {
