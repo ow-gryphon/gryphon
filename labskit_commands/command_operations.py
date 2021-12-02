@@ -68,18 +68,17 @@ def install_libraries(folder=None):
     # Install requirements
     click.echo("Installing requirements. This may take some minutes ...")
 
-    if not os.path.isfile(pip_path):
-        raise RuntimeError(f"virtualenv not found inside folder. Should be at {pip_path}")
+    # if not os.path.isfile(pip_path):
+    #     raise RuntimeError(f"virtualenv not found inside folder. Should be at {pip_path}")
+    #
+    # if not os.path.isfile(requirements_path):
+    #     raise FileNotFoundError("requirements.txt file not found.")
 
-    if not os.path.isfile(requirements_path):
-        raise FileNotFoundError("requirements.txt file not found.")
+    return_code = os.system(
+        f"{pip_path} --disable-pip-version-check "
+        f"install -r {requirements_path} -qqq")
 
-    try:
-        subprocess.check_output(
-            f"{pip_path} --disable-pip-version-check "
-            f"install -r {requirements_path}", shell=True)
-    except subprocess.CalledProcessError:
-        click.secho("Failed to install requirements", fg='red')
+    if return_code != 0:
         raise RuntimeError("Failed on pip install command.")
 
     click.secho("Installation succeeded.", fg='green')
