@@ -6,7 +6,7 @@ from labskit_commands.command_operations import remove_folder
 
 class LocalRegistry(TemplateRegistry):
 
-    def __init__(self, registry_name: str, registry_origin: str, registry_folder):
+    def __init__(self, registry_name: str, registry_origin: str, registry_folder: str):
         self.registry_folder = path.join(registry_folder, registry_name)
         self.registry_origin = registry_origin
 
