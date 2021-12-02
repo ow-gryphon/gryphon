@@ -5,7 +5,7 @@ from labskit_commands.generate import (
     parse_project_template,
     pattern_replacement
 )
-from .utils import create_folder_with_venv
+from .utils import create_folder_with_venv, TEST_FOLDER
 
 
 def test_generate_1(data_folder):
@@ -78,13 +78,12 @@ def test_generate_4(setup, teardown):
 
     expected_files = [
         path.join(cwd, "readme_mlclustering.md"),
-        path.join(cwd, "tests", "mlclustering", f"test_clustering_{parameter}.py"),
         path.join(cwd, "src", f"clustering_{parameter}.py"),
     ]
 
     try:
         parse_project_template(
-            template="mlclustering",
+            template_path=path.join(TEST_FOLDER, "data", "mlclustering"),
             mapper={"fileName": parameter}
         )
 
@@ -104,7 +103,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         assert "sklearn" not in libraries
 
         generate(
-            template="mlclustering",
+            template_path=path.join(TEST_FOLDER, "data", "mlclustering"),
             requirements=["scikit-learn"],
             extra_parameters={"fileName": file_name}
         )

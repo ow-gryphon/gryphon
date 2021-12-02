@@ -30,10 +30,15 @@ def add(library_name):
 @click.argument('extra', nargs=-1)
 def generate(template, extra):
     """generates templates based on arguments and configurations."""
-    init_metadata = commands.get_metadata()["generate"]
-    extra = helpers.validate_parameters(extra, template, init_metadata)
+    generate_metadata = commands.get_metadata()["generate"]
+    extra = helpers.validate_parameters(extra, template, generate_metadata)
+    template_path = generate_metadata[template]["path"]
 
-    labskit_commands.generate(template, metadata.get("dependencies", []), extra_parameters=extra)
+    labskit_commands.generate(
+        template_path,
+        metadata.get("dependencies", []),
+        extra_parameters=extra
+    )
 
 
 @click.argument("template")
@@ -42,8 +47,10 @@ def generate(template, extra):
 def init(template, location, extra):
     """Creates a starter repository for analytics projects."""
     extra_parameters = helpers.validate_parameters(extra, template, commands.get_metadata()["init"])
+
+    template_path = commands.get_metadata()["init"][template]["path"]
     labskit_commands.init(
-        template=template,
+        template_path=template_path,
         location=location,
         **extra_parameters
     )

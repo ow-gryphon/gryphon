@@ -8,7 +8,8 @@ import subprocess
 import pytest
 from .utils import (
     create_folder_with_venv,
-    get_venv_path
+    get_venv_path,
+    TEST_FOLDER
 )
 from labskit_commands.command_operations import (
     create_venv,
@@ -98,9 +99,8 @@ def test_copy_project_template(setup, teardown):
     pwd = setup()
 
     copy_project_template(
-        command="init",
-        template="trivial",
-        folder=pwd
+        template_source=path.join(TEST_FOLDER, "data", "trivial"),
+        template_destiny=pwd
     )
 
     try:
@@ -113,7 +113,7 @@ def test_copy_project_template(setup, teardown):
 
 
 def test_git_init_1(setup, teardown):
-    sample_file = path.join(os.getcwd(), "tests", "data", "sample_template")
+    sample_file = path.join(TEST_FOLDER, "data", "sample_template")
     cwd = setup()
 
     destination_file = path.join(cwd, "sample_template")
@@ -143,7 +143,7 @@ def test_git_init_1(setup, teardown):
 
 
 def test_git_commit_1(setup, teardown):
-    sample_file = path.join(os.getcwd(), "tests", "data", "sample_template")
+    sample_file = path.join(TEST_FOLDER, "data", "sample_template")
     cwd = setup()
 
     destination_file = path.join(cwd, "sample_template")
@@ -154,10 +154,10 @@ def test_git_commit_1(setup, teardown):
         dst=destination_file,
     )
     try:
-        init_new_git_repo(cwd)
+        repo = init_new_git_repo(cwd)
         assert path.isdir(git_path)
 
-        initial_git_commit(cwd)
+        initial_git_commit(repo)
         logs = subprocess.run(
             ['git', 'log'],
             stdout=subprocess.PIPE,

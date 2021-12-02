@@ -1,6 +1,6 @@
 from os import path
-import shutil
 from labskit_commands.init import init
+from .utils import TEST_FOLDER
 
 
 def test_init_1(setup, teardown):
@@ -8,7 +8,7 @@ def test_init_1(setup, teardown):
 
     try:
         init(
-            template="analytics",
+            template_path=path.join(TEST_FOLDER, "data", "analytics"),
             location=cwd
         )
         scr_path = path.join(cwd, "src")
