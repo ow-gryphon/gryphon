@@ -5,3 +5,4 @@ questionary
 pylint
 pytest
 pytest-cov
+GitPython

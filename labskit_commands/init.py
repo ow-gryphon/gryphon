@@ -7,7 +7,6 @@ from .command_operations import (
     install_libraries,
     copy_project_template,
     create_venv,
-    update_templates,
     init_new_git_repo,
     initial_git_commit
 )
@@ -15,24 +14,26 @@ from .command_operations import (
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
-def init(template, location, **kwargs):
+def init(template_path, location, **kwargs):
     """
     Init command from the labskit CLI.
     """
     click.secho("Creating project scaffolding.", fg='green')
+    kwargs.copy()
+    try:
 
-    update_templates()
-    click.echo(f"initializing project at {location}")
-    copy_project_template(
-        template=template,
-        command="init",
-        folder=location,
-    )
-    populate_rc_file(folder=location)
-    create_venv(folder=location)
-    install_libraries(folder=location)
-    init_new_git_repo(folder=location)
-    initial_git_commit(folder=location)
+        click.echo(f"initializing project at {location}")
+        copy_project_template(
+            template_destiny=location,
+            template_source=template_path
+        )
+        populate_rc_file(folder=location)
+        create_venv(folder=location)
+        install_libraries(folder=location)
+        repo = init_new_git_repo(folder=location)
+        initial_git_commit(repo)
+    except Exception as exception:
+        raise exception
 
 
 def populate_rc_file(folder):
@@ -40,4 +41,3 @@ def populate_rc_file(folder):
     Updates the needed options inside the .labskitrc file.
     """
     # TODO: Create .labskitrc and populate it accordingly
-

@@ -7,6 +7,7 @@ from os import path
 import platform
 import shutil
 import subprocess
+import git
 import click
 
 
@@ -33,18 +34,8 @@ def get_destination_path(folder=None):
     return folder
 
 
-def update_templates():
-    """
-    Function that updates all the templates from their git repository.
-    """
-    # TODO: choose witch template registry to use (git or pypi or local artifactory)
-    # TODO: update the chosen template to match the registry
-
-
 def create_venv(folder=None):
-    """
-    Function to a virtual environment inside a folder.
-    """
+    """Function to a virtual environment inside a folder."""
     target_folder = get_destination_path(folder)
     venv_path = path.join(target_folder, VENV)
 
@@ -94,46 +85,34 @@ def install_libraries(folder=None):
     click.secho("Installation succeeded.", fg='green')
 
 
-def copy_project_template(command: str, template: str, folder: str):
-    """
-    Copies the templates to destination folder.
-    """
-    template_path = path.join(PACKAGE_PATH, "data", command, template, "template")
-    target_path = get_destination_path(folder)
+# def copy_project_template(registry: str, command: str, template: str, folder: str):
+def copy_project_template(template_source: str, template_destiny: str):
+    """Copies the templates to destination folder."""
+    template_path = path.join(template_source, "template")
+    # target_path = get_destination_path(folder)
 
-    os.makedirs(target_path, exist_ok=True)
+    os.makedirs(template_destiny, exist_ok=True)
     shutil.copytree(
         src=template_path,
-        dst=target_path,
+        dst=template_destiny,
         dirs_exist_ok=True
     )
 
 
-def init_new_git_repo(folder):
+def init_new_git_repo(folder: os.path) -> git.Repo:
     """Init new git repository on folder."""
-    prev_folder = os.getcwd()
-    try:
-        os.chdir(folder)
-        os.system("git init")
-    finally:
-        os.chdir(prev_folder)
+    return git.Repo.init(folder)
 
 
-def initial_git_commit(folder):
+def initial_git_commit(repository: git.Repo):
     """Does the first git commit."""
-    prev_folder = os.getcwd()
-    try:
-        os.chdir(folder)
-        os.system("git add .")
-        os.system("git commit -m 'Initial commit'")
-    finally:
-        os.chdir(prev_folder)
+    repository.git.add(A=True)
+    repository.index.commit("Initial commit")
 
 
 def append_requirement(library_name):
-    """
-    Appends a given requirement to the requirements.txt file.
-    """
+    """Appends a given requirement to the requirements.txt file."""
+
     current_path = get_destination_path()
     requirements_path = os.path.join(current_path, "requirements.txt")
     with open(requirements_path, "a", encoding='UTF-8') as file:

@@ -7,7 +7,6 @@ import glob
 import click
 from .command_operations import (
     get_destination_path,
-    update_templates,
     copy_project_template,
     append_requirement,
     install_libraries
@@ -19,13 +18,12 @@ from .command_operations import (
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
-def generate(template: str, requirements: list, extra_parameters: dict):
+def generate(template_path: str, requirements: list, extra_parameters: dict):
     """
     Generate command from the labskit CLI.
     """
     click.echo("Generating template.")
-    update_templates()
-    parse_project_template(template, extra_parameters)
+    parse_project_template(template_path, extra_parameters)
 
     for r in requirements:
         append_requirement(r)
@@ -65,22 +63,21 @@ def pattern_replacement(input_file, mapper):
         raise exception
 
 
-def parse_project_template(template, mapper, destination_folder=""):
+def parse_project_template(template_path, mapper, destination_folder=""):
     """
     Function that copies the template to the selected folder
     and
     """
 
-    temp_path = get_destination_path(f"temp_{template}")
+    temp_path = get_destination_path(f"temp_template")
     definitive_path = get_destination_path(destination_folder)
 
     # Copy files to a temporary folder
     click.echo(f"Creating files at {definitive_path}")
 
     copy_project_template(
-        template=template,
-        command="generate",
-        folder=temp_path
+        template_destiny=temp_path,
+        template_source=template_path
     )
 
     # Replace patterns and rename files

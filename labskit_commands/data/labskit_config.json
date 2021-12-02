@@ -1,0 +1,18 @@
+{
+    "init": {
+        "folder": "templates/init/"
+    },
+    "generate": {
+        "folder": "templates/generate/"
+    },
+    "add": {
+        "folder": "templates/add/"
+    },
+    "git_registry": {
+        "open-source": "",
+        "ow-private": ""
+    },
+    "local_registry": {
+        "default_registry": "/home/vittorfp/labskit_registry"
+    }
+}

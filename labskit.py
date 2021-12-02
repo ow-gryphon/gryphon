@@ -4,6 +4,7 @@ Labskit CLI Main module.
 import os
 import click
 import labskit_commands
+from labskit_commands import registry, helpers
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -27,8 +28,9 @@ def add(library_name):
 @click.argument('extra', nargs=-1)
 def generate(template, extra):
     """generates templates based on arguments and configurations."""
-    extra = labskit_commands.utils.validate_parameters(extra, template, commands["generate"].get_metadata())
-    metadata = commands["generate"].get_metadata()
+    init_metadata = commands.get_metadata()["generate"]
+    extra = helpers.validate_parameters(extra, template, init_metadata)
+
     labskit_commands.generate(template, metadata.get("dependencies", []), extra_parameters=extra)
 
 
@@ -37,7 +39,7 @@ def generate(template, extra):
 @click.argument('extra', nargs=-1)
 def init(template, location, extra):
     """Creates a starter repository for analytics projects."""
-    extra_parameters = labskit_commands.utils.validate_parameters(extra, template, commands["init"].get_metadata())
+    extra_parameters = helpers.validate_parameters(extra, template, commands.get_metadata()["init"])
     labskit_commands.init(
         template=template,
         location=location,
@@ -51,16 +53,15 @@ functions = {
     # "add": add
 }
 
-commands = {}
+commands = registry.TemplateRegistry(templates_path=DATA_PATH)
 
 # Extends each of the command docstrings
 for name, function in functions.items():
 
-    commands[name] = labskit_commands.utils.CommandLoader(name, templates_path=DATA_PATH)
-    metadata = commands[name].get_metadata()
+    metadata = commands.get_metadata()[name]
 
     # Add command specific help
-    function.__doc__ += labskit_commands.utils.get_command_help(metadata).replace('\n', '\n\n')
+    function.__doc__ += helpers.get_command_help(metadata)
 
     # Generates the CLICK command (used to be a decorator)
     cli.command()(function)

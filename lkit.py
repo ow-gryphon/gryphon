@@ -1,16 +1,16 @@
 """
 LKit .
 """
-import os
+import json
+from os import path
 import questionary
 import labskit_commands
-from labskit_commands import utils
-from labskit_commands import questions
+from labskit_commands import registry, questions
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands", "data")
+PACKAGE_PATH = path.dirname(path.realpath(__file__))
+DATA_PATH = path.join(PACKAGE_PATH, "labskit_commands", "data")
 
 
 def confirmation(message=None):
@@ -37,13 +37,14 @@ def add():
 def generate():
     """generates templates based on arguments and configurations."""
 
-    metadata = commands["generate"].get_metadata()
+    metadata = commands.get_metadata()["generate"]
 
     questions_1 = questions.generate_1(metadata)
     responses = questionary.prompt(questions_1)
 
     template = responses['template']
     template_metadata = metadata[template]["metadata"]
+    template_path = metadata[template]["path"]
 
     extra_questions = questions.generate_2(template_metadata)
     extra_parameters = questionary.prompt(extra_questions)
@@ -52,15 +53,15 @@ def generate():
                  f"\nUsing the following arguments: {extra_parameters}")
 
     labskit_commands.generate(
-        template=template,
+        template_path=template_path,
         extra_parameters=extra_parameters,
-        requirements=template_metadata.get("requirements")
+        requirements=template_metadata.get("dependencies")
     )
 
 
 def init():
     """Creates a starter repository for analytics projects."""
-    metadata = commands["init"].get_metadata()
+    metadata = commands.get_metadata()["init"]
 
     base_questions = questions.init_1(metadata.keys())
     responses = questionary.prompt(base_questions)
@@ -69,6 +70,7 @@ def init():
     location = responses['location']
 
     template_metadata = metadata[template]["metadata"]
+    template_path = metadata[template]["path"]
     arguments = template_metadata.get("arguments", [])
 
     extra_questions = questions.init_2(arguments)
@@ -84,34 +86,60 @@ def init():
     )
 
     labskit_commands.init(
-        template=template,
+        template_path=template_path,
         location=location,
         **extra_parameters
     )
 
 
-functions = {
-    "init": init,
-    "generate": generate,
-    "add": add
-}
+config_file = path.join(PACKAGE_PATH, "labskit_commands/data/labskit_config.json")
 
-commands = {}
+with open(config_file, "r") as f:
+    settings = json.load(f)
 
-# reads every command metadata
-for name, function in functions.items():
-    commands[name] = utils.CommandLoader(
-        command_name=name,
-        templates_path=DATA_PATH
+local_registry = settings.get("local_registry", {})
+git_registry = settings.get("git_registry", {})
+
+template_registries = []
+
+# git ones
+for name, url in git_registry.items():
+    reg = registry.GitRegistry(
+        registry_name=name,
+        registry_url=url
     )
+    template_registries.append(reg)
+
+# local ones
+for name, path in local_registry.items():
+    reg = registry.LocalRegistry(
+        registry_name=name,
+        registry_path=path
+    )
+    template_registries.append(reg)
+
+    # Load all the registries
+    #     Clone or pull the git repos
+    #     Copy the local registries
+# Instantiate a registry manager to cope with all the
+
+commands = registry.RegistryCollection(template_registries)
+
+# commands = registry.TemplateRegistry(templates_path=DATA_PATH)
 
 
 def main():
-    command_question = questions.main_questions(commands.keys())
-    response = questionary.prompt(command_question)
+
+    command_question = questions.main_questions(commands.get_metadata().keys())
+    response = questionary.prompt(command_question)['command']
 
     try:
-        command = functions[response['command']]
+        functions = {
+            "init": init,
+            "generate": generate,
+            "add": add
+        }
+        command = functions[response]
         command()
     except KeyError:
         pass
