@@ -1,20 +1,22 @@
 import shutil
 from os import path
-from .template_registry import TemplateRegistry, TEMPLATES_FOLDER
+from .template_registry import TemplateRegistry
+from labskit_commands.command_operations import remove_folder
 
 
 class LocalRegistry(TemplateRegistry):
 
-    def __init__(self, registry_name: str, registry_path: str = ""):
-        self.registry_folder = path.join(TEMPLATES_FOLDER, registry_name)
-        self.registry_origin = registry_path
+    def __init__(self, registry_name: str, registry_origin: str, registry_folder):
+        self.registry_folder = path.join(registry_folder, registry_name)
+        self.registry_origin = registry_origin
 
         assert len(self.registry_folder)
         assert path.isdir(self.registry_origin)
 
-        if not path.isdir(self.registry_folder):
-            self._copy_registry()
+        if path.isdir(self.registry_folder):
+            remove_folder(self.registry_folder)
 
+        self._copy_registry()
         super().__init__(templates_path=self.registry_folder)
 
     def update_registry(self):

@@ -6,30 +6,19 @@ the templates metadata into memory.
 import os
 import json
 import glob
-from builtins import NotImplementedError
-
 import click
-
-
-TEMPLATES_FOLDER = os.path.abspath("data")
-PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands", "data")
 
 
 class TemplateRegistry:
     """Class that loads commands and metadata from the ./data folder."""
 
-    def __init__(self, templates_path=None):
-
-        if templates_path is not None:
-            path = templates_path
-        else:
-            path = TEMPLATES_FOLDER
+    def __init__(self, templates_path):
+        self.path = templates_path
 
         self.template_data = {}
 
         for command_name in ['add', 'generate', 'init']:
-            glob_pattern = os.path.join(path, command_name, "*")
+            glob_pattern = os.path.join(self.path, command_name, "*")
             folders = glob.glob(glob_pattern)
 
             if len(folders) == 0:

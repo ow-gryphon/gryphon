@@ -117,3 +117,17 @@ def append_requirement(library_name):
     requirements_path = os.path.join(current_path, "requirements.txt")
     with open(requirements_path, "a", encoding='UTF-8') as file:
         file.write(f"\n{library_name}")
+
+
+def remove_folder(folder):
+    """
+    Removes a folder (location relative to cwd or absolute).
+    """
+    shutil.rmtree(folder, ignore_errors=True)
+
+
+def create_folder(folder):
+    """
+    Create a folder in the given path (location relative to cwd or absolute).
+    """
+    os.makedirs(folder, exist_ok=True)

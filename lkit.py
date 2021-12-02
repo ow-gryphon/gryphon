@@ -5,10 +5,9 @@ import json
 from os import path
 import questionary
 import labskit_commands
-from labskit_commands import registry, questions
+from labskit_commands import questions
+from labskit_commands.registry import RegistryCollection
 
-
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 PACKAGE_PATH = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(PACKAGE_PATH, "labskit_commands", "data")
 
@@ -96,44 +95,15 @@ config_file = path.join(PACKAGE_PATH, "labskit_commands/data/labskit_config.json
 
 with open(config_file, "r") as f:
     settings = json.load(f)
-
-local_registry = settings.get("local_registry", {})
-git_registry = settings.get("git_registry", {})
-
-template_registries = []
-
-# git ones
-for name, url in git_registry.items():
-    reg = registry.GitRegistry(
-        registry_name=name,
-        registry_url=url
-    )
-    template_registries.append(reg)
-
-# local ones
-for name, path in local_registry.items():
-    reg = registry.LocalRegistry(
-        registry_name=name,
-        registry_path=path
-    )
-    template_registries.append(reg)
-
-    # Load all the registries
-    #     Clone or pull the git repos
-    #     Copy the local registries
-# Instantiate a registry manager to cope with all the
-
-commands = registry.RegistryCollection(template_registries)
-
-# commands = registry.TemplateRegistry(templates_path=DATA_PATH)
+    commands = RegistryCollection.from_config_file(settings, DATA_PATH)
 
 
 def main():
 
     command_question = questions.main_questions(commands.get_metadata().keys())
-    response = questionary.prompt(command_question)['command']
 
     try:
+        response = questionary.prompt(command_question)['command']
         functions = {
             "init": init,
             "generate": generate,

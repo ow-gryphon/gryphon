@@ -1,15 +1,17 @@
 """
 Labskit CLI Main module.
 """
-import os
+from os import path
+import json
 import click
 import labskit_commands
-from labskit_commands import registry, helpers
+from labskit_commands import helpers
+from labskit_commands.registry import RegistryCollection
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_PATH = os.path.join(PACKAGE_PATH, "labskit_commands", "data")
+PACKAGE_PATH = path.dirname(path.realpath(__file__))
+DATA_PATH = path.join(PACKAGE_PATH, "labskit_commands", "data")
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -53,7 +55,11 @@ functions = {
     # "add": add
 }
 
-commands = registry.TemplateRegistry(templates_path=DATA_PATH)
+config_file = path.join(PACKAGE_PATH, "labskit_commands/data/labskit_config.json")
+
+with open(config_file, "r") as f:
+    settings = json.load(f)
+    commands = RegistryCollection.from_config_file(settings, DATA_PATH)
 
 # Extends each of the command docstrings
 for name, function in functions.items():

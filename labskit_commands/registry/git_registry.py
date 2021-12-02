@@ -1,12 +1,12 @@
 from os import path
 import git
-from .template_registry import TemplateRegistry, TEMPLATES_FOLDER
+from .template_registry import TemplateRegistry
 
 
 class GitRegistry(TemplateRegistry):
 
-    def __init__(self, registry_name: str, registry_url: str = ""):
-        self.registry_folder = path.join(TEMPLATES_FOLDER, registry_name)
+    def __init__(self, registry_name: str, registry_url: str, registry_folder: str):
+        self.registry_folder = path.join(registry_folder, registry_name)
 
         if not path.isdir(self.registry_folder):
             if registry_url != "":
