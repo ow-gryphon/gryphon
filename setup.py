@@ -5,15 +5,13 @@ import glob
 from setuptools import setup, find_packages
 
 
-package_files = list(map(lambda x: x[19:], glob.glob('./labskit_commands/data/**', recursive=True)))
+package_files = list(map(lambda x: x[19:], glob.glob('./labskit_commands/data/*.json')))
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
-
-# TODO: Clone git repositories from config.json at the time of installation
 
 setup(
     name='labskit',
