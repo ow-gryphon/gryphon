@@ -1,13 +1,4 @@
 {
-    "init": {
-        "folder": "templates/init/"
-    },
-    "generate": {
-        "folder": "templates/generate/"
-    },
-    "add": {
-        "folder": "templates/add/"
-    },
     "git_registry": {
         "open-source": "https://github.com/vittorfp/template_registry.git",
         "ow-private": ""

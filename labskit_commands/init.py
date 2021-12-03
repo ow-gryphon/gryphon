@@ -20,20 +20,17 @@ def init(template_path, location, **kwargs):
     """
     click.secho("Creating project scaffolding.", fg='green')
     kwargs.copy()
-    try:
 
-        click.echo(f"initializing project at {location}")
-        copy_project_template(
-            template_destiny=location,
-            template_source=template_path
-        )
-        populate_rc_file(folder=location)
-        create_venv(folder=location)
-        install_libraries(folder=location)
-        repo = init_new_git_repo(folder=location)
-        initial_git_commit(repo)
-    except Exception as exception:
-        raise exception
+    click.echo(f"initializing project at {location}")
+    copy_project_template(
+        template_destiny=location,
+        template_source=template_path
+    )
+    populate_rc_file(folder=location)
+    create_venv(folder=location)
+    install_libraries(folder=location)
+    repo = init_new_git_repo(folder=location)
+    initial_git_commit(repo)
 
 
 def populate_rc_file(folder):

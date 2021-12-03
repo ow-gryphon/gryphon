@@ -100,16 +100,16 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         _ = setup()
         create_folder_with_venv(".")
         libraries = get_pip_libraries()
-        assert "sklearn" not in libraries
+        assert "scipy" not in libraries
 
         generate(
             template_path=path.join(TEST_FOLDER, "data", "mlclustering"),
-            requirements=["scikit-learn"],
+            requirements=["scipy"],
             extra_parameters={"fileName": file_name}
         )
 
         libraries = get_pip_libraries()
-        assert "sklearn" in libraries
+        assert "scipy" in libraries
         assert path.isfile("readme_mlclustering.md")
         assert path.isfile(path.join("src", f"clustering_{file_name}.py"))
 

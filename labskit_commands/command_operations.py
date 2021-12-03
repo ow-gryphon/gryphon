@@ -60,7 +60,6 @@ def install_libraries(folder=None):
         pip_path = path.join(target_folder, VENV, "Scripts", "pip")
 
         # On windows "" double quotes are needed to avoid problems with special chars
-        # pip_path = escape_windows_path(pip_path)
         requirements_path = escape_windows_path(requirements_path)
     else:
         pip_path = path.join(target_folder, VENV, "bin", "pip")
@@ -84,11 +83,9 @@ def install_libraries(folder=None):
     click.secho("Installation succeeded.", fg='green')
 
 
-# def copy_project_template(registry: str, command: str, template: str, folder: str):
 def copy_project_template(template_source: str, template_destiny: str):
     """Copies the templates to destination folder."""
     template_path = path.join(template_source, "template")
-    # target_path = get_destination_path(folder)
 
     os.makedirs(template_destiny, exist_ok=True)
     shutil.copytree(
