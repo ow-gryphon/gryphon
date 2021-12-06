@@ -6,6 +6,9 @@ from labskit_commands.registry import \
     LocalRegistry, TemplateRegistry
 
 
+TEST_REPO = "https://github.com/vittorfp/template_registry.git"
+
+
 def test_template_registry_1():
     registry_path = path.join(TEST_FOLDER, "data", "ok_registry")
     registry = TemplateRegistry(templates_path=registry_path)
@@ -89,7 +92,7 @@ def test_git_registry_1(setup, teardown):
     registry_name = "ok_registry"
     try:
         registry = GitRegistry(
-            registry_url="https://github.com/vittorfp/template_registry.git",
+            registry_url=TEST_REPO,
             registry_folder=cwd,
             registry_name=registry_name
         )
@@ -120,7 +123,7 @@ def test_git_registry_1(setup, teardown):
         assert path.isdir(destiny_generate)
 
         registry = GitRegistry(
-            registry_url="https://github.com/vittorfp/template_registry.git",
+            registry_url=TEST_REPO,
             registry_folder=cwd,
             registry_name=registry_name
         )
@@ -140,7 +143,7 @@ def test_registry_collection_1(setup, teardown):
     try:
         configurations = {
             "git_registry": {
-                "open-source": "https://github.com/vittorfp/template_registry.git",
+                "open-source": TEST_REPO,
                 "ow-private": ""
             },
             "local_registry": {
