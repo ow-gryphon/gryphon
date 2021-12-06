@@ -43,8 +43,12 @@ def create_venv(folder=None):
     os.system(f"python -m venv {venv_path}")
 
 
-def escape_windows_path(folder_path):
+def quote_windows_path(folder_path):
     return '"' + folder_path + '"'
+
+
+def escape_windows_path(folder_path):
+    return fr'{folder_path}'
 
 
 def install_libraries(folder=None):
@@ -57,9 +61,10 @@ def install_libraries(folder=None):
     if platform.system() == "Windows":
         # On windows the venv folder structure is different from unix
         pip_path = path.join(target_folder, VENV, "Scripts", "pip")
+        pip_path = escape_windows_path(pip_path)
 
         # On windows "" double quotes are needed to avoid problems with special chars
-        requirements_path = escape_windows_path(requirements_path)
+        requirements_path = quote_windows_path(requirements_path)
     else:
         pip_path = path.join(target_folder, VENV, "bin", "pip")
 
