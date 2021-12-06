@@ -62,7 +62,7 @@ functions = {
     # "add": add
 }
 
-config_file = path.join(PACKAGE_PATH, "labskit_commands/data/labskit_config.json")
+config_file = path.join(PACKAGE_PATH, "labskit_commands", "data", "labskit_config.json")
 
 with open(config_file, "r") as f:
     settings = json.load(f)

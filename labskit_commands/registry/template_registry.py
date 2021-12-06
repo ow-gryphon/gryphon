@@ -6,7 +6,7 @@ the templates metadata into memory.
 import os
 import json
 import glob
-import click
+from labskit_commands.logging import Logging
 
 
 class TemplateRegistry:
@@ -48,14 +48,8 @@ class TemplateRegistry:
             with open(filename, encoding='UTF-8') as file:
                 return json.load(file)
         except FileNotFoundError:
-            click.secho(
-                f"WARNING template at {path} does not contain a metadata.json file.",
-                fg='yellow'
-            )
+            Logging.warn(f"template at {path} does not contain a metadata.json file.")
             return {}
         except json.JSONDecodeError:
-            click.secho(
-                f"WARNING template at {path} has a malformed json on metadata.json file.",
-                fg='yellow'
-            )
+            Logging.warn(f"template at {path} has a malformed json on metadata.json file.")
             return {}

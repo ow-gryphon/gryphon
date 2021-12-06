@@ -2,7 +2,6 @@
 Module containing the code for the add command in then CLI.
 """
 import os
-import click
 from .command_operations import (
     install_libraries,
     copy_project_template,
@@ -10,6 +9,7 @@ from .command_operations import (
     init_new_git_repo,
     initial_git_commit
 )
+from .logging import Logging
 
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 
@@ -18,10 +18,10 @@ def init(template_path, location, **kwargs):
     """
     Init command from the labskit CLI.
     """
-    click.secho("Creating project scaffolding.", fg='green')
+    Logging.log("Creating project scaffolding.", fg='green')
     kwargs.copy()
 
-    click.echo(f"initializing project at {location}")
+    Logging.log(f"initializing project at {location}")
     copy_project_template(
         template_destiny=location,
         template_source=template_path

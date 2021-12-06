@@ -7,6 +7,7 @@ import questionary
 import labskit_commands
 from labskit_commands import questions
 from labskit_commands.registry import RegistryCollection
+from labskit_commands.logging import Logging
 
 PACKAGE_PATH = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(PACKAGE_PATH, "labskit_commands", "data")
@@ -17,7 +18,7 @@ def confirmation(message=None):
     go_ahead = questionary.confirm(message=message).ask()
 
     if not go_ahead:
-        print("Exiting.")
+        Logging.log("Operation cancelled.")
         exit(1)
 
 
@@ -95,7 +96,11 @@ config_file = path.join(PACKAGE_PATH, "labskit_commands/data/labskit_config.json
 
 with open(config_file, "r") as f:
     settings = json.load(f)
-    commands = RegistryCollection.from_config_file(settings, DATA_PATH)
+    try:
+        commands = RegistryCollection.from_config_file(settings, DATA_PATH)
+    except Exception as e:
+        Logging.error(f'Registry loading error. {e}')
+        exit(1)
 
 
 def main():
@@ -109,8 +114,14 @@ def main():
             "generate": generate,
             "add": add
         }
+
         command = functions[response]
-        command()
+        try:
+            command()
+        except Exception as er:
+            Logging.error(f'Runtime error. {er}')
+            exit(1)
+
     except KeyError:
         pass
 

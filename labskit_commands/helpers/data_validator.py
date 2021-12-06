@@ -1,7 +1,7 @@
 """
 Module containing utilities to validate the extra parameters given in CLI.
 """
-import click
+from labskit_commands.logging import Logging
 from .help_formater import get_template_help, get_command_help
 
 
@@ -10,10 +10,9 @@ def validate_parameters(parameters, template_type, metadata):
     try:
         assert template_type in metadata
     except AssertionError:
-        message = f"Error: Template \"{template_type}\" not found.\nAvailable options:"
-        click.secho(message, fg='red')
-        click.echo(get_command_help(metadata))
-        raise click.Abort()
+        message = f"Template \"{template_type}\" not found."
+        Logging.log(get_command_help(metadata))
+        raise RuntimeError(message)
 
     argument_metadata = metadata[template_type]['metadata']
 
@@ -28,14 +27,13 @@ def validate_parameters(parameters, template_type, metadata):
     if not num_given_parameters >= num_required_parameters:
         message = get_template_help(template_type, metadata[template_type])
         difference = num_required_parameters - num_given_parameters
+        Logging.log(message)
 
-        error = f"\n\nError: Missing {difference} required template arguments:\n"
-        click.secho(error, fg='red')
-        click.echo(message)
-        raise click.Abort()
+        error = f"\n\nMissing {difference} required template arguments:\n"
+        raise RuntimeError(error)
 
     # TODO: Validate also the case where num_given_parameters is
-    # strictly higher than num_required_parameters
+    #  strictly higher than num_required_parameters
     
     if num_given_parameters == num_required_parameters:
         return {

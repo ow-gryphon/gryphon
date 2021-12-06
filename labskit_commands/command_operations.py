@@ -6,9 +6,8 @@ import os
 from os import path
 import platform
 import shutil
-import subprocess
 import git
-import click
+from .logging import Logging
 
 
 PACKAGE_PATH = path.dirname(path.realpath(__file__))
@@ -40,7 +39,7 @@ def create_venv(folder=None):
     venv_path = path.join(target_folder, VENV)
 
     # Create venv
-    click.echo("Creating virtual environment.")
+    Logging.log("Creating virtual environment.")
     os.system(f"python -m venv {venv_path}")
 
 
@@ -65,7 +64,7 @@ def install_libraries(folder=None):
         pip_path = path.join(target_folder, VENV, "bin", "pip")
 
     # Install requirements
-    click.echo("Installing requirements. This may take some minutes ...")
+    Logging.log("Installing requirements. This may take some minutes ...")
 
     # if not os.path.isfile(pip_path):
     #     raise RuntimeError(f"virtualenv not found inside folder. Should be at {pip_path}")
@@ -80,7 +79,7 @@ def install_libraries(folder=None):
     if return_code != 0:
         raise RuntimeError("Failed on pip install command.")
 
-    click.secho("Installation succeeded.", fg='green')
+    Logging.log("Installation succeeded.", fg='green')
 
 
 def copy_project_template(template_source: str, template_destiny: str):

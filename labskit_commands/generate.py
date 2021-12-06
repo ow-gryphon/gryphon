@@ -4,7 +4,7 @@ Module containing the code for the generate command in then CLI.
 import os
 import shutil
 import glob
-import click
+from labskit_commands.logging import Logging
 from .command_operations import (
     get_destination_path,
     copy_project_template,
@@ -22,7 +22,7 @@ def generate(template_path: str, requirements: list, extra_parameters: dict):
     """
     Generate command from the labskit CLI.
     """
-    click.echo("Generating template.")
+    Logging.log("Generating template.", fg='green')
     parse_project_template(template_path, extra_parameters)
 
     for r in requirements:
@@ -54,7 +54,7 @@ def pattern_replacement(input_file, mapper):
         f_in.close()
         f_out.close()
     except UnicodeDecodeError:
-        click.secho("WARNING: There are binary files inside template folder.", fg='yellow')
+        Logging.warn("There are binary files inside template folder.")
 
     except Exception as exception:
         f_in.close()
@@ -73,7 +73,7 @@ def parse_project_template(template_path, mapper, destination_folder=""):
     definitive_path = get_destination_path(destination_folder)
 
     # Copy files to a temporary folder
-    click.echo(f"Creating files at {definitive_path}")
+    Logging.log(f"Creating files at {definitive_path}")
 
     copy_project_template(
         template_destiny=temp_path,

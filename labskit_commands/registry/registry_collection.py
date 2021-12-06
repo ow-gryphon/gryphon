@@ -1,7 +1,7 @@
 import os
 from typing import List
-import click
 from labskit_commands import registry
+from labskit_commands.logging import Logging
 
 
 class RegistryCollection:
@@ -49,7 +49,7 @@ class RegistryCollection:
         # local ones
         for name, path in local_registry.items():
             if not os.path.isdir(path):
-                click.secho(f"WARNING: Local template registry \"{path}\" was not found.", fg='yellow')
+                Logging.warn(f"Local template registry \"{path}\" was not found.")
                 continue
 
             reg = registry.LocalRegistry(
