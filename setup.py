@@ -1,11 +1,13 @@
 """
 Setup module for the labskit package.  
 """
-import glob
+from pathlib import Path
 from setuptools import setup, find_packages
 
 
-package_files = list(map(lambda x: x[19:], glob.glob('./labskit_commands/data/*.json')))
+package_files = [
+    Path.cwd() / '/labskit_commands' / 'data' / 'labskit_config.json'
+]
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

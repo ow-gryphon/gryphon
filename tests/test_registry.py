@@ -98,8 +98,8 @@ def test_git_registry_1(setup, teardown):
         metadata = registry.get_metadata()
         assert "init" in metadata
         assert "generate" in metadata
-        assert "fancy_git_analytics" in metadata["init"]
-        assert "fancy_git_clustering" in metadata["generate"]
+        assert "analytics_git" in metadata["init"]
+        assert "mlclustering_git" in metadata["generate"]
 
         destiny_register = cwd / registry_name
         destiny_init = destiny_register / "init"
@@ -114,8 +114,8 @@ def test_git_registry_1(setup, teardown):
 
         assert "init" in metadata
         assert "generate" in metadata
-        assert "fancy_git_analytics" in metadata["init"]
-        assert "fancy_git_clustering" in metadata["generate"]
+        assert "analytics_git" in metadata["init"]
+        assert "mlclustering_git" in metadata["generate"]
 
         assert destiny_register.is_dir()
         assert destiny_init.is_dir()
@@ -129,8 +129,8 @@ def test_git_registry_1(setup, teardown):
         metadata = registry.get_metadata()
         assert "init" in metadata
         assert "generate" in metadata
-        assert "fancy_git_analytics" in metadata["init"]
-        assert "fancy_git_clustering" in metadata["generate"]
+        assert "analytics_git" in metadata["init"]
+        assert "mlclustering_git" in metadata["generate"]
 
         # TODO: Create sample git repository to make a more realistic test.
     finally:
@@ -167,7 +167,7 @@ def test_registry_collection_1(setup, teardown):
 
         metadata = registry.get_metadata()
 
-        assert "fancy_git_analytics" in metadata['init']
+        assert "analytics_git" in metadata['init']
         assert "sample_init" in metadata['init']
 
     finally:
