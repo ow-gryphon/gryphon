@@ -2,7 +2,6 @@
 Utility functions for the test suite.
 """
 
-import os
 from pathlib import Path
 import platform
 import shutil

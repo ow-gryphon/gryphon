@@ -4,6 +4,7 @@ the templates metadata into memory.
 """
 
 import os
+from pathlib import Path
 import json
 import glob
 from labskit_commands.logging import Logging
@@ -12,14 +13,14 @@ from labskit_commands.logging import Logging
 class TemplateRegistry:
     """Class that loads commands and metadata from the ./data folder."""
 
-    def __init__(self, templates_path):
+    def __init__(self, templates_path: Path):
         self.path = templates_path
 
         self.template_data = {}
 
         for command_name in ['add', 'generate', 'init']:
-            glob_pattern = os.path.join(self.path, command_name, "*")
-            folders = glob.glob(glob_pattern)
+            glob_pattern = self.path / command_name / "*"
+            folders = glob.glob(str(glob_pattern))
 
             if len(folders) == 0:
                 self.template_data[command_name] = {}
@@ -27,8 +28,8 @@ class TemplateRegistry:
 
             self.template_data[command_name] = {
                 os.path.basename(path): {
-                        "path": path,
-                        "metadata": self.load_metadata(path)
+                        "path": Path(path),
+                        "metadata": self.load_metadata(Path(path))
                     }
                 for path in folders
             }
@@ -41,10 +42,10 @@ class TemplateRegistry:
         raise NotImplementedError
 
     @staticmethod
-    def load_metadata(path):
+    def load_metadata(path: Path):
         """Loads the metadata file inside template folder."""
         try:
-            filename = os.path.join(path, "metadata.json")
+            filename = path / "metadata.json"
             with open(filename, encoding='UTF-8') as file:
                 return json.load(file)
         except FileNotFoundError:

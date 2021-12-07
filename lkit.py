@@ -2,15 +2,15 @@
 LKit .
 """
 import json
-from os import path
+from pathlib import Path
 import questionary
 import labskit_commands
 from labskit_commands import questions
 from labskit_commands.registry import RegistryCollection
 from labskit_commands.logging import Logging
 
-PACKAGE_PATH = path.dirname(path.realpath(__file__))
-DATA_PATH = path.join(PACKAGE_PATH, "labskit_commands", "data")
+PACKAGE_PATH = Path(__file__).parent
+DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
 
 
 def confirmation(message=None):
@@ -92,7 +92,7 @@ def init():
     )
 
 
-config_file = path.join(PACKAGE_PATH, "labskit_commands/data/labskit_config.json")
+config_file = PACKAGE_PATH / "labskit_commands" / "data" / "labskit_config.json"
 
 with open(config_file, "r") as f:
     settings = json.load(f)

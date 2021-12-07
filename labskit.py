@@ -11,7 +11,7 @@ from labskit_commands.registry import RegistryCollection
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-PACKAGE_PATH = Path(path.dirname(path.realpath(__file__)))
+PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
 
 
