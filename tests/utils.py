@@ -42,7 +42,7 @@ def create_folder_with_venv(folder_name, requirements=None):
     destination = get_destination_path(folder_name)
     shutil.copyfile(
         src=requirements,
-        dst=os.path.join(destination, "requirements.txt")
+        dst=destination / "requirements.txt"
     )
 
 
