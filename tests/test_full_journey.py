@@ -1,11 +1,10 @@
 import os
-from os import path
 import pytest
-
-TEST_FOLDER = os.path.abspath("")
 
 
 def test_full_journey_1(setup, teardown):
+
+    # TODO: create testes also for the ADD functionality
     file_name = "segmentation"
     project_folder = "project"
     cwd = setup()
@@ -14,11 +13,11 @@ def test_full_journey_1(setup, teardown):
         os.chdir(project_folder)
         os.system(f"labskit generate fancy_git_clustering {file_name}")
 
-        assert path.isdir(path.join(cwd, project_folder))
-        assert path.isdir(path.join(cwd, project_folder, "src"))
-        assert path.isdir(path.join(cwd, project_folder, "notebooks"))
-        assert path.isdir(path.join(cwd, project_folder, "tests"))
-        assert path.isfile(path.join(cwd, project_folder, "src", f"clustering_{file_name}.py"))
+        assert (cwd / project_folder).is_dir()
+        assert (cwd / project_folder / "src").is_dir()
+        assert (cwd / project_folder / "notebooks").is_dir()
+        assert (cwd / project_folder / "tests").is_dir()
+        assert (cwd / project_folder / "src" / f"clustering_{file_name}.py").is_file()
 
     except Exception as e:
         pytest.fail("Raised exception", e)

@@ -2,6 +2,7 @@
 Labskit CLI Main module.
 """
 from os import path
+from pathlib import Path
 import json
 import click
 import labskit_commands
@@ -10,8 +11,8 @@ from labskit_commands.registry import RegistryCollection
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-PACKAGE_PATH = path.dirname(path.realpath(__file__))
-DATA_PATH = path.join(PACKAGE_PATH, "labskit_commands", "data")
+PACKAGE_PATH = Path(path.dirname(path.realpath(__file__)))
+DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)

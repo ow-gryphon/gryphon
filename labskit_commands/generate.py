@@ -2,6 +2,7 @@
 Module containing the code for the generate command in then CLI.
 """
 import os
+from pathlib import Path
 import shutil
 import glob
 from labskit_commands.logging import Logging
@@ -15,10 +16,10 @@ from .command_operations import (
 # TODO: Think about how to give some help and examples about the commands
 
 
-PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
+PACKAGE_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 
 
-def generate(template_path: str, requirements: list, extra_parameters: dict):
+def generate(template_path: Path, requirements: list, extra_parameters: dict):
     """
     Generate command from the labskit CLI.
     """
@@ -63,7 +64,7 @@ def pattern_replacement(input_file, mapper):
         raise exception
 
 
-def parse_project_template(template_path, mapper, destination_folder=""):
+def parse_project_template(template_path: Path, mapper, destination_folder=None):
     """
     Function that copies the template to the selected folder
     and
@@ -81,11 +82,11 @@ def parse_project_template(template_path, mapper, destination_folder=""):
     )
 
     # Replace patterns and rename files
-    glob_pattern = os.path.join(temp_path, "**")
-    files = glob.glob(glob_pattern, recursive=True)
+    glob_pattern = temp_path / "**"
+    files = glob.glob(str(glob_pattern), recursive=True)
 
     for file in files:
-        is_folder = os.path.isdir(file)
+        is_folder = Path(file).is_dir()
         if is_folder:
             continue
         pattern_replacement(file, mapper)

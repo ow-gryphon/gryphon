@@ -82,7 +82,7 @@ def install_libraries(folder=None):
     Logging.log("Installation succeeded.", fg='green')
 
 
-def copy_project_template(template_source: str, template_destiny: str):
+def copy_project_template(template_source: Path, template_destiny: Path):
     """Copies the templates to destination folder."""
 
     template_path = template_source / "template"
@@ -95,7 +95,7 @@ def copy_project_template(template_source: str, template_destiny: str):
     )
 
 
-def init_new_git_repo(folder: os.path) -> git.Repo:
+def init_new_git_repo(folder: Path) -> git.Repo:
     """Init new git repository on folder."""
     return git.Repo.init(folder)
 
@@ -115,15 +115,15 @@ def append_requirement(library_name):
         file.write(f"\n{library_name}")
 
 
-def remove_folder(folder):
+def remove_folder(folder: Path):
     """
     Removes a folder (location relative to cwd or absolute).
     """
     shutil.rmtree(folder, ignore_errors=True)
 
 
-def create_folder(folder):
+def create_folder(folder: Path):
     """
     Create a folder in the given path (location relative to cwd or absolute).
     """
-    os.makedirs(folder, exist_ok=True)
+    folder.mkdir(exist_ok=True)

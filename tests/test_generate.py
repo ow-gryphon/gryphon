@@ -77,18 +77,18 @@ def test_generate_4(setup, teardown):
     parameter = "test"
 
     expected_files = [
-        path.join(cwd, "readme_mlclustering.md"),
-        path.join(cwd, "src", f"clustering_{parameter}.py"),
+        cwd / "readme_mlclustering.md",
+        cwd / "src" / f"clustering_{parameter}.py"
     ]
 
     try:
         parse_project_template(
-            template_path=path.join(TEST_FOLDER, "data", "mlclustering"),
+            template_path=TEST_FOLDER / "data" / "mlclustering",
             mapper={"fileName": parameter}
         )
 
         for file in expected_files:
-            assert path.isfile(file)
+            assert file.is_file()
 
     finally:
         teardown()
@@ -97,21 +97,21 @@ def test_generate_4(setup, teardown):
 def test_generate_5(setup, teardown, get_pip_libraries):
     try:
         file_name = "test"
-        _ = setup()
-        create_folder_with_venv(".")
-        libraries = get_pip_libraries()
+        cwd = setup()
+        create_folder_with_venv(cwd)
+        libraries = get_pip_libraries(cwd)
         assert "scipy" not in libraries
 
         generate(
-            template_path=path.join(TEST_FOLDER, "data", "mlclustering"),
+            template_path=TEST_FOLDER / "data" / "mlclustering",
             requirements=["scipy"],
             extra_parameters={"fileName": file_name}
         )
 
-        libraries = get_pip_libraries()
+        libraries = get_pip_libraries(cwd)
         assert "scipy" in libraries
-        assert path.isfile("readme_mlclustering.md")
-        assert path.isfile(path.join("src", f"clustering_{file_name}.py"))
+        assert (cwd / "readme_mlclustering.md").is_file()
+        assert (cwd / "src" / f"clustering_{file_name}.py").is_file()
 
     finally:
         teardown()

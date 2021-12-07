@@ -3,16 +3,15 @@ Utility functions for the test suite.
 """
 
 import os
-from os import path
+from pathlib import Path
 import platform
 import shutil
 from labskit_commands.command_operations import (
     create_venv,
-    get_destination_path,
-    escape_windows_path
+    get_destination_path
 )
 
-TEST_FOLDER = os.path.abspath("tests")
+TEST_FOLDER = Path("tests").resolve()
 VENV = ".venv"
 
 
@@ -23,21 +22,21 @@ def remove_folder(folder):
     shutil.rmtree(folder, ignore_errors=True)
 
 
-def create_folder(folder):
+def create_folder(folder: Path):
     """
     Create a folder in the given path (location relative to cwd or absolute).
     """
-    os.makedirs(folder, exist_ok=True)
+    folder.mkdir(exist_ok=True)
 
 
-def create_folder_with_venv(folder_name, requirements=None):
+def create_folder_with_venv(folder_name: Path = Path.cwd(), requirements=None):
     """
     Creates a folder, creates a venv inside it and copies a sample requirements.txt file.
     """
     create_folder(folder_name)
     create_venv(folder_name)
     if requirements is None:
-        requirements = os.path.join(get_data_folder(), "sample_requirements.txt")
+        requirements = get_data_folder() / "sample_requirements.txt"
 
     destination = get_destination_path(folder_name)
     shutil.copyfile(
@@ -46,29 +45,23 @@ def create_folder_with_venv(folder_name, requirements=None):
     )
 
 
-def get_data_folder():
-    return os.path.join(TEST_FOLDER, "data")
+def get_data_folder() -> Path:
+    return TEST_FOLDER / "data"
 
 
-def get_pip_path(base_folder=""):
+def get_pip_path(base_folder=Path.cwd()):
     if platform.system() == "Windows":
         # On windows the venv folder structure is different from unix
-        pip_path = path.join(base_folder, VENV, "Scripts", "pip")
-        pip_path = escape_windows_path(pip_path)
+        pip_path = base_folder / VENV / "Scripts" / "pip.exe"
     else:
-        pip_path = path.join(base_folder, VENV, "bin", "pip")
+        pip_path = base_folder / VENV / "bin" / "pip"
 
     return pip_path
 
 
-def get_requirements_path(base_folder):
-    requirements_path = path.join(base_folder, "requirements.txt")
-
-    if platform.system() == "Windows":
-        requirements_path = escape_windows_path(requirements_path)
-
-    return requirements_path
+def get_requirements_path(base_folder: Path):
+    return base_folder / "requirements.txt"
 
 
-def get_venv_path(base_folder):
-    return path.join(base_folder, VENV)
+def get_venv_path(base_folder: Path) -> Path:
+    return base_folder / VENV

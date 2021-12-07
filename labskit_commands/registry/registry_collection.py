@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import List
 from labskit_commands import registry
 from labskit_commands.logging import Logging
@@ -30,7 +31,7 @@ class RegistryCollection:
         return self.metadata
 
     @classmethod
-    def from_config_file(cls, settings, data_path):
+    def from_config_file(cls, settings, data_path: Path):
 
         local_registry = settings.get("local_registry", {})
         git_registry = settings.get("git_registry", {})
@@ -48,7 +49,8 @@ class RegistryCollection:
 
         # local ones
         for name, path in local_registry.items():
-            if not os.path.isdir(path):
+            path = Path(path)
+            if not path.is_dir():
                 Logging.warn(f"Local template registry \"{path}\" was not found.")
                 continue
 

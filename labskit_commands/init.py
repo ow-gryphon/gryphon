@@ -2,6 +2,7 @@
 Module containing the code for the add command in then CLI.
 """
 import os
+from pathlib import Path
 from .command_operations import (
     install_libraries,
     copy_project_template,
@@ -23,8 +24,8 @@ def init(template_path, location, **kwargs):
 
     Logging.log(f"initializing project at {location}")
     copy_project_template(
-        template_destiny=location,
-        template_source=template_path
+        template_destiny=Path(location),
+        template_source=Path(template_path)
     )
     populate_rc_file(folder=location)
     create_venv(folder=location)

@@ -1,14 +1,14 @@
-from os import path
+from pathlib import Path
 import git
 from .template_registry import TemplateRegistry
 
 
 class GitRegistry(TemplateRegistry):
 
-    def __init__(self, registry_name: str, registry_url: str, registry_folder: str):
-        self.registry_folder = path.join(registry_folder, registry_name)
+    def __init__(self, registry_name: str, registry_url: str, registry_folder: Path):
+        self.registry_folder = registry_folder / registry_name
 
-        if not path.isdir(self.registry_folder):
+        if not self.registry_folder.is_dir():
             if registry_url != "":
                 self.repository = git.Repo.clone_from(
                     url=registry_url,

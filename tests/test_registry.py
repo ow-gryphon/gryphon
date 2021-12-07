@@ -1,4 +1,3 @@
-from os import path
 import pytest
 from .utils import TEST_FOLDER
 from labskit_commands.registry import \
@@ -10,7 +9,7 @@ TEST_REPO = "https://github.com/vittorfp/template_registry.git"
 
 
 def test_template_registry_1():
-    registry_path = path.join(TEST_FOLDER, "data", "ok_registry")
+    registry_path = TEST_FOLDER / "data" / "ok_registry"
     registry = TemplateRegistry(templates_path=registry_path)
 
     metadata = registry.get_metadata()
@@ -21,7 +20,7 @@ def test_template_registry_1():
 
 
 def test_template_registry_2(capsys):
-    registry_path = path.join(TEST_FOLDER, "data", "no_metadata_registry")
+    registry_path = TEST_FOLDER / "data" / "no_metadata_registry"
 
     registry = TemplateRegistry(templates_path=registry_path)
     registry.get_metadata()
@@ -32,7 +31,7 @@ def test_template_registry_2(capsys):
 
 
 def test_template_registry_3(capsys):
-    registry_path = path.join(TEST_FOLDER, "data", "wrong_json_registry")
+    registry_path = TEST_FOLDER / "data" / "wrong_json_registry"
 
     registry = TemplateRegistry(templates_path=registry_path)
     registry.get_metadata()
@@ -43,7 +42,7 @@ def test_template_registry_3(capsys):
 
 
 def test_template_registry_4():
-    registry_path = path.join(TEST_FOLDER, "data", "ok_registry")
+    registry_path = TEST_FOLDER / "data" / "ok_registry"
 
     registry = TemplateRegistry(templates_path=registry_path)
 
@@ -54,7 +53,7 @@ def test_template_registry_4():
 def test_local_registry_1(setup, teardown):
     cwd = setup()
     registry_name = "ok_registry"
-    data_folder = path.join(TEST_FOLDER, "data", registry_name)
+    data_folder = TEST_FOLDER / "data" / registry_name
     try:
         registry = LocalRegistry(
             registry_origin=data_folder,
@@ -68,19 +67,19 @@ def test_local_registry_1(setup, teardown):
         assert "sample_init" in metadata["init"]
         assert "sample_generate" in metadata["generate"]
 
-        destiny_register = path.join(cwd, registry_name)
-        destiny_init = path.join(destiny_register, "init")
-        destiny_generate = path.join(destiny_register, "generate")
+        destiny_register = cwd / registry_name
+        destiny_init = destiny_register / "init"
+        destiny_generate = destiny_register / "generate"
 
-        assert path.isdir(destiny_register)
-        assert path.isdir(destiny_init)
-        assert path.isdir(destiny_generate)
+        assert destiny_register.is_dir()
+        assert destiny_init.is_dir()
+        assert destiny_generate.is_dir()
 
         registry.update_registry()
 
-        assert path.isdir(destiny_register)
-        assert path.isdir(destiny_init)
-        assert path.isdir(destiny_generate)
+        assert destiny_register.is_dir()
+        assert destiny_init.is_dir()
+        assert destiny_generate.is_dir()
 
     finally:
         teardown()
@@ -102,13 +101,13 @@ def test_git_registry_1(setup, teardown):
         assert "fancy_git_analytics" in metadata["init"]
         assert "fancy_git_clustering" in metadata["generate"]
 
-        destiny_register = path.join(cwd, registry_name)
-        destiny_init = path.join(destiny_register, "init")
-        destiny_generate = path.join(destiny_register, "generate")
+        destiny_register = cwd / registry_name
+        destiny_init = destiny_register / "init"
+        destiny_generate = destiny_register / "generate"
 
-        assert path.isdir(destiny_register)
-        assert path.isdir(destiny_init)
-        assert path.isdir(destiny_generate)
+        assert destiny_register.is_dir()
+        assert destiny_init.is_dir()
+        assert destiny_generate.is_dir()
 
         registry.update_registry()
         metadata = registry.get_metadata()
@@ -118,9 +117,9 @@ def test_git_registry_1(setup, teardown):
         assert "fancy_git_analytics" in metadata["init"]
         assert "fancy_git_clustering" in metadata["generate"]
 
-        assert path.isdir(destiny_register)
-        assert path.isdir(destiny_init)
-        assert path.isdir(destiny_generate)
+        assert destiny_register.is_dir()
+        assert destiny_init.is_dir()
+        assert destiny_generate.is_dir()
 
         registry = GitRegistry(
             registry_url=TEST_REPO,
@@ -147,24 +146,24 @@ def test_registry_collection_1(setup, teardown):
                 "ow-private": ""
             },
             "local_registry": {
-                "default_registry": path.join(TEST_FOLDER, "data", "ok_registry")
+                "default_registry": TEST_FOLDER / "data" / "ok_registry"
             }
         }
         registry = RegistryCollection.from_config_file(configurations, cwd)
 
-        git_registry = path.join(cwd, "open-source")
-        local_registry = path.join(cwd, "default_registry")
-        git_registry_init = path.join(git_registry, "init")
-        git_registry_generate = path.join(git_registry, "generate")
-        local_registry_init = path.join(local_registry, "init")
-        local_registry_generate = path.join(local_registry, "generate")
+        git_registry = cwd / "open-source"
+        local_registry = cwd / "default_registry"
+        git_registry_init = git_registry / "init"
+        git_registry_generate = git_registry / "generate"
+        local_registry_init = local_registry / "init"
+        local_registry_generate = local_registry / "generate"
 
-        assert path.isdir(git_registry)
-        assert path.isdir(local_registry)
-        assert path.isdir(git_registry_init)
-        assert path.isdir(git_registry_generate)
-        assert path.isdir(local_registry_init)
-        assert path.isdir(local_registry_generate)
+        assert git_registry.is_dir()
+        assert local_registry.is_dir()
+        assert git_registry_init.is_dir()
+        assert git_registry_generate.is_dir()
+        assert local_registry_init.is_dir()
+        assert local_registry_generate.is_dir()
 
         metadata = registry.get_metadata()
 
@@ -180,8 +179,8 @@ def test_registry_collection_2(setup, teardown):
     try:
         configurations = {
             "local_registry": {
-                "default_registry": path.join(TEST_FOLDER, "data", "ok_registry"),
-                "registry_2": path.join(TEST_FOLDER, "data", "ok_registry")
+                "default_registry": TEST_FOLDER / "data" / "ok_registry",
+                "registry_2": TEST_FOLDER / "data" / "ok_registry"
             }
         }
         with pytest.raises(ValueError):

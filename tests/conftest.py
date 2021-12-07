@@ -1,23 +1,24 @@
 import os
+from pathlib import Path
 from os import path
 import glob
 import pytest
+from typing import List
 from .utils import (
     remove_folder,
     create_folder,
     get_data_folder,
-    get_pip_path,
     get_venv_path
 )
 
-INIT_PATH = os.getcwd()
-SANDBOX_PATH = os.path.abspath("sandbox")
+INIT_PATH = Path.cwd()
+SANDBOX_PATH = Path("sandbox").resolve()
 
 
 @pytest.fixture
-def setup():
+def setup() -> callable:
 
-    def _setup():
+    def _setup() -> Path:
         remove_folder(SANDBOX_PATH)
         create_folder(SANDBOX_PATH)
         os.chdir(SANDBOX_PATH)
@@ -26,7 +27,7 @@ def setup():
 
 
 @pytest.fixture
-def teardown():
+def teardown() -> callable:
 
     def _teardown():
         os.chdir(INIT_PATH)
@@ -36,13 +37,13 @@ def teardown():
 
 
 @pytest.fixture
-def get_pip_libraries():
+def get_pip_libraries() -> callable:
 
-    def _get_libraries(folder=""):
+    def _get_libraries(folder=Path.cwd()) -> List[str]:
         venv_path = get_venv_path(base_folder=folder)
 
-        glob_pattern = path.join(venv_path, "lib*", "python*", "site-packages", "*")
-        lib_folders = glob.glob(glob_pattern)
+        glob_pattern = venv_path / "lib*" / "python*" / "site-packages" / "*"
+        lib_folders = glob.glob(str(glob_pattern))
         libs = list(map(path.basename, lib_folders))
 
         return libs
@@ -51,5 +52,5 @@ def get_pip_libraries():
 
 
 @pytest.fixture
-def data_folder():
+def data_folder() -> Path:
     return get_data_folder()

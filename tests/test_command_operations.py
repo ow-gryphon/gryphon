@@ -2,6 +2,7 @@
 Module containing tests about the functions in the file command_operations.py
 """
 import os
+from pathlib import Path
 from os import path
 import shutil
 import subprocess
@@ -64,12 +65,15 @@ def test_install_libraries_1(setup, teardown, get_pip_libraries):
 
     create_folder_with_venv(cwd)
     try:
+
+        libs = get_pip_libraries(cwd)
+        assert "numpy" not in libs
+
         install_libraries(cwd)
         venv_path = get_venv_path(cwd)
-        assert path.isdir(venv_path)
+        assert venv_path.is_dir()
 
-        libs = get_pip_libraries()
-        assert "pandas" in libs
+        libs = get_pip_libraries(cwd)
         assert "numpy" in libs
 
     finally:
@@ -96,17 +100,17 @@ def test_copy_project_template(setup, teardown):
     """
     Tests if the template folder is being properly copied.
     """
-    pwd = setup()
+    pwd = Path(setup())
 
     copy_project_template(
-        template_source=path.join(TEST_FOLDER, "data", "trivial"),
+        template_source=Path(TEST_FOLDER) / "data" / "trivial",
         template_destiny=pwd
     )
 
     try:
-        assert path.isdir(pwd)
-        assert path.isfile(path.join(pwd, "requirements.txt"))
-        assert path.isfile(path.join(pwd, "sample_template"))
+        assert pwd.is_dir()
+        assert (pwd / "requirements.txt").is_file()
+        assert (pwd / "sample_template").is_file()
 
     finally:
         teardown()
