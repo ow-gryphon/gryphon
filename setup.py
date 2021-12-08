@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 
 package_files = [
-    Path.cwd() / '/labskit_commands' / 'data' / 'labskit_config.json'
+    str(Path.cwd() / '/labskit_commands' / 'data' / 'labskit_config.json')
 ]
 
 with open("README.md", "r", encoding="utf-8") as fh:
