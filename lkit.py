@@ -13,80 +13,62 @@ PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
 
 
-def confirmation(message=None):
-    message = "Confirm to proceed with the actions from above?" if message is None else message
-    go_ahead = questionary.confirm(message=message).ask()
-
-    if not go_ahead:
-        Logging.log("Operation cancelled.")
-        exit(1)
-
-
 def add():
     """add templates based on arguments and configurations."""
 
-    response = questionary.prompt(questions.add)['library_name']
+    library_name = questionary.prompt(questions.add)['library_name']
 
-    confirmation(f"Confirm that you want to install the \"{response}\" library to the current project.")
+    questions.confirm_add(library_name)
 
     labskit_commands.add(
-        library_name=response
+        library_name=library_name
     )
 
 
 def generate():
     """generates templates based on arguments and configurations."""
 
-    metadata = commands.get_metadata()["generate"]
+    templates = commands.get_templates("generate")
+    template_name = questions.ask_which_template(templates, command="generate")
 
-    questions_1 = questions.generate_1(metadata)
-    responses = questionary.prompt(questions_1)
+    template = templates[template_name]
 
-    template = responses['template']
-    template_metadata = metadata[template]["metadata"]
-    template_path = metadata[template]["path"]
+    extra_parameters = questions.ask_extra_arguments(
+        template.arguments,
+        command="generate"
+    )
 
-    extra_questions = questions.generate_2(template_metadata)
-    extra_parameters = questionary.prompt(extra_questions)
-
-    confirmation(f"Confirm that you want to render the \"{template}\" template inside the current project."
-                 f"\nUsing the following arguments: {extra_parameters}")
-
+    questions.confirm_generate(
+        template_name=template_name,
+        **extra_parameters
+    )
+    print(extra_parameters)
     labskit_commands.generate(
-        template_path=template_path,
-        extra_parameters=extra_parameters,
-        requirements=template_metadata.get("dependencies")
+        template_path=template.path,
+        requirements=template.dependencies,
+        **extra_parameters,
     )
 
 
 def init():
     """Creates a starter repository for analytics projects."""
-    metadata = commands.get_metadata()["init"]
+    templates = commands.get_templates("init")
+    template_name, location = questions.ask_which_template(templates)
 
-    base_questions = questions.init_1(metadata.keys())
-    responses = questionary.prompt(base_questions)
+    template = templates[template_name]
+    extra_parameters = questions.ask_extra_arguments(
+        arguments=template.arguments,
+        command="init"
+    )
 
-    template = responses['template']
-    location = responses['location']
-
-    template_metadata = metadata[template]["metadata"]
-    template_path = metadata[template]["path"]
-    arguments = template_metadata.get("arguments", [])
-
-    extra_questions = questions.init_2(arguments)
-    extra_parameters = questionary.prompt(extra_questions)
-
-    message = f"\n\nConfirm that you want to start a new \"{template}\" project" \
-              f"\nInside the folder \"{location}\""
-
-    confirmation(
-        message + f"\nUsing the following arguments: {extra_parameters}"
-        if extra_parameters else
-        message
+    questions.confirm_init(
+        template_name=template.name,
+        location=template.path,
+        **extra_parameters
     )
 
     labskit_commands.init(
-        template_path=template_path,
+        template_path=template.path,
         location=location,
         **extra_parameters
     )
@@ -105,7 +87,8 @@ with open(config_file, "r") as f:
 
 def main():
 
-    command_question = questions.main_questions(commands.get_metadata().keys())
+    possible_commands = ["init", "generate", "add"]
+    command_question = questions.main_questions(possible_commands)
 
     try:
         response = questionary.prompt(command_question)['command']

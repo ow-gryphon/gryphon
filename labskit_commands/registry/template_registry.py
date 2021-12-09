@@ -8,6 +8,7 @@ from pathlib import Path
 import json
 import glob
 from labskit_commands.logging import Logging
+from .template import Template
 
 
 class TemplateRegistry:
@@ -27,16 +28,21 @@ class TemplateRegistry:
                 continue
 
             self.template_data[command_name] = {
-                os.path.basename(path): {
-                        "path": Path(path),
-                        "metadata": self.load_metadata(Path(path))
-                    }
+                os.path.basename(path): Template(
+                    template_name=os.path.basename(path),
+                    template_path=Path(path),
+                    template_metadata=self.load_metadata(Path(path))
+                )
                 for path in folders
             }
 
-    def get_metadata(self):
+    def get_templates(self, command=None):
         """Returns the template metadata."""
-        return self.template_data
+        if command is None:
+            return self.template_data
+
+        assert command in ['add', 'generate', 'init']
+        return self.template_data[command]
 
     def update_registry(self):
         raise NotImplementedError

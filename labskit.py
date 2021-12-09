@@ -31,14 +31,14 @@ def add(library_name):
 @click.argument('extra', nargs=-1)
 def generate(template, extra):
     """generates templates based on arguments and configurations."""
-    generate_metadata = commands.get_metadata()["generate"]
-    extra = helpers.validate_parameters(extra, template, generate_metadata)
-    template_path = generate_metadata[template]["path"]
+    existing_templates = commands.get_templates(command="generate")
+    extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
+    template = existing_templates[template]
 
     labskit_commands.generate(
-        template_path,
-        metadata.get("dependencies", []),
-        extra_parameters=extra
+        template_path=template.path,
+        requirements=template.dependencies,
+        **extra_parameters
     )
 
 
@@ -47,11 +47,12 @@ def generate(template, extra):
 @click.argument('extra', nargs=-1)
 def init(template, location, extra):
     """Creates a starter repository for analytics projects."""
-    extra_parameters = helpers.validate_parameters(extra, template, commands.get_metadata()["init"])
+    existing_templates = commands.get_templates(command="init")
+    extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
 
-    template_path = commands.get_metadata()["init"][template]["path"]
+    template = existing_templates[template]
     labskit_commands.init(
-        template_path=template_path,
+        template_path=template.path,
         location=location,
         **extra_parameters
     )
@@ -72,10 +73,10 @@ with open(config_file, "r") as f:
 # Extends each of the command docstrings
 for name, function in functions.items():
 
-    metadata = commands.get_metadata()[name]
+    templates = commands.get_templates()[name]
 
     # Add command specific help
-    function.__doc__ += helpers.get_command_help(metadata)
+    function.__doc__ += helpers.get_command_help(templates)
 
     # Generates the CLICK command (used to be a decorator)
     cli.command()(function)

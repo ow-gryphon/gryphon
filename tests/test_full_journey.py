@@ -9,9 +9,9 @@ def test_full_journey_1(setup, teardown):
     project_folder = "project"
     cwd = setup()
     try:
-        os.system(f"labskit init fancy_git_analytics {project_folder}")
+        os.system(f"labskit init analytics_git {project_folder}")
         os.chdir(project_folder)
-        os.system(f"labskit generate fancy_git_clustering {file_name}")
+        os.system(f"labskit generate mlclustering_git {file_name}")
 
         assert (cwd / project_folder).is_dir()
         assert (cwd / project_folder / "src").is_dir()

@@ -5,7 +5,8 @@ import click
 
 class Logging:
     def __init__(self):
-        pass
+        # Class created just to provide namespace to the methods
+        return
 
     @staticmethod
     def log(message, **kwargs):

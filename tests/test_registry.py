@@ -12,7 +12,7 @@ def test_template_registry_1():
     registry_path = TEST_FOLDER / "data" / "ok_registry"
     registry = TemplateRegistry(templates_path=registry_path)
 
-    metadata = registry.get_metadata()
+    metadata = registry.get_templates()
     assert "init" in metadata
     assert "generate" in metadata
     assert "sample_init" in metadata["init"]
@@ -23,7 +23,7 @@ def test_template_registry_2(capsys):
     registry_path = TEST_FOLDER / "data" / "no_metadata_registry"
 
     registry = TemplateRegistry(templates_path=registry_path)
-    registry.get_metadata()
+    registry.get_templates()
 
     captured = capsys.readouterr()
     assert "WARNING" in captured.out
@@ -34,7 +34,7 @@ def test_template_registry_3(capsys):
     registry_path = TEST_FOLDER / "data" / "wrong_json_registry"
 
     registry = TemplateRegistry(templates_path=registry_path)
-    registry.get_metadata()
+    registry.get_templates()
 
     captured = capsys.readouterr()
     assert "WARNING" in captured.out
@@ -61,7 +61,7 @@ def test_local_registry_1(setup, teardown):
             registry_folder=cwd
         )
 
-        metadata = registry.get_metadata()
+        metadata = registry.get_templates()
         assert "init" in metadata
         assert "generate" in metadata
         assert "sample_init" in metadata["init"]
@@ -95,7 +95,7 @@ def test_git_registry_1(setup, teardown):
             registry_folder=cwd,
             registry_name=registry_name
         )
-        metadata = registry.get_metadata()
+        metadata = registry.get_templates()
         assert "init" in metadata
         assert "generate" in metadata
         assert "analytics_git" in metadata["init"]
@@ -110,7 +110,7 @@ def test_git_registry_1(setup, teardown):
         assert destiny_generate.is_dir()
 
         registry.update_registry()
-        metadata = registry.get_metadata()
+        metadata = registry.get_templates()
 
         assert "init" in metadata
         assert "generate" in metadata
@@ -126,7 +126,7 @@ def test_git_registry_1(setup, teardown):
             registry_folder=cwd,
             registry_name=registry_name
         )
-        metadata = registry.get_metadata()
+        metadata = registry.get_templates()
         assert "init" in metadata
         assert "generate" in metadata
         assert "analytics_git" in metadata["init"]
@@ -165,7 +165,7 @@ def test_registry_collection_1(setup, teardown):
         assert local_registry_init.is_dir()
         assert local_registry_generate.is_dir()
 
-        metadata = registry.get_metadata()
+        metadata = registry.get_templates()
 
         assert "analytics_git" in metadata['init']
         assert "sample_init" in metadata['init']

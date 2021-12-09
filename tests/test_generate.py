@@ -105,7 +105,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         generate(
             template_path=TEST_FOLDER / "data" / "mlclustering",
             requirements=["scipy"],
-            extra_parameters={"fileName": file_name}
+            **{"fileName": file_name}
         )
 
         libraries = get_pip_libraries(cwd)

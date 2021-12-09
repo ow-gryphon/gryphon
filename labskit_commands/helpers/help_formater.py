@@ -1,9 +1,11 @@
 """
 Help text generation.
 """
+from typing import Dict
+from labskit_commands.registry import Template
 
 
-def get_command_help(metadata):
+def get_command_help(templates: Dict[str, Template]):
     """
     Gets a complete help string about the command.
     """
@@ -11,13 +13,13 @@ def get_command_help(metadata):
     \bEXTRA PARAMETERS
     """
 
-    for name, command in metadata.items():
-        help_string += get_template_help(name, command)
+    for name, template in templates.items():
+        help_string += get_template_help(name, template)
 
     return help_string.replace('\n', '\n\n')
 
 
-def get_template_help(template_name, metadata):
+def get_template_help(template_name: str, template: Template):
     """
     Gets help string about the needed parameters to the given template.
     """
@@ -27,9 +29,7 @@ def get_template_help(template_name, metadata):
     help_string = f"""\n
     TEMPLATE={template_name}
     """
-    try:
-        arguments = metadata['metadata']["arguments"]
-    except KeyError:
+    if not len(template.arguments):
         return help_string + "\n\tNo additional parameters."
 
     args = [
@@ -37,7 +37,7 @@ def get_template_help(template_name, metadata):
         {arg["name"]} - {arg.get("help", "")}
             type: {arg["type"]}
             required: {arg["required"]}"""
-        for arg in arguments
+        for arg in template.arguments
     ]
 
     help_string += l_b.join(args)

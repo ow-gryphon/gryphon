@@ -1,31 +1,31 @@
 """
 Module containing utilities to validate the extra parameters given in CLI.
 """
+from typing import Dict
+from labskit_commands.registry import Template
 from labskit_commands.logging import Logging
 from .help_formater import get_template_help, get_command_help
 
 
-def validate_parameters(parameters, template_type, metadata):
+def validate_parameters(parameters, template_name: str, existing_templates: Dict[str, Template]):
 
     try:
-        assert template_type in metadata
+        assert template_name in existing_templates
     except AssertionError:
-        message = f"Template \"{template_type}\" not found."
-        Logging.log(get_command_help(metadata))
+        message = f"Template \"{template_name}\" not found."
+        Logging.log(get_command_help(existing_templates))
         raise RuntimeError(message)
 
-    argument_metadata = metadata[template_type]['metadata']
+    template = existing_templates[template_name]
 
-    try:
-        argument_metadata = argument_metadata['arguments']
-    except KeyError:
+    if not len(template.arguments):
         return {}
 
-    num_required_parameters = sum(map(lambda x: x.get("required", False), argument_metadata))
+    num_required_parameters = sum(map(lambda x: x.get("required", False), template.arguments))
     num_given_parameters = len(parameters)
 
     if not num_given_parameters >= num_required_parameters:
-        message = get_template_help(template_type, metadata[template_type])
+        message = get_template_help(template_name, template)
         difference = num_required_parameters - num_given_parameters
         Logging.log(message)
 
@@ -38,9 +38,9 @@ def validate_parameters(parameters, template_type, metadata):
     if num_given_parameters == num_required_parameters:
         return {
             field["name"]: parameters[index]
-            for index, field in enumerate(argument_metadata)
+            for index, field in enumerate(template.arguments)
         }
 
-    for field in metadata:
+    for field in template.arguments:
         if field.get("required", False):
             assert field["name"] in parameters

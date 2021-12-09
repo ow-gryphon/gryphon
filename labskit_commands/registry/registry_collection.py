@@ -12,11 +12,12 @@ class RegistryCollection:
         full_metadata = {}
         for reg in self.registry_list:
 
-            metadata = reg.get_metadata()
+            metadata = reg.get_templates()
 
             for command in metadata.keys():
                 full_metadata.setdefault(command, {})
                 command_metadata = metadata[command]
+                # full_metadata[command].extend(command_metadata)
 
                 for template in command_metadata.keys():
                     if template in full_metadata[command].keys():
@@ -25,10 +26,15 @@ class RegistryCollection:
 
                     full_metadata[command][template] = metadata[command][template]
 
-        self.metadata = full_metadata
+        self.template_data = full_metadata
 
-    def get_metadata(self):
-        return self.metadata
+    def get_templates(self, command=None):
+        """Returns the template metadata."""
+        if command is None:
+            return self.template_data
+
+        assert command in ['add', 'generate', 'init']
+        return self.template_data[command]
 
     @classmethod
     def from_config_file(cls, settings, data_path: Path):
