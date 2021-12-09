@@ -127,3 +127,10 @@ def create_folder(folder: Path):
     Create a folder in the given path (location relative to cwd or absolute).
     """
     folder.mkdir(exist_ok=True)
+
+
+def populate_rc_file(folder):
+    """
+    Updates the needed options inside the .labskitrc file.
+    """
+    # TODO: Create .labskitrc and populate it accordingly

@@ -64,11 +64,11 @@ functions = {
     # "add": add
 }
 
-config_file = path.join(PACKAGE_PATH, "labskit_commands", "data", "labskit_config.json")
+config_file = path.join(DATA_PATH / "labskit_config.json")
 
 with open(config_file, "r") as f:
     settings = json.load(f)
-    commands = RegistryCollection.from_config_file(settings, DATA_PATH)
+    commands = RegistryCollection.from_config_file(settings, DATA_PATH / "template_registry")
 
 # Extends each of the command docstrings
 for name, function in functions.items():

@@ -102,10 +102,3 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         dirs_exist_ok=True
     )
     shutil.rmtree(temp_path)
-
-
-def populate_rc_file():
-    """
-    Updates the needed options inside the .labskitrc file.
-    """
-    # TODO: Create .labskitrc and populate it accordingly

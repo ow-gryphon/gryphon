@@ -1,0 +1,7 @@
+{
+      "data visualization": ["matplotlib", "seaborn", "plotly"],
+      "data wrangling": ["numpy", "pandas"],
+      "machine learning": ["scikit-learn"],
+      "mathematical computing": ["scipy", "statsmodels"],
+      "neural networks": ["tensorflow", "pytorch"]
+}
