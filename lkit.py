@@ -39,7 +39,7 @@ def add():
     else:
         library_name = questions.get_lib(lib_tree[chosen_category])
 
-        if chosen_category == "type":
+        if library_name == "type":
             library_name = questions.get_lib_via_keyboard()
 
     questions.confirm_add(library_name)
@@ -66,7 +66,7 @@ def generate():
         template_name=template_name,
         **extra_parameters
     )
-    print(extra_parameters)
+
     labskit_commands.generate(
         template_path=template.path,
         requirements=template.dependencies,
@@ -87,7 +87,7 @@ def init():
 
     questions.confirm_init(
         template_name=template.name,
-        location=template.path,
+        location=location,
         **extra_parameters
     )
 

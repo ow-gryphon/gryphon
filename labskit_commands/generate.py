@@ -23,7 +23,6 @@ def generate(template_path: Path, requirements: list, **kwargs):
     """
     Generate command from the labskit CLI.
     """
-    print(kwargs)
     Logging.log("Generating template.", fg='green')
     parse_project_template(template_path, kwargs)
 
@@ -37,7 +36,6 @@ def pattern_replacement(input_file, mapper):
     Function that takes an input file name and replaces the handlebars according
     to the values present in the mapper dictionary.
     """
-    print(mapper)
     output_file = input_file.replace(".handlebars", "")
     for before, after in mapper.items():
         output_file = output_file.replace(before.lower(), after)
@@ -68,8 +66,8 @@ def pattern_replacement(input_file, mapper):
 
 def parse_project_template(template_path: Path, mapper, destination_folder=None):
     """
-    Function that copies the template to the selected folder
-    and
+    Routine that copies the template to the selected folder
+    and replaces patterns.
     """
 
     temp_path = get_destination_path(f"temp_template")

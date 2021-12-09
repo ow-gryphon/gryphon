@@ -111,8 +111,27 @@ def append_requirement(library_name):
 
     current_path = get_destination_path()
     requirements_path = current_path / "requirements.txt"
-    with open(requirements_path, "a", encoding='UTF-8') as file:
-        file.write(f"\n{library_name}")
+    with open(requirements_path, "r", encoding='UTF-8') as file:
+        requirements = file.read()
+
+    if library_name not in requirements:
+        with open(requirements_path, "a", encoding='UTF-8') as file:
+            file.write(f"\n{library_name}")
+
+
+def rollback_append_requirement(library_name):
+    current_path = get_destination_path()
+    requirements_path = current_path / "requirements.txt"
+
+    with open(requirements_path, "r", encoding='UTF-8') as file:
+        requirements = file.read()
+
+    requirements_list = requirements.split('\n')
+    last_requirement_added = requirements_list[-1]
+
+    if library_name == last_requirement_added:
+        with open(requirements_path, "w", encoding='UTF-8') as file:
+            file.write('\n'.join(requirements_list[:-1]))
 
 
 def remove_folder(folder: Path):
