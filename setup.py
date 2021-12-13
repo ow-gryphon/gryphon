@@ -8,7 +8,6 @@ package_files = [
     str(Path('data') / 'labskit_config.json'),
     str(Path('data') / 'lib_category_tree.json')
 ]
-print(package_files)
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

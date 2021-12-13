@@ -8,3 +8,4 @@ class Template:
 
         self.arguments = template_metadata.get("arguments", [])
         self.dependencies = template_metadata.get("dependencies", [])
+        self.display_name = template_metadata.get("display_name", self.name)

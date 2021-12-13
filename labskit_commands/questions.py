@@ -99,7 +99,13 @@ def main_question():
 
 @base_question
 def ask_which_template(metadata, command="init"):
-    options = list(metadata.keys())
+    options = [
+        Choice(
+            title=template.display_name,
+            value=name
+        )
+        for name, template in metadata.items()
+    ]
     options.append(get_back_choice())
 
     if command == "generate":

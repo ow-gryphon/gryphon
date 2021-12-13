@@ -86,7 +86,7 @@ def generate():
     )
 
     questions.confirm_generate(
-        template_name=template_name,
+        template_name=template.display_name,
         **extra_parameters
     )
 
@@ -113,7 +113,7 @@ def init():
     )
 
     questions.confirm_init(
-        template_name=template.name,
+        template_name=template.display_name,
         location=location,
         **extra_parameters
     )
@@ -144,7 +144,7 @@ def main():
             "init": init,
             "generate": generate,
             "add": add,
-            "about": lambda _: print("Help and contacts"),
+            "about": lambda: print("Help and contacts"),
             "quit": exit
             # TODO: Create "About" command having bug report functionalities and contacts.
         }[chosen_command]
