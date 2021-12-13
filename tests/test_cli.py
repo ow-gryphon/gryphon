@@ -56,7 +56,7 @@ def wizard_generate(file_name):
     child.sendcontrol('m')
     child.expect('mlclustering_git')
     child.sendcontrol('m')
-    child.expect('Name of the file')
+    child.expect('name of the file')
     child.send(file_name)
     child.sendcontrol('m')
     child.expect('Confirm that you want')

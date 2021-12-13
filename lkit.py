@@ -26,6 +26,11 @@ except Exception as e:
     exit(1)
 
 
+def erase_lines(n_lines=2):
+    for _ in range(n_lines):
+        print("\033[A                             \033[A")
+
+
 def add():
     """add templates based on arguments and configurations."""
     with open(DATA_PATH / "lib_category_tree.json") as file:
@@ -33,14 +38,28 @@ def add():
 
     categories = list(lib_tree.keys())
 
-    chosen_category = questions.get_lib_category(categories)
-    if chosen_category == "type":
-        library_name = questions.get_lib_via_keyboard()
-    else:
+    # loop to return to the category prompt
+    while True:
+        chosen_category = questions.get_lib_category(categories)
+
+        # type the bare lib name
+        if chosen_category == "type":
+            library_name = questions.get_lib_via_keyboard()
+            break
+        elif chosen_category == "back":
+            # return to the main menu
+            erase_lines()
+            return "back"
+
         library_name = questions.get_lib(lib_tree[chosen_category])
 
         if library_name == "type":
             library_name = questions.get_lib_via_keyboard()
+            break
+        elif library_name == "back":
+            erase_lines()
+        else:
+            break
 
     questions.confirm_add(library_name)
 
@@ -54,6 +73,10 @@ def generate():
 
     templates = commands.get_templates("generate")
     template_name = questions.ask_which_template(templates, command="generate")
+
+    if template_name == "back":
+        erase_lines()
+        return "back"
 
     template = templates[template_name]
 
@@ -78,6 +101,10 @@ def init():
     """Creates a starter repository for analytics projects."""
     templates = commands.get_templates("init")
     template_name, location = questions.ask_which_template(templates)
+
+    if template_name == "back":
+        erase_lines()
+        return "back"
 
     template = templates[template_name]
     extra_parameters = questions.ask_extra_arguments(
@@ -109,18 +136,24 @@ def main():
     Welcome to Griffin your data and analytics toolkit!
     (press ctrl+C at any time to quit)
     """)
-    chosen_command = questions.main_question()
 
-    function = {
-        "init": init,
-        "generate": generate,
-        "add": add
-    }[chosen_command]
-    try:
-        function()
-    except Exception as er:
-        Logging.error(f'Runtime error. {er}')
-        exit(1)
+    while True:
+        chosen_command = questions.main_question()
+
+        function = {
+            "init": init,
+            "generate": generate,
+            "add": add,
+            "quit": exit
+        }[chosen_command]
+        try:
+            response = function()
+            if response != "back":
+                break
+
+        except Exception as er:
+            Logging.error(f'Runtime error. {er}')
+            exit(1)
 
 
 # this enables us to use the cli without having to install each time
