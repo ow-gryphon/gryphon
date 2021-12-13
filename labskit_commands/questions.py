@@ -1,5 +1,5 @@
 import questionary
-from questionary import Choice
+from questionary import Choice, Separator
 from labskit_commands.logging import Logging
 
 
@@ -36,6 +36,7 @@ def get_lib_via_keyboard():
 def get_lib_category(categories: list):
     categories = categories.copy()
     categories.extend([
+        Separator("------------------------------"),
         Choice(
             title=">> Type the library name manually",
             value="type"
@@ -46,53 +47,38 @@ def get_lib_category(categories: list):
         dict(
             type='list',
             name='library_category',
-            message='What do you need a library for?',
-            choices=categories
+            message='Navigate the categories:',
+            choices=categories,
+            instruction=" "
         )
     ])['library_category']
 
 
 @base_question
-def get_lib(libraries):
-    libraries = libraries.copy()
-    libraries.extend([
-        Choice(
-            title=">> Type the library name manually",
-            value="type"
-        ),
-        get_back_choice()
-    ])
-    return questionary.prompt([
-        dict(
-            type='list',
-            name='library',
-            message='I have the following options:',
-            choices=libraries
-        )
-    ])['library']
-
-
-@base_question
 def main_question():
     command_names = {
-        "init": "Start a new project.",
+        "init": "Start a new project",
         "generate": "Load template code into an existing project",
         "add": "Install Python libraries/packages",
         "about": "About Gryphon",
-        "quit": "   Exit"
+        "quit": "Exit"
     }
+    choices = [
+        Choice(
+            title=display_question,
+            value=command
+        )
+        for command, display_question in command_names.items()
+    ]
+    choices.insert(-2, Separator("------------------------------"))
+
     return questionary.prompt([
         dict(
             type='list',
             name='command',
-            message='What would you like to do? (Use arrow keys to select your option and press Enter)',
-            choices=[
-                Choice(
-                    title=display_question,
-                    value=command
-                )
-                for command, display_question in command_names.items()
-            ]
+            message='What would you like to do?',
+            choices=choices,
+            instruction="(Use arrow keys to select your option and press Enter)"
         )
     ])['command']
 
@@ -106,7 +92,10 @@ def ask_which_template(metadata, command="init"):
         )
         for name, template in metadata.items()
     ]
-    options.append(get_back_choice())
+    options.extend([
+        Separator("------------------------------"),
+        get_back_choice()
+    ])
 
     if command == "generate":
         questions = generate_1(options)
@@ -126,7 +115,7 @@ def ask_which_template(metadata, command="init"):
 @base_question
 def ask_extra_arguments(arguments: list, command="init"):
     arguments = arguments.copy()
-    # arguments.append(get_back_choice())
+
     if command == "generate":
         extra_questions = generate_2(arguments)
         return questionary.prompt(extra_questions)

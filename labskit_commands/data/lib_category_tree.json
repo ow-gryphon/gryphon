@@ -1,7 +1,33 @@
 {
-      "data visualization": ["matplotlib", "seaborn", "plotly"],
-      "data wrangling": ["numpy", "pandas"],
-      "machine learning": ["scikit-learn"],
-      "mathematical computing": ["scipy", "statsmodels"],
-      "neural networks": ["tensorflow", "pytorch"]
+      "data visualization": {
+            "leaf_libraries": [
+                  "matplotlib",
+                  "seaborn",
+                  "plotly"
+            ]
+      },
+      "data wrangling": {
+            "leaf_libraries": [
+                  "numpy",
+                  "pandas"
+            ]
+      },
+      "machine learning": {
+            "neural networks": {
+                  "leaf_libraries": [
+                        "tensorflow",
+                        "pytorch"
+                  ]
+            },
+            "leaf_libraries": [
+                  "scikit-learn"
+            ]
+      },
+      "mathematical computing": {
+            "leaf_libraries": [
+                  "scipy",
+                  "statsmodels"
+            ]
+      },
+      "leaf_libraries": []
 }

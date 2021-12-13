@@ -10,6 +10,7 @@ from labskit_commands.logging import Logging
 
 PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
+BACK = "back"
 
 # Load contents of configuration file
 with open(DATA_PATH / "labskit_config.json", "r") as f:
@@ -36,28 +37,37 @@ def add():
     with open(DATA_PATH / "lib_category_tree.json") as file:
         lib_tree = json.load(file)
 
-    categories = list(lib_tree.keys())
-
+    level = -1
     # loop to return to the category prompt
     while True:
-        chosen_category = questions.get_lib_category(categories)
+        level += 1
+        possibilities = list(lib_tree.keys())
+        possibilities.remove("leaf_libraries")
+
+        choices = {
+            option: "category"
+            for option in possibilities
+        }
+
+        choices.update({
+            option: "library"
+            for option in lib_tree["leaf_libraries"]
+        })
+
+        # categories
+        library_name = questions.get_lib_category(list(choices.keys()))
 
         # type the bare lib name
-        if chosen_category == "type":
-            library_name = questions.get_lib_via_keyboard()
-            break
-        elif chosen_category == "back":
-            # return to the main menu
-            erase_lines()
-            return "back"
-
-        library_name = questions.get_lib(lib_tree[chosen_category])
-
         if library_name == "type":
             library_name = questions.get_lib_via_keyboard()
             break
-        elif library_name == "back":
-            erase_lines()
+        elif library_name == BACK:
+            # return to the main menu
+            erase_lines(n_lines=2 + level)
+            return BACK
+        elif choices[library_name] == "category":
+            lib_tree = lib_tree[library_name]
+            continue
         else:
             break
 
@@ -74,9 +84,9 @@ def generate():
     templates = commands.get_templates("generate")
     template_name = questions.ask_which_template(templates, command="generate")
 
-    if template_name == "back":
+    if template_name == BACK:
         erase_lines()
-        return "back"
+        return BACK
 
     template = templates[template_name]
 
@@ -102,9 +112,9 @@ def init():
     templates = commands.get_templates("init")
     template_name, location = questions.ask_which_template(templates)
 
-    if template_name == "back":
+    if template_name == BACK:
         erase_lines()
-        return "back"
+        return BACK
 
     template = templates[template_name]
     extra_parameters = questions.ask_extra_arguments(
@@ -135,6 +145,7 @@ def main():
     
     Welcome to OW Gryphon your data and analytics toolkit!
     (press Ctrl+C at any time to quit)
+    
     """)
 
     while True:
@@ -146,7 +157,6 @@ def main():
             "add": add,
             "about": lambda: print("Help and contacts"),
             "quit": exit
-            # TODO: Create "About" command having bug report functionalities and contacts.
         }[chosen_command]
         try:
             response = function()
