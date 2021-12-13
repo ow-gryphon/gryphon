@@ -1,6 +1,5 @@
 import questionary
 from questionary import Choice, Separator
-from labskit_commands.logging import Logging
 from labskit_commands.text import Text
 
 

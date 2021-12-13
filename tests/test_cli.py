@@ -1,6 +1,7 @@
 import os
 import pytest
 import pexpect
+from labskit_commands.text import Text
 
 KEY_UP = '\x1b[A'
 KEY_DOWN = '\x1b[B'
@@ -35,12 +36,12 @@ def test_cli_1(setup, teardown, get_pip_libraries):
 
 def wizard_init(project_folder):
     child = pexpect.spawn('python', ['../lkit.py'])
-    child.expect('Welcome to Griffin')
+    child.expect("Welcome to OW Gryphon")
     child.sendcontrol('m')
-    child.expect('basic')
+    child.expect(Text.init_prompt_template_question)
     child.send(KEY_DOWN)
     child.sendcontrol('m')
-    child.expect('Path to render the template')
+    child.expect(Text.init_prompt_location_question)
     child.send(project_folder)
     child.sendcontrol('m')
     child.expect('Confirm that you want')
@@ -51,12 +52,12 @@ def wizard_init(project_folder):
 
 def wizard_generate(file_name):
     child = pexpect.spawn('python', ['../../lkit.py'])
-    child.expect('Welcome to Griffin')
+    child.expect("Welcome to OW Gryphon")
     child.send(KEY_DOWN)
     child.sendcontrol('m')
-    child.expect('mlclustering_git')
+    child.expect(Text.generate_prompt_template_question)
     child.sendcontrol('m')
-    child.expect('name of the file')
+    child.expect('Name for the clustering')
     child.send(file_name)
     child.sendcontrol('m')
     child.expect('Confirm that you want')
@@ -67,13 +68,13 @@ def wizard_generate(file_name):
 
 def wizard_add(lib_name):
     child = pexpect.spawn('python', ['../../lkit.py'])
-    child.expect('Welcome to Griffin')
+    child.expect("Welcome to OW Gryphon")
     child.send(KEY_DOWN * 2)
     child.sendcontrol('m')
-    child.expect('data visualization')
-    child.send(KEY_DOWN * 5)
+    child.expect(Text.add_prompt_categories_question)
+    child.send(KEY_DOWN * 4)
     child.sendcontrol('m')
-    child.expect('Type the python library')
+    child.expect(Text.add_prompt_type_library)
     child.send(lib_name)
     child.sendcontrol('m')
     child.expect('Confirm that you want')
@@ -106,3 +107,5 @@ def test_wizard_1(setup, teardown, get_pip_libraries):
         pytest.fail("Raised exception", e)
     finally:
         teardown()
+
+# TODO: Test installation.
