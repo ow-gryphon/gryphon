@@ -5,7 +5,7 @@ from labskit_commands.logging import Logging
 
 def get_back_choice():
     return Choice(
-        title="<< go back to the previous menu",
+        title="<< Go back to the previous menu",
         value="back"
     )
 
@@ -27,7 +27,7 @@ def get_lib_via_keyboard():
         dict(
             type='input',
             name='library_name',
-            message='Type the python library you want to install:'
+            message='Type the name of the python library you want to install:'
         )
     ])['library_name']
 
@@ -37,7 +37,7 @@ def get_lib_category(categories: list):
     categories = categories.copy()
     categories.extend([
         Choice(
-            title=">> I'd rather type the lib name!",
+            title=">> Type the library name manually",
             value="type"
         ),
         get_back_choice()
@@ -57,7 +57,7 @@ def get_lib(libraries):
     libraries = libraries.copy()
     libraries.extend([
         Choice(
-            title=">> I still haven't found what I'm looking for ...",
+            title=">> Type the library name manually",
             value="type"
         ),
         get_back_choice()
@@ -75,16 +75,17 @@ def get_lib(libraries):
 @base_question
 def main_question():
     command_names = {
-        "init": "Start an empty project.",
-        "generate": "Load template code.",
-        "add": "Install some required library.",
+        "init": "Start a new project.",
+        "generate": "Load template code into an existing project",
+        "add": "Install Python libraries/packages",
+        "about": "About Gryphon",
         "quit": "   Exit"
     }
     return questionary.prompt([
         dict(
             type='list',
             name='command',
-            message='Choose witch action to perform',
+            message='What would you like to do? (Use arrow keys to select your option and press Enter)',
             choices=[
                 Choice(
                     title=display_question,
@@ -163,7 +164,7 @@ def generate_1(options):
         dict(
             type='list',
             name='template',
-            message='Choose the desired template:',
+            message='Please select the template code you would to load:',
             choices=options
         )
     ]
@@ -185,13 +186,13 @@ def init_1(options) -> list:
         dict(
             type='list',
             name='template',
-            message='Choose the desired template:',
+            message='Please select the template you would like to use:',
             choices=options
         ),
         dict(
             type='input',
             name='location',
-            message='Path to render the template (absolute or relative to the current folder):',
+            message='Please give your project folder a name:',
         )
     ]
 

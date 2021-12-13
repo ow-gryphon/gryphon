@@ -126,15 +126,15 @@ def init():
 
 
 def main():
-    print("""
-     ██████  ██████  ██    ██ ███████ ███████ ██ ███    ██ 
-    ██       ██   ██  ██  ██  ██      ██      ██ ████   ██ 
-    ██   ███ ██████    ████   █████   █████   ██ ██ ██  ██ 
-    ██    ██ ██   ██    ██    ██      ██      ██ ██  ██ ██ 
-     ██████  ██   ██    ██    ██      ██      ██ ██   ████ 
+    print("""  
+     ██████  ██████  ██    ██ ██████  ██   ██  ██████  ███    ██ 
+    ██       ██   ██  ██  ██  ██   ██ ██   ██ ██    ██ ████   ██ 
+    ██   ███ ██████    ████   ██████  ███████ ██    ██ ██ ██  ██ 
+    ██    ██ ██   ██    ██    ██      ██   ██ ██    ██ ██  ██ ██ 
+     ██████  ██   ██    ██    ██      ██   ██  ██████  ██   ████ 
     
-    Welcome to Griffin your data and analytics toolkit!
-    (press ctrl+C at any time to quit)
+    Welcome to OW Gryphon your data and analytics toolkit!
+    (press Ctrl+C at any time to quit)
     """)
 
     while True:
@@ -144,7 +144,9 @@ def main():
             "init": init,
             "generate": generate,
             "add": add,
+            "about": lambda _: print("Help and contacts"),
             "quit": exit
+            # TODO: Create "About" command having bug report functionalities and contacts.
         }[chosen_command]
         try:
             response = function()

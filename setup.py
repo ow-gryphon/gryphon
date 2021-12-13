@@ -4,11 +4,11 @@ Setup module for the labskit package.
 from pathlib import Path
 from setuptools import setup, find_packages
 
-
 package_files = [
-    str(Path.cwd() / '/labskit_commands' / 'data' / 'labskit_config.json'),
-    str(Path.cwd() / '/labskit_commands' / 'data' / 'lib_category_tree.json')
+    str(Path('data') / 'labskit_config.json'),
+    str(Path('data') / 'lib_category_tree.json')
 ]
+print(package_files)
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
