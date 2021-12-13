@@ -1,11 +1,12 @@
 import questionary
 from questionary import Choice, Separator
 from labskit_commands.logging import Logging
+from labskit_commands.text import Text
 
 
 def get_back_choice():
     return Choice(
-        title="<< Go back to the previous menu",
+        title=Text.back_to_previous_menu_option,
         value="back"
     )
 
@@ -27,7 +28,7 @@ def get_lib_via_keyboard():
         dict(
             type='input',
             name='library_name',
-            message='Type the name of the python library you want to install:'
+            message=Text.add_prompt_type_library
         )
     ])['library_name']
 
@@ -36,9 +37,9 @@ def get_lib_via_keyboard():
 def get_lib_category(categories: list):
     categories = categories.copy()
     categories.extend([
-        Separator("------------------------------"),
+        Separator(Text.menu_separator),
         Choice(
-            title=">> Type the library name manually",
+            title=Text.type_library_name_menu_option,
             value="type"
         ),
         get_back_choice()
@@ -47,38 +48,46 @@ def get_lib_category(categories: list):
         dict(
             type='list',
             name='library_category',
-            message='Navigate the categories:',
+            message=Text.add_prompt_categories_question,
             choices=categories,
-            instruction=" "
+            instruction=Text.add_prompt_instruction
         )
     ])['library_category']
 
 
 @base_question
 def main_question():
-    command_names = {
-        "init": "Start a new project",
-        "generate": "Load template code into an existing project",
-        "add": "Install Python libraries/packages",
-        "about": "About Gryphon",
-        "quit": "Exit"
-    }
     choices = [
         Choice(
-            title=display_question,
-            value=command
+            title=Text.init_display_option,
+            value="init"
+        ),
+        Choice(
+            title=Text.generate_display_option,
+            value="generate"
+        ),
+        Choice(
+            title=Text.add_display_option,
+            value="add"
+        ),
+        Separator(Text.menu_separator),
+        Choice(
+            title=Text.about_display_option,
+            value="about"
+        ),
+        Choice(
+            title=Text.quit_display_option,
+            value="quit"
         )
-        for command, display_question in command_names.items()
     ]
-    choices.insert(-2, Separator("------------------------------"))
 
     return questionary.prompt([
         dict(
             type='list',
             name='command',
-            message='What would you like to do?',
+            message=Text.first_prompt_question,
             choices=choices,
-            instruction="(Use arrow keys to select your option and press Enter)"
+            instruction=Text.first_prompt_question
         )
     ])['command']
 
@@ -93,7 +102,7 @@ def ask_which_template(metadata, command="init"):
         for name, template in metadata.items()
     ]
     options.extend([
-        Separator("------------------------------"),
+        Separator(Text.menu_separator),
         get_back_choice()
     ])
 
@@ -130,7 +139,6 @@ def confirmation(message=None):
     go_ahead = questionary.confirm(message=message).ask()
 
     if not go_ahead:
-        Logging.log("Operation cancelled.")
         exit(1)
 
 
@@ -159,7 +167,7 @@ def generate_1(options):
         dict(
             type='list',
             name='template',
-            message='Please select the template code you would to load:',
+            message=Text.generate_prompt_template_question,
             choices=options
         )
     ]
@@ -181,13 +189,13 @@ def init_1(options) -> list:
         dict(
             type='list',
             name='template',
-            message='Please select the template you would like to use:',
+            message=Text.init_prompt_template_question,
             choices=options
         ),
         dict(
             type='input',
             name='location',
-            message='Please give your project folder a name:',
+            message=Text.init_prompt_location_question
         )
     ]
 

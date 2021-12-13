@@ -7,6 +7,7 @@ import labskit_commands
 from labskit_commands import questions
 from labskit_commands.registry import RegistryCollection
 from labskit_commands.logging import Logging
+from labskit_commands.text import Text
 
 PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
@@ -135,18 +136,12 @@ def init():
     )
 
 
+def about():
+    Logging.log(Text.about)
+
+
 def main():
-    print("""  
-     ██████  ██████  ██    ██ ██████  ██   ██  ██████  ███    ██ 
-    ██       ██   ██  ██  ██  ██   ██ ██   ██ ██    ██ ████   ██ 
-    ██   ███ ██████    ████   ██████  ███████ ██    ██ ██ ██  ██ 
-    ██    ██ ██   ██    ██    ██      ██   ██ ██    ██ ██  ██ ██ 
-     ██████  ██   ██    ██    ██      ██   ██  ██████  ██   ████ 
-    
-    Welcome to OW Gryphon your data and analytics toolkit!
-    (press Ctrl+C at any time to quit)
-    
-    """)
+    Logging.log(Text.welcome)
 
     while True:
         chosen_command = questions.main_question()
@@ -155,7 +150,7 @@ def main():
             "init": init,
             "generate": generate,
             "add": add,
-            "about": lambda: print("Help and contacts"),
+            "about": about,
             "quit": exit
         }[chosen_command]
         try:
