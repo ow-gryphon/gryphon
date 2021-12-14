@@ -1,5 +1,5 @@
 """
-Module containing the code for the add command in then CLI.
+Module containing the code for the init command in the CLI.
 """
 import os
 from pathlib import Path
@@ -18,12 +18,12 @@ PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 def init(template_path, location, **kwargs):
     """
-    Init command from the labskit CLI.
+    Init command from the OW Gryphon CLI.
     """
     Logging.log("Creating project scaffolding.", fg='green')
     kwargs.copy()
 
-    Logging.log(f"initializing project at {location}")
+    Logging.log(f"Initializing project at {location}")
     copy_project_template(
         template_destiny=Path(location),
         template_source=Path(template_path)

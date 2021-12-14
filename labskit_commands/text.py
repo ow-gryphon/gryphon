@@ -6,7 +6,7 @@ class Text:
         ██    ██ ██   ██    ██    ██      ██   ██ ██    ██ ██  ██ ██ 
          ██████  ██   ██    ██    ██      ██   ██  ██████  ██   ████ 
              
-        Welcome to OW Gryphon your data and analytics toolkit!
+        Welcome to OW Gryphon - your data and analytics toolkit!
         (press Ctrl+C at any time to quit)
         
     """
@@ -21,7 +21,7 @@ class Text:
     init_display_option = "Start a new project"
     generate_display_option = "Load template code into an existing project"
     add_display_option = "Install Python libraries/packages"
-    about_display_option = "About Gryphon"
+    about_display_option = "About OW Gryphon"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"

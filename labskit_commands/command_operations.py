@@ -39,9 +39,9 @@ def create_venv(folder=None):
     venv_path = target_folder / VENV
 
     # Create venv
-    Logging.log(f"Creating virtual environment on {venv_path}")
+    Logging.log(f"Creating virtual environment in {venv_path}")
     os.system(f"python -m venv \"{venv_path}\"")
-    Logging.log("Done creating venv.", fg='green')
+    Logging.log("Done creating virtual environment.", fg='green')
 
 
 def quote_windows_path(folder_path):
@@ -66,7 +66,7 @@ def install_libraries(folder=None):
         pip_path = target_folder / VENV / "bin" / "pip"
 
     # Install requirements
-    Logging.log("Installing requirements. This may take some minutes ...")
+    Logging.log("Installing requirements. This may take several minutes ...")
 
     if not pip_path.is_file():
         raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
@@ -79,7 +79,7 @@ def install_libraries(folder=None):
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")
 
-    Logging.log("Installation succeeded.", fg='green')
+    Logging.log("Installation successful!", fg='green')
 
 
 def copy_project_template(template_source: Path, template_destiny: Path):
