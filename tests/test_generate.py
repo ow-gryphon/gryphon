@@ -1,6 +1,6 @@
 import os
 from os import path
-from labskit_commands.generate import (
+from gryphon_commands.generate import (
     generate,
     parse_project_template,
     pattern_replacement

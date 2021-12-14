@@ -5,7 +5,7 @@ Utility functions for the test suite.
 from pathlib import Path
 import platform
 import shutil
-from labskit_commands.command_operations import (
+from gryphon_commands.command_operations import (
     create_venv,
     get_destination_path
 )

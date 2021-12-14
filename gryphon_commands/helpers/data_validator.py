@@ -2,8 +2,8 @@
 Module containing utilities to validate the extra parameters given in CLI.
 """
 from typing import Dict
-from labskit_commands.registry import Template
-from labskit_commands.logging import Logging
+from gryphon_commands.registry import Template
+from gryphon_commands.logging import Logging
 from .help_formater import get_template_help, get_command_help
 
 

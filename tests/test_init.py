@@ -1,5 +1,5 @@
 from os import path
-from labskit_commands.init import init
+from gryphon_commands.init import init
 from .utils import TEST_FOLDER
 
 

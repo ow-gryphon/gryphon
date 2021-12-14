@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import json
 import glob
-from labskit_commands.logging import Logging
+from gryphon_commands.logging import Logging
 from .template import Template
 
 

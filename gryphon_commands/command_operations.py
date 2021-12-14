@@ -12,6 +12,7 @@ from .logging import Logging
 
 
 VENV = ".venv"
+REQUIREMENTS = "requirements.txt"
 
 
 def get_destination_path(folder=None) -> Path:
@@ -57,7 +58,7 @@ def install_libraries(folder=None):
     Function to install the libraries from a 'requirements.txt' file
     """
     target_folder = get_destination_path(folder)
-    requirements_path = target_folder / "requirements.txt"
+    requirements_path = target_folder / REQUIREMENTS
 
     if platform.system() == "Windows":
         # On windows the venv folder structure is different from unix
@@ -110,7 +111,7 @@ def append_requirement(library_name):
     """Appends a given requirement to the requirements.txt file."""
 
     current_path = get_destination_path()
-    requirements_path = current_path / "requirements.txt"
+    requirements_path = current_path / REQUIREMENTS
     with open(requirements_path, "r", encoding='UTF-8') as file:
         requirements = file.read()
 
@@ -121,7 +122,7 @@ def append_requirement(library_name):
 
 def rollback_append_requirement(library_name):
     current_path = get_destination_path()
-    requirements_path = current_path / "requirements.txt"
+    requirements_path = current_path / REQUIREMENTS
 
     with open(requirements_path, "r", encoding='UTF-8') as file:
         requirements = file.read()

@@ -5,7 +5,7 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 package_files = [
-    str(Path('data') / 'labskit_config.json'),
+    str(Path('data') / 'gryphon_config.json'),
     str(Path('data') / 'lib_category_tree.json')
 ]
 
@@ -22,7 +22,7 @@ setup(
     description='OW analytics toolkit cli',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    py_modules=['lkit', 'labskit', 'labskit_commands'],
+    py_modules=['gryph', 'gryphon', 'gryphon_commands'],
     packages=find_packages(),
     install_requires=[requirements],
     python_requires='>=3.7',
@@ -33,9 +33,10 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        lkit=lkit:main
-        labskit=labskit:cli
+        gryphon=gryphon:main
+        gryph=gryph:cli
+        griffin=gryphon:did_you_mean_gryphon
     ''',
     include_package_data=True,
-    package_data={'labskit_commands': package_files}
+    package_data={'gryphon_commands': package_files}
 )

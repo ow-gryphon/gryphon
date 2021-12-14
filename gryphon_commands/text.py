@@ -14,7 +14,7 @@ class Text:
     Gryphon is ...
     
     Any bugs please talk to Dan Wang (he is the guilty)
-    
+
     """
     first_prompt_question = "What would you like to do?"
 
@@ -37,3 +37,22 @@ class Text:
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "
     add_prompt_type_library = "Type the name of the python library you want to install:"
+
+    about_prompt_links = "Useful links:"
+
+    base_confirmation = "Confirm to proceed with the actions from above?"
+
+    # {arguments} is going to be replaced with the extra parameters from the template
+    # {template_name} is going to be replaced with the template name
+    generate_confirm = "Confirm that you want to render the \"{template_name}\" template inside the current project." \
+                       "\nUsing the following arguments: {arguments}"
+
+    # {library_name} is going to be replaced with the library name
+    add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."
+
+    # {location} is going to be replaced with the destination path
+    # {template_name} is going to be replaced with the template name
+    # {arguments} is going to be replaced with the extra parameters from the template
+    init_confirm_1 = "\n\nConfirm that you want to start a new \"{template_name}\" project" \
+                     "\nInside the folder \"{location}\""
+    init_confirm_2 = "\nUsing the following arguments: {arguments}"

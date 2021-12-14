@@ -2,19 +2,21 @@
 LKit .
 """
 import json
+import os
+import platform
 from pathlib import Path
-import labskit_commands
-from labskit_commands import questions
-from labskit_commands.registry import RegistryCollection
-from labskit_commands.logging import Logging
-from labskit_commands.text import Text
+import gryphon_commands
+from gryphon_commands import questions
+from gryphon_commands.registry import RegistryCollection
+from gryphon_commands.logging import Logging
+from gryphon_commands.text import Text
 
 PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
+DATA_PATH = PACKAGE_PATH / "gryphon_commands" / "data"
 BACK = "back"
 
 # Load contents of configuration file
-with open(DATA_PATH / "labskit_config.json", "r") as f:
+with open(DATA_PATH / "gryphon_config.json", "r") as f:
     settings = json.load(f)
 
 try:
@@ -68,13 +70,12 @@ def add():
             return BACK
         elif choices[library_name] == "category":
             lib_tree = lib_tree[library_name]
-            continue
         else:
             break
 
     questions.confirm_add(library_name)
 
-    labskit_commands.add(
+    gryphon_commands.add(
         library_name=library_name
     )
 
@@ -101,7 +102,7 @@ def generate():
         **extra_parameters
     )
 
-    labskit_commands.generate(
+    gryphon_commands.generate(
         template_path=template.path,
         requirements=template.dependencies,
         **extra_parameters,
@@ -123,13 +124,23 @@ def init():
         command="init"
     )
 
-    questions.confirm_init(
-        template_name=template.display_name,
-        location=location,
-        **extra_parameters
-    )
+    while True:
+        response = questions.confirm_init(
+            template_name=template.display_name,
+            location=Path(location).resolve(),
+            **extra_parameters
+        )
 
-    labskit_commands.init(
+        if response == "no":
+            exit()
+
+        if response == "yes":
+            break
+
+        erase_lines(n_lines=5)
+        location = questions.ask_init_location()
+
+    gryphon_commands.init(
         template_path=template.path,
         location=location,
         **extra_parameters
@@ -138,6 +149,26 @@ def init():
 
 def about():
     Logging.log(Text.about)
+
+    response = None
+    while response != "quit":
+        response = questions.prompt_about()
+
+        if response == "quit":
+            return
+
+        if response == BACK:
+            erase_lines(n_lines=8)
+            return BACK
+
+        if platform.system() == "Windows":
+            os.system(f"start {response}")
+        else:
+            os.system(f"""nohup xdg-open "{response}" """)
+            os.system(f"""rm nohup.out""")
+        erase_lines()
+
+        # TODO: get rid of winpty
 
 
 def main():
@@ -155,7 +186,7 @@ def main():
         }[chosen_command]
         try:
             response = function()
-            if response != "back":
+            if response != BACK:
                 break
 
         except Exception as er:
@@ -163,7 +194,11 @@ def main():
             exit(1)
 
 
+def did_you_mean_gryphon():
+    Logging.log("Did you mean \"gryphon\"?")
+
+
 # this enables us to use the cli without having to install each time
-# by using `python lkit.py`
+# by using `python gryphon.py`
 if __name__ == '__main__':
     main()

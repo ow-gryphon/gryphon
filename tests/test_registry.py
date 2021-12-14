@@ -1,6 +1,6 @@
 import pytest
 from .utils import TEST_FOLDER
-from labskit_commands.registry import \
+from gryphon_commands.registry import \
     RegistryCollection, GitRegistry, \
     LocalRegistry, TemplateRegistry
 
@@ -132,7 +132,7 @@ def test_git_registry_1(setup, teardown):
         assert "analytics_git" in metadata["init"]
         assert "mlclustering_git" in metadata["generate"]
 
-        # TODO: Create sample git repository to make a more realistic test.
+        # TODO: Create sample git repository to make a more reproducible test.
     finally:
         teardown()
 

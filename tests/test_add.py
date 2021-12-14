@@ -1,5 +1,5 @@
 import os
-from labskit_commands import add
+from gryphon_commands import add
 from .utils import create_folder_with_venv
 
 

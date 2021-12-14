@@ -12,7 +12,7 @@ from .utils import (
     get_venv_path,
     TEST_FOLDER
 )
-from labskit_commands.command_operations import (
+from gryphon_commands.command_operations import (
     create_venv,
     install_libraries,
     copy_project_template,

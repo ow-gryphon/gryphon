@@ -14,7 +14,7 @@ from .command_operations import (
 
 def add(library_name):
     """
-    Add command from the labskit CLI.
+    Add command from the OW Gryphon CLI.
     """
     Logging.log("Adding required lib.", fg="green")
     append_requirement(library_name)

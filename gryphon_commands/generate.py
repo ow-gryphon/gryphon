@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import shutil
 import glob
-from labskit_commands.logging import Logging
+from gryphon_commands.logging import Logging
 from .command_operations import (
     get_destination_path,
     copy_project_template,
@@ -21,7 +21,7 @@ PACKAGE_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 
 def generate(template_path: Path, requirements: list, **kwargs):
     """
-    Generate command from the labskit CLI.
+    Generate command from the OW Gryphon CLI.
     """
     Logging.log("Generating template.", fg='green')
     parse_project_template(template_path, kwargs)

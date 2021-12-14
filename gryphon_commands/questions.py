@@ -1,6 +1,6 @@
 import questionary
 from questionary import Choice, Separator
-from labskit_commands.text import Text
+from gryphon_commands.text import Text
 
 
 def get_back_choice():
@@ -134,7 +134,7 @@ def ask_extra_arguments(arguments: list, command="init"):
 
 
 def confirmation(message=None):
-    message = "Confirm to proceed with the actions from above?" if message is None else message
+    message = Text.base_confirmation if message is None else message
     go_ahead = questionary.confirm(message=message).ask()
 
     if not go_ahead:
@@ -142,23 +142,53 @@ def confirmation(message=None):
 
 
 def confirm_generate(template_name, **kwargs):
-    confirmation(f"Confirm that you want to render the \"{template_name}\" template inside the current project."
-                 f"\nUsing the following arguments: {kwargs}")
+    confirmation(
+        Text.generate_confirm
+            .replace("{template_name}", template_name)
+            .replace("{arguments}", str(kwargs))
+    )
 
 
 def confirm_add(library_name):
-    confirmation(f"Confirm that you want to install the \"{library_name}\" library to the current project.")
+    confirmation(
+        Text.add_confirm.replace("{library_name}", library_name)
+    )
 
 
 def confirm_init(template_name, location, **kwargs):
-    message = f"\n\nConfirm that you want to start a new \"{template_name}\" project" \
-              f"\nInside the folder \"{location}\""
 
-    confirmation(
-        message + f"\nUsing the following arguments: {kwargs}"
-        if kwargs else
-        message
+    message = (
+        Text.init_confirm_1
+        .replace("{template_name}", template_name)
+        .replace("{location}", str(location))
     )
+
+    if kwargs:
+        message = message + Text.init_confirm_2.replace("{arguments}", kwargs)
+
+    return questionary.select(
+        message=message,
+        choices=[
+            Choice(
+                title="Yes",
+                value="yes"
+            ),
+            Choice(
+                title="No",
+                value="no"
+            ),
+            Choice(
+                title="Change project location",
+                value="change_location"
+            )
+        ]
+    ).unsafe_ask()
+
+
+def ask_init_location():
+    return questionary.text(
+        message=Text.init_prompt_location_question
+    ).ask()
 
 
 def generate_1(options):
@@ -208,3 +238,27 @@ def init_2(arguments):
         )
         for field in arguments
     ]
+
+
+def prompt_about():
+    choices = [
+        Choice(
+            title="Google",
+            value="https://www.google.com/"
+        ),
+        Choice(
+            title="Yahoo",
+            value="https://www.yahoo.com/"
+        ),
+        Separator(Text.menu_separator),
+        get_back_choice(),
+        Choice(
+            title="Quit",
+            value="quit"
+        ),
+    ]
+
+    return questionary.select(
+        message=Text.about_prompt_links,
+        choices=choices
+    ).unsafe_ask()

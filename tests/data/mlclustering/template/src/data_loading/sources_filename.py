@@ -1,4 +1,4 @@
-from labskit.sources.web_cache import WebCsv
+from gryph.sources.web_cache import WebCsv
 
 
 class HmdaNdSmall(WebCsv):

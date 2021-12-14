@@ -1,12 +1,16 @@
 import os
 import pytest
 import pexpect
-from labskit_commands.text import Text
+from gryphon_commands.text import Text
+from .utils import create_folder_with_venv, get_pip_path, get_venv_path
 
 KEY_UP = '\x1b[A'
 KEY_DOWN = '\x1b[B'
 KEY_RIGHT = '\x1b[C'
 KEY_LEFT = '\x1b[D'
+WELCOME_MESSAGE = "Welcome to OW Gryphon"
+SUCCESS_MESSAGE = "Installation successful!"
+CONFIRMATION_MESSAGE = "Confirm that you want"
 
 
 def test_cli_1(setup, teardown, get_pip_libraries):
@@ -16,11 +20,18 @@ def test_cli_1(setup, teardown, get_pip_libraries):
     lib_name = "scipy"
 
     cwd = setup()
+    create_folder_with_venv(cwd)
+    pip_path = get_pip_path(cwd)
+    venv_path = get_venv_path(cwd)
+
+    os.system(f"""source {os.path.join(venv_path, "bin", "activate")}""")
+    os.system(f"""{pip_path} install ../""")
+
     try:
-        os.system(f"labskit init analytics_git {project_folder}")
+        os.system(f"gryph init analytics_git {project_folder}")
         os.chdir(project_folder)
-        os.system(f"labskit generate mlclustering_git {file_name}")
-        os.system(f"labskit add {lib_name}")
+        os.system(f"gryph generate mlclustering_git {file_name}")
+        os.system(f"gryph add {lib_name}")
 
         assert (cwd / project_folder).is_dir()
         assert (cwd / project_folder / "src").is_dir()
@@ -35,8 +46,8 @@ def test_cli_1(setup, teardown, get_pip_libraries):
 
 
 def wizard_init(project_folder):
-    child = pexpect.spawn('python', ['../lkit.py'])
-    child.expect("Welcome to OW Gryphon")
+    child = pexpect.spawn('python', ['../gryphon.py'])
+    child.expect(WELCOME_MESSAGE)
     child.sendcontrol('m')
     child.expect(Text.init_prompt_template_question)
     child.send(KEY_DOWN)
@@ -44,15 +55,15 @@ def wizard_init(project_folder):
     child.expect(Text.init_prompt_location_question)
     child.send(project_folder)
     child.sendcontrol('m')
-    child.expect('Confirm that you want')
+    child.expect(CONFIRMATION_MESSAGE)
     child.sendcontrol('m')
-    child.expect('Installation succeeded')
+    child.expect(SUCCESS_MESSAGE)
     child.close()
 
 
 def wizard_generate(file_name):
-    child = pexpect.spawn('python', ['../../lkit.py'])
-    child.expect("Welcome to OW Gryphon")
+    child = pexpect.spawn('python', ['../../gryphon.py'])
+    child.expect(WELCOME_MESSAGE)
     child.send(KEY_DOWN)
     child.sendcontrol('m')
     child.expect(Text.generate_prompt_template_question)
@@ -60,15 +71,15 @@ def wizard_generate(file_name):
     child.expect('Name for the clustering')
     child.send(file_name)
     child.sendcontrol('m')
-    child.expect('Confirm that you want')
+    child.expect(CONFIRMATION_MESSAGE)
     child.sendcontrol('m')
-    child.expect('Installation succeeded')
+    child.expect(SUCCESS_MESSAGE)
     child.close()
 
 
 def wizard_add(lib_name):
-    child = pexpect.spawn('python', ['../../lkit.py'])
-    child.expect("Welcome to OW Gryphon")
+    child = pexpect.spawn('python', ['../../gryphon.py'])
+    child.expect(WELCOME_MESSAGE)
     child.send(KEY_DOWN * 2)
     child.sendcontrol('m')
     child.expect(Text.add_prompt_categories_question)
@@ -77,9 +88,9 @@ def wizard_add(lib_name):
     child.expect(Text.add_prompt_type_library)
     child.send(lib_name)
     child.sendcontrol('m')
-    child.expect('Confirm that you want')
+    child.expect(CONFIRMATION_MESSAGE)
     child.sendcontrol('m')
-    child.expect('Installation succeeded')
+    child.expect(SUCCESS_MESSAGE)
     child.close()
 
 

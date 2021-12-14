@@ -1,18 +1,18 @@
 """
-Labskit CLI Main module.
+OW Gryphon CLI Main module.
 """
 from os import path
 from pathlib import Path
 import json
 import click
-import labskit_commands
-from labskit_commands import helpers
-from labskit_commands.registry import RegistryCollection
+import gryphon_commands
+from gryphon_commands import helpers
+from gryphon_commands.registry import RegistryCollection
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "labskit_commands" / "data"
+DATA_PATH = PACKAGE_PATH / "gryphon_commands" / "data"
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -24,7 +24,7 @@ def cli():
 @click.argument("library_name")
 def add(library_name):
     """add templates based on arguments and configurations."""
-    labskit_commands.add(library_name)
+    gryphon_commands.add(library_name)
 
 
 @click.argument("template")
@@ -35,7 +35,7 @@ def generate(template, extra):
     extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
     template = existing_templates[template]
 
-    labskit_commands.generate(
+    gryphon_commands.generate(
         template_path=template.path,
         requirements=template.dependencies,
         **extra_parameters
@@ -51,7 +51,7 @@ def init(template, location, extra):
     extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
 
     template = existing_templates[template]
-    labskit_commands.init(
+    gryphon_commands.init(
         template_path=template.path,
         location=location,
         **extra_parameters
@@ -64,7 +64,7 @@ functions = {
     # "add": add
 }
 
-config_file = path.join(DATA_PATH / "labskit_config.json")
+config_file = path.join(DATA_PATH / "gryphon_config.json")
 
 with open(config_file, "r") as f:
     settings = json.load(f)

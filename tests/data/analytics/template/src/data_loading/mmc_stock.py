@@ -1,4 +1,4 @@
-from labskit.sources.local_csv import LocalCsv
+from gryph.sources.local_csv import LocalCsv
 
 
 class LocalMMC(LocalCsv):
