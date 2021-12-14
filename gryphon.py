@@ -163,10 +163,11 @@ def about():
 
         if platform.system() == "Windows":
             os.system(f"start {response}")
+            erase_lines(n_lines=1)
         else:
             os.system(f"""nohup xdg-open "{response}" """)
             os.system(f"""rm nohup.out""")
-        erase_lines()
+            erase_lines()
 
         # TODO: get rid of winpty
 
