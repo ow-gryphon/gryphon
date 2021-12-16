@@ -71,7 +71,7 @@ def install_libraries(folder=None):
 
     if not pip_path.is_file():
         raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
-    
+
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
@@ -81,6 +81,44 @@ def install_libraries(folder=None):
         raise RuntimeError(f"Failed on pip install command. {e}")
 
     Logging.log("Installation successful!", fg='green')
+
+
+def activate_venv(folder=None):
+    """
+    Function to activate virtual environment.
+    """
+    target_folder = get_destination_path(folder)
+    try:
+        if platform.system() == "Windows":
+            # On windows the venv folder structure is different from unix
+            activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+            command = [str(activate_path)]
+
+        else:
+            activate_path = target_folder / VENV / "bin" / "activate"
+            command = ['bash', str(activate_path)]
+
+        subprocess.check_call(command)
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to activate venv. {e}")
+
+    Logging.log("Virtual environment activated!", fg='green')
+
+
+def change_shell_folder_and_activate_venv(location):
+    target_folder = get_destination_path(location)
+
+    if platform.system() == "Windows":
+        # On windows the venv folder structure is different from unix
+        # activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+        pass
+    else:
+        activate_path = target_folder / VENV / "bin" / "activate"
+        os.chdir(location)
+
+        shell = os.environ.get('SHELL', '/bin/sh')
+        os.execl(shell, shell, "--rcfile", activate_path)
 
 
 def copy_project_template(template_source: Path, template_destiny: Path):

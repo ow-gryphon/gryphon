@@ -16,7 +16,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
 
 setup(
-    name='labskit',
+    name='gryphon',
     version='0.0.1',
     license='MIT',
     description='OW analytics toolkit cli',

@@ -1,8 +1,9 @@
 import os
 import pytest
 import pexpect
+from gryphon_commands.command_operations import activate_venv
 from gryphon_commands.text import Text
-from .utils import create_folder_with_venv, get_pip_path, get_venv_path
+from .utils import create_folder_with_venv, get_pip_path
 
 KEY_UP = '\x1b[A'
 KEY_DOWN = '\x1b[B'
@@ -22,9 +23,8 @@ def test_cli_1(setup, teardown, get_pip_libraries):
     cwd = setup()
     create_folder_with_venv(cwd)
     pip_path = get_pip_path(cwd)
-    venv_path = get_venv_path(cwd)
 
-    os.system(f"""source {os.path.join(venv_path, "bin", "activate")}""")
+    activate_venv()
     os.system(f"""{pip_path} install ../""")
 
     try:

@@ -21,6 +21,13 @@ def cli():
 
 
 @cli.command()
+def activate():
+    """add templates based on arguments and configurations."""
+    # TODO: gryphon activate
+    # gryphon_commands.activate()
+
+
+@cli.command()
 @click.argument("library_name")
 def add(library_name):
     """add templates based on arguments and configurations."""
@@ -84,3 +91,8 @@ for name, function in functions.items():
 
 if __name__ == '__main__':
     cli()
+
+# TODO: Make categories on generate
+# TODO: activate VENV inside the init folder after the install
+# TODO: Treat FIle not found error when searching for requirements.txt file
+# TODO: Implement gitflow guidelines
