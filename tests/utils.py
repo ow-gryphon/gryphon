@@ -5,6 +5,7 @@ Utility functions for the test suite.
 from pathlib import Path
 import platform
 import shutil
+import subprocess
 from gryphon_commands.command_operations import (
     create_venv,
     get_destination_path
@@ -64,3 +65,24 @@ def get_requirements_path(base_folder: Path):
 
 def get_venv_path(base_folder: Path) -> Path:
     return base_folder / VENV
+
+
+def activate_venv(folder=None):
+    """
+    Function to activate virtual environment.
+    """
+    target_folder = get_destination_path(folder)
+    try:
+        if platform.system() == "Windows":
+            # On windows the venv folder structure is different from unix
+            activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+            command = [str(activate_path)]
+
+        else:
+            activate_path = target_folder / VENV / "bin" / "activate"
+            command = ['bash', str(activate_path)]
+
+        subprocess.check_call(command)
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to activate venv. {e}")

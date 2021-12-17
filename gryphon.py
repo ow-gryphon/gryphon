@@ -37,7 +37,7 @@ def erase_lines(n_lines=2):
 
 def add():
     """add templates based on arguments and configurations."""
-    with open(DATA_PATH / "lib_category_tree.json") as file:
+    with open(DATA_PATH / "library_category_tree.json") as file:
         lib_tree = json.load(file)
 
     level = -1
@@ -45,20 +45,20 @@ def add():
     while True:
         level += 1
         possibilities = list(lib_tree.keys())
-        possibilities.remove("leaf_libraries")
+        possibilities.remove("leaf_options")
 
         choices = {
-            option: "category"
+            option: "node"
             for option in possibilities
         }
 
         choices.update({
-            option: "library"
-            for option in lib_tree["leaf_libraries"]
+            option: "leaf"
+            for option in lib_tree["leaf_options"]
         })
 
         # categories
-        library_name = questions.get_lib_category(list(choices.keys()))
+        library_name = questions.get_add_option(list(choices.keys()))
 
         # type the bare lib name
         if library_name == "type":
@@ -83,11 +83,62 @@ def add():
 def generate():
     """generates templates based on arguments and configurations."""
 
+    with open(DATA_PATH / "template_category_tree.json") as file:
+        template_tree = json.load(file)
+
+    choices = list(template_tree.keys())
+
+    # categories
+    category = questions.get_generate_option(choices)
+
+    navigation = category
+    lines = 2
+    if category == BACK:
+        # return to the main menu
+        erase_lines(n_lines=lines)
+        return BACK
+    elif category == "Use-cases":
+        lines += 1
+        template_tree = template_tree[category]
+
+        choices = list(template_tree.keys())
+        choices.remove("leaf_options")
+
+        navigation = questions.get_generate_option(choices)
+
+        if navigation == BACK:
+            # return to the main menu
+            erase_lines(n_lines=lines)
+            return BACK
+
+    # subcategories
+    lines += 1
+    choices = template_tree[navigation]["leaf_options"]
+    subcategory = questions.get_generate_option(choices)
+
+    if subcategory == BACK:
+        # return to the main menu
+        erase_lines(n_lines=lines)
+        return BACK
+
     templates = commands.get_templates("generate")
-    template_name = questions.ask_which_template(templates, command="generate")
+
+    # filter the templates for that tree level
+    filtered_templates = {
+        name: template
+        for name, template in templates.items()
+        if (
+            (category == "Methodology" and (subcategory in template.methodology)) or
+            (category == "Use-cases" and (subcategory in template.sector)) or
+            (category == "Use-cases" and (subcategory in template.topic))
+        )
+    }
+
+    lines += 1
+    template_name = questions.ask_which_template(filtered_templates, command="generate")
 
     if template_name == BACK:
-        erase_lines()
+        erase_lines(n_lines=lines)
         return BACK
 
     template = templates[template_name]
@@ -99,6 +150,7 @@ def generate():
 
     questions.confirm_generate(
         template_name=template.display_name,
+        template_description=template.description,
         **extra_parameters
     )
 
@@ -127,6 +179,7 @@ def init():
     while True:
         response = questions.confirm_init(
             template_name=template.display_name,
+            template_description=template.description,
             location=Path(location).resolve(),
             **extra_parameters
         )
@@ -168,8 +221,6 @@ def about():
             os.system(f"""nohup xdg-open "{response}" """)
             os.system(f"""rm nohup.out""")
             erase_lines()
-
-        # TODO: get rid of winpty
 
 
 def main():

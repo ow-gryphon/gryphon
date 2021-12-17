@@ -33,7 +33,25 @@ def get_lib_via_keyboard():
 
 
 @base_question
-def get_lib_category(categories: list):
+def get_generate_option(categories: list):
+    categories = categories.copy()
+    categories.extend([
+        Separator(Text.menu_separator),
+        get_back_choice()
+    ])
+    return questionary.prompt([
+        dict(
+            type='list',
+            name='category',
+            message=Text.add_prompt_categories_question,
+            choices=categories,
+            instruction=Text.add_prompt_instruction
+        )
+    ])['category']
+
+
+@base_question
+def get_add_option(categories: list):
     categories = categories.copy()
     categories.extend([
         Separator(Text.menu_separator),
@@ -135,14 +153,17 @@ def ask_extra_arguments(arguments: list, command="init"):
 
 def confirmation(message=None):
     message = Text.base_confirmation if message is None else message
-    go_ahead = questionary.confirm(message=message).ask()
+    try:
+        go_ahead = questionary.confirm(message=message).ask()
+        if not go_ahead:
+            exit(0)
+    except KeyboardInterrupt:
+        exit(0)
 
-    if not go_ahead:
-        exit(1)
 
-
-def confirm_generate(template_name, **kwargs):
+def confirm_generate(template_name, template_description, **kwargs):
     confirmation(
+        f"\n{template_description}\n\n" +
         Text.generate_confirm
             .replace("{template_name}", template_name)
             .replace("{arguments}", str(kwargs))
@@ -155,9 +176,10 @@ def confirm_add(library_name):
     )
 
 
-def confirm_init(template_name, location, **kwargs):
+def confirm_init(template_name, template_description, location, **kwargs):
 
     message = (
+        f"\n{template_description}\n" +
         Text.init_confirm_1
         .replace("{template_name}", template_name)
         .replace("{location}", str(location))

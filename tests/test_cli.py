@@ -1,9 +1,8 @@
 import os
 import pytest
 import pexpect
-from gryphon_commands.command_operations import activate_venv
 from gryphon_commands.text import Text
-from .utils import create_folder_with_venv, get_pip_path
+from .utils import create_folder_with_venv, get_pip_path, activate_venv
 
 KEY_UP = '\x1b[A'
 KEY_DOWN = '\x1b[B'
@@ -94,6 +93,7 @@ def wizard_add(lib_name):
     child.close()
 
 
+# TODO: Refactor the generate wizard in order to match the new menu experience
 def test_wizard_1(setup, teardown, get_pip_libraries):
 
     file_name = "segmentation"

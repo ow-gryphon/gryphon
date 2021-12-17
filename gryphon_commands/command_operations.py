@@ -83,29 +83,6 @@ def install_libraries(folder=None):
     Logging.log("Installation successful!", fg='green')
 
 
-def activate_venv(folder=None):
-    """
-    Function to activate virtual environment.
-    """
-    target_folder = get_destination_path(folder)
-    try:
-        if platform.system() == "Windows":
-            # On windows the venv folder structure is different from unix
-            activate_path = target_folder / VENV / "Scripts" / "activate.bat"
-            command = [str(activate_path)]
-
-        else:
-            activate_path = target_folder / VENV / "bin" / "activate"
-            command = ['bash', str(activate_path)]
-
-        subprocess.check_call(command)
-
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed to activate venv. {e}")
-
-    Logging.log("Virtual environment activated!", fg='green')
-
-
 def change_shell_folder_and_activate_venv(location):
     target_folder = get_destination_path(location)
 
@@ -115,7 +92,7 @@ def change_shell_folder_and_activate_venv(location):
         pass
     else:
         activate_path = target_folder / VENV / "bin" / "activate"
-        os.chdir(location)
+        os.chdir(target_folder)
 
         shell = os.environ.get('SHELL', '/bin/sh')
         os.execl(shell, shell, "--rcfile", activate_path)
@@ -150,17 +127,24 @@ def append_requirement(library_name):
 
     current_path = get_destination_path()
     requirements_path = current_path / REQUIREMENTS
-    with open(requirements_path, "r", encoding='UTF-8') as file:
-        requirements = file.read()
+    try:
+        with open(requirements_path, "r", encoding='UTF-8') as file:
+            requirements = file.read()
 
-    if library_name not in requirements:
-        with open(requirements_path, "a", encoding='UTF-8') as file:
-            file.write(f"\n{library_name}")
+        if library_name not in requirements:
+            with open(requirements_path, "a", encoding='UTF-8') as file:
+                file.write(f"\n{library_name}")
+
+    except FileNotFoundError:
+        Logging.error(f"Could not find requirements file at {requirements_path}, "
+                      f"It is required to run this command.")
 
 
 def rollback_append_requirement(library_name):
     current_path = get_destination_path()
     requirements_path = current_path / REQUIREMENTS
+
+    assert requirements_path.is_file()
 
     with open(requirements_path, "r", encoding='UTF-8') as file:
         requirements = file.read()
@@ -191,4 +175,5 @@ def populate_rc_file(folder):
     """
     Updates the needed options inside the .labskitrc file.
     """
+    return folder
     # TODO: Create .labskitrc and populate it accordingly

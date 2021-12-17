@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 package_files = [
     str(Path('data') / 'gryphon_config.json'),
-    str(Path('data') / 'lib_category_tree.json')
+    str(Path('data') / 'library_category_tree.json')
 ]
 
 with open("README.md", "r", encoding="utf-8") as fh:
