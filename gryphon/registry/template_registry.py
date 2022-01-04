@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import json
 import glob
-from gryphon_commands.logging import Logging
+from gryphon.logging import Logging
 from .template import Template
 
 

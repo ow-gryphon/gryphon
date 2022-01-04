@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import shutil
 import glob
-from gryphon_commands.logging import Logging
+from gryphon.logging import Logging
 from .command_operations import (
     get_destination_path,
     copy_project_template,

@@ -1,6 +1,6 @@
 import questionary
 from questionary import Choice, Separator
-from gryphon_commands.text import Text
+from gryphon.text import Text
 
 
 def get_back_choice():

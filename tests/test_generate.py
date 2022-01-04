@@ -1,6 +1,6 @@
 import os
 from os import path
-from gryphon_commands.generate import (
+from gryphon.generate import (
     generate,
     parse_project_template,
     pattern_replacement

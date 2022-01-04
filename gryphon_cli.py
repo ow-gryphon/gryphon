@@ -5,14 +5,14 @@ from os import path
 from pathlib import Path
 import json
 import click
-import gryphon_commands
-from gryphon_commands import helpers
-from gryphon_commands.registry import RegistryCollection
+import gryphon
+from gryphon import helpers
+from gryphon.registry import RegistryCollection
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "gryphon_commands" / "data"
+DATA_PATH = PACKAGE_PATH / "gryphon" / "data"
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -24,14 +24,14 @@ def cli():
 def activate():
     """add templates based on arguments and configurations."""
     # TODO: gryphon activate
-    # gryphon_commands.activate()
+    # gryphon.activate()
 
 
 @cli.command()
 @click.argument("library_name")
 def add(library_name):
     """add templates based on arguments and configurations."""
-    gryphon_commands.add(library_name)
+    gryphon.add(library_name)
 
 
 @click.argument("template")
@@ -42,7 +42,7 @@ def generate(template, extra):
     extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
     template = existing_templates[template]
 
-    gryphon_commands.generate(
+    gryphon.generate(
         template_path=template.path,
         requirements=template.dependencies,
         **extra_parameters
@@ -58,7 +58,7 @@ def init(template, location, extra):
     extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
 
     template = existing_templates[template]
-    gryphon_commands.init(
+    gryphon.init(
         template_path=template.path,
         location=location,
         **extra_parameters

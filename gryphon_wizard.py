@@ -1,18 +1,22 @@
 """
 LKit .
 """
-import json
 import os
+import json
 import platform
 from pathlib import Path
-import gryphon_commands
-from gryphon_commands import questions
-from gryphon_commands.registry import RegistryCollection
-from gryphon_commands.logging import Logging
-from gryphon_commands.text import Text
+import gryphon
+from gryphon import questions
+from gryphon.registry import RegistryCollection
+from gryphon.logging import Logging
+from gryphon.text import Text
+
+if platform.system() == "Windows":
+    from colorama import init as init_colorama
+    init_colorama()
 
 PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "gryphon_commands" / "data"
+DATA_PATH = PACKAGE_PATH / "gryphon" / "data"
 BACK = "back"
 
 # Load contents of configuration file
@@ -75,7 +79,7 @@ def add():
 
     questions.confirm_add(library_name)
 
-    gryphon_commands.add(
+    gryphon.add(
         library_name=library_name
     )
 
@@ -154,7 +158,7 @@ def generate():
         **extra_parameters
     )
 
-    gryphon_commands.generate(
+    gryphon.generate(
         template_path=template.path,
         requirements=template.dependencies,
         **extra_parameters,
@@ -193,7 +197,7 @@ def init():
         erase_lines(n_lines=5)
         location = questions.ask_init_location()
 
-    gryphon_commands.init(
+    gryphon.init(
         template_path=template.path,
         location=location,
         **extra_parameters
@@ -236,14 +240,14 @@ def main():
             "about": about,
             "quit": exit
         }[chosen_command]
-        try:
-            response = function()
-            if response != BACK:
-                break
+        # try:
+        response = function()
+        if response != BACK:
+            break
 
-        except Exception as er:
-            Logging.error(f'Runtime error. {er}')
-            exit(1)
+        # except Exception as er:
+        #     Logging.error(f'Runtime error. {er}')
+        #     exit(1)
 
 
 def did_you_mean_gryphon():
@@ -251,6 +255,6 @@ def did_you_mean_gryphon():
 
 
 # this enables us to use the cli without having to install each time
-# by using `python gryphon.py`
+# by using `python gryphon_wizard.py`
 if __name__ == '__main__':
     main()

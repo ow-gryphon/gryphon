@@ -22,7 +22,7 @@ setup(
     description='OW analytics toolkit cli',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    py_modules=['gryph', 'gryphon', 'gryphon_commands'],
+    py_modules=['gryphon_wizard', 'gryphon_cli', 'gryphon'],
     packages=find_packages(),
     install_requires=[requirements],
     python_requires='>=3.7',
@@ -33,10 +33,14 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        gryphon=gryphon:main
-        gryph=gryph:cli
-        griffin=gryphon:did_you_mean_gryphon
+        gryphon=gryphon_wizard:main
+        gryph=gryphon_cli:cli
+        griffin=gryphon_wizard:did_you_mean_gryphon
     ''',
     include_package_data=True,
-    package_data={'gryphon_commands': package_files}
+    package_data={'gryphon': package_files}
 )
+
+# TODO: search by keyword (same menu as use-case and methodology)
+# TODO: show the description of the template before the extra parameters
+# TODO: show topics and sectors on the description according to the print screen

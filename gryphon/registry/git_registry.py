@@ -1,6 +1,6 @@
 from pathlib import Path
 import git
-from gryphon_commands.logging import Logging
+from gryphon.logging import Logging
 from .template_registry import TemplateRegistry
 
 

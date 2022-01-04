@@ -1,7 +1,7 @@
 import os
 import pytest
 import pexpect
-from gryphon_commands.text import Text
+from gryphon.text import Text
 from .utils import create_folder_with_venv, get_pip_path, activate_venv
 
 KEY_UP = '\x1b[A'
@@ -45,7 +45,7 @@ def test_cli_1(setup, teardown, get_pip_libraries):
 
 
 def wizard_init(project_folder):
-    child = pexpect.spawn('python', ['../gryphon.py'])
+    child = pexpect.spawn('python', ['../gryphon_wizard.py'])
     child.expect(WELCOME_MESSAGE)
     child.sendcontrol('m')
     child.expect(Text.init_prompt_template_question)
@@ -61,7 +61,7 @@ def wizard_init(project_folder):
 
 
 def wizard_generate(file_name):
-    child = pexpect.spawn('python', ['../../gryphon.py'])
+    child = pexpect.spawn('python', ['../../gryphon_wizard.py'])
     child.expect(WELCOME_MESSAGE)
     child.send(KEY_DOWN)
     child.sendcontrol('m')
@@ -77,7 +77,7 @@ def wizard_generate(file_name):
 
 
 def wizard_add(lib_name):
-    child = pexpect.spawn('python', ['../../gryphon.py'])
+    child = pexpect.spawn('python', ['../../gryphon_wizard.py'])
     child.expect(WELCOME_MESSAGE)
     child.send(KEY_DOWN * 2)
     child.sendcontrol('m')

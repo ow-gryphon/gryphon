@@ -1,5 +1,5 @@
 import os
-from gryphon_commands import add
+from gryphon import add
 from .utils import create_folder_with_venv
 
 

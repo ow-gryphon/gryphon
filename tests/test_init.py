@@ -1,6 +1,6 @@
 import os
 from os import path
-from gryphon_commands.init import init
+from gryphon.init import init
 from .utils import TEST_FOLDER
 
 

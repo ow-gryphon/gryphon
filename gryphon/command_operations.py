@@ -88,8 +88,13 @@ def change_shell_folder_and_activate_venv(location):
 
     if platform.system() == "Windows":
         # On windows the venv folder structure is different from unix
-        # activate_path = target_folder / VENV / "Scripts" / "activate.bat"
-        pass
+        activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+        os.system(
+            f"""start cmd /k "echo Activating virtual environment & """
+            f"""{activate_path} & """
+            """echo "Virtual environment activated. Now loading Gryphon" & """
+            """gryphon" """
+        )
     else:
         activate_path = target_folder / VENV / "bin" / "activate"
         os.chdir(target_folder)
