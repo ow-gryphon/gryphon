@@ -287,6 +287,30 @@ def generate_2(arguments):
     ]
 
 
+@base_question
+def generate_keyword_question():
+    return questionary.text(
+        message="Type the keyword you want to search for:",
+    ).unsafe_ask()
+
+
+@base_question
+def nothing_found():
+    choices = [
+        Separator("\nCould not find any template with the given keyword"),
+        get_back_choice(),
+        Choice(
+            title="Quit",
+            value="quit"
+        ),
+    ]
+
+    return questionary.select(
+        message=Text.about_prompt_links,
+        choices=choices
+    ).unsafe_ask()
+
+
 def init_1(options) -> list:
     return [
         dict(

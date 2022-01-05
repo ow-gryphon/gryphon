@@ -155,14 +155,19 @@ def generate():
             )
         }
     else:
-        keyword = "lala"
-        # TODO: Pedir pra digitar a keyword
+        lines += 1
+        keyword = questions.generate_keyword_question()
         filtered_templates = filter_by_keyword(keyword)
 
     if not len(filtered_templates):
-        # TODO: Avisar que nao achou nada
-        # TODO: Dar a opção de retornar
-        pass
+        lines += 1
+        response = questions.nothing_found()
+        if response == "quit":
+            return
+
+        if response == BACK:
+            erase_lines(n_lines=lines)
+            return BACK
 
     lines += 1
     template_name = questions.ask_which_template(filtered_templates, command="generate")
