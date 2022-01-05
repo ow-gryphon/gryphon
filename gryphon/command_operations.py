@@ -10,8 +10,7 @@ import subprocess
 import shutil
 import git
 from .logging import Logging
-
-
+from .text import Text
 VENV = ".venv"
 REQUIREMENTS = "requirements.txt"
 
@@ -90,13 +89,22 @@ def change_shell_folder_and_activate_venv(location):
 
         if platform.system() == "Windows":
             # On windows the venv folder structure is different from unix
-            activate_path = target_folder / VENV / "Scripts" / "activate.bat"
-            os.system(
-                f"""start cmd /k "echo Activating virtual environment & """
-                f"""{activate_path} & """
-                """echo "Virtual environment activated. Now loading Gryphon" & """
-                """gryphon" """
-            )
+            # activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+            # os.system(
+            #     f"""start cmd /k "echo Activating virtual environment & """
+            #     f"""{activate_path} & """
+            #     """echo "Virtual environment activated. Now loading Gryphon" & """
+            #     """gryphon" """
+            # )
+
+            Logging.log(f"""
+                {Text.install_end_message_1}
+                
+                >> cd {target_folder}
+                >> .venv/Scripts/activate.bat
+                
+                {Text.install_end_message_2}
+            """, fg='yellow')
         else:
             activate_path = target_folder / VENV / "bin" / "activate"
             os.chdir(target_folder)

@@ -58,3 +58,7 @@ class Text:
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"
+    install_end_message_1 = "To enter the folder of the created project and activate the virtual environment you " \
+                            "can use the following commands:"
+
+    install_end_message_2 = "Once doing this you will be able to add libraries and templates."

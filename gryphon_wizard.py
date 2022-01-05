@@ -41,47 +41,57 @@ def erase_lines(n_lines=2):
 
 def add():
     """add templates based on arguments and configurations."""
-    with open(DATA_PATH / "library_category_tree.json") as file:
-        lib_tree = json.load(file)
-
-    level = -1
-    # loop to return to the category prompt
     while True:
-        level += 1
-        possibilities = list(lib_tree.keys())
-        possibilities.remove("leaf_options")
+        with open(DATA_PATH / "library_category_tree.json") as file:
+            lib_tree = json.load(file)
 
-        choices = {
-            option: "node"
-            for option in possibilities
-        }
+        level = -1
+        # loop to return to the category prompt
+        while True:
+            # TODO: REMOVE this loop and use a predefined menu structure
+            level += 1
+            possibilities = list(lib_tree.keys())
+            possibilities.remove("leaf_options")
 
-        choices.update({
-            option: "leaf"
-            for option in lib_tree["leaf_options"]
-        })
+            choices = {
+                option: "node"
+                for option in possibilities
+            }
 
-        # categories
-        library_name = questions.get_add_option(list(choices.keys()))
+            choices.update({
+                option: "leaf"
+                for option in lib_tree["leaf_options"]
+            })
 
-        # type the bare lib name
-        if library_name == "type":
-            library_name = questions.get_lib_via_keyboard()
-            break
-        elif library_name == BACK:
-            # return to the main menu
-            erase_lines(n_lines=2 + level)
-            return BACK
-        elif choices[library_name] == "node":
-            lib_tree = lib_tree[library_name]
-        else:
-            break
+            # categories
+            library_name = questions.get_add_option(list(choices.keys()))
 
-    questions.confirm_add(library_name)
+            # type the bare lib name
+            if library_name == "type":
+                library_name = questions.get_lib_via_keyboard()
+                break
+            elif library_name == BACK:
+                # return to the main menu
+                if level > 0:
+                    erase_lines(n_lines=level + 1)
+                    break
+                else:
+                    erase_lines(n_lines=level + 2)
+                    return BACK
+            elif choices[library_name] == "node":
+                lib_tree = lib_tree[library_name]
+            else:
+                break
 
-    gryphon.add(
-        library_name=library_name
-    )
+        if library_name == BACK and level > 0:
+            continue
+
+        questions.confirm_add(library_name)
+
+        gryphon.add(
+            library_name=library_name
+        )
+        break
 
 
 def generate():
@@ -102,102 +112,104 @@ def generate():
         Logging.log(f"\tSectors: {', '.join(template.sector)}")
         Logging.log(f"\tMethodology: {', '.join(template.methodology)}\n")
 
-    with open(DATA_PATH / "template_category_tree.json") as file:
-        template_tree = json.load(file)
+    while True:
+        with open(DATA_PATH / "template_category_tree.json") as file:
+            template_tree = json.load(file)
 
-    choices = list(template_tree.keys())
-    templates = commands.get_templates("generate")
+        choices = list(template_tree.keys())
+        templates = commands.get_templates("generate")
 
-    # categories
-    category = questions.get_generate_option(choices)
+        # categories
+        category = questions.get_generate_option(choices)
 
-    navigation = category
-    lines = 2
-    if category != "Search by keyword":
+        navigation = category
+        lines = 2
+        if category != "Search by keyword":
 
-        if category == BACK:
-            # return to the main menu
-            erase_lines(n_lines=lines)
-            return BACK
-
-        elif category == "Use-cases":
-            lines += 1
-            template_tree = template_tree[category]
-
-            choices = list(template_tree.keys())
-            choices.remove("leaf_options")
-
-            navigation = questions.get_generate_option(choices)
-
-            if navigation == BACK:
+            if category == BACK:
                 # return to the main menu
                 erase_lines(n_lines=lines)
                 return BACK
 
-        # subcategories
-        lines += 1
-        choices = template_tree[navigation]["leaf_options"]
-        subcategory = questions.get_generate_option(choices)
+            elif category == "Use-cases":
+                lines += 1
+                template_tree = template_tree[category]
 
-        if subcategory == BACK:
+                choices = list(template_tree.keys())
+                choices.remove("leaf_options")
+
+                navigation = questions.get_generate_option(choices)
+
+                if navigation == BACK:
+                    # return to the main menu
+                    erase_lines(n_lines=lines - 1)
+                    continue
+
+            # subcategories
+            lines += 1
+            choices = template_tree[navigation]["leaf_options"]
+            subcategory = questions.get_generate_option(choices)
+
+            if subcategory == BACK:
+                # return to the main menu
+                erase_lines(n_lines=lines - 1)
+                continue
+
+            # filter the templates for that tree level
+            filtered_templates = {
+                name: template
+                for name, template in templates.items()
+                if (
+                    (category == "Methodology" and (subcategory in template.methodology)) or
+                    (category == "Use-cases" and (subcategory in template.sector)) or
+                    (category == "Use-cases" and (subcategory in template.topic))
+                )
+            }
+        else:
+            lines += 1
+            keyword = questions.generate_keyword_question()
+            filtered_templates = filter_by_keyword(keyword)
+
+        if not len(filtered_templates):
+            lines += 1
+            response = questions.nothing_found()
+            if response == "quit":
+                return
+
+            if response == BACK:
+                erase_lines(n_lines=lines - 1)
+                continue
+
+        lines += 1
+        template_name = questions.ask_which_template(filtered_templates, command="generate")
+
+        if template_name == BACK:
             # return to the main menu
-            erase_lines(n_lines=lines)
-            return BACK
+            erase_lines(n_lines=lines - 1)
+            continue
 
-        # filter the templates for that tree level
-        filtered_templates = {
-            name: template
-            for name, template in templates.items()
-            if (
-                (category == "Methodology" and (subcategory in template.methodology)) or
-                (category == "Use-cases" and (subcategory in template.sector)) or
-                (category == "Use-cases" and (subcategory in template.topic))
-            )
-        }
-    else:
-        lines += 1
-        keyword = questions.generate_keyword_question()
-        filtered_templates = filter_by_keyword(keyword)
+        template = templates[template_name]
 
-    if not len(filtered_templates):
-        lines += 1
-        response = questions.nothing_found()
-        if response == "quit":
-            return
+        display_template_information(template)
 
-        if response == BACK:
-            erase_lines(n_lines=lines)
-            return BACK
+        Logging.log(Text.generate_ask_extra_parameters)
 
-    lines += 1
-    template_name = questions.ask_which_template(filtered_templates, command="generate")
+        extra_parameters = questions.ask_extra_arguments(
+            template.arguments,
+            command="generate"
+        )
 
-    if template_name == BACK:
-        # return to the main menu
-        erase_lines(n_lines=lines)
-        return BACK
+        questions.confirm_generate(
+            template_name=template.display_name,
+            **extra_parameters
+        )
 
-    template = templates[template_name]
-
-    display_template_information(template)
-
-    Logging.log(Text.generate_ask_extra_parameters)
-
-    extra_parameters = questions.ask_extra_arguments(
-        template.arguments,
-        command="generate"
-    )
-
-    questions.confirm_generate(
-        template_name=template.display_name,
-        **extra_parameters
-    )
-
-    gryphon.generate(
-        template_path=template.path,
-        requirements=template.dependencies,
-        **extra_parameters,
-    )
+        gryphon.generate(
+            template_path=template.path,
+            requirements=template.dependencies,
+            **extra_parameters,
+        )
+        break
 
 
 def init():
@@ -299,6 +311,5 @@ if __name__ == '__main__':
 
     main()
 
-# TODO: Lops pra voltar para o menu anterior e nao para o primeiro de todos
-# TODO: Remover a feature de abrir um novo CMD no linux e sim dar umas instruções pro camarada abrir por conta propria
-# TODO: (SE DER) exibir links das documentações de cada uma das libs que vao ser installadas antes de instalar
+# TODO: Implement a history of navegation on the menus to make the "back to previous menu" easier to implement
+# TODO: (SE DER) exibir links das documentações de cada uma das libs que vao ser instaladas antes de instalar
