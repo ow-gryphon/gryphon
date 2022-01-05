@@ -72,7 +72,7 @@ def add():
             # return to the main menu
             erase_lines(n_lines=2 + level)
             return BACK
-        elif choices[library_name] == "category":
+        elif choices[library_name] == "node":
             lib_tree = lib_tree[library_name]
         else:
             break
@@ -298,3 +298,7 @@ if __name__ == '__main__':
         os.system("clear")
 
     main()
+
+# TODO: Lops pra voltar para o menu anterior e nao para o primeiro de todos
+# TODO: Remover a feature de abrir um novo CMD no linux e sim dar umas instruções pro camarada abrir por conta propria
+# TODO: (SE DER) exibir links das documentações de cada uma das libs que vao ser installadas antes de instalar
