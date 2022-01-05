@@ -56,3 +56,5 @@ class Text:
     init_confirm_1 = "\n\nConfirm that you want to start a new \"{template_name}\" project" \
                      "\nInside the folder \"{location}\""
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
+
+    generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"

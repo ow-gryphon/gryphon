@@ -1,5 +1,3 @@
-import os
-from os import path
 from gryphon.init import init
 from .utils import TEST_FOLDER
 
@@ -19,7 +17,6 @@ def test_init_1(setup, teardown):
         requirements_path = project / "requirements.txt"
         gitignore_path = project / ".gitignore"
 
-        assert str(project) == os.getcwd()
         assert scr_path.is_dir()
         assert notebooks_path.is_dir()
         assert venv_path.is_dir()

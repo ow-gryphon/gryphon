@@ -12,8 +12,8 @@ from gryphon.logging import Logging
 from gryphon.text import Text
 
 if platform.system() == "Windows":
-    from colorama import init as init_colorama
-    init_colorama()
+    from colorama import init
+    init()
 
 PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "gryphon" / "data"
@@ -87,65 +87,96 @@ def add():
 def generate():
     """generates templates based on arguments and configurations."""
 
+    def filter_by_keyword(keyword_to_find):
+        if keyword_to_find not in ['', ' ']:
+            return {
+                name: template
+                for name, template in templates.items()
+                if keyword_to_find.lower() in '\t'.join(template.keywords).lower()
+            }
+        return []
+
+    def display_template_information(template):
+        Logging.log(f"\n{template.description}\n")
+        Logging.log(f"\tTopics: {', '.join(template.topic)}")
+        Logging.log(f"\tSectors: {', '.join(template.sector)}")
+        Logging.log(f"\tMethodology: {', '.join(template.methodology)}\n")
+
     with open(DATA_PATH / "template_category_tree.json") as file:
         template_tree = json.load(file)
 
     choices = list(template_tree.keys())
+    templates = commands.get_templates("generate")
 
     # categories
     category = questions.get_generate_option(choices)
 
     navigation = category
     lines = 2
-    if category == BACK:
-        # return to the main menu
-        erase_lines(n_lines=lines)
-        return BACK
-    elif category == "Use-cases":
-        lines += 1
-        template_tree = template_tree[category]
+    if category != "Search by keyword":
 
-        choices = list(template_tree.keys())
-        choices.remove("leaf_options")
-
-        navigation = questions.get_generate_option(choices)
-
-        if navigation == BACK:
+        if category == BACK:
             # return to the main menu
             erase_lines(n_lines=lines)
             return BACK
 
-    # subcategories
-    lines += 1
-    choices = template_tree[navigation]["leaf_options"]
-    subcategory = questions.get_generate_option(choices)
+        elif category == "Use-cases":
+            lines += 1
+            template_tree = template_tree[category]
 
-    if subcategory == BACK:
-        # return to the main menu
-        erase_lines(n_lines=lines)
-        return BACK
+            choices = list(template_tree.keys())
+            choices.remove("leaf_options")
 
-    templates = commands.get_templates("generate")
+            navigation = questions.get_generate_option(choices)
 
-    # filter the templates for that tree level
-    filtered_templates = {
-        name: template
-        for name, template in templates.items()
-        if (
-            (category == "Methodology" and (subcategory in template.methodology)) or
-            (category == "Use-cases" and (subcategory in template.sector)) or
-            (category == "Use-cases" and (subcategory in template.topic))
-        )
-    }
+            if navigation == BACK:
+                # return to the main menu
+                erase_lines(n_lines=lines)
+                return BACK
+
+        # subcategories
+        lines += 1
+        choices = template_tree[navigation]["leaf_options"]
+        subcategory = questions.get_generate_option(choices)
+
+        if subcategory == BACK:
+            # return to the main menu
+            erase_lines(n_lines=lines)
+            return BACK
+
+        # filter the templates for that tree level
+        filtered_templates = {
+            name: template
+            for name, template in templates.items()
+            if (
+                (category == "Methodology" and (subcategory in template.methodology)) or
+                (category == "Use-cases" and (subcategory in template.sector)) or
+                (category == "Use-cases" and (subcategory in template.topic))
+            )
+        }
+    else:
+        keyword = "lala"
+        # TODO: Pedir pra digitar a keyword
+        filtered_templates = filter_by_keyword(keyword)
+
+    if not len(filtered_templates):
+        # TODO: Avisar que nao achou nada
+        # TODO: Dar a opção de retornar
+        pass
 
     lines += 1
     template_name = questions.ask_which_template(filtered_templates, command="generate")
 
     if template_name == BACK:
+        # return to the main menu
         erase_lines(n_lines=lines)
         return BACK
 
     template = templates[template_name]
+
+    display_template_information(template)
+
+    Logging.log(Text.generate_ask_extra_parameters)
 
     extra_parameters = questions.ask_extra_arguments(
         template.arguments,
@@ -154,7 +185,6 @@ def generate():
 
     questions.confirm_generate(
         template_name=template.display_name,
-        template_description=template.description,
         **extra_parameters
     )
 
@@ -240,14 +270,14 @@ def main():
             "about": about,
             "quit": exit
         }[chosen_command]
-        # try:
-        response = function()
-        if response != BACK:
-            break
 
-        # except Exception as er:
-        #     Logging.error(f'Runtime error. {er}')
-        #     exit(1)
+        try:
+            response = function()
+            if response != BACK:
+                break
+        except Exception as er:
+            # Logging.error(f'Runtime error. {er}')
+            raise er
 
 
 def did_you_mean_gryphon():
@@ -257,4 +287,9 @@ def did_you_mean_gryphon():
 # this enables us to use the cli without having to install each time
 # by using `python gryphon_wizard.py`
 if __name__ == '__main__':
+    if platform.system() == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")
+
     main()

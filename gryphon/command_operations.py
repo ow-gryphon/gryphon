@@ -2,6 +2,7 @@
 File containing operations that are common to the commands.
 """
 
+import sys
 import os
 from pathlib import Path
 import platform
@@ -84,23 +85,24 @@ def install_libraries(folder=None):
 
 
 def change_shell_folder_and_activate_venv(location):
-    target_folder = get_destination_path(location)
+    if 'pytest' not in sys.modules:
+        target_folder = get_destination_path(location)
 
-    if platform.system() == "Windows":
-        # On windows the venv folder structure is different from unix
-        activate_path = target_folder / VENV / "Scripts" / "activate.bat"
-        os.system(
-            f"""start cmd /k "echo Activating virtual environment & """
-            f"""{activate_path} & """
-            """echo "Virtual environment activated. Now loading Gryphon" & """
-            """gryphon" """
-        )
-    else:
-        activate_path = target_folder / VENV / "bin" / "activate"
-        os.chdir(target_folder)
+        if platform.system() == "Windows":
+            # On windows the venv folder structure is different from unix
+            activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+            os.system(
+                f"""start cmd /k "echo Activating virtual environment & """
+                f"""{activate_path} & """
+                """echo "Virtual environment activated. Now loading Gryphon" & """
+                """gryphon" """
+            )
+        else:
+            activate_path = target_folder / VENV / "bin" / "activate"
+            os.chdir(target_folder)
 
-        shell = os.environ.get('SHELL', '/bin/sh')
-        os.execl(shell, shell, "--rcfile", activate_path)
+            shell = os.environ.get('SHELL', '/bin/sh')
+            os.execl(shell, shell, "--rcfile", activate_path)
 
 
 def copy_project_template(template_source: Path, template_destiny: Path):

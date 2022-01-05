@@ -13,3 +13,4 @@ class Template:
         self.methodology = template_metadata.get("methodology", [])
         self.sector = template_metadata.get("sector", [])
         self.topic = template_metadata.get("topic", [])
+        self.keywords = template_metadata.get("keywords", [])

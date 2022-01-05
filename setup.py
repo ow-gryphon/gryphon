@@ -40,7 +40,3 @@ setup(
     include_package_data=True,
     package_data={'gryphon': package_files}
 )
-
-# TODO: search by keyword (same menu as use-case and methodology)
-# TODO: show the description of the template before the extra parameters
-# TODO: show topics and sectors on the description according to the print screen
