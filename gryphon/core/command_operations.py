@@ -4,13 +4,16 @@ File containing operations that are common to the commands.
 
 import sys
 import os
+import logging
 from pathlib import Path
 import platform
 import subprocess
 import shutil
 import git
-from .logger import Logging
-from .text import Text
+from .core_text import Text
+
+
+logger = logging.getLogger('gryphon')
 
 VENV = ".venv"
 REQUIREMENTS = "requirements.txt"
@@ -41,9 +44,9 @@ def create_venv(folder=None):
     venv_path = target_folder / VENV
 
     # Create venv
-    Logging.log(f"Creating virtual environment in {venv_path}")
+    logger.debug(f"Creating virtual environment in {venv_path}")
     os.system(f"python -m venv \"{venv_path}\"")
-    Logging.log("Done creating virtual environment.", fg='green')
+    logger.info("Done creating virtual environment.")
 
 
 def quote_windows_path(folder_path):
@@ -68,7 +71,7 @@ def install_libraries(folder=None):
         pip_path = target_folder / VENV / "bin" / "pip"
 
     # Install requirements
-    Logging.log("Installing requirements. This may take several minutes ...")
+    logger.debug("Installing requirements. This may take several minutes ...")
 
     if not pip_path.is_file():
         raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
@@ -81,7 +84,7 @@ def install_libraries(folder=None):
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")
 
-    Logging.log("Installation successful!", fg='green')
+    logger.info("Installation successful!")
 
 
 def change_shell_folder_and_activate_venv(location):
@@ -98,14 +101,14 @@ def change_shell_folder_and_activate_venv(location):
             #     """gryphon" """
             # )
 
-            Logging.log(f"""
+            logger.warning(f"""
                 {Text.install_end_message_1}
                 
                 >> cd {target_folder}
                 >> .venv/Scripts/activate.bat
                 
                 {Text.install_end_message_2}
-            """, fg='yellow')
+            """)
         else:
             activate_path = target_folder / VENV / "bin" / "activate"
             os.chdir(target_folder)
@@ -152,8 +155,8 @@ def append_requirement(library_name):
                 file.write(f"\n{library_name}")
 
     except FileNotFoundError:
-        Logging.error(f"Could not find requirements file at {requirements_path}, "
-                      f"It is required to run this command.")
+        logger.error(f"Could not find requirements file at {requirements_path}, "
+                     f"It is required to run this command.")
 
 
 def rollback_append_requirement(library_name):

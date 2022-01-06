@@ -4,11 +4,14 @@ the templates metadata into memory.
 """
 
 import os
+import logging
 from pathlib import Path
 import json
 import glob
-from ..logger import Logging
 from .template import Template
+
+
+logger = logging.getLogger('gryphon')
 
 
 class TemplateRegistry:
@@ -55,8 +58,8 @@ class TemplateRegistry:
             with open(filename, encoding='UTF-8') as file:
                 return json.load(file)
         except FileNotFoundError:
-            Logging.warn(f"template at {path} does not contain a metadata.json file.")
+            logger.warning(f"template at {path} does not contain a metadata.json file.")
             return {}
         except json.JSONDecodeError:
-            Logging.warn(f"template at {path} has a malformed json on metadata.json file.")
+            logger.warning(f"template at {path} has a malformed json on metadata.json file.")
             return {}

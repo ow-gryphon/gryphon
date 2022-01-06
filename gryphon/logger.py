@@ -1,25 +1,25 @@
-import click
+import logging
+from colorlog import ColoredFormatter
+
+
+LOG_LEVEL = logging.DEBUG
+
+logging.root.setLevel(LOG_LEVEL)
+
+formatter = ColoredFormatter(
+    "%(log_color)s%(message)s",
+    log_colors={
+        'INFO': 'green',
+        'WARNING': 'yellow',
+        'ERROR': 'red',
+        'CRITICAL': 'red,bg_white',
+    }
+)
+
+stream = logging.StreamHandler()
+stream.setFormatter(formatter)
+
+logger = logging.getLogger('gryphon')
+logger.addHandler(stream)
 
 # TODO: insert file logging if needed in the future
-
-
-class Logging:
-    def __init__(self):
-        # Class created just to provide namespace to the methods
-        return
-
-    @staticmethod
-    def log(message, **kwargs):
-        click.secho(message, **kwargs)
-
-    @staticmethod
-    def info(message):
-        click.secho(f"INFO: {message}", fg='blue')
-
-    @staticmethod
-    def warn(message):
-        click.secho(f"WARNING: {message}", fg='yellow')
-
-    @staticmethod
-    def error(message):
-        click.secho(f"ERROR: {message}", fg='red')

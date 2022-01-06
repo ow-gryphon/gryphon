@@ -1,7 +1,10 @@
+import logging
 import questionary
 from questionary import Choice, Separator
-from .text import Text
-from .logger import Logging
+from .wizard_text import Text
+
+
+logger = logging.getLogger('gryphon')
 
 
 def base_question(function):
@@ -11,7 +14,7 @@ def base_question(function):
         except KeyError:
             exit(0)
         except KeyboardInterrupt:
-            Logging.log(f'\nOperation cancelled by user\n')
+            logger.warning(f'\nOperation cancelled by user\n')
             exit(0)
 
     return _f

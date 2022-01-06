@@ -132,4 +132,4 @@ dmypy.json
 
 token.txt
 /.scannerwork/
-gryphon/data/template_registry
+gryphon/core/data/template_registry

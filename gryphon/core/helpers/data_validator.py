@@ -33,7 +33,7 @@ def validate_parameters(parameters, template_name: str, existing_templates: Dict
         raise RuntimeError(error)
 
     # TODO: Validate also the case where num_given_parameters is
-    #  strictly higher than num_required_parameters
+    #  strictly higher than num_required_parameters'
     
     if num_given_parameters == num_required_parameters:
         return {

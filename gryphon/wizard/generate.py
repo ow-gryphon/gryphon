@@ -1,9 +1,13 @@
 import json
+import logging
 import gryphon.core as gryphon
-from .functions import *
+from .functions import (display_template_information, erase_lines, filter_by_keyword)
 from .constants import *
-from .text import Text
+from .wizard_text import Text
 from .questions import Questions
+
+
+logger = logging.getLogger('gryphon')
 
 
 def generate(data_path, registry):
@@ -65,7 +69,7 @@ def generate(data_path, registry):
         else:
             lines += 1
             keyword = Questions.generate_keyword_question()
-            filtered_templates = filter_by_keyword(keyword)
+            filtered_templates = filter_by_keyword(keyword, templates)
 
         if not len(filtered_templates):
             lines += 1
@@ -89,7 +93,7 @@ def generate(data_path, registry):
 
         display_template_information(template)
 
-        Logging.log(Text.generate_ask_extra_parameters)
+        logger.debug(Text.generate_ask_extra_parameters)
 
         extra_parameters = Questions.ask_extra_arguments(
             template.arguments,

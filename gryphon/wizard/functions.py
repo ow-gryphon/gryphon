@@ -1,6 +1,9 @@
+import logging
 from typing import Dict
-from .logger import Logging
 from gryphon.core.registry import Template
+
+
+logger = logging.getLogger('gryphon')
 
 
 def erase_lines(n_lines=2):
@@ -9,10 +12,10 @@ def erase_lines(n_lines=2):
 
 
 def display_template_information(template):
-    Logging.log(f"\n{template.description}\n")
-    Logging.log(f"\tTopics: {', '.join(template.topic)}")
-    Logging.log(f"\tSectors: {', '.join(template.sector)}")
-    Logging.log(f"\tMethodology: {', '.join(template.methodology)}\n")
+    logger.info(f"\n{template.description}\n")
+    logger.info(f"\tTopics: {', '.join(template.topic)}")
+    logger.info(f"\tSectors: {', '.join(template.sector)}")
+    logger.info(f"\tMethodology: {', '.join(template.methodology)}\n")
 
 
 def filter_by_keyword(keyword_to_find, templates: Dict[str, Template]):

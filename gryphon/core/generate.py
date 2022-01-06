@@ -6,13 +6,15 @@ import os
 import shutil
 from pathlib import Path
 import glob
-from .logger import Logging
+import logging
 from .command_operations import (
     get_destination_path,
     copy_project_template,
     append_requirement,
     install_libraries
 )
+
+logger = logging.getLogger('gryphon')
 
 # TODO: Think about how to give some help and examples about the commands
 
@@ -24,7 +26,7 @@ def generate(template_path: Path, requirements: list, **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
-    Logging.log("Generating template.", fg='green')
+    logger.info("Generating template.")
     parse_project_template(template_path, kwargs)
 
     for r in requirements:
@@ -56,7 +58,7 @@ def pattern_replacement(input_file, mapper):
         f_in.close()
         f_out.close()
     except UnicodeDecodeError:
-        Logging.warn("There are binary files inside template folder.")
+        logger.warning("There are binary files inside template folder.")
 
     except Exception as exception:
         f_in.close()
@@ -75,7 +77,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     definitive_path = get_destination_path(destination_folder)
 
     # Copy files to a temporary folder
-    Logging.log(f"Creating files at {definitive_path}")
+    logger.info(f"Creating files at {definitive_path}")
 
     copy_project_template(
         template_destiny=temp_path,

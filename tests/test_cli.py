@@ -1,7 +1,7 @@
 import os
 import pytest
 import pexpect
-from gryphon.wizard.text import Text
+from gryphon.wizard.wizard_text import Text
 from .utils import create_folder_with_venv, get_pip_path, activate_venv
 
 KEY_UP = '\x1b[A'

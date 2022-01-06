@@ -1,14 +1,17 @@
 import os
 import platform
-from .functions import *
-from .text import Text
+import logging
+from .functions import erase_lines
+from .wizard_text import Text
 from .questions import Questions
+from .constants import *
 
-BACK = "back"
+
+logger = logging.getLogger('gryphon')
 
 
-def about():
-    Logging.log(Text.about)
+def about(_, __):
+    logger.info(Text.about)
 
     response = None
     while response != "quit":

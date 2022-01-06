@@ -1,9 +1,11 @@
+import logging
 from pathlib import Path
 from typing import List
 from .template_registry import TemplateRegistry
 from .local_registry import LocalRegistry
 from .git_registry import GitRegistry
-from ..logger import Logging
+
+logger = logging.getLogger('gryphon')
 
 
 class RegistryCollection:
@@ -34,8 +36,7 @@ class RegistryCollection:
         if command is None:
             return self.template_data
 
-        assert command in ['add', 'generate', 'init']
-        return self.template_data[command]
+        return self.template_data.get(command, [])
 
     @classmethod
     def from_config_file(cls, settings, data_path: Path):
@@ -58,7 +59,7 @@ class RegistryCollection:
         for name, path in local_registry.items():
             path = Path(path)
             if not path.is_dir():
-                Logging.warn(f"Local template registry \"{path}\" was not found.")
+                logger.warning(f"Local template registry \"{path}\" was not found.")
                 continue
 
             reg = LocalRegistry(

@@ -1,7 +1,9 @@
 from pathlib import Path
+import logging
 import git
-from ..logger import Logging
 from .template_registry import TemplateRegistry
+
+logger = logging.getLogger('gryphon')
 
 
 class GitRegistry(TemplateRegistry):
@@ -28,4 +30,4 @@ class GitRegistry(TemplateRegistry):
             remote = self.repository.remote()
             remote.pull()
         except git.exc.GitCommandError:
-            Logging.warn(f"Failed to update template repository: {self.registry_url}")
+            logger.warn(f"Failed to update template repository: {self.registry_url}")

@@ -12,8 +12,10 @@ from .command_operations import (
     populate_rc_file,
     change_shell_folder_and_activate_venv
 )
-from .logger import Logging
+import logging
 
+
+logger = logging.getLogger('gryphon')
 PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -21,10 +23,10 @@ def init(template_path, location, **kwargs):
     """
     Init command from the OW Gryphon CLI.
     """
-    Logging.log("Creating project scaffolding.", fg='green')
+    logger.info("Creating project scaffolding.")
     kwargs.copy()
 
-    Logging.log(f"Initializing project at {location}")
+    logger.info(f"Initializing project at {location}")
     copy_project_template(
         template_destiny=Path(location),
         template_source=Path(template_path)

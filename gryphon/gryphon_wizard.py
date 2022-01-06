@@ -7,9 +7,9 @@ import platform
 from pathlib import Path
 from gryphon.core.registry import RegistryCollection
 from gryphon import wizard
-from gryphon.wizard.logger import Logging
-from gryphon.wizard.text import Text
+from gryphon.wizard.wizard_text import Text
 from gryphon.wizard.questions import Questions
+from .logger import logger
 
 
 if platform.system() == "Windows":
@@ -32,12 +32,12 @@ try:
         data_path=DATA_PATH / "template_registry"
     )
 except Exception as e:
-    Logging.error(f'Registry loading error. {e}')
+    logger.error(f'Registry loading error. {e}')
     exit(1)
 
 
 def main():
-    Logging.log(Text.welcome)
+    logger.info(Text.welcome)
 
     while True:
         chosen_command = Questions.main_question()
@@ -55,12 +55,12 @@ def main():
             if response != BACK:
                 break
         except Exception as er:
-            # Logging.error(f'Runtime error. {er}')
+            # logger.error(f'Runtime error. {er}')
             raise er
 
 
 def did_you_mean_gryphon():
-    Logging.log("Did you mean \"gryphon\"?")
+    logger.info("Did you mean \"gryphon\"?")
 
 
 # this enables us to use the cli without having to install each time
@@ -73,6 +73,5 @@ if __name__ == '__main__':
 
     main()
 
-# TODO: MAKE LOGGING IN THE RIGHT WAY
 # TODO: Implement a history of navigation on the menus to make the "back to previous menu" easier to implement
 # TODO: (SE DER) show links to library documentations right before installation

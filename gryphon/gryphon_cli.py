@@ -92,7 +92,4 @@ for name, function in functions.items():
 if __name__ == '__main__':
     cli()
 
-# DONE: Treat FIle not found error when searching for requirements.txt file
-# DONE: Show Template description just before the confirmation
-# TODO: Make categories on generate command
 # TODO: Implement gitflow guidelines
