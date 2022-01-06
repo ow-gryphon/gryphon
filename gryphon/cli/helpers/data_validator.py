@@ -1,10 +1,13 @@
 """
 Module containing utilities to validate the extra parameters given in CLI.
 """
+import logging
 from typing import Dict
-from gryphon.registry import Template
-from gryphon.logging import Logging
+from gryphon.core.registry import Template
 from .help_formater import get_template_help, get_command_help
+
+
+logger = logging.getLogger('gryphon')
 
 
 def validate_parameters(parameters, template_name: str, existing_templates: Dict[str, Template]):
@@ -13,7 +16,7 @@ def validate_parameters(parameters, template_name: str, existing_templates: Dict
         assert template_name in existing_templates
     except AssertionError:
         message = f"Template \"{template_name}\" not found."
-        Logging.log(get_command_help(existing_templates))
+        logger.debug(get_command_help(existing_templates))
         raise RuntimeError(message)
 
     template = existing_templates[template_name]
@@ -27,7 +30,7 @@ def validate_parameters(parameters, template_name: str, existing_templates: Dict
     if not num_given_parameters >= num_required_parameters:
         message = get_template_help(template_name, template)
         difference = num_required_parameters - num_given_parameters
-        Logging.log(message)
+        logger.error(message)
 
         error = f"\n\nMissing {difference} required template arguments:\n"
         raise RuntimeError(error)

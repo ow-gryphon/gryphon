@@ -6,7 +6,7 @@ from pathlib import Path
 import json
 import click
 import core as gryphon
-from core import helpers
+from gryphon.cli import helpers
 from core.registry import RegistryCollection
 
 
