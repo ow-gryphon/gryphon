@@ -1,4 +1,4 @@
-from gryphon.init import init
+from gryphon.core.init import init
 from .utils import TEST_FOLDER
 
 
@@ -11,7 +11,7 @@ def test_init_1(setup, teardown):
             template_path=TEST_FOLDER / "data" / "analytics",
             location=project
         )
-        scr_path = project / "src"
+        scr_path = project / "gryphon"
         notebooks_path = project / "notebooks"
         venv_path = project / ".venv"
         requirements_path = project / "requirements.txt"

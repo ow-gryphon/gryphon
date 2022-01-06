@@ -1,7 +1,7 @@
 import os
 import pytest
 import pexpect
-from gryphon.text import Text
+from gryphon.wizard.text import Text
 from .utils import create_folder_with_venv, get_pip_path, activate_venv
 
 KEY_UP = '\x1b[A'
@@ -33,10 +33,10 @@ def test_cli_1(setup, teardown, get_pip_libraries):
         os.system(f"gryph add {lib_name}")
 
         assert (cwd / project_folder).is_dir()
-        assert (cwd / project_folder / "src").is_dir()
+        assert (cwd / project_folder / "gryphon").is_dir()
         assert (cwd / project_folder / "notebooks").is_dir()
         assert (cwd / project_folder / "tests").is_dir()
-        assert (cwd / project_folder / "src" / f"clustering_{file_name}.py").is_file()
+        assert (cwd / project_folder / "gryphon" / f"clustering_{file_name}.py").is_file()
         assert lib_name in get_pip_libraries(cwd / project_folder)
     except Exception as e:
         pytest.fail("Raised exception", e)
@@ -108,10 +108,10 @@ def test_wizard_1(setup, teardown, get_pip_libraries):
         wizard_add(lib_name)
 
         assert (cwd / project_folder).is_dir()
-        assert (cwd / project_folder / "src").is_dir()
+        assert (cwd / project_folder / "gryphon").is_dir()
         assert (cwd / project_folder / "notebooks").is_dir()
         assert (cwd / project_folder / "tests").is_dir()
-        assert (cwd / project_folder / "src" / f"clustering_{file_name}.py").is_file()
+        assert (cwd / project_folder / "gryphon" / f"clustering_{file_name}.py").is_file()
         assert lib_name in get_pip_libraries(cwd / project_folder)
 
     except Exception as e:

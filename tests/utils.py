@@ -6,7 +6,7 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
-from gryphon.command_operations import (
+from gryphon.core.command_operations import (
     create_venv,
     get_destination_path
 )

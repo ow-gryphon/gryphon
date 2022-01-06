@@ -1,6 +1,6 @@
 import pytest
 from .utils import TEST_FOLDER
-from gryphon.registry import \
+from gryphon.core.registry import \
     RegistryCollection, GitRegistry, \
     LocalRegistry, TemplateRegistry
 

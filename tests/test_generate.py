@@ -1,6 +1,6 @@
 import os
 from os import path
-from gryphon.generate import (
+from gryphon.core.generate import (
     generate,
     parse_project_template,
     pattern_replacement
@@ -78,7 +78,7 @@ def test_generate_4(setup, teardown):
 
     expected_files = [
         cwd / "readme_mlclustering.md",
-        cwd / "src" / f"clustering_{parameter}.py"
+        cwd / "gryphon" / f"clustering_{parameter}.py"
     ]
 
     try:
@@ -111,7 +111,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         libraries = get_pip_libraries(cwd)
         assert "scipy" in libraries
         assert (cwd / "readme_mlclustering.md").is_file()
-        assert (cwd / "src" / f"clustering_{file_name}.py").is_file()
+        assert (cwd / "gryphon" / f"clustering_{file_name}.py").is_file()
 
     finally:
         teardown()

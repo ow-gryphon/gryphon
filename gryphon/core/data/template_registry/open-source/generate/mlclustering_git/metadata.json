@@ -1,0 +1,12 @@
+{
+    "arguments": [
+        {
+            "name": "fileName",
+            "type": "str",
+            "required": true,
+            "help": "Name for the clustering problem:"
+        }
+    ],
+    "dependencies": ["scikit-learn"],
+    "display_name": "Clustering"
+}

@@ -5,8 +5,8 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 package_files = [
-    str(Path('data') / 'gryphon_config.json'),
-    str(Path('data') / 'library_category_tree.json')
+    str(Path('core') / 'data' / 'gryphon_config.json'),
+    str(Path('core') / 'data' / 'library_category_tree.json')
 ]
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -22,7 +22,7 @@ setup(
     description='OW analytics toolkit cli',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    py_modules=['gryphon_wizard', 'gryphon_cli', 'gryphon'],
+    py_modules=['gryphon'],
     packages=find_packages(),
     install_requires=[requirements],
     python_requires='>=3.7',
@@ -33,9 +33,9 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        gryphon=gryphon_wizard:main
-        gryph=gryphon_cli:cli
-        griffin=gryphon_wizard:did_you_mean_gryphon
+        gryphon=gryphon.gryphon_wizard:main
+        gryph=gryphon.gryphon_cli:cli
+        griffin=gryphon.gryphon_wizard:did_you_mean_gryphon
     ''',
     include_package_data=True,
     package_data={'gryphon': package_files}
