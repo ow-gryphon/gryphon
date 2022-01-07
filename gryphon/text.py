@@ -62,3 +62,4 @@ class Text:
                             "can use the following commands:"
 
     install_end_message_2 = "Once doing this you will be able to add libraries and templates."
+    could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"

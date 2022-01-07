@@ -299,7 +299,6 @@ def generate_keyword_question():
 @base_question
 def nothing_found():
     choices = [
-        Separator("\nCould not find any template with the given keyword"),
         get_back_choice(),
         Choice(
             title="Quit",
@@ -308,7 +307,7 @@ def nothing_found():
     ]
 
     return questionary.select(
-        message=Text.about_prompt_links,
+        message=Text.could_not_find_any_templates,
         choices=choices
     ).unsafe_ask()
 
