@@ -2,6 +2,7 @@ import logging
 import questionary
 from questionary import Choice, Separator
 from .wizard_text import Text
+from .constants import TYPING
 
 
 logger = logging.getLogger('gryphon')
@@ -66,7 +67,7 @@ class Questions:
             Separator(Text.menu_separator),
             Choice(
                 title=Text.type_library_name_menu_option,
-                value="type"
+                value=TYPING
             ),
             cls.get_back_choice()
         ])
@@ -258,8 +259,8 @@ class Questions:
     @classmethod
     def confirm_generate(cls, template_name, **kwargs):
         cls.confirmation(
-            Text.generate_confirm_1.replace("{template_name}", template_name)
-            + (
+            Text.generate_confirm_1.replace("{template_name}", template_name) +
+            (
                 Text.generate_confirm_2.replace("{arguments}", str(kwargs))
                 if len(kwargs) else ""
             )
@@ -304,7 +305,6 @@ class Questions:
     @base_question
     def nothing_found(cls):
         choices = [
-            Separator("\nCould not find any template with the given keyword"),
             cls.get_back_choice(),
             Choice(
                 title="Quit",
@@ -313,7 +313,7 @@ class Questions:
         ]
 
         return questionary.select(
-            message=Text.about_prompt_links,
+            message=Text.could_not_find_any_templates,
             choices=choices
         ).unsafe_ask()
 
