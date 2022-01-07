@@ -5,6 +5,19 @@ from .functions import *
 from .questions import Questions
 
 
+def get_current_tree_state(tree, history):
+    tree_level = tree.copy()
+
+    for item in history:
+        if item in tree_level:
+            tree_level = tree_level[item]
+            return tree_level
+        elif item in tree_level['leaf_options']:
+            return {}
+        else:
+            raise RuntimeError("Error in tree navigation.")
+
+
 def add(data_path, _):
     """add templates based on arguments and configurations."""
     while True:
