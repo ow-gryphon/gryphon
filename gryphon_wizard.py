@@ -199,6 +199,8 @@ def generate():
                 template.arguments,
                 command="generate"
             )
+        else:
+            extra_parameters = {}
 
         questions.confirm_generate(
             template_name=template.display_name,
