@@ -93,12 +93,15 @@ def generate(data_path, registry):
 
         display_template_information(template)
 
-        logger.debug(Text.generate_ask_extra_parameters)
+        if len(template.arguments):
+            logger.debug(Text.generate_ask_extra_parameters)
 
-        extra_parameters = Questions.ask_extra_arguments(
-            template.arguments,
-            command="generate"
-        )
+            extra_parameters = Questions.ask_extra_arguments(
+                template.arguments,
+                command="generate"
+            )
+        else:
+            extra_parameters = {}
 
         Questions.confirm_generate(
             template_name=template.display_name,

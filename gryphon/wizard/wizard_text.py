@@ -44,8 +44,8 @@ class Text:
 
     # {arguments} is going to be replaced with the extra parameters from the template
     # {template_name} is going to be replaced with the template name
-    generate_confirm = "Confirm that you want to render the \"{template_name}\" template inside the current project." \
-                       "\nUsing the following arguments: {arguments}"
+    generate_confirm_1 = "Confirm that you want to render the \"{template_name}\" template inside the current project."
+    generate_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     # {library_name} is going to be replaced with the library name
     add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."

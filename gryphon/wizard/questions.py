@@ -258,9 +258,11 @@ class Questions:
     @classmethod
     def confirm_generate(cls, template_name, **kwargs):
         cls.confirmation(
-            Text.generate_confirm
-                .replace("{template_name}", template_name)
-                .replace("{arguments}", str(kwargs))
+            Text.generate_confirm_1.replace("{template_name}", template_name)
+            + (
+                Text.generate_confirm_2.replace("{arguments}", str(kwargs))
+                if len(kwargs) else ""
+            )
         )
 
     @classmethod
