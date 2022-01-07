@@ -253,9 +253,11 @@ def confirm_init(template_name, template_description, location, **kwargs):
 
 def confirm_generate(template_name, **kwargs):
     confirmation(
-        Text.generate_confirm
-            .replace("{template_name}", template_name)
-            .replace("{arguments}", str(kwargs))
+        Text.generate_confirm_1.replace("{template_name}", template_name)
+        + (
+            Text.generate_confirm_2.replace("{arguments}", str(kwargs))
+            if len(kwargs) else ""
+        )
     )
 
 

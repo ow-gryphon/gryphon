@@ -192,12 +192,13 @@ def generate():
 
         display_template_information(template)
 
-        Logging.log(Text.generate_ask_extra_parameters)
+        if len(template.arguments):
+            Logging.log(Text.generate_ask_extra_parameters)
 
-        extra_parameters = questions.ask_extra_arguments(
-            template.arguments,
-            command="generate"
-        )
+            extra_parameters = questions.ask_extra_arguments(
+                template.arguments,
+                command="generate"
+            )
 
         questions.confirm_generate(
             template_name=template.display_name,
