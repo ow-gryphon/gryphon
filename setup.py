@@ -6,7 +6,8 @@ from setuptools import setup, find_packages
 
 package_files = [
     str(Path('data') / 'gryphon_config.json'),
-    str(Path('data') / 'lib_category_tree.json')
+    str(Path('data') / 'library_category_tree.json'),
+    str(Path('data') / 'template_category_tree.json')
 ]
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -16,13 +17,13 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
 
 setup(
-    name='labskit',
+    name='gryphon',
     version='0.0.1',
     license='MIT',
     description='OW analytics toolkit cli',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    py_modules=['gryph', 'gryphon', 'gryphon_commands'],
+    py_modules=['gryphon_wizard', 'gryphon_cli', 'gryphon'],
     packages=find_packages(),
     install_requires=[requirements],
     python_requires='>=3.7',
@@ -33,10 +34,10 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        gryphon=gryphon:main
-        gryph=gryph:cli
-        griffin=gryphon:did_you_mean_gryphon
+        gryphon=gryphon_wizard:main
+        gryph=gryphon_cli:cli
+        griffin=gryphon_wizard:did_you_mean_gryphon
     ''',
     include_package_data=True,
-    package_data={'gryphon_commands': package_files}
+    package_data={'gryphon': package_files}
 )

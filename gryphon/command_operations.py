@@ -2,6 +2,7 @@
 File containing operations that are common to the commands.
 """
 
+import sys
 import os
 from pathlib import Path
 import platform
@@ -9,8 +10,7 @@ import subprocess
 import shutil
 import git
 from .logging import Logging
-
-
+from .text import Text
 VENV = ".venv"
 REQUIREMENTS = "requirements.txt"
 
@@ -71,7 +71,7 @@ def install_libraries(folder=None):
 
     if not pip_path.is_file():
         raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
-    
+
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
@@ -81,6 +81,36 @@ def install_libraries(folder=None):
         raise RuntimeError(f"Failed on pip install command. {e}")
 
     Logging.log("Installation successful!", fg='green')
+
+
+def change_shell_folder_and_activate_venv(location):
+    if 'pytest' not in sys.modules:
+        target_folder = get_destination_path(location)
+
+        if platform.system() == "Windows":
+            # On windows the venv folder structure is different from unix
+            # activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+            # os.system(
+            #     f"""start cmd /k "echo Activating virtual environment & """
+            #     f"""{activate_path} & """
+            #     """echo "Virtual environment activated. Now loading Gryphon" & """
+            #     """gryphon" """
+            # )
+
+            Logging.log(f"""
+                {Text.install_end_message_1}
+                
+                >> cd {target_folder}
+                >> .venv/Scripts/activate.bat
+                
+                {Text.install_end_message_2}
+            """, fg='yellow')
+        else:
+            activate_path = target_folder / VENV / "bin" / "activate"
+            os.chdir(target_folder)
+
+            shell = os.environ.get('SHELL', '/bin/sh')
+            os.execl(shell, shell, "--rcfile", activate_path)
 
 
 def copy_project_template(template_source: Path, template_destiny: Path):
@@ -112,17 +142,24 @@ def append_requirement(library_name):
 
     current_path = get_destination_path()
     requirements_path = current_path / REQUIREMENTS
-    with open(requirements_path, "r", encoding='UTF-8') as file:
-        requirements = file.read()
+    try:
+        with open(requirements_path, "r", encoding='UTF-8') as file:
+            requirements = file.read()
 
-    if library_name not in requirements:
-        with open(requirements_path, "a", encoding='UTF-8') as file:
-            file.write(f"\n{library_name}")
+        if library_name not in requirements:
+            with open(requirements_path, "a", encoding='UTF-8') as file:
+                file.write(f"\n{library_name}")
+
+    except FileNotFoundError:
+        Logging.error(f"Could not find requirements file at {requirements_path}, "
+                      f"It is required to run this command.")
 
 
 def rollback_append_requirement(library_name):
     current_path = get_destination_path()
     requirements_path = current_path / REQUIREMENTS
+
+    assert requirements_path.is_file()
 
     with open(requirements_path, "r", encoding='UTF-8') as file:
         requirements = file.read()
@@ -153,4 +190,5 @@ def populate_rc_file(folder):
     """
     Updates the needed options inside the .labskitrc file.
     """
+    return folder
     # TODO: Create .labskitrc and populate it accordingly

@@ -1,21 +1,21 @@
-from os import path
-from gryphon_commands.init import init
+from gryphon.init import init
 from .utils import TEST_FOLDER
 
 
 def test_init_1(setup, teardown):
     cwd = setup()
+    project = cwd / "project"
 
     try:
         init(
             template_path=TEST_FOLDER / "data" / "analytics",
-            location=cwd
+            location=project
         )
-        scr_path = cwd / "src"
-        notebooks_path = cwd / "notebooks"
-        venv_path = cwd / ".venv"
-        requirements_path = cwd / "requirements.txt"
-        gitignore_path = cwd / ".gitignore"
+        scr_path = project / "src"
+        notebooks_path = project / "notebooks"
+        venv_path = project / ".venv"
+        requirements_path = project / "requirements.txt"
+        gitignore_path = project / ".gitignore"
 
         assert scr_path.is_dir()
         assert notebooks_path.is_dir()

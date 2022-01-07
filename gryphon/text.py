@@ -44,8 +44,8 @@ class Text:
 
     # {arguments} is going to be replaced with the extra parameters from the template
     # {template_name} is going to be replaced with the template name
-    generate_confirm = "Confirm that you want to render the \"{template_name}\" template inside the current project." \
-                       "\nUsing the following arguments: {arguments}"
+    generate_confirm_1 = "Confirm that you want to render the \"{template_name}\" template inside the current project."
+    generate_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     # {library_name} is going to be replaced with the library name
     add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."
@@ -56,3 +56,10 @@ class Text:
     init_confirm_1 = "\n\nConfirm that you want to start a new \"{template_name}\" project" \
                      "\nInside the folder \"{location}\""
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
+
+    generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"
+    install_end_message_1 = "To enter the folder of the created project and activate the virtual environment you " \
+                            "can use the following commands:"
+
+    install_end_message_2 = "Once doing this you will be able to add libraries and templates."
+    could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"

@@ -1,4 +1,4 @@
-from gryph.sources.web_cache import WebCsv
+from gryphon_cli.sources.web_cache import WebCsv
 
 
 class HmdaNdSmall(WebCsv):

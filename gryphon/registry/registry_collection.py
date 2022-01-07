@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 from typing import List
-from gryphon_commands import registry
-from gryphon_commands.logging import Logging
+from gryphon import registry
+from gryphon.logging import Logging
 
 
 class RegistryCollection:

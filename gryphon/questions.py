@@ -1,6 +1,7 @@
 import questionary
 from questionary import Choice, Separator
-from gryphon_commands.text import Text
+from gryphon.text import Text
+from gryphon.logging import Logging
 
 
 def get_back_choice():
@@ -16,6 +17,9 @@ def base_question(function):
         try:
             return function(*args, **kwargs)
         except KeyError:
+            exit(0)
+        except KeyboardInterrupt:
+            Logging.log(f'\nOperation cancelled by user\n')
             exit(0)
 
     return _f
@@ -33,7 +37,25 @@ def get_lib_via_keyboard():
 
 
 @base_question
-def get_lib_category(categories: list):
+def get_generate_option(categories: list):
+    categories = categories.copy()
+    categories.extend([
+        Separator(Text.menu_separator),
+        get_back_choice()
+    ])
+    return questionary.unsafe_prompt([
+        dict(
+            type='list',
+            name='category',
+            message=Text.add_prompt_categories_question,
+            choices=categories,
+            instruction=Text.add_prompt_instruction
+        )
+    ])['category']
+
+
+@base_question
+def get_add_option(categories: list):
     categories = categories.copy()
     categories.extend([
         Separator(Text.menu_separator),
@@ -43,7 +65,7 @@ def get_lib_category(categories: list):
         ),
         get_back_choice()
     ])
-    return questionary.prompt([
+    return questionary.unsafe_prompt([
         dict(
             type='list',
             name='library_category',
@@ -80,7 +102,7 @@ def main_question():
         )
     ]
 
-    return questionary.prompt([
+    return questionary.unsafe_prompt([
         dict(
             type='list',
             name='command',
@@ -107,57 +129,101 @@ def ask_which_template(metadata, command="init"):
 
     if command == "generate":
         questions = generate_1(options)
-        responses = questionary.prompt(questions)
+        responses = questionary.unsafe_prompt(questions)
         return responses['template']
 
     elif command == "init":
         questions = init_1(options)
-        template = questionary.prompt(questions[0])['template']
+        template = questionary.unsafe_prompt(questions[0])['template']
         if template == "back":
             return "back", None
 
-        location = questionary.prompt(questions[1])['location']
+        location = questionary.unsafe_prompt(questions[1])['location']
         return template, location
 
 
 @base_question
 def ask_extra_arguments(arguments: list, command="init"):
     arguments = arguments.copy()
-
     if command == "generate":
         extra_questions = generate_2(arguments)
-        return questionary.prompt(extra_questions)
+        return questionary.unsafe_prompt(extra_questions)
 
     elif command == "init":
         extra_questions = init_2(arguments)
-        return questionary.prompt(extra_questions)
+        return questionary.unsafe_prompt(extra_questions)
 
 
+@base_question
+def prompt_about():
+    choices = [
+        Choice(
+            title="Google",
+            value="https://www.google.com/"
+        ),
+        Choice(
+            title="Yahoo",
+            value="https://www.yahoo.com/"
+        ),
+        Separator(Text.menu_separator),
+        get_back_choice(),
+        Choice(
+            title="Quit",
+            value="quit"
+        ),
+    ]
+
+    return questionary.select(
+        message=Text.about_prompt_links,
+        choices=choices
+    ).unsafe_ask()
+
+
+@base_question
+def ask_init_location():
+    return questionary.text(
+        message=Text.init_prompt_location_question
+    ).ask()
+
+
+@base_question
 def confirmation(message=None):
     message = Text.base_confirmation if message is None else message
     go_ahead = questionary.confirm(message=message).ask()
-
     if not go_ahead:
-        exit(1)
+        exit(0)
 
 
-def confirm_generate(template_name, **kwargs):
-    confirmation(
-        Text.generate_confirm
-            .replace("{template_name}", template_name)
-            .replace("{arguments}", str(kwargs))
-    )
+@base_question
+def prompt_about():
+    choices = [
+        Choice(
+            title="Google",
+            value="https://www.google.com/"
+        ),
+        Choice(
+            title="Yahoo",
+            value="https://www.yahoo.com/"
+        ),
+        Separator(Text.menu_separator),
+        get_back_choice(),
+        Choice(
+            title="Quit",
+            value="quit"
+        ),
+    ]
+
+    return questionary.select(
+        message=Text.about_prompt_links,
+        choices=choices
+    ).unsafe_ask()
 
 
-def confirm_add(library_name):
-    confirmation(
-        Text.add_confirm.replace("{library_name}", library_name)
-    )
-
-
-def confirm_init(template_name, location, **kwargs):
+@base_question
+def confirm_init(template_name, template_description, location, **kwargs):
 
     message = (
+        f"\n{template_description}\n" +
         Text.init_confirm_1
         .replace("{template_name}", template_name)
         .replace("{location}", str(location))
@@ -185,10 +251,20 @@ def confirm_init(template_name, location, **kwargs):
     ).unsafe_ask()
 
 
-def ask_init_location():
-    return questionary.text(
-        message=Text.init_prompt_location_question
-    ).ask()
+def confirm_generate(template_name, **kwargs):
+    confirmation(
+        Text.generate_confirm_1.replace("{template_name}", template_name)
+        + (
+            Text.generate_confirm_2.replace("{arguments}", str(kwargs))
+            if len(kwargs) else ""
+        )
+    )
+
+
+def confirm_add(library_name):
+    confirmation(
+        Text.add_confirm.replace("{library_name}", library_name)
+    )
 
 
 def generate_1(options):
@@ -211,6 +287,29 @@ def generate_2(arguments):
         )
         for field in arguments
     ]
+
+
+@base_question
+def generate_keyword_question():
+    return questionary.text(
+        message="Type the keyword you want to search for:",
+    ).unsafe_ask()
+
+
+@base_question
+def nothing_found():
+    choices = [
+        get_back_choice(),
+        Choice(
+            title="Quit",
+            value="quit"
+        ),
+    ]
+
+    return questionary.select(
+        message=Text.could_not_find_any_templates,
+        choices=choices
+    ).unsafe_ask()
 
 
 def init_1(options) -> list:
@@ -238,27 +337,3 @@ def init_2(arguments):
         )
         for field in arguments
     ]
-
-
-def prompt_about():
-    choices = [
-        Choice(
-            title="Google",
-            value="https://www.google.com/"
-        ),
-        Choice(
-            title="Yahoo",
-            value="https://www.yahoo.com/"
-        ),
-        Separator(Text.menu_separator),
-        get_back_choice(),
-        Choice(
-            title="Quit",
-            value="quit"
-        ),
-    ]
-
-    return questionary.select(
-        message=Text.about_prompt_links,
-        choices=choices
-    ).unsafe_ask()

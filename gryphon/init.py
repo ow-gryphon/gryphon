@@ -9,7 +9,8 @@ from .command_operations import (
     create_venv,
     init_new_git_repo,
     initial_git_commit,
-    populate_rc_file
+    populate_rc_file,
+    change_shell_folder_and_activate_venv
 )
 from .logging import Logging
 
@@ -33,3 +34,4 @@ def init(template_path, location, **kwargs):
     install_libraries(folder=location)
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
+    change_shell_folder_and_activate_venv(location)

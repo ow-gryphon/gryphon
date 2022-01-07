@@ -1,4 +1,4 @@
-from gryph.sources.local_csv import LocalCsv
+from gryphon_cli.sources.local_csv import LocalCsv
 
 
 class LocalMMC(LocalCsv):
