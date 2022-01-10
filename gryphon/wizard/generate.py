@@ -17,43 +17,38 @@ def generate(data_path, registry):
         full_tree = json.load(file)
 
     level = 0
-    lines = 2
     template_name = ""
     navigation_history = []
     templates = registry.get_templates("generate")
 
     while True:
-        level =+ 1
+
         template_tree = get_current_tree_state(
             tree=full_tree,
             history=navigation_history
         )
-        # create a list with the current possible options
 
+        # create a list with the current possible options
         possibilities = list(template_tree.keys())
         possibilities.extend(template_tree[LEAF_OPTIONS])
         possibilities.remove(LEAF_OPTIONS)
 
         # categories
-        lines += 1
         chosen_option = Questions.get_generate_option(possibilities)
 
-        filtered_templates = []
         if chosen_option == SEARCH_BY_KEYWORD:
-            lines += 1
             keyword = Questions.generate_keyword_question()
             filtered_templates = filter_by_keyword(keyword, templates)
-
+            level += 1
         elif chosen_option == BACK:
-            if level == 1:
+            erase_lines(n_lines=2)
+
+            if level == 0:
                 # return to the main menu
-                erase_lines(n_lines=lines)
                 return BACK
             else:
-                erase_lines(n_lines=lines)
                 if len(navigation_history):
                     navigation_history.pop()
-
                 level -= 1
                 continue
 
@@ -65,33 +60,44 @@ def generate(data_path, registry):
                 for name, template in templates.items()
                 if (
                     (navigation_history[0] == METHODOLOGY and (chosen_option in template.methodology)) or
-                    (navigation_history[0] == USE_CASES and (navigation_history[1] == "sector") and (chosen_option in template.sector)) or
-                    (navigation_history[0] == USE_CASES and (navigation_history[1] == "topic") and (chosen_option in template.topic))
+                    (navigation_history[0] == USE_CASES and (navigation_history[1] == "sector")
+                     and (chosen_option in template.sector)) or
+                    (navigation_history[0] == USE_CASES and (navigation_history[1] == "topic")
+                     and (chosen_option in template.topic))
                 )
             }
+            navigation_history.append(chosen_option)
+            level += 1
         else:
             # we are not in the leaf yet
             navigation_history.append(chosen_option)
+            level += 1
             continue
 
+        # No template was found with the given navigation/keyword
         if not len(filtered_templates):
-            lines += 1
             response = Questions.nothing_found()
             if response == QUIT:
                 return
 
             if response == BACK:
-                erase_lines(n_lines=lines - 1)
-                navigation_history.pop()
+                if not chosen_option == SEARCH_BY_KEYWORD:
+                    navigation_history.pop()
+                    erase_lines(n_lines=2)
+                else:
+                    erase_lines(n_lines=3)
+                level -= 1
                 continue
 
-        lines += 1
         template_name = Questions.ask_which_template(filtered_templates, command="generate")
 
         if template_name == BACK:
             # return to the main menu
-            erase_lines(n_lines=lines - 1)
+            erase_lines(n_lines=2)
+            level -= 1
             continue
+
+        level += 1
 
     template = templates[template_name]
 

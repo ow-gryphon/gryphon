@@ -110,6 +110,8 @@ def change_shell_folder_and_activate_venv(location):
                 {Text.install_end_message_2}
             """)
         else:
+            logger.debug("Opening your new project folder and activating virtual environment.")
+
             activate_path = target_folder / VENV / "bin" / "activate"
             os.chdir(target_folder)
 

@@ -7,7 +7,7 @@ from .questions import Questions
 
 def add(data_path, _):
     """add templates based on arguments and configurations."""
-    level = -1
+    level = 0
     navigation_history = []
 
     with open(data_path / "library_category_tree.json") as file:
@@ -22,11 +22,10 @@ def add(data_path, _):
         # create a list with the current possible options
 
         possibilities = list(lib_tree.keys())
-        possibilities.append(lib_tree[LEAF_OPTIONS])
+        possibilities.extend(lib_tree[LEAF_OPTIONS])
         possibilities.remove(LEAF_OPTIONS)
 
         # chosen option
-        level += 1
         chosen_option = Questions.get_add_option(possibilities)
 
         # type the bare lib name
@@ -42,7 +41,7 @@ def add(data_path, _):
                 level -= 1
                 continue
             else:
-                erase_lines(n_lines=level)
+                erase_lines(n_lines=2)
                 return BACK
 
         elif chosen_option in lib_tree[LEAF_OPTIONS]:
@@ -50,6 +49,7 @@ def add(data_path, _):
             break
         else:
             # we are not in the leaf yet
+            level += 1
             navigation_history.append(chosen_option)
 
     Questions.confirm_add(chosen_option)
