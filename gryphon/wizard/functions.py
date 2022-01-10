@@ -19,11 +19,24 @@ def display_template_information(template):
 
 
 def filter_by_keyword(keyword_to_find, templates: Dict[str, Template]):
-        if keyword_to_find not in ['', ' ']:
-            return {
-                name: template
-                for name, template in templates.items()
-                if keyword_to_find.lower() in '\t'.join(template.keywords).lower()
-            }
-        return []
+    if keyword_to_find not in ['', ' ']:
+        return {
+            name: template
+            for name, template in templates.items()
+            if keyword_to_find.lower() in '\t'.join(template.keywords).lower()
+        }
+    return []
+
+
+def get_current_tree_state(tree, history):
+    tree_level = tree.copy()
+
+    for item in history:
+        if item in tree_level:
+            tree_level = tree_level[item]
+        else:
+            raise RuntimeError("Error in tree navigation.")
+
+    return tree_level
+
 

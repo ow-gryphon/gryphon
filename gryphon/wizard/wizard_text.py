@@ -58,4 +58,4 @@ class Text:
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template:"
-    could_not_find_any_templates = "\nCould not find any template with the given keyword. What to do next?"
+    could_not_find_any_templates = "Could not find any template with this specifications. What to do next?"

@@ -1,20 +1,8 @@
 import json
 import gryphon.core as gryphon
-from .constants import NODE, LEAF, BACK, TYPING, LEAF_OPTIONS
-from .functions import erase_lines
+from .constants import NODE, BACK, TYPING, LEAF_OPTIONS
+from .functions import erase_lines, get_current_tree_state
 from .questions import Questions
-
-
-def get_current_tree_state(tree, history):
-    tree_level = tree.copy()
-
-    for item in history:
-        if item in tree_level:
-            tree_level = tree_level[item]
-        else:
-            raise RuntimeError("Error in tree navigation.")
-
-    return tree_level
 
 
 def add(data_path, _):
@@ -31,23 +19,15 @@ def add(data_path, _):
             history=navigation_history
         )
 
+        # create a list with the current possible options
+
         possibilities = list(lib_tree.keys())
         possibilities.append(lib_tree[LEAF_OPTIONS])
         possibilities.remove(LEAF_OPTIONS)
 
-        choices = {
-            option: NODE
-            for option in possibilities
-        }
-
-        choices.update({
-            option: LEAF
-            for option in lib_tree[LEAF_OPTIONS]
-        })
-
         # chosen option
         level += 1
-        chosen_option = Questions.get_add_option(list(choices.keys()))
+        chosen_option = Questions.get_add_option(possibilities)
 
         # type the bare lib name
         if chosen_option == TYPING:
@@ -64,11 +44,13 @@ def add(data_path, _):
             else:
                 erase_lines(n_lines=level)
                 return BACK
-        elif choices[chosen_option] == NODE:
-            navigation_history.append(chosen_option)
-        elif choices[chosen_option] == LEAF:
+
+        elif chosen_option in lib_tree[LEAF_OPTIONS]:
             # this is the leaf item
             break
+        else:
+            # we are not in the leaf yet
+            navigation_history.append(chosen_option)
 
     Questions.confirm_add(chosen_option)
 
