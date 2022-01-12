@@ -17,12 +17,20 @@ class GitRegistry(TemplateRegistry):
                     url=self.registry_url,
                     to_path=self.registry_folder
                 )
-        else:
+        elif self.is_git_repo(self.registry_folder):
             self.repository = git.Repo(self.registry_folder)
             assert not self.repository.bare
             self.update_registry()
 
         super().__init__(templates_path=self.registry_folder)
+
+    @staticmethod
+    def is_git_repo(path):
+        try:
+            _ = git.Repo(path).git_dir
+            return True
+        except git.exc.InvalidGitRepositoryError:
+            return False
 
     def update_registry(self):
         """Updates the template registry to the latest remote one."""
@@ -30,4 +38,4 @@ class GitRegistry(TemplateRegistry):
             remote = self.repository.remote()
             remote.pull()
         except git.exc.GitCommandError:
-            logger.warn(f"Failed to update template repository: {self.registry_url}")
+            logger.warning(f"Failed to update template repository: {self.registry_url}")

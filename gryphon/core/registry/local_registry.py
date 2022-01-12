@@ -11,7 +11,6 @@ class LocalRegistry(TemplateRegistry):
         self.registry_origin = registry_origin
 
         assert len(str(self.registry_folder))
-        assert self.registry_origin.is_dir()
 
         if self.registry_folder.is_dir():
             remove_folder(self.registry_folder)
@@ -28,5 +27,6 @@ class LocalRegistry(TemplateRegistry):
         shutil.copytree(
             src=self.registry_origin,
             dst=self.registry_folder,
-            dirs_exist_ok=True
+            dirs_exist_ok=True,
+            copy_function=shutil.copy
         )

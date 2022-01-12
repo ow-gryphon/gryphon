@@ -83,7 +83,7 @@ def test_install_libraries_1(setup, teardown, get_pip_libraries):
 def test_install_libraries_2(setup, teardown):
     """
     Test case:
-    In an empty folder try install libraries from the requirements.txt
+    In an empty folder try to install libraries from the requirements.txt
     should raise error.
     """
     folder_path = setup()

@@ -18,7 +18,7 @@ if platform.system() == "Windows":
     init()
 
 PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "core" / "data"
+DATA_PATH = PACKAGE_PATH / "data"
 BACK = "back"
 
 # Load contents of configuration file

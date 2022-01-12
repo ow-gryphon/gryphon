@@ -12,7 +12,7 @@ def test_add_1(setup, teardown, get_pip_libraries):
     cwd = setup()
 
     try:
-        create_folder_with_venv(cwd)
+        create_folder_with_venv()
         add(library_name=lib)
 
         with open(cwd / "requirements.txt") as r:

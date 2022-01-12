@@ -1,13 +1,13 @@
 """
-Setup module for the labskit package.  
+Setup module for the gryphon package.
 """
 from pathlib import Path
 from setuptools import setup, find_packages
 
 package_files = [
-    str(Path('core') / 'data' / 'gryphon_config.json'),
-    str(Path('core') / 'data' / 'library_category_tree.json'),
-    str(Path('core') / 'data' / 'template_category_tree.json')
+    str(Path('data') / 'gryphon_config.json'),
+    str(Path('data') / 'library_category_tree.json'),
+    str(Path('data') / 'template_category_tree.json')
 ]
 
 with open("README.md", "r", encoding="utf-8") as fh:

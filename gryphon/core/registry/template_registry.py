@@ -5,6 +5,7 @@ the templates metadata into memory.
 
 import os
 import logging
+import sys
 from pathlib import Path
 import json
 import glob
@@ -58,8 +59,12 @@ class TemplateRegistry:
             with open(filename, encoding='UTF-8') as file:
                 return json.load(file)
         except FileNotFoundError:
+            if 'pytest' in sys.modules:
+                print(f"template at {path} does not contain a metadata.json file.")
             logger.warning(f"template at {path} does not contain a metadata.json file.")
             return {}
         except json.JSONDecodeError:
+            if 'pytest' in sys.modules:
+                print(f"template at {path} has a malformed json on metadata.json file.")
             logger.warning(f"template at {path} has a malformed json on metadata.json file.")
             return {}

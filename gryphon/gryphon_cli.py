@@ -12,7 +12,7 @@ from core.registry import RegistryCollection
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "core" / "data"
+DATA_PATH = PACKAGE_PATH / "data"
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)

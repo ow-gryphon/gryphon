@@ -11,7 +11,7 @@ def test_init_1(setup, teardown):
             template_path=TEST_FOLDER / "data" / "analytics",
             location=project
         )
-        scr_path = project / "gryphon"
+        scr_path = project / "src"
         notebooks_path = project / "notebooks"
         venv_path = project / ".venv"
         requirements_path = project / "requirements.txt"

@@ -25,7 +25,7 @@ def get_destination_path(folder=None) -> Path:
 
     It checks if the path is an absolute or relative path, then
     if relative, it appends the current folder to it, transforming
-    it into a absolute path.
+    it into an absolute path.
     """
     if folder is None:
         return Path.cwd()
@@ -65,7 +65,7 @@ def install_libraries(folder=None):
     requirements_path = target_folder / REQUIREMENTS
 
     if platform.system() == "Windows":
-        # On windows the venv folder structure is different from unix
+        # On Windows the venv folder structure is different from unix
         pip_path = target_folder / VENV / "Scripts" / "pip.exe"
     else:
         pip_path = target_folder / VENV / "bin" / "pip"
@@ -182,7 +182,7 @@ def remove_folder(folder: Path):
     """
     Removes a folder (location relative to cwd or absolute).
     """
-    shutil.rmtree(folder, ignore_errors=True)
+    shutil.rmtree(folder, ignore_errors=False)
 
 
 def create_folder(folder: Path):

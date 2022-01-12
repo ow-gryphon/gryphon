@@ -1,7 +1,7 @@
 """
 Utility functions for the test suite.
 """
-
+import os
 from pathlib import Path
 import platform
 import shutil
@@ -10,35 +10,53 @@ from gryphon.core.command_operations import (
     create_venv,
     get_destination_path
 )
+import errno
+import stat
+
 
 TEST_FOLDER = Path("tests").resolve()
 VENV = ".venv"
+
+
+def on_error(func, path, exc):
+    value = exc[1] #os.rmdir,
+    if func in (os.unlink,  os.remove) and value.errno == errno.EACCES:
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+        try:
+            func(path)
+        except PermissionError:
+            pass
+    else:
+        raise
 
 
 def remove_folder(folder):
     """
     Removes a folder (location relative to cwd or absolute).
     """
-    shutil.rmtree(folder, ignore_errors=True)
+    shutil.rmtree(folder, ignore_errors=False, onerror=on_error)
 
 
 def create_folder(folder: Path):
     """
     Create a folder in the given path (location relative to cwd or absolute).
     """
-    folder.mkdir(exist_ok=True)
+    folder.mkdir(exist_ok=True, parents=False)
 
 
-def create_folder_with_venv(folder_name: Path = Path.cwd(), requirements=None):
+def create_folder_with_venv(folder_name: Path = None, requirements=None):
     """
     Creates a folder, creates a venv inside it and copies a sample requirements.txt file.
     """
-    create_folder(folder_name)
-    create_venv(folder_name)
+    if folder_name is not None and not folder_name.is_dir():
+        create_folder(folder_name)
+
+    create_venv(Path.cwd())
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
 
     destination = get_destination_path(folder_name)
+
     shutil.copyfile(
         src=requirements,
         dst=destination / "requirements.txt"
