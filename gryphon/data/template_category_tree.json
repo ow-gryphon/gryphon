@@ -4,7 +4,12 @@
       },
       "Use-cases": {
             "Navigate by Sector": {
-                  "leaf_options": ["Financial Services", "Healthcare", "Consumer Goods"]
+                  "leaf_options": ["Automotive and Manufacturing Industries", "Communications, Media and Technology",
+                        "Corporate and Institutional Banking", "Energy and Natural Resources", "Finance and Risk",
+                        "Financial Services", "Health and Life Sciences", "Insurance and Asset Management",
+                        "Operations","Organizational Effectiveness", "Pricing, Sales and Marketing", "Private Capital",
+                        "Public Sector", "Restructuring", "Retail and Business Banking", "Retail and Consumer Goods",
+                        "Transportation and Services"]
             },
             "Navigate by Topic": {
                   "leaf_options": ["Price Elasticity", "Financial Planning", "Cyber risk"]
