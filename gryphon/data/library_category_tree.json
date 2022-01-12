@@ -1,21 +1,50 @@
 {
-      "data visualization": {
+      "- Data Visualization": {
             "leaf_options": [
                   "matplotlib",
                   "seaborn",
-                  "plotly"
+                  "plotly",
+                  "bokeh"
             ]
       },
-      "data wrangling": {
+      "- Data Wrangling": {
             "leaf_options": [
                   "numpy",
                   "pandas"
+            ],
+            "- Working with Excel": {
+                  "leaf_options": [
+                        "openpyxl",
+                        "xlsxwriter",
+                        "pyxlsb",
+                        "xlrd"
+                  ]
+            },
+            "- Working with SQL": {
+                  "leaf_options": [
+                        "SQLAlchemy"
+                  ]
+            }
+      },
+      "- Data Profiling": {
+            "leaf_options": [
+                  "pandas-profiling",
+                  "sweetviz"
             ]
       },
-      "machine learning": {
-            "neural networks": {
+      "- Web Scraping": {
+            "leaf_options": [
+                  "requests",
+                  "beautifulsoup4",
+                  "lxml",
+                  "scrapy"
+            ]
+      },
+      "- Machine Learning": {
+            "- Neural Networks": {
                   "leaf_options": [
                         "tensorflow",
+                        "keras",
                         "pytorch"
                   ]
             },
@@ -23,10 +52,15 @@
                   "scikit-learn"
             ]
       },
-      "mathematical computing": {
+      "- Mathematical Computing": {
             "leaf_options": [
                   "scipy",
                   "statsmodels"
+            ]
+      },
+      "- Testing": {
+            "leaf_options": [
+                  "pytest"
             ]
       },
       "leaf_options": []
