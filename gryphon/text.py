@@ -11,15 +11,23 @@ class Text:
         
     """
     about = """
-    Gryphon is ...
+    Gryphon is a toolkit designed to make it easy to use Python for data analytics. 
+    With automatic project directory and environment creation, OW-style graphical 
+    visualizations and numerous resources for different methodologies and use cases, 
+    Gryphon is designed to be your one-stop-Python-shop! 
     
-    Any bugs please talk to Dan Wang (he is the guilty)
+    Owners:
+    - Daniel Wang (daniel.wang@oliverwyman.com)
+    - Daniel Uken (daniel.uken@oliverwyman.com)
+    
+    Developers:
+    - Vittor Pereira (vittor.pereira@oliverwyman.com)
 
     """
     first_prompt_question = "What would you like to do?"
 
-    init_display_option = "Start a new project"
-    generate_display_option = "Load template code into an existing project"
+    init_display_option = "Start a new Gryphon project"
+    generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
     about_display_option = "About OW Gryphon"
     quit_display_option = "Exit"
@@ -58,8 +66,8 @@ class Text:
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"
-    install_end_message_1 = "To enter the folder of the created project and activate the virtual environment you " \
-                            "can use the following commands:"
+    install_end_message_1 = """To enter the folder of the created project and activate the virtual 
+                environment you can use the following commands:"""
 
     install_end_message_2 = "Once doing this you will be able to add libraries and templates."
     could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
