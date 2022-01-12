@@ -54,9 +54,8 @@ def main():
             response = function(DATA_PATH, registry)
             if response != BACK:
                 break
-        except Exception as er:
-            # logger.error(f'Runtime error. {er}')
-            raise er
+        except RuntimeError as er:
+            logger.error(f'Runtime error. {er}')
 
 
 def did_you_mean_gryphon():
@@ -74,4 +73,5 @@ if __name__ == '__main__':
     main()
 
 # TODO: Implement a history of navigation on the menus to make the "back to previous menu" easier to implement
-# TODO: (SE DER) show links to library documentations right before installation
+# TODO: Show links to library documentations and description right before installation
+# TODO: Figure out if the user is in a folder with .venv (and inform the user)

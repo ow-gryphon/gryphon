@@ -1,7 +1,7 @@
 import json
 import gryphon.core as gryphon
-from .constants import NODE, BACK, TYPING, LEAF_OPTIONS
-from .functions import erase_lines, get_current_tree_state
+from .constants import BACK, TYPING, LEAF_OPTIONS
+from .functions import erase_lines, get_current_tree_state, get_option_names_add
 from .questions import Questions
 
 
@@ -21,9 +21,7 @@ def add(data_path, _):
 
         # create a list with the current possible options
 
-        possibilities = list(lib_tree.keys())
-        possibilities.extend(lib_tree[LEAF_OPTIONS])
-        possibilities.remove(LEAF_OPTIONS)
+        possibilities = get_option_names_add(lib_tree)
 
         # chosen option
         chosen_option = Questions.get_add_option(possibilities)

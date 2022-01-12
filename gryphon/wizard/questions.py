@@ -71,13 +71,16 @@ class Questions:
             ),
             cls.get_back_choice()
         ])
+        INDICATOR_UNSELECTED = "-"
+
         return questionary.unsafe_prompt([
             dict(
                 type='list',
                 name='library_category',
                 message=Text.add_prompt_categories_question,
                 choices=categories,
-                instruction=Text.add_prompt_instruction
+                instruction=Text.add_prompt_instruction,
+                use_indicator=True
             )
         ])['library_category']
 

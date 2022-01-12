@@ -1,10 +1,13 @@
 {
       "data visualization": {
-            "leaf_options": [
-                  "matplotlib",
-                  "seaborn",
-                  "plotly"
-            ]
+            "matplotlib": {
+                  "name": "matplotlib",
+                  "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+                  "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+                  "reference_link": "Link to the library reference, will be shown together with the long description."
+            },
+            "seaborn": {},
+            "plotly": {}
       },
       "data wrangling": {
             "leaf_options": [

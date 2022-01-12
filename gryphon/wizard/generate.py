@@ -1,7 +1,9 @@
 import json
 import logging
 import gryphon.core as gryphon
-from .functions import (display_template_information, erase_lines, filter_by_keyword, get_current_tree_state)
+from .functions import (
+    display_template_information, erase_lines, filter_by_keyword,
+    get_current_tree_state, get_option_names_generate)
 from .constants import *
 from .wizard_text import Text
 from .questions import Questions
@@ -29,9 +31,7 @@ def generate(data_path, registry):
         )
 
         # create a list with the current possible options
-        possibilities = list(template_tree.keys())
-        possibilities.extend(template_tree[LEAF_OPTIONS])
-        possibilities.remove(LEAF_OPTIONS)
+        possibilities = get_option_names_generate(template_tree)
 
         # categories
         chosen_option = Questions.get_generate_option(possibilities)
@@ -95,9 +95,10 @@ def generate(data_path, registry):
             # return to the main menu
             erase_lines(n_lines=2)
             level -= 1
+            navigation_history.pop()
             continue
-
-        level += 1
+        else:
+            break
 
     template = templates[template_name]
 
