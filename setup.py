@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 package_files = [
     str(Path('data') / 'gryphon_config.json'),
-    str(Path('data') / 'library_category_tree.json'),
+    str(Path('data') / 'library_tree.json'),
     str(Path('data') / 'template_category_tree.json')
 ]
 

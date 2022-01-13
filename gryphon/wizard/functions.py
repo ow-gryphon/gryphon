@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 from gryphon.core.registry import Template
-from .constants import LEAF_OPTIONS
+from .constants import LEAF_OPTIONS, CHILDREN, NAME
 
 
 logger = logging.getLogger('gryphon')
@@ -46,11 +46,27 @@ def get_current_tree_state(tree, history):
     return tree_level
 
 
+def get_current_tree_state_add(tree, history):
+    if not len(history):
+        return tree
+
+    tree_level = tree.copy()
+
+    for item in history:
+        tree_level = filter_chosen_option(item, tree_level).get(CHILDREN, [])
+
+    return tree_level
+
+
+def filter_chosen_option(option, tree):
+    try:
+        return list(filter(lambda x: x[NAME] == option, tree))[0]
+    except IndexError:
+        raise RuntimeError("Error in the menu navigation.")
+
+
 def get_option_names_add(tree):
-    options = list(tree.keys())
-    options.extend(list(tree[LEAF_OPTIONS].keys()))
-    options.remove(LEAF_OPTIONS)
-    return options
+    return list(map(lambda x: x[NAME], tree))
 
 
 def get_option_names_generate(tree):

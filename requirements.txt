@@ -2,7 +2,7 @@ click>=8.0.1
 virtualenv
 questionary
 pexpect
-wexpect
+#wexpect
 pylint
 pytest
 pytest-cov

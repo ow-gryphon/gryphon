@@ -2,7 +2,7 @@ import logging
 import questionary
 from questionary import Choice, Separator
 from .wizard_text import Text
-from .constants import TYPING
+from .constants import TYPING, BACK
 
 
 logger = logging.getLogger('gryphon')
@@ -62,7 +62,18 @@ class Questions:
     @classmethod
     @base_question
     def get_add_option(cls, categories: list):
-        categories = categories.copy()
+        categories = [
+            Choice(
+                title=item["name"] + (
+                    f' - {item["short_description"]}'
+                    if item.get("short_description", False)
+                    else ""
+                ),
+                value=item["name"]
+            )
+            for item in categories
+        ]
+
         categories.extend([
             Separator(Text.menu_separator),
             Choice(
@@ -71,7 +82,6 @@ class Questions:
             ),
             cls.get_back_choice()
         ])
-        INDICATOR_UNSELECTED = "-"
 
         return questionary.unsafe_prompt([
             dict(
@@ -137,34 +147,60 @@ class Questions:
         ])
 
         if command == "generate":
-            questions = cls.generate_1(options)
+            questions = [
+                dict(
+                    type='list',
+                    name='template',
+                    message=Text.generate_prompt_template_question,
+                    choices=options
+                )
+            ]
             responses = questionary.unsafe_prompt(questions)
             return responses['template']
 
         elif command == "init":
-            questions = cls.init_1(options)
-            template = questionary.unsafe_prompt(questions[0])['template']
-            if template == "back":
-                return "back", None
 
-            location = questionary.unsafe_prompt(questions[1])['location']
+            template_question = [
+                dict(
+                    type='list',
+                    name='template',
+                    message=Text.init_prompt_template_question,
+                    choices=options
+                )
+            ]
+
+            location_question = [
+                dict(
+                    type='input',
+                    name='location',
+                    message=Text.init_prompt_location_question
+                )
+            ]
+
+            template = questionary.unsafe_prompt(template_question)['template']
+            if template == BACK:
+                return BACK, None
+
+            location = questionary.unsafe_prompt(location_question)['location']
             return template, location
 
     @classmethod
     @base_question
-    def ask_extra_arguments(cls, arguments: list, command="init"):
-        arguments = arguments.copy()
-        if command == "generate":
-            extra_questions = cls.generate_2(arguments)
-            return questionary.unsafe_prompt(extra_questions)
-
-        elif command == "init":
-            extra_questions = cls.init_2(arguments)
-            return questionary.unsafe_prompt(extra_questions)
+    def ask_extra_arguments(cls, arguments: list):
+        extra_questions = [
+            dict(
+                type='input',
+                name=field['name'],
+                message=field['help']
+            )
+            for field in arguments
+        ]
+        return questionary.unsafe_prompt(extra_questions)
 
     @classmethod
     @base_question
     def prompt_about(cls):
+        # TODO: Get the links from a config file.
         choices = [
             Choice(
                 title="Google",
@@ -270,32 +306,12 @@ class Questions:
         )
 
     @classmethod
-    def confirm_add(cls, library_name):
+    def confirm_add(cls, library: dict):
+        logger.warning(f'\n\t{library["name"]}\n\n\t{library["long_description"]}\n')
         cls.confirmation(
-            Text.add_confirm.replace("{library_name}", library_name)
+            Text.add_confirm
+            .replace("{library_name}", library["name"])
         )
-
-    @staticmethod
-    def generate_1(options):
-        return [
-            dict(
-                type='list',
-                name='template',
-                message=Text.generate_prompt_template_question,
-                choices=options
-            )
-        ]
-
-    @staticmethod
-    def generate_2(arguments):
-        return [
-            dict(
-                type='input',
-                name=field['name'],
-                message=field['help']
-            )
-            for field in arguments
-        ]
 
     @staticmethod
     @base_question
@@ -319,30 +335,3 @@ class Questions:
             message=Text.could_not_find_any_templates,
             choices=choices
         ).unsafe_ask()
-
-    @staticmethod
-    def init_1(options) -> list:
-        return [
-            dict(
-                type='list',
-                name='template',
-                message=Text.init_prompt_template_question,
-                choices=options
-            ),
-            dict(
-                type='input',
-                name='location',
-                message=Text.init_prompt_location_question
-            )
-        ]
-
-    @staticmethod
-    def init_2(arguments):
-        return [
-            dict(
-                type='input',
-                name=field['name'],
-                message=field['help']
-            )
-            for field in arguments
-        ]

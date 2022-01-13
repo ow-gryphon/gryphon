@@ -48,7 +48,8 @@ class Text:
     generate_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     # {library_name} is going to be replaced with the library name
-    add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."
+    add_confirm = "Confirm that you want to install the \"{library_name}\" library to the " \
+                  "current project."
 
     # {location} is going to be replaced with the destination path
     # {template_name} is going to be replaced with the template name
