@@ -1,91 +1,219 @@
 [
-      {
-            "name": "data visualization",
-            "children": [
-                  {
-                        "name": "matplotlib",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-                  },
-                  {
-                        "name": "seaborn",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-
-                  },
-                  {
-                        "name": "plotly",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-
-                  }
-            ]
-      },
-      {
-            "name": "data wrangling",
-            "children": [
-                  {
-                        "name": "numpy",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-
-                  },
-                  {
-                        "name": "pandas",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-                  }
-            ]
-      },
-      {
-            "name": "machine learning",
-            "children": [
-                  {
-                        "name": "neural networks",
-                        "children": [
-                              {
-                                    "name": "tensorflow",
-                                    "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                                    "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                                    "reference_link": "Link to the library reference, will be shown together with the long description."
-
-                              },
-                              {
-                                    "name": "pytorch",
-                                    "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                                    "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                                    "reference_link": "Link to the library reference, will be shown together with the long description."
-                              }
-                        ]
-                  },
-                  {
-                        "name": "scikit-learn",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-                  }
-            ]
-      },
-      {
-            "name": "mathematical computing",
-            "children": [
-                  {
-                        "name": "scipy",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-                  },
-                  {
-                        "name": "statsmodels",
-                        "short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-                        "long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-                        "reference_link": "Link to the library reference, will be shown together with the long description."
-                  }
-            ]
-      }
+	{
+		"name": "Data Visualization",
+		"children": [
+			{
+				"name": "matplotlib",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "seaborn",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "plotly",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Working with Excel",
+		"children": [
+			{
+				"name": "openpyxl",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "xlsxwriter",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "pyxlsb",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "xlrd",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Data Wrangling",
+		"children": [
+			{
+				"name": "Working with Excel",
+				"children": [
+					{
+						"name": "openpyxl",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					},
+					{
+						"name": "xlsxwriter",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					},
+					{
+						"name": "pyxlsb",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					},
+					{
+						"name": "xlrd",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					}
+				]
+			},
+			{
+				"name": "Working with SQL",
+				"children": [
+					{
+						"name": "SQLAlchemy",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					}
+				]
+			},
+			{
+				"name": "numpy",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "pandas",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Data Profiling",
+		"children": [
+			{
+				"name": "pandas-profiling",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "sweetviz",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Web Scraping",
+		"children": [
+			{
+				"name": "requests",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "beautifulsoup4",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "lxml",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "scrapy",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Machine Learning",
+		"children": [
+			{
+				"name": "Neural Networks",
+				"children": [
+					{
+						"name": "tensorflow",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					},
+					{
+						"name": "keras",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					},
+					{
+						"name": "pytorch",
+						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+						"reference_link": "Link to the library reference, will be shown together with the long description."
+					}
+				]
+			},
+			{
+				"name": "scikit-learn",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Mathematical Computing",
+		"children": [
+			{
+				"name": "scipy",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			},
+			{
+				"name": "statsmodels",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	},
+	{
+		"name": "Testing",
+		"children": [
+			{
+				"name": "pytest",
+				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
+				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
+				"reference_link": "Link to the library reference, will be shown together with the long description."
+			}
+		]
+	}
 ]

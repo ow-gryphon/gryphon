@@ -10,6 +10,7 @@ from gryphon import wizard
 from gryphon.wizard.wizard_text import Text
 from gryphon.wizard.questions import Questions
 from .logger import logger
+from wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
 
 
 if platform.system() == "Windows":
@@ -43,11 +44,11 @@ def main():
         chosen_command = Questions.main_question()
 
         function = {
-            "init": wizard.init,
-            "generate": wizard.generate,
-            "add": wizard.add,
-            "about": wizard.about,
-            "quit": wizard.exit_program
+            INIT: wizard.init,
+            GENERATE: wizard.generate,
+            ADD: wizard.add,
+            ABOUT: wizard.about,
+            QUIT: wizard.exit_program
         }[chosen_command]
 
         try:

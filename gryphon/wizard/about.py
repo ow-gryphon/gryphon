@@ -4,7 +4,7 @@ import logging
 from .functions import erase_lines
 from .wizard_text import Text
 from .questions import Questions
-from .constants import *
+from .constants import QUIT, BACK
 
 
 logger = logging.getLogger('gryphon')
@@ -14,10 +14,10 @@ def about(_, __):
     logger.info(Text.about)
 
     response = None
-    while response != "quit":
+    while response != QUIT:
         response = Questions.prompt_about()
 
-        if response == "quit":
+        if response == QUIT:
             return
 
         if response == BACK:

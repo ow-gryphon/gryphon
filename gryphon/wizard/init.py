@@ -1,13 +1,13 @@
 from pathlib import Path
 import gryphon.core as gryphon
-from .constants import *
-from .functions import *
+from .constants import INIT, BACK
+from .functions import erase_lines
 from .questions import Questions
 
 
 def init(_, registry):
     """Creates a starter repository for analytics projects."""
-    templates = registry.get_templates("init")
+    templates = registry.get_templates(INIT)
     template_name, location = Questions.ask_which_template(templates)
 
     if template_name == BACK:
@@ -17,7 +17,7 @@ def init(_, registry):
     template = templates[template_name]
     extra_parameters = Questions.ask_extra_arguments(
         arguments=template.arguments,
-        command="init"
+        command=INIT
     )
 
     while True:

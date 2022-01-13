@@ -60,3 +60,4 @@ class Text:
 
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template:"
     could_not_find_any_templates = "Could not find any template with this specifications. What to do next?"
+    generate_keyword_argument = "Type the keyword you want to search for:"

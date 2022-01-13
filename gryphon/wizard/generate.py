@@ -4,7 +4,10 @@ import gryphon.core as gryphon
 from .functions import (
     display_template_information, erase_lines, filter_by_keyword,
     get_current_tree_state, get_option_names_generate)
-from .constants import *
+from .constants import (
+    USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
+    BACK, LEAF_OPTIONS, QUIT, GENERATE
+)
 from .wizard_text import Text
 from .questions import Questions
 
@@ -21,7 +24,7 @@ def generate(data_path, registry):
     level = 0
     template_name = ""
     navigation_history = []
-    templates = registry.get_templates("generate")
+    templates = registry.get_templates(GENERATE)
 
     while True:
 
@@ -60,9 +63,9 @@ def generate(data_path, registry):
                 for name, template in templates.items()
                 if (
                     (navigation_history[0] == METHODOLOGY and (chosen_option in template.methodology)) or
-                    (navigation_history[0] == USE_CASES and (navigation_history[1] == "sector")
+                    (navigation_history[0] == USE_CASES and (navigation_history[1] == SECTOR)
                      and (chosen_option in template.sector)) or
-                    (navigation_history[0] == USE_CASES and (navigation_history[1] == "topic")
+                    (navigation_history[0] == USE_CASES and (navigation_history[1] == TOPIC)
                      and (chosen_option in template.topic))
                 )
             }
@@ -89,7 +92,7 @@ def generate(data_path, registry):
                 level -= 1
                 continue
 
-        template_name = Questions.ask_which_template(filtered_templates, command="generate")
+        template_name = Questions.ask_which_template(filtered_templates, command=GENERATE)
 
         if template_name == BACK:
             # return to the main menu
@@ -106,11 +109,8 @@ def generate(data_path, registry):
 
     if len(template.arguments):
         logger.debug(Text.generate_ask_extra_parameters)
+        extra_parameters = Questions.ask_extra_arguments(template.arguments)
 
-        extra_parameters = Questions.ask_extra_arguments(
-            template.arguments,
-            command="generate"
-        )
     else:
         extra_parameters = {}
 

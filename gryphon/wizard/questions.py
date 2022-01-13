@@ -2,7 +2,10 @@ import logging
 import questionary
 from questionary import Choice, Separator
 from .wizard_text import Text
-from .constants import TYPING, BACK
+from .constants import (
+    TYPING, BACK, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK,
+    QUIT, INIT, ADD, ABOUT, GENERATE
+)
 
 
 logger = logging.getLogger('gryphon')
@@ -27,19 +30,13 @@ class Questions:
     def get_back_choice():
         return Choice(
             title=Text.back_to_previous_menu_option,
-            value="back"
+            value=BACK
         )
 
     @staticmethod
     @base_question
     def get_lib_via_keyboard():
-        return questionary.prompt([
-            dict(
-                type='input',
-                name='library_name',
-                message=Text.add_prompt_type_library
-            )
-        ])['library_name']
+        return questionary.text(message=Text.add_prompt_type_library).unsafe_ask()
 
     @classmethod
     @base_question
@@ -49,27 +46,24 @@ class Questions:
             Separator(Text.menu_separator),
             cls.get_back_choice()
         ])
-        return questionary.unsafe_prompt([
-            dict(
-                type='list',
-                name='category',
-                message=Text.add_prompt_categories_question,
-                choices=categories,
-                instruction=Text.add_prompt_instruction
-            )
-        ])['category']
+
+        return questionary.select(
+            message=Text.add_prompt_categories_question,
+            choices=categories,
+            instruction=Text.add_prompt_instruction
+        ).unsafe_ask()
 
     @classmethod
     @base_question
     def get_add_option(cls, categories: list):
         categories = [
             Choice(
-                title=item["name"] + (
-                    f' - {item["short_description"]}'
-                    if item.get("short_description", False)
+                title=item[NAME] + (
+                    f'\t- {item[SHORT_DESC]}'
+                    if item.get(SHORT_DESC, False)
                     else ""
                 ),
-                value=item["name"]
+                value=item[NAME]
             )
             for item in categories
         ]
@@ -82,17 +76,12 @@ class Questions:
             ),
             cls.get_back_choice()
         ])
-
-        return questionary.unsafe_prompt([
-            dict(
-                type='list',
-                name='library_category',
-                message=Text.add_prompt_categories_question,
-                choices=categories,
-                instruction=Text.add_prompt_instruction,
-                use_indicator=True
-            )
-        ])['library_category']
+        return questionary.select(
+            message=Text.add_prompt_categories_question,
+            choices=categories,
+            instruction=Text.add_prompt_instruction,
+            use_indicator=True
+        ).unsafe_ask()
 
     @staticmethod
     @base_question
@@ -100,40 +89,36 @@ class Questions:
         choices = [
             Choice(
                 title=Text.init_display_option,
-                value="init"
+                value=INIT
             ),
             Choice(
                 title=Text.generate_display_option,
-                value="generate"
+                value=GENERATE
             ),
             Choice(
                 title=Text.add_display_option,
-                value="add"
+                value=ADD
             ),
             Separator(Text.menu_separator),
             Choice(
                 title=Text.about_display_option,
-                value="about"
+                value=ABOUT
             ),
             Choice(
                 title=Text.quit_display_option,
-                value="quit"
+                value=QUIT
             )
         ]
 
-        return questionary.unsafe_prompt([
-            dict(
-                type='list',
-                name='command',
-                message=Text.first_prompt_question,
-                choices=choices,
-                instruction=Text.first_prompt_question
-            )
-        ])['command']
+        return questionary.select(
+            message=Text.first_prompt_question,
+            choices=choices,
+            instruction=Text.first_prompt_question
+        ).unsafe_ask()
 
     @classmethod
     @base_question
-    def ask_which_template(cls, metadata, command="init"):
+    def ask_which_template(cls, metadata, command=INIT):
         options = [
             Choice(
                 title=template.display_name,
@@ -141,47 +126,30 @@ class Questions:
             )
             for name, template in metadata.items()
         ]
+
         options.extend([
             Separator(Text.menu_separator),
             cls.get_back_choice()
         ])
 
-        if command == "generate":
-            questions = [
-                dict(
-                    type='list',
-                    name='template',
-                    message=Text.generate_prompt_template_question,
-                    choices=options
-                )
-            ]
-            responses = questionary.unsafe_prompt(questions)
-            return responses['template']
+        if command == GENERATE:
 
-        elif command == "init":
+            return questionary.select(
+                message=Text.generate_prompt_template_question,
+                choices=options
+            ).unsafe_ask()
 
-            template_question = [
-                dict(
-                    type='list',
-                    name='template',
-                    message=Text.init_prompt_template_question,
-                    choices=options
-                )
-            ]
+        elif command == INIT:
 
-            location_question = [
-                dict(
-                    type='input',
-                    name='location',
-                    message=Text.init_prompt_location_question
-                )
-            ]
+            template = questionary.select(
+                message=Text.init_prompt_template_question,
+                choices=options
+            ).unsafe_ask()
 
-            template = questionary.unsafe_prompt(template_question)['template']
             if template == BACK:
                 return BACK, None
 
-            location = questionary.unsafe_prompt(location_question)['location']
+            location = questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
             return template, location
 
     @classmethod
@@ -214,7 +182,7 @@ class Questions:
             cls.get_back_choice(),
             Choice(
                 title="Quit",
-                value="quit"
+                value=QUIT
             ),
         ]
 
@@ -226,9 +194,7 @@ class Questions:
     @staticmethod
     @base_question
     def ask_init_location():
-        return questionary.text(
-            message=Text.init_prompt_location_question
-        ).ask()
+        return questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
 
     @staticmethod
     @base_question
@@ -237,31 +203,6 @@ class Questions:
         go_ahead = questionary.confirm(message=message).ask()
         if not go_ahead:
             exit(0)
-
-    @classmethod
-    @base_question
-    def prompt_about(cls):
-        choices = [
-            Choice(
-                title="Google",
-                value="https://www.google.com/"
-            ),
-            Choice(
-                title="Yahoo",
-                value="https://www.yahoo.com/"
-            ),
-            Separator(Text.menu_separator),
-            cls.get_back_choice(),
-            Choice(
-                title="Quit",
-                value="quit"
-            ),
-        ]
-
-        return questionary.select(
-            message=Text.about_prompt_links,
-            choices=choices
-        ).unsafe_ask()
 
     @staticmethod
     @base_question
@@ -307,18 +248,25 @@ class Questions:
 
     @classmethod
     def confirm_add(cls, library: dict):
-        logger.warning(f'\n\t{library["name"]}\n\n\t{library["long_description"]}\n')
+        information = ""
+
+        if "long_description" in library:
+            information += f'\n\t{library[NAME]}\n\n\t{library[LONG_DESC]}\n'
+
+        if "reference_link" in library:
+            information += f'\n\tReferences: {library[REFERENCE_LINK]}\n'
+
+        logger.warning(information)
+
         cls.confirmation(
             Text.add_confirm
-            .replace("{library_name}", library["name"])
+            .replace("{library_name}", library[NAME])
         )
 
     @staticmethod
     @base_question
     def generate_keyword_question():
-        return questionary.text(
-            message="Type the keyword you want to search for:",
-        ).unsafe_ask()
+        return questionary.text(message=Text.generate_keyword_argument).unsafe_ask()
 
     @classmethod
     @base_question
@@ -327,7 +275,7 @@ class Questions:
             cls.get_back_choice(),
             Choice(
                 title="Quit",
-                value="quit"
+                value=QUIT
             ),
         ]
 

@@ -1,6 +1,6 @@
 import json
 import gryphon.core as gryphon
-from .constants import BACK, TYPING
+from .constants import BACK, TYPING, CHILDREN
 from .functions import erase_lines, get_current_tree_state_add, filter_chosen_option
 from .questions import Questions
 
@@ -14,6 +14,7 @@ def add(data_path, _):
         full_tree = json.load(file)
 
     chosen_option = ""
+
     while True:
         lib_tree = get_current_tree_state_add(
             tree=full_tree,
@@ -43,7 +44,7 @@ def add(data_path, _):
                 return BACK
         else:
             node = filter_chosen_option(chosen_option, lib_tree)
-            if "children" not in node:
+            if CHILDREN not in node:
                 chosen_option = node
                 # this is the leaf item
                 break
