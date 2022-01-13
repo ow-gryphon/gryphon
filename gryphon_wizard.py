@@ -296,8 +296,8 @@ def main():
             if response != BACK:
                 break
         except Exception as er:
-            # Logging.error(f'Runtime error. {er}')
-            raise er
+            Logging.error(f'Runtime error. {er}')
+            #raise er
 
 
 def did_you_mean_gryphon():
