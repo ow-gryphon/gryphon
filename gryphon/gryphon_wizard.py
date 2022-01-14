@@ -12,6 +12,7 @@ from gryphon.wizard.questions import Questions
 from gryphon.wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
 from .logger import logger
 
+
 if platform.system() == "Windows":
     # noinspection PyUnresolvedReferences,PyPackageRequirements
     from colorama import init
