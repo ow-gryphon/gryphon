@@ -19,7 +19,7 @@ VENV = ".venv"
 
 
 def on_error(func, path, exc):
-    value = exc[1] #os.rmdir,
+    value = exc[1]  # os.rmdir
     if func in (os.unlink,  os.remove) and value.errno == errno.EACCES:
         os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
         try:
@@ -27,7 +27,7 @@ def on_error(func, path, exc):
         except PermissionError:
             pass
     else:
-        raise
+        raise RuntimeError("File permission error.")
 
 
 def remove_folder(folder):

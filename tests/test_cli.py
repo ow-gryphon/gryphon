@@ -25,11 +25,11 @@ def test_cli_1(setup, teardown, get_pip_libraries):
     lib_name = "scipy"
 
     cwd = setup()
-    create_folder_with_venv(cwd)
-    pip_path = get_pip_path(cwd)
-
-    activate_venv()
-    os.system(f"""{pip_path} install ../""")
+    # create_folder_with_venv(cwd)
+    # pip_path = get_pip_path(cwd)
+    #
+    # activate_venv()
+    # os.system(f"""{pip_path} install ../""")
 
     try:
         os.system(f"gryph init analytics_git {project_folder}")

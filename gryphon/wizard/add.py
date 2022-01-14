@@ -1,13 +1,12 @@
 import json
 import gryphon.core as gryphon
-from .constants import BACK, TYPING, CHILDREN
+from .constants import BACK, TYPING, CHILDREN, NAME
 from .functions import erase_lines, get_current_tree_state_add, filter_chosen_option
 from .questions import Questions
 
 
 def add(data_path, _):
     """add templates based on arguments and configurations."""
-    level = 0
     navigation_history = []
 
     with open(data_path / "library_tree.json") as file:
@@ -37,8 +36,6 @@ def add(data_path, _):
             if len(navigation_history) >= 1:
                 navigation_history.pop()
                 erase_lines(n_lines=2)
-                level -= 1
-                continue
             else:
                 erase_lines(n_lines=2)
                 return BACK
@@ -50,11 +47,10 @@ def add(data_path, _):
                 break
             else:
                 # we are not in the leaf yet
-                level += 1
                 navigation_history.append(chosen_option)
 
     Questions.confirm_add(chosen_option)
 
     gryphon.add(
-        library_name=chosen_option
+        library_name=chosen_option[NAME]
     )

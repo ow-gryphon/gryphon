@@ -59,7 +59,7 @@ class Questions:
         categories = [
             Choice(
                 title=item[NAME] + (
-                    f'\t- {item[SHORT_DESC]}'
+                    f' - {item[SHORT_DESC]}'
                     if item.get(SHORT_DESC, False)
                     else ""
                 ),

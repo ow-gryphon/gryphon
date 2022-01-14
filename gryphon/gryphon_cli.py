@@ -5,9 +5,9 @@ from os import path
 from pathlib import Path
 import json
 import click
-import core as gryphon
+import gryphon.core as gryphon
 from gryphon.cli import helpers
-from core.registry import RegistryCollection
+from gryphon.core.registry import RegistryCollection
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])

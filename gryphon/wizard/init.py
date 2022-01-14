@@ -16,8 +16,7 @@ def init(_, registry):
 
     template = templates[template_name]
     extra_parameters = Questions.ask_extra_arguments(
-        arguments=template.arguments,
-        command=INIT
+        arguments=template.arguments
     )
 
     while True:

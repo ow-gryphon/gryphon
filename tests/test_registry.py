@@ -22,23 +22,18 @@ def test_template_registry_1():
 def test_template_registry_2(capfd):
     registry_path = TEST_FOLDER / "data" / "no_metadata_registry"
 
-    registry = TemplateRegistry(templates_path=registry_path)
-    # print(registry.get_templates())
-    # registry.get_templates()
+    TemplateRegistry(templates_path=registry_path)
+
     captured = capfd.readouterr()
-    # assert "WARNING" in captured.out
     assert "does not contain a metadata.json file." in captured.out
 
 
 def test_template_registry_3(capsys, caplog):
     registry_path = TEST_FOLDER / "data" / "wrong_json_registry"
 
-    registry = TemplateRegistry(templates_path=registry_path)
-    # print(registry.get_templates())
-    # registry.get_templates()
+    TemplateRegistry(templates_path=registry_path)
+
     captured = capsys.readouterr()
-    # assert "WARNING" in captured.out
-    # assert "has a malformed json on metadata.json file" in caplog.text
     assert "has a malformed json on metadata.json file" in captured.out
 
 
@@ -159,20 +154,19 @@ def test_registry_collection_1(setup, teardown):
         local_registry_init = local_registry / "init"
         local_registry_generate = local_registry / "generate"
 
-        # assert git_registry.is_dir()
-        # assert local_registry.is_dir()
-        # assert git_registry_init.is_dir()
-        # assert git_registry_generate.is_dir()
-        # assert local_registry_init.is_dir()
-        # assert local_registry_generate.is_dir()
+        assert git_registry.is_dir()
+        assert local_registry.is_dir()
+        assert git_registry_init.is_dir()
+        assert git_registry_generate.is_dir()
+        assert local_registry_init.is_dir()
+        assert local_registry_generate.is_dir()
 
         metadata = registry.get_templates()
 
-        # assert "analytics_git" in metadata['init']
-        # assert "sample_init" in metadata['init']
+        assert "analytics_git" in metadata['init']
+        assert "sample_init" in metadata['init']
 
     finally:
-        # pass
         teardown()
 
 

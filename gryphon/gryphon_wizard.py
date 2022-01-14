@@ -9,9 +9,8 @@ from gryphon.core.registry import RegistryCollection
 from gryphon import wizard
 from gryphon.wizard.wizard_text import Text
 from gryphon.wizard.questions import Questions
+from gryphon.wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
 from .logger import logger
-from wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
-
 
 if platform.system() == "Windows":
     # noinspection PyUnresolvedReferences,PyPackageRequirements
@@ -56,7 +55,10 @@ def main():
             if response != BACK:
                 break
         except RuntimeError as er:
-            logger.error(f'Runtime error. {er}')
+            logger.error(f'Runtime error: {er}')
+
+        except Exception as er:
+            logger.error(f'Unexpected error: {er}. Call the suport.')
 
 
 def did_you_mean_gryphon():

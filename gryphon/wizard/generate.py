@@ -96,10 +96,15 @@ def generate(data_path, registry):
 
         if template_name == BACK:
             # return to the main menu
-            erase_lines(n_lines=2)
+            if not chosen_option == SEARCH_BY_KEYWORD:
+                navigation_history.pop()
+                erase_lines(n_lines=2)
+            else:
+                erase_lines(n_lines=3)
+
             level -= 1
-            navigation_history.pop()
-            continue
+            if len(navigation_history):
+                navigation_history.pop()
         else:
             break
 

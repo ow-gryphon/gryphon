@@ -13,7 +13,7 @@ from .utils import (
 )
 
 INIT_PATH = Path.cwd()
-SANDBOX_PATH = Path("sandbox_2")
+SANDBOX_PATH = Path("sandbox")
 
 
 @pytest.fixture
