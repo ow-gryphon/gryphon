@@ -53,13 +53,17 @@ def main():
 
         try:
             response = function(DATA_PATH, registry)
+            if chosen_command == GENERATE:
+                logger.debug("\n\n")
+                continue
+
             if response != BACK:
                 break
         except RuntimeError as er:
             logger.error(f'Runtime error: {er}')
 
         except Exception as er:
-            logger.error(f'Unexpected error: {er}. Call the suport.')
+            logger.error(f'Unexpected error: {er}. Call the support.')
 
 
 def did_you_mean_gryphon():
@@ -77,3 +81,5 @@ if __name__ == '__main__':
     main()
 
 # TODO: Figure out if the user is in a folder with .venv (and inform the user)
+# TODO: Power user configurations
+    # TODO: Whether to install gryphon inside the .venv created for projects or not
