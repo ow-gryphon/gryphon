@@ -18,6 +18,13 @@ logger = logging.getLogger('gryphon')
 def generate(data_path, registry):
     """generates templates based on arguments and configurations."""
 
+    def handle_back_option():
+        if not chosen_option == SEARCH_BY_KEYWORD:
+            navigation_history.pop()
+            erase_lines(n_lines=2)
+        else:
+            erase_lines(n_lines=3)
+
     with open(data_path / "template_category_tree.json") as file:
         full_tree = json.load(file)
 
@@ -38,21 +45,21 @@ def generate(data_path, registry):
 
         # categories
         chosen_option = Questions.get_generate_option(possibilities)
+        level += 1
 
         if chosen_option == SEARCH_BY_KEYWORD:
             keyword = Questions.generate_keyword_question()
             filtered_templates = filter_by_keyword(keyword, templates)
-            level += 1
+
         elif chosen_option == BACK:
             erase_lines(n_lines=2)
-
+            level -= 1
             if level == 0:
                 # return to the main menu
                 return BACK
             else:
                 if len(navigation_history):
                     navigation_history.pop()
-                level -= 1
                 continue
 
         elif chosen_option in template_tree[LEAF_OPTIONS]:
@@ -70,11 +77,10 @@ def generate(data_path, registry):
                 )
             }
             navigation_history.append(chosen_option)
-            level += 1
+
         else:
             # we are not in the leaf yet
             navigation_history.append(chosen_option)
-            level += 1
             continue
 
         # No template was found with the given navigation/keyword
@@ -84,27 +90,15 @@ def generate(data_path, registry):
                 return
 
             if response == BACK:
-                if not chosen_option == SEARCH_BY_KEYWORD:
-                    navigation_history.pop()
-                    erase_lines(n_lines=2)
-                else:
-                    erase_lines(n_lines=3)
+                handle_back_option()
                 level -= 1
                 continue
 
         template_name = Questions.ask_which_template(filtered_templates, command=GENERATE)
 
         if template_name == BACK:
-            # return to the main menu
-            if not chosen_option == SEARCH_BY_KEYWORD:
-                navigation_history.pop()
-                erase_lines(n_lines=2)
-            else:
-                erase_lines(n_lines=3)
-
+            handle_back_option()
             level -= 1
-            if len(navigation_history):
-                navigation_history.pop()
         else:
             break
 

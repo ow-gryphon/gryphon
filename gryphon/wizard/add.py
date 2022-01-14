@@ -28,7 +28,7 @@ def add(data_path, _):
 
         # type the bare lib name
         if chosen_option == TYPING:
-            chosen_option = Questions.get_lib_via_keyboard()
+            chosen_option = {NAME: Questions.get_lib_via_keyboard()}
             break
         elif chosen_option == BACK:
             # return to the main menu

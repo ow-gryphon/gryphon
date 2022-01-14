@@ -9,7 +9,10 @@ from .utils import (
     remove_folder,
     create_folder,
     get_data_folder,
-    get_venv_path
+    get_venv_path,
+    create_folder_with_venv,
+    get_pip_path,
+    activate_venv
 )
 
 INIT_PATH = Path.cwd()
@@ -59,3 +62,16 @@ def get_pip_libraries() -> callable:
 @pytest.fixture
 def data_folder() -> Path:
     return get_data_folder()
+
+
+@pytest.fixture
+def install_gryphon():
+
+    def _install_gryphon(cwd):
+        create_folder_with_venv(cwd)
+        pip_path = get_pip_path(cwd)
+
+        activate_venv()
+        os.system(f"""{pip_path} install ../""")
+
+    return _install_gryphon
