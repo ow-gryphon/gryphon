@@ -56,5 +56,5 @@ def add(data_path, _):
     Questions.confirm_add(chosen_option)
 
     gryphon.add(
-        library_name=chosen_option
+        library_name=chosen_option["name"]
     )
