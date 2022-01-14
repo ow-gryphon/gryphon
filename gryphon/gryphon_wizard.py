@@ -10,7 +10,7 @@ from gryphon import wizard
 from gryphon.wizard.wizard_text import Text
 from gryphon.wizard.questions import Questions
 from .logger import logger
-from wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
+from gryphon.wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
 
 
 if platform.system() == "Windows":
