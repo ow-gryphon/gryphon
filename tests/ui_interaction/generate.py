@@ -1,5 +1,12 @@
+import platform
 from gryphon.wizard.wizard_text import Text
-from .constants import *
+from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE, SUCCESS_MESSAGE
+
+if platform.system() != "Windows":
+    import pexpect
+else:
+    # noinspection PyUnresolvedReferences
+    import wexpect as pexpect
 
 
 def wizard_generate(file_name):
@@ -10,16 +17,19 @@ def wizard_generate(file_name):
     child.send(KEY_DOWN)
     child.sendcontrol('m')
 
+    # Methodology
     child.expect(Text.add_prompt_categories_question)
     child.sendcontrol('m')
 
+    # Classification
     child.expect(Text.add_prompt_categories_question)
     child.sendcontrol('m')
 
+    # Placeholder
     child.expect(Text.generate_prompt_template_question)
     child.sendcontrol('m')
 
-    child.expect('Name for the problem')
+    child.expect('Name for the clustering problem')
     child.send(file_name)
     child.sendcontrol('m')
 

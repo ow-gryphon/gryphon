@@ -1,8 +1,8 @@
 import os
 import pytest
-from tests.ui_interaction.init import *
-from tests.ui_interaction.generate import *
-from tests.ui_interaction.add import *
+from tests.ui_interaction.init import wizard_init
+from tests.ui_interaction.generate import wizard_generate
+from tests.ui_interaction.add import wizard_add
 
 
 def test_cli_1(setup, teardown, get_pip_libraries):
@@ -45,7 +45,6 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
         assert (cwd / project_folder).is_dir()
         assert (cwd / project_folder / "notebooks").is_dir()
         assert (cwd / project_folder / "tests").is_dir()
-        # assert (cwd / project_folder / "gryphon").is_dir()
 
         os.chdir(cwd / project_folder)
         wizard_generate(file_name)

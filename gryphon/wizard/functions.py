@@ -24,16 +24,6 @@ def display_template_information(template):
         logger.info(f"\tMethodology: {', '.join(template.methodology)}\n")
 
 
-def filter_by_keyword(keyword_to_find, templates: Dict[str, Template]):
-    if keyword_to_find not in ['', ' ']:
-        return {
-            name: template
-            for name, template in templates.items()
-            if keyword_to_find.lower() in '\t'.join(template.keywords).lower()
-        }
-    return []
-
-
 def get_current_tree_state(tree, history):
     tree_level = tree.copy()
 

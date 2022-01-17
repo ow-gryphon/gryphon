@@ -1,5 +1,12 @@
+import platform
 from gryphon.wizard.wizard_text import Text
-from .constants import *
+from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE, SUCCESS_MESSAGE
+
+if platform.system() != "Windows":
+    import pexpect
+else:
+    # noinspection PyUnresolvedReferences
+    import wexpect as pexpect
 
 
 def wizard_add(lib_name):

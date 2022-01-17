@@ -53,12 +53,13 @@ def main():
 
         try:
             response = function(DATA_PATH, registry)
-            if chosen_command == GENERATE:
-                logger.debug("\n\n")
-                continue
 
             if response != BACK:
+                if chosen_command == GENERATE:
+                    logger.debug("\n\n")
+                    continue
                 break
+
         except RuntimeError as er:
             logger.error(f'Runtime error: {er}')
 
