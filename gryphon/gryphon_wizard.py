@@ -4,6 +4,7 @@ Gryphon interactive wizard.
 import os
 import json
 import platform
+import argparse
 from pathlib import Path
 from gryphon.core.registry import RegistryCollection
 from gryphon import wizard
@@ -38,6 +39,12 @@ except Exception as e:
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debug', '-d', action='store_true')
+    debug = parser.parse_args().debug
+    if debug:
+        logger.warning("Starting Gryphon in debug mode.")
+
     logger.info(Text.welcome)
 
     while True:
@@ -64,7 +71,10 @@ def main():
             logger.error(f'Runtime error: {er}')
 
         except Exception as er:
-            logger.error(f'Unexpected error: {er}. Call the support.')
+            if debug:
+                raise er
+            else:
+                logger.error(f'Unexpected error: {er}. Call the support.')
 
 
 def did_you_mean_gryphon():
