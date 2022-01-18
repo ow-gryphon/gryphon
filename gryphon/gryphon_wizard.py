@@ -62,7 +62,7 @@ def main():
             response = function(DATA_PATH, registry)
 
             if response != BACK:
-                if chosen_command == GENERATE:
+                if chosen_command in [GENERATE, ADD]:
                     logger.debug("\n\n")
                     continue
                 break
@@ -91,10 +91,22 @@ if __name__ == '__main__':
 
     main()
 
-# TODO: Test installation.
-# TODO: Create .labskitrc and populate it accordingly
+# DONE: have 3 options when installing the library
+    # 1 - yes
+    # 2 - link to documentation
+    # 3 - no -> back to the previous menu
 
+# DONE: Do not close when installing libs (add command)
+
+
+# TODO: Test installation.
+# DONE: Test install from github (gryphon)
+
+# TODO: Developers documentations
 
 # TODO: Figure out if the user is in a folder with .venv (and inform the user)
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
+# TODO: Handle errors from the pip commands
+# TODO: Create .labskitrc and populate it accordingly
+# TODO: Have a single readme file with al the readmes from othter templates
