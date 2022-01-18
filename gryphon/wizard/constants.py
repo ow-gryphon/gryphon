@@ -23,3 +23,6 @@ NAME = "name"
 SHORT_DESC = "short_description"
 LONG_DESC = "long_description"
 REFERENCE_LINK = "reference_link"
+
+YES = "yes"
+NO = "no"

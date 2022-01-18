@@ -4,7 +4,7 @@ from questionary import Choice, Separator
 from .wizard_text import Text
 from .constants import (
     TYPING, BACK, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK,
-    QUIT, INIT, ADD, ABOUT, GENERATE
+    QUIT, INIT, ADD, ABOUT, GENERATE, YES, NO
 )
 
 
@@ -220,11 +220,11 @@ class Questions:
             choices=[
                 Choice(
                     title="Yes",
-                    value="yes"
+                    value=YES
                 ),
                 Choice(
                     title="No",
-                    value="no"
+                    value=NO
                 ),
                 Choice(
                     title="Change project location",
@@ -244,21 +244,41 @@ class Questions:
         )
 
     @classmethod
+    @base_question
     def confirm_add(cls, library: dict):
         information = ""
 
-        if "long_description" in library:
+        if LONG_DESC in library:
             information += f'\n\t{library[NAME]}\n\n\t{library[LONG_DESC]}\n'
 
-        if "reference_link" in library:
+        if REFERENCE_LINK in library:
             information += f'\n\tReferences: {library[REFERENCE_LINK]}\n'
 
         logger.warning(information)
 
-        cls.confirmation(
-            Text.add_confirm
-            .replace("{library_name}", library[NAME])
-        )
+        choices = [
+            Choice(
+                title="Yes",
+                value=YES
+            ),
+            Choice(
+                title="No",
+                value=NO
+            )
+        ]
+
+        if REFERENCE_LINK in library:
+            choices.append(
+                Choice(
+                    title=f"See library docs (\"{library[REFERENCE_LINK]}\").",
+                    value=library[REFERENCE_LINK]
+                )
+            )
+
+        return questionary.select(
+            message=Text.add_confirm.replace("{library_name}", library[NAME]),
+            choices=choices
+        ).unsafe_ask(), len(information.split("\n"))
 
     @staticmethod
     @base_question

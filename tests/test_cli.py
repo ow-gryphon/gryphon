@@ -2,7 +2,7 @@ import os
 import pytest
 from tests.ui_interaction.init import wizard_init
 from tests.ui_interaction.generate import wizard_generate
-from tests.ui_interaction.add import wizard_add
+from tests.ui_interaction.add import wizard_add_typing
 
 
 def test_cli_1(setup, teardown, get_pip_libraries):
@@ -39,7 +39,7 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
     lib_name = "scipy"
 
     cwd = setup()
-    # install_gryphon(cwd)
+    install_gryphon(cwd)
     try:
         wizard_init(project_folder)
         assert (cwd / project_folder).is_dir()
@@ -50,7 +50,7 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
         wizard_generate(file_name)
         assert (cwd / project_folder / "src" / "analysis" / f"model_{file_name}.py").is_file()
 
-        wizard_add(lib_name)
+        wizard_add_typing(lib_name)
         os.chdir(cwd)
         assert lib_name in get_pip_libraries(cwd / project_folder)
 
@@ -58,5 +58,3 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
         pytest.fail("Raised exception", e)
     finally:
         teardown()
-
-# TODO: Test installation.

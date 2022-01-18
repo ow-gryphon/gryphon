@@ -9,7 +9,7 @@ else:
     import wexpect as pexpect
 
 
-def wizard_add(lib_name):
+def wizard_add_typing(lib_name):
     child = pexpect.spawn(command='gryphon')
 
     # » Install Python libraries/packages
