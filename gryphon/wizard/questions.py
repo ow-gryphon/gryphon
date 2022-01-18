@@ -15,8 +15,6 @@ def base_question(function):
     def _f(*args, **kwargs):
         try:
             return function(*args, **kwargs)
-        except KeyError:
-            exit(0)
         except KeyboardInterrupt:
             logger.warning(f'\nOperation cancelled by user\n')
             exit(0)
@@ -167,24 +165,23 @@ class Questions:
 
     @classmethod
     @base_question
-    def prompt_about(cls):
-        # TODO: Get the links from a config file.
+    def prompt_about(cls, links):
+
         choices = [
             Choice(
-                title="Google",
-                value="https://www.google.com/"
-            ),
-            Choice(
-                title="Yahoo",
-                value="https://www.yahoo.com/"
-            ),
-            Separator(Text.menu_separator),
-            cls.get_back_choice(),
+                title=link["title"],
+                value=link["value"]
+            )
+            for link in links
+        ]
+        choices.append(Separator(Text.menu_separator))
+        choices.append(cls.get_back_choice())
+        choices.append(
             Choice(
                 title="Quit",
                 value=QUIT
-            ),
-        ]
+            )
+        )
 
         return questionary.select(
             message=Text.about_prompt_links,

@@ -1,4 +1,5 @@
 import os
+import json
 import platform
 import logging
 from .functions import erase_lines
@@ -10,12 +11,15 @@ from .constants import QUIT, BACK
 logger = logging.getLogger('gryphon')
 
 
-def about(_, __):
+def about(data_path, _):
     logger.info(Text.about)
+
+    with open(data_path / "links_about.json") as f:
+        links = json.loads(f.read())
 
     response = None
     while response != QUIT:
-        response = Questions.prompt_about()
+        response = Questions.prompt_about(links)
 
         if response == QUIT:
             return

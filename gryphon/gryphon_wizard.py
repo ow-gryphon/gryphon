@@ -91,6 +91,10 @@ if __name__ == '__main__':
 
     main()
 
+# TODO: Test installation.
+# TODO: Create .labskitrc and populate it accordingly
+
+
 # TODO: Figure out if the user is in a folder with .venv (and inform the user)
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
