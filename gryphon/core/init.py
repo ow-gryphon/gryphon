@@ -2,6 +2,7 @@
 Module containing the code for the init command in the CLI.
 """
 import os
+import logging
 from pathlib import Path
 from .command_operations import (
     install_libraries,
@@ -10,9 +11,9 @@ from .command_operations import (
     init_new_git_repo,
     initial_git_commit,
     populate_rc_file,
-    change_shell_folder_and_activate_venv
+    change_shell_folder_and_activate_venv,
+    install_extra_nbextensions
 )
-import logging
 
 
 logger = logging.getLogger('gryphon')
@@ -34,6 +35,7 @@ def init(template_path, location, **kwargs):
     populate_rc_file(folder=location)
     create_venv(folder=location)
     install_libraries(folder=location)
+    install_extra_nbextensions(location)
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
     change_shell_folder_and_activate_venv(location)

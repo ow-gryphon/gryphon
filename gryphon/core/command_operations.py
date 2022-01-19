@@ -57,6 +57,49 @@ def escape_windows_path(folder_path):
     return fr'{folder_path}'
 
 
+def install_extra_nbextensions(folder_path):
+    """
+        Function to install the libraries from a 'requirements.txt' file
+        """
+    target_folder = get_destination_path(folder_path)
+    requirements_path = target_folder / REQUIREMENTS
+
+    if platform.system() == "Windows":
+        # On Windows the venv folder structure is different from unix
+        pip_path = target_folder / VENV / "Scripts" / "pip.exe"
+    else:
+        pip_path = target_folder / VENV / "bin" / "pip"
+
+    # Install requirements
+    logger.debug("Installing extra notebook extensions.")
+
+    if not pip_path.is_file():
+        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
+
+    if not requirements_path.is_file():
+        raise FileNotFoundError("requirements.txt file not found.")
+
+    with open(requirements_path, "r") as f1:
+        requirements = f1.read()
+
+    if "jupyter_contrib_nbextensions" not in requirements:
+        with open(requirements_path, "a") as f2:
+            f2.write("\njupyter_contrib_nbextensions\n")
+
+    try:
+        subprocess.check_call([str(pip_path), 'install', 'jupyter_contrib_nbextensions', '-qq'],)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed on pip install command. {e}")
+
+    os.chdir(target_folder)
+    os.system(f"jupyter contrib nbextension install --user --Application.log_level=0")
+    os.system(f"jupyter nbextensions_configurator enable --user --Application.log_level=0")
+    os.system(f"jupyter nbextension enable codefolding/main --Application.log_level=0")
+    os.system(f"jupyter nbextension enable toc2/main --Application.log_level=0")
+    os.system(f"jupyter nbextension enable collapsible_headings/main --Application.log_level=0")
+    os.chdir(target_folder.parent)
+
+
 def install_libraries(folder=None):
     """
     Function to install the libraries from a 'requirements.txt' file

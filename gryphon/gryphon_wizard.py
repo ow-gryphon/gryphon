@@ -81,16 +81,8 @@ def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
 
-# this enables us to use the cli without having to install each time
-# by using `python gryphon_wizard.py`
-if __name__ == '__main__':
-    if platform.system() == "Windows":
-        os.system("cls")
-    else:
-        os.system("clear")
-
-    main()
-
+# DONE: Install the jupyter extensions libraries along with a new project creation
+# TODO: Create the return option on generate command
 # DONE: have 3 options when installing the library
     # 1 - yes
     # 2 - link to documentation
@@ -109,4 +101,4 @@ if __name__ == '__main__':
     # TODO: Whether to install gryphon inside the .venv created for projects or not
 # TODO: Handle errors from the pip commands
 # TODO: Create .labskitrc and populate it accordingly
-# TODO: Have a single readme file with al the readmes from othter templates
+# TODO: Have a single readme file with al the readmes from other templates
