@@ -7,8 +7,8 @@ LEAF_OPTIONS = "leaf_options"
 SEARCH_BY_KEYWORD = "Search by keyword"
 METHODOLOGY = "Methodology"
 USE_CASES = "Use-cases"
-TOPIC = "topic"
-SECTOR = "sector"
+TOPIC = "Navigate by Topic"
+SECTOR = "Navigate by Sector"
 
 # commands
 QUIT = "quit"

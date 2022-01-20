@@ -195,14 +195,6 @@ class Questions:
 
     @staticmethod
     @base_question
-    def confirmation(message=None):
-        message = Text.base_confirmation if message is None else message
-        go_ahead = questionary.confirm(message=message).ask()
-        if not go_ahead:
-            exit(0)
-
-    @staticmethod
-    @base_question
     def confirm_init(template_name, template_description, location, **kwargs):
 
         message = (
@@ -231,17 +223,32 @@ class Questions:
                     value="change_location"
                 )
             ]
-        ).unsafe_ask()
+        ).unsafe_ask(), len(message.split('\n'))
 
     @classmethod
     def confirm_generate(cls, template_name, **kwargs):
-        cls.confirmation(
-            Text.generate_confirm_1.replace("{template_name}", template_name) +
-            (
-                Text.generate_confirm_2.replace("{arguments}", str(kwargs))
-                if len(kwargs) else ""
-            )
+
+        information = Text.generate_confirm_1.replace("{template_name}", template_name)
+        information += (
+            Text.generate_confirm_2.replace("{arguments}", str(kwargs))
+            if len(kwargs) else ""
         )
+
+        choices = [
+            Choice(
+                title="Yes",
+                value=YES
+            ),
+            Choice(
+                title="No",
+                value=NO
+            )
+        ]
+
+        return questionary.select(
+            message=Text.base_confirmation,
+            choices=choices
+        ).unsafe_ask()
 
     @classmethod
     @base_question
@@ -253,6 +260,7 @@ class Questions:
 
         if REFERENCE_LINK in library:
             information += f'\n\tReferences: {library[REFERENCE_LINK]}\n'
+        n_lines = len(information.split("\n"))
 
         logger.warning(information)
 
@@ -278,7 +286,7 @@ class Questions:
         return questionary.select(
             message=Text.add_confirm.replace("{library_name}", library[NAME]),
             choices=choices
-        ).unsafe_ask(), len(information.split("\n"))
+        ).unsafe_ask(), n_lines
 
     @staticmethod
     @base_question

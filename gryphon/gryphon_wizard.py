@@ -69,20 +69,26 @@ def main():
 
         except RuntimeError as er:
             logger.error(f'Runtime error: {er}')
+            exit(1)
+
+        except KeyboardInterrupt:
+            logger.warning(f'Operation cancelled by user')
+            exit(0)
 
         except Exception as er:
             if debug:
                 raise er
             else:
                 logger.error(f'Unexpected error: {er}. Call the support.')
+                exit(1)
 
 
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
-
+# TODO: Fix line wrapping on the long descriptions https://docs.python.org/2/library/textwrap.html
 # DONE: Install the jupyter extensions libraries along with a new project creation
-# TODO: Create the return option on generate command
+# DONE: Create the return option on generate command
 # DONE: have 3 options when installing the library
     # 1 - yes
     # 2 - link to documentation
@@ -90,11 +96,13 @@ def did_you_mean_gryphon():
 
 # DONE: Do not close when installing libs (add command)
 
+# DONE: Refactor generate function in order to use the same logic+data structure as add function
 
 # TODO: Test installation.
 # DONE: Test install from github (gryphon)
 
 # TODO: Developers documentations
+# TODO: Find a way to install wexpect for windows and pexpect for linux
 
 # TODO: Figure out if the user is in a folder with .venv (and inform the user)
 # TODO: Power user configurations

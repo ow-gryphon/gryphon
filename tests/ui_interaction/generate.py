@@ -1,6 +1,6 @@
 import platform
 from gryphon.wizard.wizard_text import Text
-from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE, SUCCESS_MESSAGE
+from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE_1, SUCCESS_MESSAGE
 
 if platform.system() != "Windows":
     import pexpect
@@ -29,11 +29,12 @@ def wizard_generate(file_name):
     child.expect(Text.generate_prompt_template_question)
     child.sendcontrol('m')
 
-    child.expect('Name for the clustering problem')
+    child.expect('Name for the problem')
     child.send(file_name)
     child.sendcontrol('m')
 
-    child.expect(CONFIRMATION_MESSAGE)
+    # Confirm to proceed
+    child.expect(CONFIRMATION_MESSAGE_1)
     child.sendcontrol('m')
 
     child.expect(SUCCESS_MESSAGE)

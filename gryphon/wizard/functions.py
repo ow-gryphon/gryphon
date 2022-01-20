@@ -12,16 +12,21 @@ def erase_lines(n_lines=2):
         print("\033[A                             \033[A")
 
 
-def display_template_information(template):
-    logger.info(f"\n{template.description}\n")
+def display_template_information(template) -> int:
+    information = ""
+    information += f"\n{template.description}\n"
+
     if len(template.topic):
-        logger.info(f"\tTopics: {', '.join(template.topic)}")
+        information += f"\tTopics: {', '.join(template.topic)}\n"
 
     if len(template.sector):
-        logger.info(f"\tSectors: {', '.join(template.sector)}")
+        information += f"\tSectors: {', '.join(template.sector)}\n"
 
     if len(template.methodology):
-        logger.info(f"\tMethodology: {', '.join(template.methodology)}\n")
+        information += f"\tMethodology: {', '.join(template.methodology)}\n"
+
+    logger.info(information)
+    return len(information.split("\n"))
 
 
 def get_current_tree_state(tree, history):
