@@ -60,7 +60,7 @@ class Text:
     # {location} is going to be replaced with the destination path
     # {template_name} is going to be replaced with the template name
     # {arguments} is going to be replaced with the extra parameters from the template
-    init_confirm_1 = "\n\nConfirm that you want to start a new \"{template_name}\" project" \
+    init_confirm_1 = "Confirm that you want to start a new \"{template_name}\" project" \
                      "\nInside the folder \"{location}\""
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
 

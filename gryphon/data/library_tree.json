@@ -5,7 +5,7 @@
 			{
 				"name": "matplotlib",
 				"short_description": "Fundamental library of data visualization in python.",
-				"long_description": "Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python. Matplotlib makes easy things easy and hard things possible.\n\n\t\t- Create publication quality plots.\n\t\t- Make interactive figures that can zoom, pan, update.\n\t\t- Customize visual style and layout.\n\t\t- Export to many file formats .\n\t\t- Embed in JupyterLab and Graphical User Interfaces.\n\t\t- Use a rich array of third-party packages built on Matplotlib.",
+				"long_description": "Matplotlib is a comprehensive library for creating static, animated, and interactive visualizations in Python. Matplotlib makes easy things easy and hard things possible.\n\n\t- Create publication quality plots.\n\t- Make interactive figures that can zoom, pan, update.\n\t- Customize visual style and layout.\n\t- Export to many file formats.\n\t- Embed in JupyterLab and Graphical User Interfaces.\n\t- Use a rich array of third-party packages built on Matplotlib.",
 				"reference_link": "https://matplotlib.org/"
 			},
 			{

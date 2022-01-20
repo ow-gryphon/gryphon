@@ -1,5 +1,6 @@
 import questionary
 from questionary import Choice, Separator
+from ..functions import wrap_text
 from ..wizard_text import Text
 from ..constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, YES, NO)
 from .common import base_question, get_back_choice, logger
@@ -48,13 +49,14 @@ class AddQuestions:
         information = ""
 
         if LONG_DESC in library:
-            information += f'\n\t{library[NAME]}\n\n\t{library[LONG_DESC]}\n'
+            information += f'\t{library[NAME]}\n\n\t{library[LONG_DESC]}\n'
 
         if REFERENCE_LINK in library:
             information += f'\n\tReferences: {library[REFERENCE_LINK]}\n'
-        n_lines = len(information.split("\n"))
 
-        logger.warning(information)
+        wrapped, n_lines = wrap_text(information)
+
+        logger.warning(wrapped)
 
         choices = [
             Choice(

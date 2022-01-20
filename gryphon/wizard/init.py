@@ -1,6 +1,6 @@
 from pathlib import Path
 import gryphon.core as gryphon
-from .constants import INIT, BACK, YES, NO
+from .constants import INIT, BACK, NO
 from .functions import erase_lines
 from .questions import InitQuestions
 
@@ -22,8 +22,7 @@ def init(_, registry):
         )
 
         response, n_lines = InitQuestions.confirm_init(
-            template_name=template.display_name,
-            template_description=template.description,
+            template=template,
             location=Path(location).resolve(),
             **extra_parameters
         )

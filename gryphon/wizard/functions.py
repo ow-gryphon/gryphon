@@ -1,7 +1,7 @@
 import logging
-from typing import Dict
-from gryphon.core.registry import Template
-from .constants import LEAF_OPTIONS, CHILDREN, NAME
+from typing import Tuple
+from textwrap import fill
+from .constants import CHILDREN, NAME
 
 
 logger = logging.getLogger('gryphon')
@@ -12,9 +12,25 @@ def erase_lines(n_lines=2):
         print("\033[A                             \033[A")
 
 
+def wrap_text(text) -> Tuple[str, int]:
+    wrapped = ""
+    for i in text.split('\n'):
+        line = fill(
+            i, width=100, drop_whitespace=False,
+            expand_tabs=True, replace_whitespace=False,
+            break_on_hyphens=False, subsequent_indent='\t'
+        )
+        wrapped += '\n' + line
+
+    n_lines = len(wrapped.split('\n'))
+
+    return wrapped, n_lines
+
+
 def display_template_information(template) -> int:
     information = ""
-    information += f"\n{template.description}\n"
+
+    information += f'\t{template.display_name}\n\n\t{template.description}\n\n'
 
     if len(template.topic):
         information += f"\tTopics: {', '.join(template.topic)}\n"
@@ -25,8 +41,10 @@ def display_template_information(template) -> int:
     if len(template.methodology):
         information += f"\tMethodology: {', '.join(template.methodology)}\n"
 
-    logger.info(information)
-    return len(information.split("\n"))
+    wrapped, n_lines = wrap_text(information)
+    logger.info(wrapped)
+
+    return n_lines
 
 
 def get_current_tree_state(tree, history):
@@ -48,12 +66,5 @@ def filter_chosen_option(option, tree):
         raise RuntimeError("Error in the menu navigation.")
 
 
-def get_option_names_add(tree):
+def get_option_names(tree):
     return list(map(lambda x: x[NAME], tree))
-
-
-def get_option_names_generate(tree):
-    options = list(tree.keys())
-    options.extend(list(tree[LEAF_OPTIONS]))
-    options.remove(LEAF_OPTIONS)
-    return options

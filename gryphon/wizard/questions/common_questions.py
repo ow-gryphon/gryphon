@@ -36,8 +36,7 @@ class CommonQuestions:
 
         return questionary.select(
             message=Text.first_prompt_question,
-            choices=choices,
-            instruction=Text.first_prompt_question
+            choices=choices
         ).unsafe_ask()
 
     @staticmethod

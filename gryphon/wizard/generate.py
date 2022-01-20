@@ -5,7 +5,7 @@ from gryphon.core.registry import Template
 import gryphon.core as gryphon
 from .functions import (
     display_template_information, erase_lines,
-    get_current_tree_state, get_option_names_add, filter_chosen_option
+    get_current_tree_state, get_option_names, filter_chosen_option
 )
 from .constants import (
     USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
@@ -111,7 +111,7 @@ def generate(data_path, registry):
             )
 
             # create a list with the current possible options
-            possibilities = get_option_names_add(template_tree)
+            possibilities = get_option_names(template_tree)
 
             # categories
             state["actual_selection"] = GenerateQuestions.get_generate_option(possibilities)

@@ -2,7 +2,8 @@ import questionary
 from questionary import Choice, Separator
 from ..wizard_text import Text
 from ..constants import (BACK, YES, NO)
-from .common import base_question, get_back_choice
+from ..functions import wrap_text
+from .common import base_question, get_back_choice, logger
 
 
 class InitQuestions:
@@ -54,17 +55,23 @@ class InitQuestions:
 
     @staticmethod
     @base_question
-    def confirm_init(template_name, template_description, location, **kwargs):
+    def confirm_init(template, location, **kwargs):
+
+        n_lines = 0
+        if template.description:
+            text, n_lines = wrap_text(f"{template.description}\n")
+            logger.warning(text)
 
         message = (
-            f"\n{template_description}\n" +
             Text.init_confirm_1
-            .replace("{template_name}", template_name)
+            .replace("{template_name}", template.display_name)
             .replace("{location}", str(location))
         )
 
         if kwargs:
             message = message + Text.init_confirm_2.replace("{arguments}", kwargs)
+
+        n_lines += len(message.split('\n'))
 
         return questionary.select(
             message=message,
@@ -82,4 +89,4 @@ class InitQuestions:
                     value="change_location"
                 )
             ]
-        ).unsafe_ask(), len(message.split('\n'))
+        ).unsafe_ask(), n_lines
