@@ -4,7 +4,7 @@ Module containing the code for the init command in the CLI.
 import os
 import logging
 from pathlib import Path
-from .command_operations import (
+from .common_operations import (
     install_libraries,
     copy_project_template,
     create_venv,

@@ -30,18 +30,6 @@ def display_template_information(template) -> int:
 
 
 def get_current_tree_state(tree, history):
-    tree_level = tree.copy()
-
-    for item in history:
-        if item in tree_level:
-            tree_level = tree_level[item]
-        else:
-            raise RuntimeError("Error in tree navigation.")
-
-    return tree_level
-
-
-def get_current_tree_state_add(tree, history):
     if not len(history):
         return tree
 

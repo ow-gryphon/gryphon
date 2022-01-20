@@ -5,14 +5,14 @@ from gryphon.core.registry import Template
 import gryphon.core as gryphon
 from .functions import (
     display_template_information, erase_lines,
-    get_current_tree_state_add, get_option_names_add, filter_chosen_option
+    get_current_tree_state, get_option_names_add, filter_chosen_option
 )
 from .constants import (
     USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
     BACK, QUIT, GENERATE, NO, CHILDREN
 )
 from .wizard_text import Text
-from .questions import Questions
+from .questions import GenerateQuestions
 
 
 logger = logging.getLogger('gryphon')
@@ -74,7 +74,7 @@ def filter_templates_by_category(state: dict) -> dict:
 
 
 def ask_what_to_do_if_nothing_found(state: dict):
-    response = Questions.nothing_found()
+    response = GenerateQuestions.nothing_found()
     if response == QUIT:
         exit(0)
 
@@ -83,7 +83,7 @@ def ask_what_to_do_if_nothing_found(state: dict):
 
 
 def ask_which_template(state: dict):
-    template_name = Questions.ask_which_template(state["filtered_templates"], command=GENERATE)
+    template_name = GenerateQuestions.ask_which_template(state["filtered_templates"])
     if template_name == BACK:
         back_to_previous_menu(state)
 
@@ -105,7 +105,7 @@ def generate(data_path, registry):
 
     while True:
         try:
-            template_tree = get_current_tree_state_add(
+            template_tree = get_current_tree_state(
                 tree=full_tree,
                 history=state["history"]
             )
@@ -114,10 +114,10 @@ def generate(data_path, registry):
             possibilities = get_option_names_add(template_tree)
 
             # categories
-            state["actual_selection"] = Questions.get_generate_option(possibilities)
+            state["actual_selection"] = GenerateQuestions.get_generate_option(possibilities)
 
             if state["actual_selection"] == SEARCH_BY_KEYWORD:
-                keyword = Questions.generate_keyword_question()
+                keyword = GenerateQuestions.generate_keyword_question()
                 state["filtered_templates"] = filter_by_keyword(keyword, state["templates"])
 
             elif state["actual_selection"] == BACK:
@@ -148,9 +148,9 @@ def generate(data_path, registry):
                 extra_parameters = {}
                 if len(template.arguments):
                     logger.debug(Text.generate_ask_extra_parameters)
-                    extra_parameters = Questions.ask_extra_arguments(template.arguments)
+                    extra_parameters = GenerateQuestions.ask_extra_arguments(template.arguments)
 
-                response = Questions.confirm_generate(
+                response = GenerateQuestions.confirm_generate(
                     template_name=template.display_name,
                     **extra_parameters
                 )

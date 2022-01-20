@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 from .template_registry import TemplateRegistry
-from ..command_operations import remove_folder
+from ..common_operations import remove_folder
 
 
 class LocalRegistry(TemplateRegistry):

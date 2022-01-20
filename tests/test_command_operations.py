@@ -1,5 +1,5 @@
 """
-Module containing tests about the functions in the file command_operations.py
+Module containing tests about the functions in the file common_operations.py
 """
 import os
 from pathlib import Path
@@ -12,7 +12,7 @@ from .utils import (
     get_venv_path,
     TEST_FOLDER
 )
-from gryphon.core.command_operations import (
+from gryphon.core.common_operations import (
     create_venv,
     install_libraries,
     copy_project_template,

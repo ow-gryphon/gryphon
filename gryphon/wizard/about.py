@@ -4,7 +4,7 @@ import platform
 import logging
 from .functions import erase_lines
 from .wizard_text import Text
-from .questions import Questions
+from .questions import CommonQuestions
 from .constants import QUIT, BACK
 
 
@@ -19,7 +19,7 @@ def about(data_path, _):
 
     response = None
     while response != QUIT:
-        response = Questions.prompt_about(links)
+        response = CommonQuestions.prompt_about(links)
 
         if response == QUIT:
             return

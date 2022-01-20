@@ -3,8 +3,8 @@ import json
 import platform
 import gryphon.core as gryphon
 from .constants import BACK, TYPING, CHILDREN, NAME, YES, NO
-from .functions import erase_lines, get_current_tree_state_add, filter_chosen_option
-from .questions import Questions
+from .functions import erase_lines, get_current_tree_state, filter_chosen_option
+from .questions import AddQuestions
 
 
 def add(data_path, _):
@@ -16,7 +16,7 @@ def add(data_path, _):
         full_tree = json.load(file)
 
     while True:
-        lib_tree = get_current_tree_state_add(
+        lib_tree = get_current_tree_state(
             tree=full_tree,
             history=navigation_history
         )
@@ -25,7 +25,7 @@ def add(data_path, _):
             break
 
         # chosen option
-        chosen_option = Questions.get_add_option(lib_tree)
+        chosen_option = AddQuestions.get_add_option(lib_tree)
 
         if chosen_option == BACK:
             # return to the main menu
@@ -38,7 +38,7 @@ def add(data_path, _):
                 return BACK
         elif chosen_option == TYPING:
             # type the bare lib name
-            chosen_option = {NAME: Questions.get_lib_via_keyboard()}
+            chosen_option = {NAME: AddQuestions.get_lib_via_keyboard()}
         else:
             node = filter_chosen_option(chosen_option, lib_tree)
             if CHILDREN not in node:
@@ -52,7 +52,7 @@ def add(data_path, _):
         response = None
         while response != YES:
 
-            response, n_lines = Questions.confirm_add(chosen_option)
+            response, n_lines = AddQuestions.confirm_add(chosen_option)
 
             if response == NO:
                 # navigation_history.pop()

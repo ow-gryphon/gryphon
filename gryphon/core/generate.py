@@ -7,7 +7,7 @@ import shutil
 from pathlib import Path
 import glob
 import logging
-from .command_operations import (
+from .common_operations import (
     get_destination_path,
     copy_project_template,
     append_requirement,

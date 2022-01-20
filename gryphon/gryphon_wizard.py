@@ -9,8 +9,8 @@ from pathlib import Path
 from gryphon.core.registry import RegistryCollection
 from gryphon import wizard
 from gryphon.wizard.wizard_text import Text
-from gryphon.wizard.questions import Questions
-from gryphon.wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT
+from gryphon.wizard.questions import CommonQuestions
+from gryphon.wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT, BACK
 from .logger import logger
 
 
@@ -21,7 +21,6 @@ if platform.system() == "Windows":
 
 PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "data"
-BACK = "back"
 
 # Load contents of configuration file
 with open(DATA_PATH / "gryphon_config.json", "r") as f:
@@ -48,7 +47,7 @@ def main():
     logger.info(Text.welcome)
 
     while True:
-        chosen_command = Questions.main_question()
+        chosen_command = CommonQuestions.main_question()
 
         function = {
             INIT: wizard.init,
@@ -103,10 +102,10 @@ def did_you_mean_gryphon():
 
 # TODO: Developers documentations
 # TODO: Find a way to install wexpect for windows and pexpect for linux
-
 # TODO: Figure out if the user is in a folder with .venv (and inform the user)
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
 # TODO: Handle errors from the pip commands
 # TODO: Create .labskitrc and populate it accordingly
 # TODO: Have a single readme file with al the readmes from other templates
+# TODO: Implement gitflow guidelines

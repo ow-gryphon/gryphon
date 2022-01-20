@@ -2,7 +2,7 @@
 Module containing the code for the add command in then CLI.
 """
 import logging
-from .command_operations import (
+from .common_operations import (
     install_libraries, append_requirement,
     rollback_append_requirement
 )
