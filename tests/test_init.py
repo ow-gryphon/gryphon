@@ -1,4 +1,4 @@
-from gryphon.init import init
+from gryphon.core.init import init
 from .utils import TEST_FOLDER
 
 

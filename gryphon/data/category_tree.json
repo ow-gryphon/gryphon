@@ -1,0 +1,55 @@
+[
+      {
+            "name": "Methodology",
+            "children": [
+                  {
+                        "name": "Classification"
+                  },
+                  {
+                        "name": "Regression"
+                  },
+                  {
+                        "name": "Clustering"
+                  },
+                  {
+                        "name": "NLP"
+                  }
+            ]
+},
+      {
+            "name": "Use-cases",
+            "children": [
+                  {
+                        "name": "Navigate by Sector",
+                        "children": [
+                              {
+                                    "name": "Financial Services"
+                              },
+                              {
+                                    "name": "Healthcare"
+                              },
+                              {
+                                    "name": "Consumer Goods"
+                              }
+                        ]
+                  },
+                  {
+                        "name": "Navigate by Topic",
+                        "children": [
+                              {
+                                    "name": "Price Elasticity"
+                              },
+                              {
+                                    "name": "Financial Planning"
+                              },
+                              {
+                                    "name": "Cyber risk"
+                              }
+                        ]
+                  }
+            ]
+      },
+      {
+            "name": "Search by keyword"
+      }
+]

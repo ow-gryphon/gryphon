@@ -1,4 +1,5 @@
 import os
+import platform
 from pathlib import Path
 from os import path
 import glob
@@ -8,21 +9,25 @@ from .utils import (
     remove_folder,
     create_folder,
     get_data_folder,
-    get_venv_path
+    get_venv_path,
+    create_folder_with_venv,
+    get_pip_path,
+    activate_venv
 )
 
 INIT_PATH = Path.cwd()
-SANDBOX_PATH = Path("sandbox").resolve()
+SANDBOX_PATH = Path("sandbox")
 
 
 @pytest.fixture
 def setup() -> callable:
 
     def _setup() -> Path:
-        remove_folder(SANDBOX_PATH)
+        if SANDBOX_PATH.is_dir():
+            remove_folder(SANDBOX_PATH)
         create_folder(SANDBOX_PATH)
         os.chdir(SANDBOX_PATH)
-        return SANDBOX_PATH
+        return Path.cwd()
     return _setup
 
 
@@ -31,7 +36,7 @@ def teardown() -> callable:
 
     def _teardown():
         os.chdir(INIT_PATH)
-        remove_folder(SANDBOX_PATH)
+        remove_folder(SANDBOX_PATH.resolve())
 
     return _teardown
 
@@ -41,8 +46,11 @@ def get_pip_libraries() -> callable:
 
     def _get_libraries(folder=Path.cwd()) -> List[str]:
         venv_path = get_venv_path(base_folder=folder)
+        if platform.system() == "Windows":
+            glob_pattern = venv_path / "Lib" / "site-packages" / "*"
+        else:
+            glob_pattern = venv_path / "lib*" / "python*" / "site-packages" / "*"
 
-        glob_pattern = venv_path / "lib*" / "python*" / "site-packages" / "*"
         lib_folders = glob.glob(str(glob_pattern))
         libs = list(map(path.basename, lib_folders))
 
@@ -54,3 +62,16 @@ def get_pip_libraries() -> callable:
 @pytest.fixture
 def data_folder() -> Path:
     return get_data_folder()
+
+
+@pytest.fixture
+def install_gryphon():
+
+    def _install_gryphon(cwd):
+        create_folder_with_venv(cwd)
+        pip_path = get_pip_path(cwd)
+
+        activate_venv()
+        os.system(f"""{pip_path} install ../""")
+
+    return _install_gryphon

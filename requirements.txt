@@ -1,8 +1,10 @@
 click>=8.0.1
 virtualenv
 questionary
-pexpect
-pylint
-pytest
-pytest-cov
 GitPython
+colorlog
+pytest
+
+#pexpect
+#wexpect
+#pytest-cov

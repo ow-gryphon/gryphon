@@ -1,5 +1,5 @@
 """
-Module containing tests about the functions in the file command_operations.py
+Module containing tests about the functions in the file common_operations.py
 """
 import os
 from pathlib import Path
@@ -12,7 +12,7 @@ from .utils import (
     get_venv_path,
     TEST_FOLDER
 )
-from gryphon.command_operations import (
+from gryphon.core.common_operations import (
     create_venv,
     install_libraries,
     copy_project_template,
@@ -83,7 +83,7 @@ def test_install_libraries_1(setup, teardown, get_pip_libraries):
 def test_install_libraries_2(setup, teardown):
     """
     Test case:
-    In an empty folder try install libraries from the requirements.txt
+    In an empty folder try to install libraries from the requirements.txt
     should raise error.
     """
     folder_path = setup()
