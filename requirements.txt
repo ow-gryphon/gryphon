@@ -3,10 +3,8 @@ virtualenv
 questionary
 GitPython
 colorlog
-
+pytest
 
 #pexpect
 #wexpect
-#pylint
-#pytest
 #pytest-cov
