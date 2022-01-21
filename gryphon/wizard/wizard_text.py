@@ -68,8 +68,4 @@ class Text:
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"
     could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
     generate_keyword_argument = "Type the keyword you want to search for:"
-    install_end_message_1 = """To enter the folder of the created project and activate the virtual 
-                environment you can use the following commands:"""
 
-    install_end_message_2 = "Once doing this you will be able to add libraries and templates."
-    could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
