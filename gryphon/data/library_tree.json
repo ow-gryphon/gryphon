@@ -10,15 +10,15 @@
 			},
 			{
 				"name": "seaborn",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Seaborn is a Python data visualization library based on matplotlib.",
+				"long_description": "Seaborn is a library for making statistical graphics in Python. It builds on top of matplotlib and integrates closely with pandas data structures. Seaborn helps you explore and understand your data. Its plotting functions operate on dataframes and arrays containing whole datasets and internally perform the necessary semantic mapping and statistical aggregation to produce informative plots. Its dataset-oriented, declarative API lets you focus on what the different elements of your plots mean, rather than on the details of how to draw them.",
+				"reference_link": "https://seaborn.pydata.org/"
 			},
 			{
 				"name": "plotly",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Plotly is an interactive, open-source, and browser-based graphing library for Python",
+				"long_description": "Plotly is an interactive, open-source, and browser-based graphing library for Python sparkles. Built on top of plotly.js, plotly.py is a high-level, declarative charting library. plotly.js ships with over 30 chart types, including scientific charts, 3D graphs, statistical charts, SVG maps, financial charts, and more. Plotly is MIT Licensed. Plotly graphs can be viewed in Jupyter notebooks, standalone HTML files, or hosted online using Chart Studio Cloud.",
+				"reference_link": "https://plotly.com/"
 			}
 		]
 	},
@@ -27,27 +27,27 @@
 		"children": [
 			{
 				"name": "openpyxl",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "A Python library to read/write Excel 2010 xlsx/xlsm files.",
+				"long_description": "Openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files. It was born from lack of existing library to read/write natively from Python the Office Open XML format.",
+				"reference_link": "https://openpyxl.readthedocs.io/en/stable/"
 			},
 			{
 				"name": "xlsxwriter",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "XlsxWriter is a Python module for creating Excel XLSX files.",
+				"long_description": "XlsxWriter is a Python module that can be used to write text, numbers, formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file. It supports features such as formatting and many more, including:\n\n\t\t - 100% compatible Excel XLSX files.\n\t\t - Full formatting.\n\t\t - Merged cells.\n\t\t - Defined names.\n\t\t - Charts.\n\t\t - Autofilters.\n\t\t - Data validation and drop down lists.\n\t\t - Conditional formatting.\n\t\t - Worksheet PNG/JPEG/GIF/BMP/WMF/EMF images.\n\t\t - Rich multi-format strings.\n\t\t - Cell comments.\n\t\t - Textboxes.\n\t\t - Integration with Pandas.\n\t\t - Memory optimization mode for writing large files.",
+				"reference_link": "https://xlsxwriter.readthedocs.io/"
 			},
 			{
 				"name": "pyxlsb",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python. ",
+				"long_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python. The library is currently extremely limited, but functional enough for basic data extraction.",
+				"reference_link": "https://github.com/willtrnr/pyxlsb"
 			},
 			{
 				"name": "xlrd",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "xlrd is a library for reading data from Excel files in the .xls format.",
+				"long_description": "xlrd is a library for reading data and formatting information from Excel files in the historical .xls format. This library will no longer read anything other than .xls files. For alternatives that read newer file formats, please see http://www.python-excel.org/.\n\n\tThe following are also not supported but will safely and reliably be ignored:\n\t\t- Charts, Macros, Pictures, any other embedded object, including embedded worksheets.\n\t\t- VBA modules\n\t\t- Formulas, but results of formula calculations are extracted.\n\t\t- Comments\n\t\t- Hyperlinks\n\t\t- Autofilters, advanced filters, pivot tables, conditional formatting, data validation\n\t\t- Password-protected files are not supported and cannot be read by this library.",
+				"reference_link": "https://xlrd.readthedocs.io/en/latest/"
 			}
 		]
 	},
@@ -58,29 +58,29 @@
 				"name": "Working with Excel",
 				"children": [
 					{
-						"name": "openpyxl",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
-					},
-					{
-						"name": "xlsxwriter",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
-					},
-					{
-						"name": "pyxlsb",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
-					},
-					{
-						"name": "xlrd",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
-					}
+				"name": "openpyxl",
+				"short_description": "A Python library to read/write Excel 2010 xlsx/xlsm files.",
+				"long_description": "Openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files. It was born from lack of existing library to read/write natively from Python the Office Open XML format.",
+				"reference_link": "https://openpyxl.readthedocs.io/en/stable/"
+			},
+			{
+				"name": "xlsxwriter",
+				"short_description": "XlsxWriter is a Python module for creating Excel XLSX files.",
+				"long_description": "XlsxWriter is a Python module that can be used to write text, numbers, formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file. It supports features such as formatting and many more, including:\n\n\t\t - 100% compatible Excel XLSX files.\n\t\t - Full formatting.\n\t\t - Merged cells.\n\t\t - Defined names.\n\t\t - Charts.\n\t\t - Autofilters.\n\t\t - Data validation and drop down lists.\n\t\t - Conditional formatting.\n\t\t - Worksheet PNG/JPEG/GIF/BMP/WMF/EMF images.\n\t\t - Rich multi-format strings.\n\t\t - Cell comments.\n\t\t - Textboxes.\n\t\t - Integration with Pandas.\n\t\t - Memory optimization mode for writing large files.",
+				"reference_link": "https://xlsxwriter.readthedocs.io/"
+			},
+			{
+				"name": "pyxlsb",
+				"short_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python. ",
+				"long_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python. The library is currently extremely limited, but functional enough for basic data extraction.",
+				"reference_link": "https://github.com/willtrnr/pyxlsb"
+			},
+			{
+				"name": "xlrd",
+				"short_description": "xlrd is a library for reading data from Excel files in the .xls format.",
+				"long_description": "xlrd is a library for reading data and formatting information from Excel files in the historical .xls format. This library will no longer read anything other than .xls files. For alternatives that read newer file formats, please see http://www.python-excel.org/.\n\n\tThe following are also not supported but will safely and reliably be ignored:\n\t\t- Charts, Macros, Pictures, any other embedded object, including embedded worksheets.\n\t\t- VBA modules\n\t\t- Formulas, but results of formula calculations are extracted.\n\t\t- Comments\n\t\t- Hyperlinks\n\t\t- Autofilters, advanced filters, pivot tables, conditional formatting, data validation\n\t\t- Password-protected files are not supported and cannot be read by this library.",
+				"reference_link": "https://xlrd.readthedocs.io/en/latest/"
+			}
 				]
 			},
 			{
@@ -88,23 +88,23 @@
 				"children": [
 					{
 						"name": "SQLAlchemy",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
+						"short_description": "The Database Toolkit for Python",
+						"long_description": "SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL.\n\n\tIt provides a full suite of well known enterprise-level persistence patterns, designed for efficient and high-performing database access, adapted into a simple and Pythonic domain language.",
+						"reference_link": "https://www.sqlalchemy.org/"
 					}
 				]
 			},
 			{
 				"name": "numpy",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "The fundamental package for scientific computing with Python",
+				"long_description": "NumPy is the fundamental package for scientific computing in Python. It is a Python library that provides a multidimensional array object, various derived objects (such as masked arrays and matrices), and an assortment of routines for fast operations on arrays, including mathematical, logical, shape manipulation, sorting, selecting, I/O, discrete Fourier transforms, basic linear algebra, basic statistical operations, random simulation and much more.",
+				"reference_link": "https://numpy.org/"
 			},
 			{
 				"name": "pandas",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Python Data Analysis Library  ",
+				"long_description": "pandas is a fast, powerful, flexible and easy to use open source data analysis and manipulation tool, built on top of the Python programming language.\n\n\tPandas is a Python package providing fast, flexible, and expressive data structures designed to make working with “relational” or “labeled” data both easy and intuitive. It aims to be the fundamental high-level building block for doing practical, real-world data analysis in Python. Additionally, it has the broader goal of becoming the most powerful and flexible open source data analysis/manipulation tool available in any language. It is already well on its way toward this goal.\n\n\tPandas is well suited for many different kinds of data:\n\n\t\t- Tabular data with heterogeneously-typed columns, as in an SQL table or Excel spreadsheet\n\t\t- Ordered and unordered (not necessarily fixed-frequency) time series data.\n\t\t- Arbitrary matrix data (homogeneously typed or heterogeneous) with row and column labels\n\t\t- Any other form of observational / statistical data sets. The data need not be labeled at all to be placed into a pandas data structure",
+				"reference_link": "https://pandas.pydata.org/"
 			}
 		]
 	},
@@ -113,15 +113,15 @@
 		"children": [
 			{
 				"name": "pandas-profiling",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Generates profile reports from a pandas DataFrame.",
+				"long_description": "Generates profile reports from a pandas DataFrame. The pandas df.describe() function is great but a little basic for serious exploratory data analysis. pandas_profiling extends the pandas DataFrame with df.profile_report() for quick data analysis.\n\n\tFor each column the following statistics - if relevant for the column type - are presented in an interactive HTML report:\n\n\t\t- Type inference: detect the types of columns in a dataframe.\n\t\t- Essentials: type, unique values, missing values\n\t\t- Quantile statistics like minimum value, Q1, median, Q3, maximum, range, interquartile range\n\t\t- Descriptive statistics like mean, mode, standard deviation, sum, median absolute deviation, coefficient of variation, kurtosis, skewness\n\t\t- Most frequent values\n\t\t- Histograms\n\t\t- Correlations highlighting of highly correlated variables, Spearman, Pearson and Kendall matrices\n\t\t- Missing values matrix, count, heatmap and dendrogram of missing values\n\t\t- Duplicate rows Lists the most occurring duplicate rows\n\t\t- Text analysis learn about categories (Uppercase, Space), scripts (Latin, Cyrillic) and blocks (ASCII) of text data",
+				"reference_link": "https://pandas-profiling.github.io/pandas-profiling/docs/master/rtd/"
 			},
 			{
 				"name": "sweetviz",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Sweetviz helps generate Exploratory Data Analysis with a single line of code.",
+				"long_description": "Sweetviz is an open-source Python library that helps generate beautiful, highly detailed visualizations to Exploratory Data Analysis with a single line of code. It also generates a summarised report and can help create interactive dashboards as well. The output generated is a fully self-contained HTML application.",
+				"reference_link": "https://github.com/fbdesignpro/sweetviz"
 			}
 		]
 	},
@@ -130,27 +130,27 @@
 		"children": [
 			{
 				"name": "requests",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Requests is a simple HTTP library for Python, built for human beings.",
+				"long_description": "Requests is an elegant and simple HTTP library for Python, built for human beings.",
+				"reference_link": "https://docs.python-requests.org/en/latest/"
 			},
 			{
 				"name": "beautifulsoup4",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Beautiful Soup is a library designed for quick screen-scraping.",
+				"long_description": "You didn't write that awful page. You're just trying to get some data out of it. Beautiful Soup is here to help. Since 2004, it's been saving programmers hours or days of work on quick-turnaround screen scraping projects.\n\n\tBeautiful Soup is a Python library designed for quick turnaround projects like screen-scraping. Three features make it powerful:\n\n\t\t- Beautiful Soup provides a few simple methods and Pythonic idioms for navigating, searching, and modifying a parse tree: a toolkit for dissecting a document and extracting what you need. It doesn't take much code to write an application\n\t\t- Beautiful Soup automatically converts incoming documents to Unicode and outgoing documents to UTF-8. You don't have to think about encodings, unless the document doesn't specify an encoding and Beautiful Soup can't detect one. Then you just have to specify the original encoding.\n\t\t- Beautiful Soup sits on top of popular Python parsers like lxml and html5lib, allowing you to try out different parsing strategies or trade speed for flexibility.\n\n\tBeautiful Soup parses anything you give it, and does the tree traversal stuff for you. You can tell it \"Find all the links\", or \"Find all the links of class externalLink\", or \"Find all the links whose urls match \"foo.com\", or \"Find the table heading that's got bold text, then give me that text.\"\n\n\tValuable data that was once locked up in poorly-designed websites is now within your reach. Projects that would have taken hours take only minutes with Beautiful Soup.",
+				"reference_link": "https://www.crummy.com/software/BeautifulSoup/"
 			},
 			{
 				"name": "lxml",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "lxml is an easy-to-use library for processing XML and HTML in Python.",
+				"long_description": "The lxml XML toolkit is a Pythonic binding for the C libraries libxml2 and libxslt. It is unique in that it combines the speed and XML feature completeness of these libraries with the simplicity of a native Python API, mostly compatible but superior to the well-known ElementTree API. The latest release works with all CPython versions from 2.7 to 3.9. See the introduction for more information about background and goals of the lxml project.",
+				"reference_link": "https://lxml.de/"
 			},
 			{
 				"name": "scrapy",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "A framework for extracting the data you need from websites.",
+				"long_description": "An open source and collaborative framework for extracting the data you need from websites. In a fast, simple, yet extensible way.",
+				"reference_link": "https://scrapy.org/"
 			}
 		]
 	},
@@ -162,29 +162,29 @@
 				"children": [
 					{
 						"name": "tensorflow",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
+						"short_description": "TensorFlow is an end-to-end open source platform for machine learning.",
+						"long_description": "TensorFlow is a free and open-source software library for machine learning and artificial intelligence. It can be used across a range of tasks but has a particular focus on training and inference of deep neural networks.\n\n\tTensorFlow was developed by the Google Brain team for internal Google use in research and production. The initial version was released under the Apache License 2.0 in 2015. Google released the updated version of TensorFlow, named TensorFlow 2.0, in September 2019.\n\n\tTensorFlow can be used in a wide variety of programming languages, most notably Python, as well as Javascript, C++, and Java. This flexibility lends itself to a range of applications in many different sectors.",
+						"reference_link": "https://www.tensorflow.org/"
 					},
 					{
 						"name": "keras",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
+						"short_description": "Keras provides interface for artificial neural networks.",
+						"long_description": "Keras is an open-source software library that provides a Python interface for artificial neural networks. Keras acts as an interface for the TensorFlow library.\n\n\tUp until version 2.3, Keras supported multiple backends, including TensorFlow, Microsoft Cognitive Toolkit, Theano, and PlaidML. As of version 2.4, only TensorFlow is supported. Designed to enable fast experimentation with deep neural networks, it focuses on being user-friendly, modular, and extensible. It was developed as part of the research effort of project ONEIROS (Open-ended Neuro-Electronic Intelligent Robot Operating System), and its primary author and maintainer is François Chollet, a Google engineer.",
+						"reference_link": "https://keras.io/"
 					},
 					{
 						"name": "pytorch",
-						"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-						"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-						"reference_link": "Link to the library reference, will be shown together with the long description."
+						"short_description": "An open source machine learning framework.",
+						"long_description": "PyTorch is an open source machine learning library based on the Torch library, used for applications such as computer vision and natural language processing, primarily developed by Facebook's AI Research lab (FAIR). It is free and open-source software released under the Modified BSD license.\n\tA number of pieces of deep learning software are built on top of PyTorch, including Tesla Autopilot, Uber's Pyro, Hugging Face's Transformers, PyTorch Lightning, and Catalyst.\n\n\tPyTorch provides two high-level features:\n\t\t- Tensor computing (like NumPy) with strong acceleration via graphics processing units (GPU)\n\t\t- Deep neural networks built on a type-based automatic differentiation system.",
+						"reference_link": "https://pytorch.org/"
 					}
 				]
 			},
 			{
 				"name": "scikit-learn",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Simple and efficient tools for predictive data analysis",
+				"long_description": "Scikit-learn (formerly scikits.learn and also known as sklearn) is a free software machine learning library for the Python programming language. It features various classification, regression and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries NumPy and SciPy. Scikit-learn is a NumFOCUS fiscally sponsored project.",
+				"reference_link": "https://scikit-learn.org/stable/"
 			}
 		]
 	},
@@ -193,15 +193,15 @@
 		"children": [
 			{
 				"name": "scipy",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Fundamental algorithms for scientific computing in Python",
+				"long_description": "Fundamental algorithms for scientific computing in Python\n\n\tFUNDAMENTAL ALGORITHMS\n\tSciPy provides algorithms for optimization, integration, interpolation, eigenvalue problems, algebraic equations, differential equations, statistics and many other classes of problems.\n\n\n\tBROADLY APPLICABLE\n\tThe algorithms and data structures provided by SciPy are broadly applicable across domains.\n\n\tFOUNDATIONAL\n\tExtends NumPy providing additional tools for array computing and provides specialized data structures, such as sparse matrices and k-dimensional trees.\n\n\tPERFORMANT\n\tSciPy wraps highly-optimized implementations written in low-level languages like Fortran, C, and C++. Enjoy the flexibility of Python with the speed of compiled code.",
+				"reference_link": "https://scipy.org/"
 			},
 			{
 				"name": "statsmodels",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "Statistical models, hypothesis tests, and data exploration.",
+				"long_description": "Statsmodels is a Python module that provides classes and functions for the estimation of many different statistical models, as well as for conducting statistical tests, and statistical data exploration. An extensive list of result statistics are available for each estimator. The results are tested against existing statistical packages to ensure that they are correct. The package is released under the open source Modified BSD (3-clause) license. The online documentation is hosted at statsmodels.org.",
+				"reference_link": "https://www.statsmodels.org/stable/index.html"
 			}
 		]
 	},
@@ -210,9 +210,9 @@
 		"children": [
 			{
 				"name": "pytest",
-				"short_description": "This is a short description with at most 50 chars, that will be shown in the selection menu side-by-side with the name.",
-				"long_description": "This is a more complete description that will be shown in the time that the user clicks in a specific library.",
-				"reference_link": "Link to the library reference, will be shown together with the long description."
+				"short_description": "A framework to write automated tests in python.",
+				"long_description": "The pytest framework makes it easy to write small tests, yet scales to support complex functional testing for applications and libraries.",
+				"reference_link": "https://docs.pytest.org/en/6.2.x/"
 			}
 		]
 	}
