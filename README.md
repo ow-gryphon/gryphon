@@ -72,21 +72,23 @@ You can insert an entry insert the `local_registry` property, pointing to a fold
 Inside this folder you can create as many templates you want to, and the OW Gryphon will be able to find them if they have
 the right folder structure and metadata files.
 
-```
+We must have two folders `init` and `generate` to distinguish between
+the project templates and the snippets ones. The templates should be placed inside this two folders. Refer to the f
 
+```
 registry
     |
     |―― init
-    |     |―― templates
-    |     |       |―― template code
-    |     |       
-    |     |―― metadata.json
+    |     |―― sample_template
+    |          |―― metadata.json  
+    |          |―― template
+    |                 |―― template code
     |
     |―― generate
-    |     |―― templates
-    |     |       |―― template code
-    |     |       
-    |     |―― metadata.json  
+    |     |―― sample_template
+    |          |―― metadata.json  
+    |          |―― template
+    |                 |―― template code
 ```
 
 This `metadata.json` files are required, and you can specify template pipy requirements and also replacement patterns.

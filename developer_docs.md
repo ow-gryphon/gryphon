@@ -50,21 +50,26 @@ The data structure is a list of objects with the following properties.
 
 Template registries are a collection of templates that are stored in a particular structure so that gryphon can 
 understand it properly. 
+
+We must have two folders `init` and `generate` to distinguish between
+the project templates and the snippets ones. The templates should be placed inside this two folders. Refer to the f
+
 ```
 registry
     |
     |―― init
-    |     |―― templates
-    |     |       |―― template code
-    |     |       
-    |     |―― metadata.json
+    |     |―― sample_template
+    |          |―― metadata.json  
+    |          |―― template
+    |                 |―― template code
     |
     |―― generate
-    |     |―― templates
-    |     |       |―― template code
-    |     |       
-    |     |―― metadata.json  
+    |     |―― sample_template
+    |          |―― metadata.json  
+    |          |―― template
+    |                 |―― template code
 ```
+
 
 ### General behavior
 In this section we will give an overview of the inner workings of gryphon, from the beginning to the halt. 
