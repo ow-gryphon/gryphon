@@ -1,14 +1,22 @@
+import logging
 import os
 import json
 import platform
 import gryphon.core as gryphon
-from .constants import BACK, TYPING, CHILDREN, NAME, YES, NO
-from .functions import erase_lines, get_current_tree_state, filter_chosen_option
+from gryphon.constants import BACK, TYPING, CHILDREN, NAME, YES, NO
+from .functions import erase_lines, get_current_tree_state, filter_chosen_option, current_folder_has_venv
 from .questions import AddQuestions
+from .wizard_text import Text
+
+logger = logging.getLogger('gryphon')
 
 
 def add(data_path, _):
     """add templates based on arguments and configurations."""
+
+    if not current_folder_has_venv():
+        logger.warning(Text.no_virtual_environment_remainder)
+
     navigation_history = []
     chosen_option = ""
 

@@ -1,7 +1,7 @@
 import questionary
 from questionary import Choice, Separator
 from ..wizard_text import Text
-from ..constants import (INIT, ADD, ABOUT, GENERATE, QUIT)
+from gryphon.constants import (INIT, ADD, ABOUT, GENERATE, QUIT)
 from .common import base_question, get_back_choice
 
 

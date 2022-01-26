@@ -1,7 +1,9 @@
 import logging
+import platform
+from pathlib import Path
 from typing import Tuple
 from textwrap import fill
-from .constants import CHILDREN, NAME
+from gryphon.constants import CHILDREN, NAME, VENV
 
 
 logger = logging.getLogger('gryphon')
@@ -68,3 +70,13 @@ def filter_chosen_option(option, tree):
 
 def get_option_names(tree):
     return list(map(lambda x: x[NAME], tree))
+
+
+def current_folder_has_venv():
+    cwd = Path.cwd()
+    if platform.system() == "Windows":
+        activate_path = cwd / VENV / "Scripts" / "activate.bat"
+    else:
+        activate_path = cwd / VENV / "bin" / "activate"
+
+    return activate_path.is_file()

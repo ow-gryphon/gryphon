@@ -69,3 +69,5 @@ class Text:
     could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
     generate_keyword_argument = "Type the keyword you want to search for:"
 
+    no_virtual_environment_remainder = "The current folder does not have a virtual environment in it."
+

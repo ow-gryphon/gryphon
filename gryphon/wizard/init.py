@@ -1,6 +1,6 @@
 from pathlib import Path
 import gryphon.core as gryphon
-from .constants import INIT, BACK, NO
+from gryphon.constants import INIT, BACK, NO
 from .functions import erase_lines
 from .questions import InitQuestions
 

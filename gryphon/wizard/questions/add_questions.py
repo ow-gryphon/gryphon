@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from ..functions import wrap_text
 from ..wizard_text import Text
-from ..constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, YES, NO)
+from gryphon.constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, YES, NO)
 from .common import base_question, get_back_choice, logger
 
 

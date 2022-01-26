@@ -26,3 +26,6 @@ REFERENCE_LINK = "reference_link"
 
 YES = "yes"
 NO = "no"
+
+VENV = ".venv"
+SUCCESS = 21

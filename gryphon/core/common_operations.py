@@ -11,11 +11,11 @@ import subprocess
 import shutil
 import git
 from .core_text import Text
+from ..constants import SUCCESS, VENV
 
 
 logger = logging.getLogger('gryphon')
 
-VENV = ".venv"
 REQUIREMENTS = "requirements.txt"
 
 
@@ -44,9 +44,9 @@ def create_venv(folder=None):
     venv_path = target_folder / VENV
 
     # Create venv
-    logger.debug(f"Creating virtual environment in {venv_path}")
+    logger.info(f"Creating virtual environment in {venv_path}")
     os.system(f"python -m venv \"{venv_path}\"")
-    logger.info("Done creating virtual environment.")
+    logger.log(SUCCESS, "Done creating virtual environment.")
 
 
 def quote_windows_path(folder_path):
@@ -71,7 +71,7 @@ def install_extra_nbextensions(folder_path):
         pip_path = target_folder / VENV / "bin" / "pip"
 
     # Install requirements
-    logger.debug("Installing extra notebook extensions.")
+    logger.info("Installing extra notebook extensions.")
 
     if not pip_path.is_file():
         raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
@@ -114,7 +114,7 @@ def install_libraries(folder=None):
         pip_path = target_folder / VENV / "bin" / "pip"
 
     # Install requirements
-    logger.debug("Installing requirements. This may take several minutes ...")
+    logger.info("Installing requirements. This may take several minutes ...")
 
     if not pip_path.is_file():
         raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
@@ -127,7 +127,7 @@ def install_libraries(folder=None):
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")
 
-    logger.info("Installation successful!")
+    logger.log(SUCCESS, "Installation successful!")
 
 
 def change_shell_folder_and_activate_venv(location):
@@ -153,7 +153,7 @@ def change_shell_folder_and_activate_venv(location):
                 {Text.install_end_message_2}
             """)
         else:
-            logger.debug("Opening your new project folder and activating virtual environment.")
+            logger.info("Opening your new project folder and activating virtual environment.")
 
             activate_path = target_folder / VENV / "bin" / "activate"
             os.chdir(target_folder)
@@ -201,7 +201,7 @@ def append_requirement(library_name):
 
     except FileNotFoundError:
         logger.error(f"Could not find requirements file at {requirements_path}, "
-                     f"It is required to run this command.")
+                     f"It is required in order to run this command.")
 
 
 def rollback_append_requirement(library_name):
@@ -240,4 +240,3 @@ def populate_rc_file(folder):
     Updates the needed options inside the .labskitrc file.
     """
     return folder
-    # TODO: Create .labskitrc and populate it accordingly

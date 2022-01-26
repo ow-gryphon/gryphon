@@ -1,6 +1,8 @@
 """
 Gryphon interactive wizard.
 """
+import logging
+import traceback
 import json
 import platform
 import argparse
@@ -9,7 +11,7 @@ from gryphon.core.registry import RegistryCollection
 from gryphon import wizard
 from gryphon.wizard.wizard_text import Text
 from gryphon.wizard.questions import CommonQuestions
-from gryphon.wizard.constants import INIT, GENERATE, ADD, ABOUT, QUIT, BACK
+from gryphon.constants import INIT, GENERATE, ADD, ABOUT, QUIT, BACK
 from .logger import logger
 
 
@@ -41,8 +43,10 @@ def main():
     parser.add_argument('--debug', '-d', action='store_true')
     debug = parser.parse_args().debug
     if debug:
-        # TODO: Activate a verbose level of log when with this mode activated.
         logger.warning("Starting Gryphon in debug mode.")
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO)
 
     logger.info(Text.welcome)
 
@@ -62,7 +66,7 @@ def main():
 
             if response != BACK:
                 if chosen_command in [GENERATE, ADD]:
-                    logger.debug("\n\n")
+                    logger.info("\n\n")
                     continue
                 break
 
@@ -75,25 +79,29 @@ def main():
             exit(0)
 
         except Exception as er:
-            if debug:
-                raise er
-            else:
-                logger.error(f'Unexpected error: {er}. Call the support.')
-                exit(1)
+            logger.debug("Traceback (most recent call last):")
+            for line in traceback.format_tb(er.__traceback__):
+                logger.debug(line)
+
+            # sample:                    ValueError(er)
+            logger.error(f'{er.__class__.__name__}({er}). Please report to the support.')
+            exit(1)
 
 
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
+# DONE: Figure out if the user is in a folder with .venv (and inform the user)
+# DONE: Activate a verbose level of log when with this mode activated.
 # TODO: Test installation.
-# TODO: Figure out if the user is in a folder with .venv (and inform the user)
 # TODO: Create .labskitrc and populate it accordingly
-# TODO: Developer documentations
+# DONE: Developer documentations
 # TODO: Handle errors from the pip commands
 
-# TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
     # TODO: Change repository urls and
-# TODO: Have a single readme file with al the readmes from other templates
+# TODO: Have a single readme file with all the readmes from other templates
+
+# TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines

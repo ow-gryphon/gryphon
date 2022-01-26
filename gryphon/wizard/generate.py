@@ -4,10 +4,10 @@ from typing import Dict
 from gryphon.core.registry import Template
 import gryphon.core as gryphon
 from .functions import (
-    display_template_information, erase_lines,
+    display_template_information, erase_lines, current_folder_has_venv,
     get_current_tree_state, get_option_names, filter_chosen_option
 )
-from .constants import (
+from gryphon.constants import (
     USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
     BACK, QUIT, GENERATE, NO, CHILDREN
 )
@@ -93,6 +93,9 @@ def ask_which_template(state: dict):
 def generate(data_path, registry):
     """generates templates based on arguments and configurations."""
 
+    if not current_folder_has_venv():
+        logger.warning(Text.no_virtual_environment_remainder)
+
     with open(data_path / "category_tree.json") as file:
         full_tree = json.load(file)
 
@@ -147,7 +150,7 @@ def generate(data_path, registry):
 
                 extra_parameters = {}
                 if len(template.arguments):
-                    logger.debug(Text.generate_ask_extra_parameters)
+                    logger.info(Text.generate_ask_extra_parameters)
                     extra_parameters = GenerateQuestions.ask_extra_arguments(template.arguments)
 
                 response = GenerateQuestions.confirm_generate(

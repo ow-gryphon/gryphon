@@ -16,7 +16,7 @@ def validate_parameters(parameters, template_name: str, existing_templates: Dict
         assert template_name in existing_templates
     except AssertionError:
         message = f"Template \"{template_name}\" not found."
-        logger.debug(get_command_help(existing_templates))
+        logger.info(get_command_help(existing_templates))
         raise RuntimeError(message)
 
     template = existing_templates[template_name]
