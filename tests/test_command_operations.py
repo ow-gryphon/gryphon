@@ -20,7 +20,6 @@ from gryphon.core.common_operations import (
     initial_git_commit
 )
 
-VENV = ".venv"
 CWD = os.path.abspath("")
 
 

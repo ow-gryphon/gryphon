@@ -2,20 +2,20 @@
 Utility functions for the test suite.
 """
 import os
+import errno
+import stat
 from pathlib import Path
 import platform
 import shutil
 import subprocess
+from gryphon.constants import VENV
 from gryphon.core.common_operations import (
     create_venv,
     get_destination_path
 )
-import errno
-import stat
 
 
 TEST_FOLDER = Path("tests").resolve()
-VENV = ".venv"
 
 
 def on_error(func, path, exc):
