@@ -27,6 +27,9 @@ def on_error(func, path, exc):
         except PermissionError:
             pass
     else:
+        if func == os.rmdir:
+            shutil.rmtree(path)
+            return
         raise RuntimeError("File permission error.")
 
 

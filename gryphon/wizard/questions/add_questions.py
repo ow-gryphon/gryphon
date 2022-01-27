@@ -1,9 +1,9 @@
 import questionary
 from questionary import Choice, Separator
+from .common_functions import base_question, get_back_choice, logger
 from ..functions import wrap_text
 from ..wizard_text import Text
-from gryphon.constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, YES, NO)
-from .common import base_question, get_back_choice, logger
+from ...constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, YES, NO)
 
 
 class AddQuestions:

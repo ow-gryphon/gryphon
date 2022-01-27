@@ -1,9 +1,9 @@
 import questionary
 from questionary import Choice, Separator
+from .common_functions import base_question, get_back_choice, logger
 from ..wizard_text import Text
-from gryphon.constants import (BACK, YES, NO)
 from ..functions import wrap_text
-from .common import base_question, get_back_choice, logger
+from ...constants import (BACK, YES, NO)
 
 
 class InitQuestions:

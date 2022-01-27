@@ -2,11 +2,11 @@ import logging
 import os
 import json
 import platform
-import gryphon.core as gryphon
-from gryphon.constants import BACK, TYPING, CHILDREN, NAME, YES, NO
 from .functions import erase_lines, get_current_tree_state, filter_chosen_option, current_folder_has_venv
 from .questions import AddQuestions
 from .wizard_text import Text
+from ..core import add as core_add
+from ..constants import BACK, TYPING, CHILDREN, NAME, YES, NO
 
 logger = logging.getLogger('gryphon')
 
@@ -84,6 +84,6 @@ def add(data_path, _):
 
         break
 
-    gryphon.add(
+    core_add(
         library_name=chosen_option[NAME]
     )

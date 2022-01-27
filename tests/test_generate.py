@@ -1,4 +1,5 @@
 import os
+import shutil
 from os import path
 from gryphon.core.generate import (
     generate,
@@ -8,15 +9,21 @@ from gryphon.core.generate import (
 from .utils import create_folder_with_venv, TEST_FOLDER
 
 
-def test_generate_1(data_folder):
+def test_generate_1(setup, teardown, data_folder):
     """
     Tests the template replacement: Success case
     """
-    expected_file = path.join(data_folder, "sample_template.py")
 
+    cwd = setup()
+    template = data_folder / "sample_template.py.handlebars"
+    expected_file = cwd / "sample_template.py"
+    shutil.copyfile(
+        src=template,
+        dst=cwd / "sample_template.py.handlebars"
+    )
     try:
         pattern_replacement(
-            input_file=path.join(data_folder, "sample_template.py.handlebars"),
+            input_file=cwd / "sample_template.py.handlebars",
             mapper={"lib": "pandas", "alias": "pd"}
         )
 
@@ -27,29 +34,35 @@ def test_generate_1(data_folder):
             assert "pd" in contents
             assert contents == "import pandas as pd"
     finally:
-        os.remove(expected_file)
+        teardown()
 
 
-def test_generate_2(data_folder):
+def test_generate_2(setup, teardown, data_folder):
     """
     Tests the template replacement: missing replacement patterns
     """
-    expected_file = path.join(data_folder, "sample_template.py")
 
+    cwd = setup()
+    template = data_folder / "sample_template.py.handlebars"
+    expected_file = cwd / "sample_template.py"
+    shutil.copyfile(
+        src=template,
+        dst=cwd / "sample_template.py.handlebars"
+    )
     try:
         pattern_replacement(
-            input_file=path.join(data_folder, "sample_template.py.handlebars"),
+            input_file=cwd / "sample_template.py.handlebars",
             mapper={"lib": "pandas"}
         )
 
         assert path.isfile(expected_file)
         with open(expected_file, "r") as f:
             contents = f.read()
-            assert "pandas" in contents
-            assert "{{alias}}" in contents
-            assert contents == "import pandas as {{alias}}"
+        assert "pandas" in contents
+        assert "{{alias}}" in contents
+        assert contents == "import pandas as {{alias}}"
     finally:
-        os.remove(expected_file)
+        teardown()
 
 
 def test_generate_3(data_folder):

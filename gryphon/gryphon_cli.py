@@ -5,9 +5,12 @@ from os import path
 from pathlib import Path
 import json
 import click
-import gryphon.core as gryphon
-from gryphon.cli import helpers
-from gryphon.core.registry import RegistryCollection
+from .core import \
+    add as core_add, \
+    generate as core_generate, \
+    init as core_init
+from .core.registry import RegistryCollection
+from .cli import helpers
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -24,14 +27,14 @@ def cli():
 def activate():
     """add templates based on arguments and configurations."""
     # TODO: gryphon activate
-    # gryphon.activate()
+    # core_activate()
 
 
 @cli.command()
 @click.argument("library_name")
 def add(library_name):
     """add templates based on arguments and configurations."""
-    gryphon.add(library_name)
+    core_add(library_name)
 
 
 @click.argument("template")
@@ -42,7 +45,7 @@ def generate(template, extra):
     extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
     template = existing_templates[template]
 
-    gryphon.generate(
+    core_generate(
         template_path=template.path,
         requirements=template.dependencies,
         **extra_parameters
@@ -58,7 +61,7 @@ def init(template, location, extra):
     extra_parameters = helpers.validate_parameters(extra, template, existing_templates)
 
     template = existing_templates[template]
-    gryphon.init(
+    core_init(
         template_path=template.path,
         location=location,
         **extra_parameters

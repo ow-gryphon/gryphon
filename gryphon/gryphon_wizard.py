@@ -7,11 +7,11 @@ import json
 import platform
 import argparse
 from pathlib import Path
-from gryphon.core.registry import RegistryCollection
-from gryphon import wizard
-from gryphon.wizard.wizard_text import Text
-from gryphon.wizard.questions import CommonQuestions
-from gryphon.constants import INIT, GENERATE, ADD, ABOUT, QUIT, BACK
+from .core.registry import RegistryCollection
+from .wizard import init, generate, add, about, exit_program
+from .wizard.wizard_text import Text
+from .wizard.questions import CommonQuestions
+from .constants import INIT, GENERATE, ADD, ABOUT, QUIT, BACK
 from .logger import logger
 
 
@@ -54,11 +54,11 @@ def main():
         chosen_command = CommonQuestions.main_question()
 
         function = {
-            INIT: wizard.init,
-            GENERATE: wizard.generate,
-            ADD: wizard.add,
-            ABOUT: wizard.about,
-            QUIT: wizard.exit_program
+            INIT: init,
+            GENERATE: generate,
+            ADD: add,
+            ABOUT: about,
+            QUIT: exit_program
         }[chosen_command]
 
         try:
@@ -105,3 +105,8 @@ def did_you_mean_gryphon():
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
+# TODO: CLI fix case when more parameters are sent
+
+
+if __name__ == '__main__':
+    main()

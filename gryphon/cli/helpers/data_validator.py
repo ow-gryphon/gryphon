@@ -3,8 +3,8 @@ Module containing utilities to validate the extra parameters given in CLI.
 """
 import logging
 from typing import Dict
-from gryphon.core.registry import Template
 from .help_formater import get_template_help, get_command_help
+from ...core.registry import Template
 
 
 logger = logging.getLogger('gryphon')

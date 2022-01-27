@@ -1,8 +1,8 @@
 from pathlib import Path
-import gryphon.core as gryphon
-from gryphon.constants import INIT, BACK, NO
 from .functions import erase_lines
 from .questions import InitQuestions
+from ..core import init as core_init
+from ..constants import INIT, BACK, NO
 
 
 def init(_, registry):
@@ -35,7 +35,7 @@ def init(_, registry):
             erase_lines(n_lines=n_lines + 1)
             location = InitQuestions.ask_init_location()
 
-        gryphon.init(
+        core_init(
             template_path=template.path,
             location=location,
             **extra_parameters

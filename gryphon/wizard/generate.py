@@ -1,18 +1,18 @@
 import json
 import logging
 from typing import Dict
-from gryphon.core.registry import Template
-import gryphon.core as gryphon
 from .functions import (
     display_template_information, erase_lines, current_folder_has_venv,
     get_current_tree_state, get_option_names, filter_chosen_option
 )
-from gryphon.constants import (
+from .wizard_text import Text
+from .questions import GenerateQuestions
+from ..constants import (
     USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
     BACK, QUIT, GENERATE, NO, CHILDREN
 )
-from .wizard_text import Text
-from .questions import GenerateQuestions
+from ..core import generate as core_generate
+from ..core.registry import Template
 
 
 logger = logging.getLogger('gryphon')
@@ -162,7 +162,7 @@ def generate(data_path, registry):
                     erase_lines(n_lines=len(extra_parameters) + 2 + 1 + n_lines)
                     continue
 
-                gryphon.generate(
+                core_generate(
                     template_path=template.path,
                     requirements=template.dependencies,
                     **extra_parameters,

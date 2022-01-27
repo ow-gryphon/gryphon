@@ -5,7 +5,7 @@ import logging
 from .functions import erase_lines
 from .wizard_text import Text
 from .questions import CommonQuestions
-from gryphon.constants import QUIT, BACK
+from ..constants import QUIT, BACK
 
 
 logger = logging.getLogger('gryphon')

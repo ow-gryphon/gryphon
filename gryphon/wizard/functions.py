@@ -3,7 +3,7 @@ import platform
 from pathlib import Path
 from typing import Tuple
 from textwrap import fill
-from gryphon.constants import CHILDREN, NAME, VENV
+from ..constants import CHILDREN, NAME, VENV
 
 
 logger = logging.getLogger('gryphon')
