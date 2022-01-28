@@ -22,7 +22,7 @@ PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "data"
 
 # Load contents of configuration file
-with open(DATA_PATH / "gryphon_config.json", "r") as f:
+with open(DATA_PATH / "gryphon_config.json", "r", encoding='utf-8') as f:
     settings = json.load(f)
 
 try:

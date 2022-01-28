@@ -79,11 +79,11 @@ def install_extra_nbextensions(folder_path):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    with open(requirements_path, "r") as f1:
+    with open(requirements_path, "r", encoding='utf-8') as f1:
         requirements = f1.read()
 
     if "jupyter_contrib_nbextensions" not in requirements:
-        with open(requirements_path, "a") as f2:
+        with open(requirements_path, "a", encoding='utf-8') as f2:
             f2.write("\njupyter_contrib_nbextensions\n")
 
     try:

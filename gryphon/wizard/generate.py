@@ -93,7 +93,7 @@ def ask_which_template(state: dict):
 def generate(data_path, registry):
     """generates templates based on arguments and configurations."""
 
-    with open(data_path / "category_tree.json") as file:
+    with open(data_path / "category_tree.json", encoding='utf-8') as file:
         full_tree = json.load(file)
 
     state = dict(
