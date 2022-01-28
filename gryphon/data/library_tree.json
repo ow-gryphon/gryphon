@@ -39,7 +39,7 @@
 			},
 			{
 				"name": "pyxlsb",
-				"short_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python. ",
+				"short_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python.",
 				"long_description": "pyxlsb is an Excel 2007-2010 Binary Workbook (xlsb) parser for Python. The library is currently extremely limited, but functional enough for basic data extraction.",
 				"reference_link": "https://github.com/willtrnr/pyxlsb"
 			},

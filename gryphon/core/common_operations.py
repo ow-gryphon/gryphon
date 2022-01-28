@@ -87,16 +87,19 @@ def install_extra_nbextensions(folder_path):
             f2.write("\njupyter_contrib_nbextensions\n")
 
     try:
-        subprocess.check_call([str(pip_path), 'install', 'jupyter_contrib_nbextensions', '-qq'],)
+        # subprocess.check_call([str(pip_path), 'install', 'jupyter_contrib_nbextensions', '-qq'],)
+        output = os.popen(f'{str(pip_path)} install jupyter_contrib_nbextensions').read()
+        logger.debug(output)
+
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")
 
     os.chdir(target_folder)
-    os.system(f"jupyter contrib nbextension install --user --Application.log_level=0")
-    os.system(f"jupyter nbextensions_configurator enable --user --Application.log_level=0")
-    os.system(f"jupyter nbextension enable codefolding/main --Application.log_level=0")
-    os.system(f"jupyter nbextension enable toc2/main --Application.log_level=0")
-    os.system(f"jupyter nbextension enable collapsible_headings/main --Application.log_level=0")
+    os.system(f"jupyter contrib nbextension install --user")
+    os.system(f"jupyter nbextensions_configurator enable --user")
+    os.system(f"jupyter nbextension enable codefolding/main")
+    os.system(f"jupyter nbextension enable toc2/main")
+    os.system(f"jupyter nbextension enable collapsible_headings/main")
     os.chdir(target_folder.parent)
 
 
@@ -122,10 +125,12 @@ def install_libraries(folder=None):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    try:
-        subprocess.check_call([str(pip_path), 'install', '-r', str(requirements_path), '-qqq'])
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed on pip install command. {e}")
+    cmd = os.popen(f'{str(pip_path)} install -r {str(requirements_path)}')
+    output = cmd.read()
+    logger.debug(output)
+    return_code = cmd.close()
+    if cmd.close() is not None:
+        raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
 
     logger.log(SUCCESS, "Installation successful!")
 
@@ -235,8 +240,22 @@ def create_folder(folder: Path):
     folder.mkdir(exist_ok=True)
 
 
-def populate_rc_file(folder):
+def get_rc_file(folder=Path.cwd()):
     """
     Updates the needed options inside the .labskitrc file.
     """
-    return folder
+    path = folder / ".labskitrc"
+    if path.is_file():
+        return path
+
+    open(path, "w").close()
+
+    return path
+
+
+def populate_rc_file(rc_file, action):
+    """
+    Updates the needed options inside the .labskitrc file.
+    """
+    with open(rc_file, "a") as f:
+        f.write(action + '\n')
