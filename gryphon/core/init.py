@@ -12,6 +12,7 @@ from .common_operations import (
     initial_git_commit,
     populate_rc_file,
     change_shell_folder_and_activate_venv,
+    get_rc_file
     # install_extra_nbextensions
 )
 
@@ -32,10 +33,11 @@ def init(template_path, location, **kwargs):
         template_destiny=Path(location),
         template_source=Path(template_path)
     )
-    populate_rc_file(folder=location)
     create_venv(folder=location)
     install_libraries(folder=location)
     # install_extra_nbextensions(location)
+    rc_file = get_rc_file(Path.cwd() / location)
+    populate_rc_file(rc_file, f"INIT {location} {template_path}")
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
     change_shell_folder_and_activate_venv(location)

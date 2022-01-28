@@ -11,9 +11,9 @@ from .common_operations import (
     get_destination_path,
     copy_project_template,
     append_requirement,
-    install_libraries
+    install_libraries,
+    get_rc_file, populate_rc_file
 )
-from ..constants import SUCCESS
 
 logger = logging.getLogger('gryphon')
 
@@ -34,8 +34,8 @@ def generate(template_path: Path, requirements: list, **kwargs):
         append_requirement(r)
 
     install_libraries()
-
-    logger.log(SUCCESS, "Installation successful!")
+    rc_file = get_rc_file()
+    populate_rc_file(rc_file, f"GENERATE {template_path} {kwargs}")
 
 
 def pattern_replacement(input_file, mapper):

@@ -94,9 +94,9 @@ def did_you_mean_gryphon():
 # DONE: Figure out if the user is in a folder with .venv (and inform the user)
 # DONE: Activate a verbose level of log when with this mode activated.
 # TODO: Test installation.
-# TODO: Create .labskitrc and populate it accordingly
+# DONE: Create .labskitrc and populate it accordingly
 # DONE: Developer documentations
-# TODO: Handle errors from the pip commands
+# DONE: Handle errors from the pip commands
 
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
@@ -105,7 +105,9 @@ def did_you_mean_gryphon():
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
-# TODO: CLI fix case when more parameters are sent
+# DONE: CLI fix case when more parameters are sent
+# TODO: use conda
+# Done: Fix codec issue
 
 
 if __name__ == '__main__':
