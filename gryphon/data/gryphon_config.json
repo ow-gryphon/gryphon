@@ -5,5 +5,6 @@
     },
     "local_registry": {
         "default_registry": "/home/vittorfp/labskit_registry"
-    }
+    },
+    "environment_management": "venv"
 }

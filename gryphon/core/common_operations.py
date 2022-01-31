@@ -49,58 +49,41 @@ def create_venv(folder=None):
     logger.log(SUCCESS, "Done creating virtual environment.")
 
 
-def quote_windows_path(folder_path):
-    return '"' + folder_path + '"'
+def create_conda_env(folder=None, python_version=None):
+    """Function to a virtual environment inside a folder."""
+    target_folder = get_destination_path(folder)
+    conda_path = target_folder / 'envs'
+
+    # Create venv
+    logger.info(f"Creating Conda virtual environment in {conda_path}")
+    os.system("conda config --append channels conda-forge")
+    command = f"conda create --prefix={conda_path} -y"
+    if python_version:
+        command += f" --python={python_version}"
+
+    cmd = os.popen(command)
+    logger.debug(cmd.read())
+
+    return_code = cmd.close()
+    if return_code is not None:
+        raise RuntimeError(f"Failed to create conda environment. Status code: {return_code}")
+
+    logger.log(SUCCESS, "Done creating virtual environment.")
 
 
-def escape_windows_path(folder_path):
-    return fr'{folder_path}'
+def conda_install_requirements(folder):
+    logger.info("Installing requirements. This may take several minutes ...")
+    target_folder = get_destination_path(folder)
+    conda_path = target_folder / 'envs'
 
+    cmd = os.popen(f"conda install --prefix {conda_path} --file requirements.txt -y")
+    logger.debug(cmd.read())
 
-def install_extra_nbextensions(folder_path):
-    """
-        Function to install the libraries from a 'requirements.txt' file
-        """
-    target_folder = get_destination_path(folder_path)
-    requirements_path = target_folder / REQUIREMENTS
+    return_code = cmd.close()
+    if return_code is not None:
+        raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
 
-    if platform.system() == "Windows":
-        # On Windows the venv folder structure is different from unix
-        pip_path = target_folder / VENV / "Scripts" / "pip.exe"
-    else:
-        pip_path = target_folder / VENV / "bin" / "pip"
-
-    # Install requirements
-    logger.info("Installing extra notebook extensions.")
-
-    if not pip_path.is_file():
-        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
-
-    if not requirements_path.is_file():
-        raise FileNotFoundError("requirements.txt file not found.")
-
-    with open(requirements_path, "r") as f1:
-        requirements = f1.read()
-
-    if "jupyter_contrib_nbextensions" not in requirements:
-        with open(requirements_path, "a") as f2:
-            f2.write("\njupyter_contrib_nbextensions\n")
-
-    try:
-        # subprocess.check_call([str(pip_path), 'install', 'jupyter_contrib_nbextensions', '-qq'],)
-        output = os.popen(f'{str(pip_path)} install jupyter_contrib_nbextensions').read()
-        logger.debug(output)
-
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed on pip install command. {e}")
-
-    os.chdir(target_folder)
-    os.system(f"jupyter contrib nbextension install --user")
-    os.system(f"jupyter nbextensions_configurator enable --user")
-    os.system(f"jupyter nbextension enable codefolding/main")
-    os.system(f"jupyter nbextension enable toc2/main")
-    os.system(f"jupyter nbextension enable collapsible_headings/main")
-    os.chdir(target_folder.parent)
+    logger.log(SUCCESS, "Installation successful!")
 
 
 def install_libraries(folder=None):
@@ -172,12 +155,66 @@ def copy_project_template(template_source: Path, template_destiny: Path):
 
     template_path = template_source / "template"
     template_path.mkdir(exist_ok=True)
-    
+
     shutil.copytree(
         src=template_path,
         dst=template_destiny,
         dirs_exist_ok=True
     )
+
+
+def quote_windows_path(folder_path):
+    return '"' + folder_path + '"'
+
+
+def escape_windows_path(folder_path):
+    return fr'{folder_path}'
+
+
+def install_extra_nbextensions(folder_path):
+    """
+        Function to install the libraries from a 'requirements.txt' file
+        """
+    target_folder = get_destination_path(folder_path)
+    requirements_path = target_folder / REQUIREMENTS
+
+    if platform.system() == "Windows":
+        # On Windows the venv folder structure is different from unix
+        pip_path = target_folder / VENV / "Scripts" / "pip.exe"
+    else:
+        pip_path = target_folder / VENV / "bin" / "pip"
+
+    # Install requirements
+    logger.info("Installing extra notebook extensions.")
+
+    if not pip_path.is_file():
+        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
+
+    if not requirements_path.is_file():
+        raise FileNotFoundError("requirements.txt file not found.")
+
+    with open(requirements_path, "r") as f1:
+        requirements = f1.read()
+
+    if "jupyter_contrib_nbextensions" not in requirements:
+        with open(requirements_path, "a") as f2:
+            f2.write("\njupyter_contrib_nbextensions\n")
+
+    try:
+        # subprocess.check_call([str(pip_path), 'install', 'jupyter_contrib_nbextensions', '-qq'],)
+        output = os.popen(f'{str(pip_path)} install jupyter_contrib_nbextensions').read()
+        logger.debug(output)
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed on pip install command. {e}")
+
+    os.chdir(target_folder)
+    os.system(f"jupyter contrib nbextension install --user")
+    os.system(f"jupyter nbextensions_configurator enable --user")
+    os.system(f"jupyter nbextension enable codefolding/main")
+    os.system(f"jupyter nbextension enable toc2/main")
+    os.system(f"jupyter nbextension enable collapsible_headings/main")
+    os.chdir(target_folder.parent)
 
 
 def init_new_git_repo(folder: Path) -> git.Repo:

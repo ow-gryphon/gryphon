@@ -106,7 +106,8 @@ def did_you_mean_gryphon():
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
 # DONE: CLI fix case when more parameters are sent
-# TODO: use conda
+# DONE: use conda
+# TODO: implement test for the conda environments
 # Done: Fix codec issue
 
 
