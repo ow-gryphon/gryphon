@@ -3,6 +3,9 @@
             "name": "Methodology",
             "children": [
                   {
+                        "name": "Data Exploration"
+                  },
+                  {
                         "name": "Classification"
                   },
                   {
