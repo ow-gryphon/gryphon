@@ -5,6 +5,7 @@ import os
 import json
 import logging
 from pathlib import Path
+from ..constants import DEFAULT_ENV
 from .common_operations import (
     install_libraries,
     copy_project_template,
@@ -30,7 +31,8 @@ def init(template_path, location, **kwargs):
     """
 
     with open(DATA_PATH / "gryphon_config.json") as f:
-        env_type = json.load(f).get("environment_management", "venv")
+        data = json.load(f)
+        env_type = data.get("environment_management", DEFAULT_ENV)
 
     logger.info("Creating project scaffolding.")
     kwargs.copy()

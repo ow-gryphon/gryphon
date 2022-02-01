@@ -9,16 +9,19 @@ import subprocess
 import pytest
 from .utils import (
     create_folder_with_venv,
-    get_venv_path,
+    get_venv_path, get_conda_path,
     TEST_FOLDER
 )
 from gryphon.core.common_operations import (
     create_venv,
+    create_conda_env,
+    conda_install_requirements,
     install_libraries,
     copy_project_template,
     init_new_git_repo,
     initial_git_commit
 )
+
 
 CWD = os.path.abspath("")
 
@@ -50,6 +53,40 @@ def test_create_venv_2(setup, teardown):
         create_venv(cwd)
 
         venv_path = get_venv_path(cwd)
+        assert path.isdir(venv_path)
+    finally:
+        teardown()
+
+
+def test_create_conda_env_1(setup, teardown):
+    """
+    Test case:
+    A venv is created in a folder that does not exists previously.
+    """
+    cwd = setup()
+    try:
+        conda_path = get_conda_path(cwd)
+        venv_path = get_venv_path(cwd)
+        create_conda_env(cwd)
+
+        assert path.isdir(conda_path)
+        assert not path.isdir(venv_path)
+    finally:
+        teardown()
+
+
+def test_create_conda_env_2(setup, teardown):
+    """
+    Test case:
+    A venv is created in a folder that does not exists previously.
+    """
+    cwd = setup()
+    try:
+        conda_path = get_conda_path(cwd)
+        venv_path = get_venv_path(cwd)
+        create_venv(cwd)
+
+        assert not path.isdir(conda_path)
         assert path.isdir(venv_path)
     finally:
         teardown()

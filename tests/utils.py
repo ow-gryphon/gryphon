@@ -88,6 +88,10 @@ def get_venv_path(base_folder: Path) -> Path:
     return base_folder / VENV
 
 
+def get_conda_path(base_folder: Path) -> Path:
+    return base_folder / "envs"
+
+
 def activate_venv(folder=None):
     """
     Function to activate virtual environment.

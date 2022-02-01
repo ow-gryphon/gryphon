@@ -29,3 +29,4 @@ NO = "no"
 
 VENV = ".venv"
 SUCCESS = 21
+DEFAULT_ENV = "venv"
