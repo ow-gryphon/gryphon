@@ -147,8 +147,15 @@ def change_shell_folder_and_activate_venv(location):
             logger.warning(f"""
                 {Text.install_end_message_1}
                 
+                ANACONDA PROMPT/COMMAND PROMPT
+                
                 >> cd {target_folder}
-                >> .venv/Scripts/activate.bat
+                >> .venv\\Scripts\\activate.bat
+                
+                GIT BASH
+                
+                >> cd {target_folder}
+                >> source .venv/Scripts/activate
                 
                 {Text.install_end_message_2}
             """)
