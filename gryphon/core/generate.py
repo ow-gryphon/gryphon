@@ -31,7 +31,8 @@ def generate(template_path: Path, requirements: list, **kwargs):
 
     for r in requirements:
         append_requirement(r)
-        install_libraries()
+
+    install_libraries()
 
 
 def pattern_replacement(input_file, mapper):
