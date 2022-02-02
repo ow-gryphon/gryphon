@@ -40,32 +40,27 @@ def pattern_replacement(input_file, mapper):
     Function that takes an input file name and replaces the handlebars according
     to the values present in the mapper dictionary.
     """
-    output_file = input_file.replace(".handlebars", "")
+    output_file = str(input_file).replace(".handlebars", "")
     for before, after in mapper.items():
         output_file = output_file.replace(before.lower(), after)
 
-    f_in = open(input_file, "rt", encoding='UTF-8')
-    f_out = open(output_file, "wt", encoding='UTF-8')
     try:
-        for line in f_in:
-            replaced = line
+        with open(input_file, "rt", encoding='UTF-8') as f_in:
+            text = f_in.read()
 
-            # read replace each of the arguments in the string
-            for before, after in mapper.items():
-                replaced = replaced.replace("{{" + before + "}}", after)
+        # read replace each of the arguments in the string
+        for before, after in mapper.items():
+            text = text.replace("{{" + before + "}}", after)
 
+        with open(output_file, "w", encoding='UTF-8') as f_out:
             # and write to output file
-            f_out.write(replaced)
-        f_in.close()
-        f_out.close()
+            f_out.write(text)
+
+        if input_file != output_file:
+            os.remove(input_file)
+
     except UnicodeDecodeError:
         logger.warning("There are binary files inside template folder.")
-
-    except Exception as exception:
-        f_in.close()
-        f_out.close()
-
-        raise exception
 
 
 def parse_project_template(template_path: Path, mapper, destination_folder=None):
@@ -94,7 +89,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         if is_folder:
             continue
         pattern_replacement(file, mapper)
-        os.remove(file)
 
     # Copy the processed files to the repository
     os.makedirs(definitive_path, exist_ok=True)

@@ -174,11 +174,12 @@ def copy_project_template(template_source: Path, template_destiny: Path):
 
     template_path = template_source / "template"
     template_path.mkdir(exist_ok=True)
-    
+
     shutil.copytree(
         src=template_path,
         dst=template_destiny,
-        dirs_exist_ok=True
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(".git/**")
     )
 
 
