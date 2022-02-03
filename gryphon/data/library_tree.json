@@ -155,8 +155,20 @@
 		]
 	},
 	{
-		"name": "Machine Learning",
+		"name": "Econometrics and Machine Learning",
 		"children": [
+			{
+				"name": "scikit-learn",
+				"short_description": "Simple and efficient tools for predictive data analysis",
+				"long_description": "Scikit-learn (formerly scikits.learn and also known as sklearn) is a free software machine learning library for the Python programming language. It features various classification, regression and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries NumPy and SciPy. Scikit-learn is a NumFOCUS fiscally sponsored project.",
+				"reference_link": "https://scikit-learn.org/stable/"
+			},
+			{
+				"name": "statsmodels",
+				"short_description": "Statistical models, hypothesis tests, and data exploration.",
+				"long_description": "Statsmodels is a Python module that provides classes and functions for the estimation of many different statistical models, as well as for conducting statistical tests, and statistical data exploration. An extensive list of result statistics are available for each estimator. The results are tested against existing statistical packages to ensure that they are correct. The package is released under the open source Modified BSD (3-clause) license. The online documentation is hosted at statsmodels.org.",
+				"reference_link": "https://www.statsmodels.org/stable/index.html"
+			},
 			{
 				"name": "Neural Networks",
 				"children": [
@@ -179,17 +191,11 @@
 						"reference_link": "https://pytorch.org/"
 					}
 				]
-			},
-			{
-				"name": "scikit-learn",
-				"short_description": "Simple and efficient tools for predictive data analysis",
-				"long_description": "Scikit-learn (formerly scikits.learn and also known as sklearn) is a free software machine learning library for the Python programming language. It features various classification, regression and clustering algorithms including support-vector machines, random forests, gradient boosting, k-means and DBSCAN, and is designed to interoperate with the Python numerical and scientific libraries NumPy and SciPy. Scikit-learn is a NumFOCUS fiscally sponsored project.",
-				"reference_link": "https://scikit-learn.org/stable/"
 			}
 		]
 	},
 	{
-		"name": "Mathematical Computing",
+		"name": "Mathematical and Financial Computing",
 		"children": [
 			{
 				"name": "scipy",
@@ -198,10 +204,10 @@
 				"reference_link": "https://scipy.org/"
 			},
 			{
-				"name": "statsmodels",
-				"short_description": "Statistical models, hypothesis tests, and data exploration.",
-				"long_description": "Statsmodels is a Python module that provides classes and functions for the estimation of many different statistical models, as well as for conducting statistical tests, and statistical data exploration. An extensive list of result statistics are available for each estimator. The results are tested against existing statistical packages to ensure that they are correct. The package is released under the open source Modified BSD (3-clause) license. The online documentation is hosted at statsmodels.org.",
-				"reference_link": "https://www.statsmodels.org/stable/index.html"
+				"name": "quantlib",
+				"short_description": "Open-source library for quantitative finance",
+				"long_description": "QuantLib offers tools that are useful both for practical implementation and for advanced modeling, with features such as market conventions, yield curve models, solvers, PDEs, Monte Carlo (low-discrepancy included), exotic options, VAR, and so on.",
+				"reference_link": "https://www.quantlib.org/"
 			}
 		]
 	},
