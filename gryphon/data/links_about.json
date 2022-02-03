@@ -1,14 +1,10 @@
 [
     {
-        "title": "Google",
-        "value": "https://www.google.com/"
+        "title": "OWpen Source Wiki page for OW Gryphon",
+        "value": "https://owlabs.atlassian.net/wiki/spaces/Gryphon"
     },
     {
-        "title": "Yahoo",
-        "value": "https://www.yahoo.com/"
-    },
-    {
-        "title": "Gmail",
-        "value": "https://www.youtube.com/"
+        "title": "Github page for OW Gryphon (temporary)",
+        "value": "https://github.com/ow-gryphon"
     }
 ]

@@ -1,6 +1,5 @@
 {
-    "git_registry": {
-        "open-source": "https://github.com/ow-gryphon/template_registry.git",
-        "ow-private": ""
+    "local_registry": {
+        "default_registry": "C:/Repos/template_registry"
     }
 }
