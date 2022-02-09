@@ -7,6 +7,9 @@ from ..common_operations import remove_folder
 class LocalRegistry(TemplateRegistry):
 
     def __init__(self, registry_name: str, registry_origin: Path, registry_folder: Path):
+        self.type = "local"
+        self.name = registry_name
+
         self.registry_folder = registry_folder / registry_name
         self.registry_origin = registry_origin
 

@@ -95,7 +95,7 @@ def test_git_registry_1(setup, teardown):
         assert "init" in metadata
         assert "generate" in metadata
         assert "basic_analytics" in metadata["init"]
-        assert "customer_segmentation" in metadata["generate"]
+        assert "explore_data_basic" in metadata["generate"]
 
         destiny_register = cwd / registry_name
         destiny_init = destiny_register / "init"
@@ -111,7 +111,7 @@ def test_git_registry_1(setup, teardown):
         assert "init" in metadata
         assert "generate" in metadata
         assert "basic_analytics" in metadata["init"]
-        assert "customer_segmentation" in metadata["generate"]
+        assert "explore_data_basic" in metadata["generate"]
 
         assert destiny_register.is_dir()
         assert destiny_init.is_dir()
@@ -126,7 +126,7 @@ def test_git_registry_1(setup, teardown):
         assert "init" in metadata
         assert "generate" in metadata
         assert "basic_analytics" in metadata["init"]
-        assert "customer_segmentation" in metadata["generate"]
+        # assert "customer_segmentation" in metadata["generate"]
 
         # TODO: Create sample git repository to make a more reproducible test.
     finally:

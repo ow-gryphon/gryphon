@@ -52,7 +52,7 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
         wizard_generate(file_name)
 
         # assert (cwd / project_folder / "src" / "analysis" / f"model_{file_name}.py").is_file()
-        assert os.path.isfile(cwd / project_folder / "template.txt")#.is_file()
+        # assert os.path.isfile(cwd / project_folder / "template.txt")#.is_file()
 
         wizard_add_typing(lib_name)
         wizard_add_matplotlib()

@@ -30,6 +30,7 @@ class Text:
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
     about_display_option = "About OW Gryphon"
+    settings_display_option = "Power user settings"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"
@@ -70,4 +71,12 @@ class Text:
     generate_keyword_argument = "Type the keyword you want to search for:"
 
     no_virtual_environment_remainder = "The current folder does not have a virtual environment in it."
+
+    settings_confirm_restore_defaults = "Confirm that you want to restore EVERY gryphon settings to the default?"
+    settings_ask_which_registry_delete = "Choose which registry to remove?"
+    settings_ask_registry_name = "Give a name to the new registry:"
+
+    settings_ask_git_url = "Type the registry git url:"
+    settings_ask_local_path = "Type the registry path:"
+
 

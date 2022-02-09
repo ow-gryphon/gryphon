@@ -23,6 +23,7 @@ def wizard_generate(file_name):
 
     # Classification
     child.expect(Text.add_prompt_categories_question)
+    child.send(KEY_DOWN)
     child.sendcontrol('m')
 
     # Placeholder

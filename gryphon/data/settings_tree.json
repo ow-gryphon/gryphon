@@ -1,0 +1,33 @@
+[
+	{
+		"name": "Change environment manager",
+		"children": [
+			{
+				"name": "Conda"
+			},
+			{
+				"name": "Virtualenv"
+			}
+		]
+	},
+	{
+		"name": "Template repository management",
+		"children": [
+			{
+				"name": "Restore defaults"
+			},
+			{
+				"name": "Add git based registry"
+			},
+			{
+				"name": "Add local folder registry"
+			},
+			{
+				"name": "Remove registry"
+			}
+		]
+	},
+	{
+		"name": "Restore defaults"
+	}
+]

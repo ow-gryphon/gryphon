@@ -1,3 +1,5 @@
+from pathlib import Path
+
 
 BACK = "back"
 TYPING = "type"
@@ -16,6 +18,7 @@ GENERATE = "generate"
 INIT = "init"
 ADD = "add"
 ABOUT = "about"
+SETTINGS = "settings"
 
 # tree related
 CHILDREN = "children"
@@ -30,3 +33,9 @@ NO = "no"
 VENV = ".venv"
 SUCCESS = 21
 DEFAULT_ENV = "venv"
+
+GRYPHON_HOME = Path.home() / ".gryphon"
+PACKAGE_PATH = Path(__file__).parent
+DATA_PATH = PACKAGE_PATH / "data"
+CONFIG_FILE = GRYPHON_HOME / "gryphon_config.json"
+DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"

@@ -2,17 +2,30 @@
 Gryphon interactive wizard.
 """
 import logging
+import os
+import shutil
 import traceback
 import json
 import platform
 import argparse
-from pathlib import Path
 from .core.registry import RegistryCollection
-from .wizard import init, generate, add, about, exit_program
+from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
 from .wizard.questions import CommonQuestions
-from .constants import INIT, GENERATE, ADD, ABOUT, QUIT, BACK
+from .constants import (
+    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS,
+    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH
+)
 from .logger import logger
+
+
+def output_error(er: Exception):
+    logger.debug("Traceback (most recent call last):")
+    for line in traceback.format_tb(er.__traceback__):
+        logger.debug(line)
+
+    # sample:                    ValueError(er)
+    logger.error(f'{er.__class__.__name__}({er}). Please report to the support.')
 
 
 if platform.system() == "Windows":
@@ -20,21 +33,28 @@ if platform.system() == "Windows":
     from colorama import init
     init()
 
-PACKAGE_PATH = Path(__file__).parent
-DATA_PATH = PACKAGE_PATH / "data"
+try:
+    with open(CONFIG_FILE, "r") as f:
+        settings_file = json.load(f)
 
-# Load contents of configuration file
-with open(DATA_PATH / "gryphon_config.json", "r") as f:
-    settings = json.load(f)
+except FileNotFoundError:
+    os.makedirs(GRYPHON_HOME)
+    shutil.copy(
+        src=DEFAULT_CONFIG_FILE,
+        dst=CONFIG_FILE
+    )
+    with open(CONFIG_FILE, "r") as f:
+        settings_file = json.load(f)
 
 try:
     # loads registry of templates to memory
     registry = RegistryCollection.from_config_file(
-        settings=settings,
+        settings=settings_file,
         data_path=DATA_PATH / "template_registry"
     )
 except Exception as e:
-    logger.error(f'Registry loading error. {e}')
+    logger.error(f'Registry loading error.')
+    output_error(e)
     exit(1)
 
 
@@ -58,6 +78,7 @@ def main():
             GENERATE: generate,
             ADD: add,
             ABOUT: about,
+            SETTINGS: settings,
             QUIT: exit_program
         }[chosen_command]
 
@@ -79,12 +100,7 @@ def main():
             exit(0)
 
         except Exception as er:
-            logger.debug("Traceback (most recent call last):")
-            for line in traceback.format_tb(er.__traceback__):
-                logger.debug(line)
-
-            # sample:                    ValueError(er)
-            logger.error(f'{er.__class__.__name__}({er}). Please report to the support.')
+            output_error(er)
             exit(1)
 
 
@@ -100,7 +116,8 @@ def did_you_mean_gryphon():
 
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
-    # TODO: Change repository urls and
+    # TODO: edit repository
+    # TODO: add repositories
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux
