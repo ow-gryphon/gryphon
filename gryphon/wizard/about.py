@@ -25,7 +25,7 @@ def about(data_path, _):
             return
 
         if response == BACK:
-            erase_lines(n_lines=8)
+            erase_lines(n_lines=len(Text.about.split('\n')) + 2)
             return BACK
 
         if platform.system() == "Windows":
