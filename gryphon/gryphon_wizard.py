@@ -116,8 +116,7 @@ def did_you_mean_gryphon():
 
 # TODO: Power user configurations
     # TODO: Whether to install gryphon inside the .venv created for projects or not
-    # TODO: edit repository
-    # TODO: add repositories
+
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux

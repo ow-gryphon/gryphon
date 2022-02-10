@@ -102,3 +102,5 @@ class GenerateQuestions:
             message=Text.could_not_find_any_templates,
             choices=choices
         ).unsafe_ask()
+
+    get_generate_option

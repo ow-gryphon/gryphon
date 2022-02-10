@@ -9,7 +9,6 @@ from .common_operations import (
 
 logger = logging.getLogger('gryphon')
 
-# TODO: Check if the given folder really is a labskit project (like by reading the .rc file)
 # TODO: Think about freeze feature (at time of handover)
 # TODO: Check if the provided library is a valid one.
 # TODO: Have some library list suggestion for each usage category the user has.

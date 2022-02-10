@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (INIT, ADD, ABOUT, GENERATE, QUIT, SETTINGS)
+from ...constants import (INIT, ADD, ABOUT, GENERATE, QUIT, SETTINGS, VALUE)
 
 
 class CommonQuestions:
@@ -50,7 +50,7 @@ class CommonQuestions:
         choices = [
             Choice(
                 title=link["title"],
-                value=link["value"]
+                value=link[VALUE]
             )
             for link in links
         ]

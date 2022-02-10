@@ -3,7 +3,7 @@ import platform
 from pathlib import Path
 from typing import Tuple
 from textwrap import fill
-from ..constants import CHILDREN, NAME, VENV
+from ..constants import CHILDREN, NAME, VENV, VALUE
 
 
 logger = logging.getLogger('gryphon')
@@ -61,9 +61,28 @@ def get_current_tree_state(tree, history):
     return tree_level
 
 
+def get_current_tree_state_by_value(tree, history):
+    if not len(history):
+        return tree
+
+    tree_level = tree.copy()
+
+    for item in history:
+        tree_level = filter_chosen_option_by_value(item, tree_level).get(CHILDREN, [])
+
+    return tree_level
+
+
 def filter_chosen_option(option, tree):
     try:
         return list(filter(lambda x: x[NAME] == option, tree))[0]
+    except IndexError:
+        raise RuntimeError("Error in the menu navigation.")
+
+
+def filter_chosen_option_by_value(option, tree):
+    try:
+        return list(filter(lambda x: x[VALUE] == option, tree))[0]
     except IndexError:
         raise RuntimeError("Error in the menu navigation.")
 

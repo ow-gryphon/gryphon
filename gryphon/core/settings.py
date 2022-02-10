@@ -44,7 +44,7 @@ class SettingsManager:
 
         with open(CONFIG_FILE, "r+", encoding="utf-8") as f:
             contents = json.load(f)
-            contents["git_registry"][registry_name] = registry_path
+            contents["local_registry"][registry_name] = registry_path
 
             f.seek(0)
             f.write(json.dumps(contents))
@@ -101,6 +101,4 @@ class SettingsManager:
         git_registries.update(local_registries)
         return git_registries
 
-# TODO: give examples of folders/git urls on the add registry menu
 # TODO: power user to create a bare bones gryphon template.
-# TODO: about is not erasing all the lines when going back to the previous menu

@@ -1,33 +1,42 @@
 [
 	{
 		"name": "Change environment manager",
+		"value": "change_env_manager",
 		"children": [
 			{
-				"name": "Conda"
+				"name": "Conda",
+				"value": "conda"
 			},
 			{
-				"name": "Virtualenv"
+				"name": "Virtual environment",
+				"value": "venv"
 			}
 		]
 	},
 	{
-		"name": "Template repository management",
+		"name": "Template registry management",
+		"value": "registry_options",
 		"children": [
 			{
-				"name": "Restore defaults"
+				"name": "Add remote registry (git repo)",
+				"value": "add_remote"
 			},
 			{
-				"name": "Add git based registry"
+				"name": "Add local registry (computer folder)",
+				"value": "add_local"
 			},
 			{
-				"name": "Add local folder registry"
+				"name": "Remove a registry",
+				"value": "remove_registry"
 			},
 			{
-				"name": "Remove registry"
+				"name": "Restore to default registries",
+				"value": "restore_default_registry"
 			}
 		]
 	},
 	{
-		"name": "Restore defaults"
+		"name": "Restore default settings",
+		"value": "restore_defaults"
 	}
 ]

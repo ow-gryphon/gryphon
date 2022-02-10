@@ -23,6 +23,7 @@ SETTINGS = "settings"
 # tree related
 CHILDREN = "children"
 NAME = "name"
+VALUE = "value"
 SHORT_DESC = "short_description"
 LONG_DESC = "long_description"
 REFERENCE_LINK = "reference_link"
