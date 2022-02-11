@@ -90,3 +90,12 @@ class InitQuestions:
                 )
             ]
         ).unsafe_ask(), n_lines
+
+    @staticmethod
+    @base_question
+    def ask_just_location():
+        return (
+            questionary
+            .text(message=Text.init_prompt_location_question)
+            .unsafe_ask()
+        )

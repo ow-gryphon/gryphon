@@ -64,6 +64,23 @@ class SettingsQuestions:
 
     @staticmethod
     @base_question
+    def confirm_registry_addition(registry_name):
+        return questionary.select(
+            message=Text.settings_confirm_registry_addition.replace("{registry_name}", registry_name),
+            choices=[
+                Choice(
+                    title="Yes",
+                    value=YES
+                ),
+                Choice(
+                    title="No, go back to the previous menu.",
+                    value=NO
+                )
+            ]
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
     def confirm_remove_registry():
         return questionary.select(
             message=Text.settings_confirm_remove_registry,

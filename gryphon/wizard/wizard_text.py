@@ -81,3 +81,4 @@ class Text:
     settings_ask_local_path = "Type the registry path (i.e. /home/user/your_local_registry):"
 
     settings_confirm_change_env_manager = "Do you really want to change the environment manager to {env_manager}? "
+    settings_confirm_registry_addition = "Confirm that you want to add the new {registry_name} registry to gryphon?"

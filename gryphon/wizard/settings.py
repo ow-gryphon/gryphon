@@ -4,15 +4,21 @@ from .functions import (
     erase_lines, get_current_tree_state_by_value,
     filter_chosen_option_by_value
 )
-from .questions import SettingsQuestions
+from .questions import SettingsQuestions, InitQuestions
+from ..core.init import init as core_init
 from ..constants import (
     BACK, YES, CHILDREN, SUCCESS, CONFIG_FILE, DEFAULT_ENV,
-    NAME, VALUE
+    NAME, VALUE, DATA_PATH
 )
 from ..core.settings import SettingsManager
 
 
 logger = logging.getLogger('gryphon')
+
+
+def back_to_previous(history, **kwargs):
+    history.pop()
+    erase_lines(kwargs)
 
 
 def handle_current_env_manager(tree_level):
@@ -67,15 +73,21 @@ def settings(data_path, _):
             continue
 
         manager = SettingsManager()
-        if history[0] == "change_env_manager":
+        if history[0] == "new_template":
+            # ask for the folder
+            location = InitQuestions.ask_just_location()
+
+            core_init(
+                template_path=DATA_PATH / "template_scaffolding",
+                location=location
+            )
+        elif history[0] == "change_env_manager":
             response = SettingsQuestions.confirm_change_env_manager(actual_selection)
             if response == YES:
                 manager.change_environment_manager(actual_selection.lower())
                 logger.log(SUCCESS, f"Environment management successfully changed to {actual_selection}")
-                break
             else:
-                history.pop()
-                erase_lines(n_lines=3)
+                back_to_previous(history, n_lines=3)
                 continue
 
         elif history[0] == "registry_options":
@@ -85,42 +97,45 @@ def settings(data_path, _):
                 if "remote" in history[1]:
                     # ask for git repo url
                     url = SettingsQuestions.ask_git_url()
-                    # TODO: ask for confirmation
-                    manager.add_git_template_registry(
-                        registry_name=registry_name,
-                        registry_repo=url
-                    )
-                    logger.log(SUCCESS, f"Successfully added registry {registry_name}.")
-                    break
+                    response = SettingsQuestions.confirm_registry_addition(registry_name)
+                    if response == YES:
+                        manager.add_git_template_registry(
+                            registry_name=registry_name,
+                            registry_repo=url
+                        )
+                        logger.log(SUCCESS, f"Successfully added registry {registry_name}.")
+                    else:
+                        back_to_previous(history, n_lines=4)
+                        continue
 
                 elif "local" in history[1]:
                     # ask for path
                     path = SettingsQuestions.ask_local_path()
-                    # TODO: ask for confirmation
-                    manager.add_local_template_registry(
-                        registry_name=registry_name,
-                        registry_path=path
-                    )
-                    logger.log(SUCCESS, f"Successfully added registry {registry_name}.")
-                    break
+                    response = SettingsQuestions.confirm_registry_addition(registry_name)
+                    if response == YES:
+                        manager.add_local_template_registry(
+                            registry_name=registry_name,
+                            registry_path=path
+                        )
+                        logger.log(SUCCESS, f"Successfully added registry {registry_name}.")
+                    else:
+                        back_to_previous(history, n_lines=4)
+                        continue
 
             elif history[1] == "remove_registry":
                 registries = manager.list_template_registries()
                 registry_name = SettingsQuestions.ask_which_registry_to_remove(registries)
                 # ask for confirmation
                 if registry_name == BACK:
-                    history.pop()
-                    erase_lines()
+                    back_to_previous(history)
                     continue
 
                 result = SettingsQuestions.confirm_remove_registry()
                 if result == YES:
                     manager.remove_template_registry(registry_name)
                     logger.log(SUCCESS, f"Successfully removed registry {registry_name}.")
-                    break
                 else:
-                    erase_lines(n_lines=3)
-                    history.pop()
+                    back_to_previous(history, n_lines=3)
                     continue
 
             elif "restore_default_registry" in history[1]:
@@ -128,10 +143,8 @@ def settings(data_path, _):
                 if response == YES:
                     manager.restore_registries()
                     logger.log(SUCCESS, f"Successfully restored registry to defaults.")
-                    break
                 else:
-                    erase_lines(n_lines=3)
-                    history.pop()
+                    back_to_previous(history, n_lines=3)
                     continue
 
         elif history[0] == "restore_defaults":
@@ -140,8 +153,11 @@ def settings(data_path, _):
             if response == YES:
                 manager.restore_default_config_file()
                 logger.log(SUCCESS, "Factory settings restored successfully")
-                break
             else:
-                erase_lines(n_lines=3)
-                history.pop()
+                back_to_previous(history, n_lines=3)
                 continue
+
+        history = []
+        print("\n")
+
+# TODO: See how to use different python versions using conda and venv

@@ -1,5 +1,9 @@
 [
 	{
+		"name": "Create new gryphon template (basic scaffolding)",
+		"value": "new_template"
+	},
+	{
 		"name": "Change environment manager",
 		"value": "change_env_manager",
 		"children": [
