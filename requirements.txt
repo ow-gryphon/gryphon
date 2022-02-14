@@ -7,5 +7,5 @@ pytest
 
 #pexpect
 #wexpect
-#pytest-cov
+pytest-cov
 pytest-mock

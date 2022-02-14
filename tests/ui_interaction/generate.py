@@ -30,10 +30,6 @@ def wizard_generate(file_name):
     child.expect(Text.generate_prompt_template_question)
     child.sendcontrol('m')
 
-    # child.expect('Name for the problem')
-    # child.send(file_name)
-    # child.sendcontrol('m')
-
     # Confirm to proceed
     child.expect(CONFIRMATION_MESSAGE_1)
     child.sendcontrol('m')

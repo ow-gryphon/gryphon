@@ -78,7 +78,7 @@ class GenerateQuestions:
         ]
 
         return questionary.select(
-            message=Text.base_confirmation,
+            message=information,
             choices=choices
         ).unsafe_ask()
 
@@ -102,5 +102,3 @@ class GenerateQuestions:
             message=Text.could_not_find_any_templates,
             choices=choices
         ).unsafe_ask()
-
-    get_generate_option

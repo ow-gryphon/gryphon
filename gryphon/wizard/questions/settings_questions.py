@@ -7,6 +7,17 @@ from ...constants import (YES, NO, NAME, VALUE)
 
 class SettingsQuestions:
 
+    base_choices = [
+        Choice(
+            title="Yes",
+            value=YES
+        ),
+        Choice(
+            title="No, go back to the previous menu.",
+            value=NO
+        )
+    ]
+
     @staticmethod
     @base_question
     def get_option(categories: list):
@@ -28,89 +39,39 @@ class SettingsQuestions:
             instruction=Text.add_prompt_instruction
         ).unsafe_ask()
 
-    @staticmethod
     @base_question
-    def confirm_restore_defaults():
+    def confirm_restore_defaults(self):
         return questionary.select(
             message=Text.settings_confirm_restore_defaults,
-            choices=[
-                Choice(
-                    title="Yes",
-                    value=YES
-                ),
-                Choice(
-                    title="No, go back to the previous menu.",
-                    value=NO
-                )
-            ]
+            choices=self.base_choices
         ).unsafe_ask()
 
-    @staticmethod
     @base_question
-    def confirm_restore_registry_defaults():
+    def confirm_restore_registry_defaults(self):
         return questionary.select(
-            message=Text.settings_confirm_restore_defaults,
-            choices=[
-                Choice(
-                    title="Yes",
-                    value=YES
-                ),
-                Choice(
-                    title="No, go back to the previous menu.",
-                    value=NO
-                )
-            ]
+            message=Text.settings_confirm_restorer_registry_defaults,
+            choices=self.base_choices
         ).unsafe_ask()
 
-    @staticmethod
     @base_question
-    def confirm_registry_addition(registry_name):
+    def confirm_registry_addition(self, registry_name):
         return questionary.select(
             message=Text.settings_confirm_registry_addition.replace("{registry_name}", registry_name),
-            choices=[
-                Choice(
-                    title="Yes",
-                    value=YES
-                ),
-                Choice(
-                    title="No, go back to the previous menu.",
-                    value=NO
-                )
-            ]
+            choices=self.base_choices
         ).unsafe_ask()
 
-    @staticmethod
     @base_question
-    def confirm_remove_registry():
+    def confirm_remove_registry(self):
         return questionary.select(
             message=Text.settings_confirm_remove_registry,
-            choices=[
-                Choice(
-                    title="Yes",
-                    value=YES
-                ),
-                Choice(
-                    title="No, go back to the previous menu.",
-                    value=NO
-                )
-            ]
+            choices=self.base_choices
         ).unsafe_ask()
 
-    @staticmethod
     @base_question
-    def confirm_change_env_manager(env_manager):
+    def confirm_change_env_manager(self, env_manager):
         return questionary.select(
             message=Text.settings_confirm_change_env_manager.replace("{env_manager}", env_manager),
-            choices=[
-                Choice(
-                    title="Yes",
-                    value=YES
-                ),
-                Choice(
-                    title="No, go back to the previous menu.",
-                    value=NO
-                )
-            ]
+            choices=self.base_choices
         ).unsafe_ask()
 
     @staticmethod

@@ -1,4 +1,3 @@
-import os
 import shutil
 from os import path
 from gryphon.core.generate import (
@@ -13,17 +12,18 @@ def test_generate_1(setup, teardown, data_folder):
     """
     Tests the template replacement: Success case
     """
+    file_name = "sample_template.py.handlebars"
 
     cwd = setup()
-    template = data_folder / "sample_template.py.handlebars"
+    template = data_folder / file_name
     expected_file = cwd / "sample_template.py"
     shutil.copyfile(
         src=template,
-        dst=cwd / "sample_template.py.handlebars"
+        dst=cwd / file_name
     )
     try:
         pattern_replacement(
-            input_file=cwd / "sample_template.py.handlebars",
+            input_file=cwd / file_name,
             mapper={"lib": "pandas", "alias": "pd"}
         )
 
@@ -41,17 +41,17 @@ def test_generate_2(setup, teardown, data_folder):
     """
     Tests the template replacement: missing replacement patterns
     """
-
+    file_name = "sample_template.py.handlebars"
     cwd = setup()
-    template = data_folder / "sample_template.py.handlebars"
+    template = data_folder / file_name
     expected_file = cwd / "sample_template.py"
     shutil.copyfile(
         src=template,
-        dst=cwd / "sample_template.py.handlebars"
+        dst=cwd / file_name
     )
     try:
         pattern_replacement(
-            input_file=cwd / "sample_template.py.handlebars",
+            input_file=cwd / file_name,
             mapper={"lib": "pandas"}
         )
 

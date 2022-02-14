@@ -27,29 +27,3 @@ def test_init_1(setup, teardown):
 
     finally:
         teardown()
-
-
-# def test_create_conda_env_3(setup, teardown, mocker):
-#     """
-#     Test case:
-#     A venv is created in a folder that does not exists previously.
-#     """
-#     read_data = json.dumps({
-#         "environment_management": "placeholder"
-#     })
-#
-#     mock_open = mocker.mock_open(read_data=read_data)
-#     with mocker.patch("__main__.open", mock_open):
-#
-#         cwd = setup()
-#         try:
-#             # with pytest.raises(Exception):
-#             init(
-#                 template_path=TEST_FOLDER / "data" / "analytics",
-#                 location=cwd
-#             )
-#         except:
-#             raise ValueError()
-#
-#         finally:
-#             teardown()

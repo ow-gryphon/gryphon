@@ -6,6 +6,6 @@
     "local_registry": {
         "default_registry": "/home/vittorfp/labskit_registry"
     },
-    "environment_management": "conda",
+    "environment_management": "venv",
     "ask_python_version_on_init": false
 }
