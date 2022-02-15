@@ -3,7 +3,7 @@ Module containing the code for the add command in then CLI.
 """
 import logging
 from .common_operations import (
-    install_libraries, append_requirement,
+    install_libraries_venv, append_requirement,
     rollback_append_requirement
 )
 
@@ -21,7 +21,7 @@ def add(library_name):
     logger.info("Adding required lib.")
     append_requirement(library_name)
     try:
-        install_libraries()
+        install_libraries_venv()
     except RuntimeError as e:
         rollback_append_requirement(library_name)
         logger.warning("Rolled back the changes from last command.")

@@ -5,9 +5,9 @@ import os
 import json
 import logging
 from pathlib import Path
-from ..constants import DEFAULT_ENV
+from ..constants import DEFAULT_ENV, CONFIG_FILE
 from .common_operations import (
-    install_libraries,
+    install_libraries_venv,
     copy_project_template,
     create_venv,
     init_new_git_repo,
@@ -15,8 +15,8 @@ from .common_operations import (
     populate_rc_file,
     change_shell_folder_and_activate_venv,
     get_rc_file,
-    create_conda_env, conda_install_requirements
-    # install_extra_nbextensions
+    create_conda_env, install_libraries_conda,
+    install_extra_nbextensions_venv
 )
 
 
@@ -30,7 +30,7 @@ def init(template_path, location, **kwargs):
     Init command from the OW Gryphon CLI.
     """
 
-    with open(DATA_PATH / "gryphon_config.json") as f:
+    with open(CONFIG_FILE) as f:
         data = json.load(f)
         env_type = data.get("environment_management", DEFAULT_ENV)
 
@@ -50,12 +50,12 @@ def init(template_path, location, **kwargs):
 
     if env_type == "venv":
         create_venv(folder=location)
-        install_libraries(folder=location)
-        # install_extra_nbextensions(location)
+        install_libraries_venv(folder=location)
+        install_extra_nbextensions_venv(location)
         change_shell_folder_and_activate_venv(location)
     elif env_type == "conda":
         create_conda_env(location)
-        conda_install_requirements(location)
+        install_libraries_conda(location)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of [\"venv\", \"conda\"] but \"{env_type}\" was given.")

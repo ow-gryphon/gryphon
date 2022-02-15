@@ -11,7 +11,7 @@ from .common_operations import (
     get_destination_path,
     copy_project_template,
     append_requirement,
-    install_libraries,
+    install_libraries_venv,
     get_rc_file, populate_rc_file
 )
 
@@ -33,7 +33,7 @@ def generate(template_path: Path, requirements: list, **kwargs):
     for r in requirements:
         append_requirement(r)
 
-    install_libraries()
+    install_libraries_venv()
     rc_file = get_rc_file()
     populate_rc_file(rc_file, f"GENERATE {template_path} {kwargs}")
 

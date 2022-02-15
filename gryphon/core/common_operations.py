@@ -56,37 +56,32 @@ def create_conda_env(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
-    os.system("conda config --append channels conda-forge")
+    execute_and_log("conda config --append channels conda-forge")
     command = f"conda create --prefix={conda_path} -y"
     if python_version:
         command += f" --python={python_version}"
 
-    cmd = os.popen(command)
-    logger.debug(cmd.read())
-
-    return_code = cmd.close()
+    return_code = execute_and_log(command)
     if return_code is not None:
         raise RuntimeError(f"Failed to create conda environment. Status code: {return_code}")
 
     logger.log(SUCCESS, "Done creating virtual environment.")
 
 
-def conda_install_requirements(folder):
+def install_libraries_conda(folder):
     logger.info("Installing requirements. This may take several minutes ...")
     target_folder = get_destination_path(folder)
     conda_path = target_folder / 'envs'
 
-    cmd = os.popen(f"conda install --prefix {conda_path} --file requirements.txt -y")
-    logger.debug(cmd.read())
+    return_code = execute_and_log(f"conda install --prefix {conda_path} --file requirements.txt -y")
 
-    return_code = cmd.close()
     if return_code is not None:
         raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
 
     logger.log(SUCCESS, "Installation successful!")
 
 
-def install_libraries(folder=None):
+def install_libraries_venv(folder=None):
     """
     Function to install the libraries from a 'requirements.txt' file
     """
@@ -171,7 +166,16 @@ def escape_windows_path(folder_path):
     return fr'{folder_path}'
 
 
-def install_extra_nbextensions(folder_path):
+def execute_and_log(command):
+    cmd = os.popen(command)
+    output = cmd.read()
+    logger.debug(output)
+
+    # status code
+    return cmd.close()
+
+
+def install_extra_nbextensions_venv(folder_path):
     """
         Function to install the libraries from a 'requirements.txt' file
         """
@@ -181,8 +185,13 @@ def install_extra_nbextensions(folder_path):
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         pip_path = target_folder / VENV / "Scripts" / "pip.exe"
+        activate_env_command = target_folder / VENV / "Scripts" / "activate.bat"
+
     else:
         pip_path = target_folder / VENV / "bin" / "pip"
+        activate_path = target_folder / VENV / "bin" / "activate"
+        activate_env_command = str(activate_path)
+        os.system(f"chmod 777 {activate_path}")
 
     # Install requirements
     logger.info("Installing extra notebook extensions.")
@@ -196,24 +205,24 @@ def install_extra_nbextensions(folder_path):
     with open(requirements_path, "r") as f1:
         requirements = f1.read()
 
-    if "jupyter_contrib_nbextensions" not in requirements:
-        with open(requirements_path, "a") as f2:
-            f2.write("\njupyter_contrib_nbextensions\n")
+    for lib in ["jupyter_nbextensions_configurator", "jupyter_contrib_nbextensions"]:
+        if lib not in requirements:
+            with open(requirements_path, "a") as f2:
+                f2.write(f"\n{lib}\n")
 
     try:
-        # subprocess.check_call([str(pip_path), 'install', 'jupyter_contrib_nbextensions', '-qq'],)
-        output = os.popen(f'{str(pip_path)} install jupyter_contrib_nbextensions').read()
-        logger.debug(output)
+        execute_and_log(f'{activate_env_command} && pip install jupyter_contrib_nbextensions')
+        execute_and_log(f'{activate_env_command} && pip install jupyter_nbextensions_configurator')
 
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")
 
     os.chdir(target_folder)
-    os.system(f"jupyter contrib nbextension install --user")
-    os.system(f"jupyter nbextensions_configurator enable --user")
-    os.system(f"jupyter nbextension enable codefolding/main")
-    os.system(f"jupyter nbextension enable toc2/main")
-    os.system(f"jupyter nbextension enable collapsible_headings/main")
+    execute_and_log(f"{activate_env_command} && nohup jupyter nbextensions_configurator enable --user")
+    execute_and_log(f"{activate_env_command} && nohup jupyter contrib nbextension install --user")
+    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable codefolding/main --user")
+    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable toc2/main --user")
+    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable collapsible_headings/main --user")
     os.chdir(target_folder.parent)
 
 

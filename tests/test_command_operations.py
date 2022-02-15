@@ -15,8 +15,8 @@ from .utils import (
 from gryphon.core.common_operations import (
     create_venv,
     create_conda_env,
-    conda_install_requirements,
-    install_libraries,
+    install_libraries_conda,
+    install_libraries_venv,
     copy_project_template,
     init_new_git_repo,
     initial_git_commit
@@ -105,7 +105,7 @@ def test_install_libraries_1(setup, teardown, get_pip_libraries):
         libs = get_pip_libraries(cwd)
         assert "numpy" not in libs
 
-        install_libraries(cwd)
+        install_libraries_venv(cwd)
         venv_path = get_venv_path(cwd)
         assert venv_path.is_dir()
 
@@ -126,7 +126,7 @@ def test_install_libraries_2(setup, teardown):
 
     try:
         with pytest.raises(RuntimeError):
-            install_libraries(folder_path)
+            install_libraries_venv(folder_path)
 
     finally:
         teardown()

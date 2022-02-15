@@ -107,24 +107,17 @@ def main():
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
-# DONE: Figure out if the user is in a folder with .venv (and inform the user)
-# DONE: Activate a verbose level of log when with this mode activated.
+# DONE: Power user configurations
+# TODO: implement test for the conda environments
+# TODO: be able to select python version for each project both conda and venv
+# TODO: Fix the installation of the notebook extensions
+
 # TODO: Test installation.
-# DONE: Create .labskitrc and populate it accordingly
-# DONE: Developer documentations
-# DONE: Handle errors from the pip commands
-
-# TODO: Power user configurations
-    # TODO: Whether to install gryphon inside the .venv created for projects or not
-
+# TODO: Whether to install gryphon inside the .venv created for projects or not
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
-# DONE: CLI fix case when more parameters are sent
-# DONE: use conda
-# TODO: implement test for the conda environments
-# Done: Fix codec issue
 
 
 if __name__ == '__main__':
