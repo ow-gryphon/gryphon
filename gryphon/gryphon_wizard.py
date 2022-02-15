@@ -108,6 +108,7 @@ def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
 # DONE: Power user configurations
+# TODO: Create config file separated from the .rc file
 # TODO: implement test for the conda environments
 # TODO: be able to select python version for each project both conda and venv
 # TODO: Fix the installation of the notebook extensions
