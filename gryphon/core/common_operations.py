@@ -286,8 +286,14 @@ def install_extra_nbextensions_conda(folder_path):
             with open(requirements_path, "a") as f2:
                 f2.write(f"\n{lib}\n")
 
-    conda_pip = conda_path / "bin" / "pip"
-    conda_python = conda_path / "bin" / "python"
+    if platform.system() == "Windows":
+        # On Windows the venv folder structure is different from unix
+        conda_pip = conda_path / "Scripts" / "pip.exe"
+        conda_pip = conda_path / "Scripts" / "python.exe"
+    else:
+        conda_pip = conda_path / "bin" / "pip"
+        conda_python = conda_path / "bin" / "python"
+
     try:
         execute_and_log(f'{conda_pip} install jupyter_contrib_nbextensions')
         execute_and_log(f'{conda_pip} install jupyter_nbextensions_configurator')
