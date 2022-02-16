@@ -12,12 +12,12 @@ pip install .
 
 OW Gryphon requires Python version 3.7 or later. In addition, it has the following dependencies:
 
-click>=8.0.1
-virtualenv
-questionary
-GitPython
-colorlog
-pytest
+- click>=8.0.1
+- virtualenv
+- questionary
+- GitPython
+- colorlog
+- pytest
 
 ### How to use
 
