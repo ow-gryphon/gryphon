@@ -286,20 +286,21 @@ def install_extra_nbextensions_conda(folder_path):
             with open(requirements_path, "a") as f2:
                 f2.write(f"\n{lib}\n")
 
-    activate_env_command = f"conda activate {conda_path}"
+    conda_pip = conda_path / "bin" / "pip"
+    conda_python = conda_path / "bin" / "python"
     try:
-        execute_and_log(f'{activate_env_command} && conda install jupyter_contrib_nbextensions')
-        execute_and_log(f'{activate_env_command} && conda install jupyter_nbextensions_configurator')
+        execute_and_log(f'{conda_pip} install jupyter_contrib_nbextensions')
+        execute_and_log(f'{conda_pip} install jupyter_nbextensions_configurator')
 
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")
 
     os.chdir(target_folder)
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextensions_configurator enable --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter contrib nbextension install --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable codefolding/main --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable toc2/main --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable collapsible_headings/main --user")
+    execute_and_log(f'nohup {conda_python} -m jupyter nbextensions_configurator enable --user')
+    execute_and_log(f'nohup {conda_python} -m jupyter contrib nbextension install --user')
+    execute_and_log(f'nohup {conda_python} -m jupyter nbextension enable codefolding/main --user')
+    execute_and_log(f'nohup {conda_python} -m jupyter nbextension enable toc2/main --user')
+    execute_and_log(f'nohup {conda_python} -m jupyter nbextension enable collapsible_headings/main --user')
     os.chdir(target_folder.parent)
 
 

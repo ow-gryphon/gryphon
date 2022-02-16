@@ -53,11 +53,12 @@ class SettingsQuestions:
             choices=self.base_choices
         ).unsafe_ask()
 
+    @classmethod
     @base_question
-    def confirm_registry_addition(self, registry_name):
+    def confirm_registry_addition(cls, registry_name):
         return questionary.select(
             message=Text.settings_confirm_registry_addition.replace("{registry_name}", registry_name),
-            choices=self.base_choices
+            choices=cls.base_choices
         ).unsafe_ask()
 
     @base_question
@@ -67,11 +68,12 @@ class SettingsQuestions:
             choices=self.base_choices
         ).unsafe_ask()
 
+    @classmethod
     @base_question
-    def confirm_change_env_manager(self, env_manager):
+    def confirm_change_env_manager(cls, env_manager):
         return questionary.select(
             message=Text.settings_confirm_change_env_manager.replace("{env_manager}", env_manager),
-            choices=self.base_choices
+            choices=cls.base_choices
         ).unsafe_ask()
 
     @staticmethod

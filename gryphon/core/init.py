@@ -16,7 +16,8 @@ from .common_operations import (
     change_shell_folder_and_activate_venv,
     get_rc_file,
     create_conda_env, install_libraries_conda,
-    install_extra_nbextensions_venv
+    install_extra_nbextensions_venv,
+    install_extra_nbextensions_conda
 )
 
 
@@ -56,6 +57,7 @@ def init(template_path, location, **kwargs):
     elif env_type == "conda":
         create_conda_env(location)
         install_libraries_conda(location)
+        install_extra_nbextensions_conda(location)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of [\"venv\", \"conda\"] but \"{env_type}\" was given.")
