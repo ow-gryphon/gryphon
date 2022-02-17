@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (YES, NO, NAME, VALUE)
+from ...constants import (YES, NO, NAME, VALUE, ALWAYS_ASK)
 
 
 class SettingsQuestions:
@@ -121,3 +121,30 @@ class SettingsQuestions:
             .path(message=Text.settings_ask_local_path)
             .unsafe_ask()
         )
+
+    @staticmethod
+    @base_question
+    def ask_python_version(versions, current_version):
+        choices = [
+            Choice(
+                title=v if v != current_version else f"{v} (current)",
+                value=v
+            )
+            for v in versions
+        ]
+
+        choices.extend([
+            Separator(),
+            Choice(
+                title=f"Always ask when creating a new project. "
+                      f"{'(current)' if current_version == ALWAYS_ASK else ''}",
+                value=ALWAYS_ASK
+            ),
+            get_back_choice()
+        ])
+
+        return questionary.select(
+            message=Text.settings_ask_python_version,
+            choices=choices,
+            use_indicator=True
+        ).unsafe_ask()

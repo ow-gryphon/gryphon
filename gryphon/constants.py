@@ -40,3 +40,5 @@ PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "data"
 CONFIG_FILE = GRYPHON_HOME / "gryphon_config.json"
 DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"
+DEFAULT_PYTHON_VERSION = "3.8"
+ALWAYS_ASK = "always_ask"

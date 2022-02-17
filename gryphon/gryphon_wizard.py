@@ -115,8 +115,10 @@ def did_you_mean_gryphon():
 # TODO: Create config file separated from the .rc file
 # TODO: implement test for the conda environments (use "conda list --explicit" to find installed packages)
 
+# TODO: create enums for some constants
 # TODO: Test installation.
 # TODO: Whether to install gryphon inside the .venv created for projects or not
+# TODO: Resizing error on windows (duplicating texts).
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux

@@ -26,7 +26,7 @@ PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_PATH = Path(PACKAGE_PATH).parent / "data"
 
 
-def init(template_path, location, **kwargs):
+def init(template_path, location, python_version, **kwargs):
     """
     Init command from the OW Gryphon CLI.
     """
@@ -50,12 +50,12 @@ def init(template_path, location, **kwargs):
     initial_git_commit(repo)
 
     if env_type == "venv":
-        create_venv(folder=location)
+        create_venv(folder=location, python_version=python_version)
         install_libraries_venv(folder=location)
         install_extra_nbextensions_venv(location)
         change_shell_folder_and_activate_venv(location)
     elif env_type == "conda":
-        create_conda_env(location)
+        create_conda_env(location, python_version=python_version)
         install_libraries_conda(location)
         install_extra_nbextensions_conda(location)
     else:

@@ -4,7 +4,7 @@
 		"value": "new_template"
 	},
 	{
-		"name": "Change environment manager",
+		"name": "Select environment manager",
 		"value": "change_env_manager",
 		"children": [
 			{
@@ -16,6 +16,10 @@
 				"value": "venv"
 			}
 		]
+	},
+	{
+		"name": "Select Python version",
+		"value": "change_python_version"
 	},
 	{
 		"name": "Template registry management",

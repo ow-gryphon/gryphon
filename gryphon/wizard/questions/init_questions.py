@@ -99,3 +99,24 @@ class InitQuestions:
             .text(message=Text.init_prompt_location_question)
             .unsafe_ask()
         )
+
+    @staticmethod
+    @base_question
+    def ask_python_version(versions):
+        choices = [
+            Choice(
+                title=v,
+                value=v
+            )
+            for v in versions
+        ]
+        choices.extend([
+            Separator(),
+            get_back_choice()
+        ])
+
+        return questionary.select(
+            message=Text.settings_ask_python_version,
+            choices=choices,
+            use_indicator=True
+        ).unsafe_ask()

@@ -7,5 +7,6 @@
         "default_registry": "/home/vittorfp/labskit_registry"
     },
     "environment_management": "venv",
-    "ask_python_version_on_init": false
+    "ask_python_version_on_init": false,
+    "default_python_version": "3.8"
 }

@@ -32,6 +32,17 @@ class SettingsManager:
             f.truncate()
 
     @classmethod
+    def change_default_python_version(cls, python_version):
+
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            contents["default_python_version"] = python_version
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
     def add_git_template_registry(cls, registry_repo, registry_name):
 
         with open(cls.get_config_path(), "r+", encoding="utf-8") as f:

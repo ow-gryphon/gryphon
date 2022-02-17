@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 from .functions import (
@@ -8,7 +9,7 @@ from .questions import SettingsQuestions, InitQuestions
 from ..core.init import init as core_init
 from ..constants import (
     BACK, YES, CHILDREN, SUCCESS, CONFIG_FILE, DEFAULT_ENV,
-    NAME, VALUE, DATA_PATH
+    NAME, VALUE, DATA_PATH, DEFAULT_PYTHON_VERSION, ALWAYS_ASK
 )
 from ..core.settings import SettingsManager
 
@@ -18,7 +19,42 @@ logger = logging.getLogger('gryphon')
 
 def back_to_previous(history, **kwargs):
     history.pop()
-    erase_lines(kwargs)
+    erase_lines(**kwargs)
+
+
+def list_conda_available_python_versions():
+    logger.info("Listing possible python versions ...")
+    logger.info("It might take a while ...")
+
+    version_file = DATA_PATH / "versions_raw.txt"
+    os.system(f'conda search python >> {version_file}')
+    with open(version_file, "r") as f:
+        line = True
+        all_versions = []
+        while line:
+            line = f.readline()
+            if "python" in line:
+                version = line[6:].strip().split(' ')[0]
+                all_versions.append(version)
+
+    displayed_versions = set(
+        map(
+            lambda x: '.'.join(x.split(".")[:-1]),
+            all_versions
+        )
+    )
+    erase_lines()
+
+    displayed_versions = sorted(
+        displayed_versions,
+        key=lambda x: int(x.split(".")[1]) if "." in x else 0
+    )
+
+    displayed_versions = sorted(
+        displayed_versions,
+        key=lambda x: x.split(".")[0]
+    )
+    return displayed_versions
 
 
 def handle_current_env_manager(tree_level):
@@ -37,6 +73,14 @@ def handle_current_env_manager(tree_level):
     return response
 
 
+def get_current_python_version():
+    with open(CONFIG_FILE, "r") as f:
+        return json.load(f).get(
+            "default_python_version",
+            DEFAULT_PYTHON_VERSION
+        )
+
+
 def settings(data_path, _):
     """Shows some configurations for power users."""
 
@@ -50,8 +94,6 @@ def settings(data_path, _):
             history=history
         )
 
-        # create a list with the current possible options
-        # possibilities = get_option_names(current_tree)
         if len(history) and history[0] == "change_env_manager":
             current_tree = handle_current_env_manager(current_tree)
 
@@ -73,14 +115,31 @@ def settings(data_path, _):
             continue
 
         manager = SettingsManager()
-        if history[0] == "new_template":
+        if history[0] == "change_python_version":
+
+            versions = list_conda_available_python_versions()
+            selected_option = SettingsQuestions.ask_python_version(versions, get_current_python_version())
+
+            if selected_option == BACK:
+                back_to_previous(history, n_lines=2)
+                continue
+            else:
+                manager.change_default_python_version(selected_option)
+                if selected_option == ALWAYS_ASK:
+                    logger.log(SUCCESS, f"The python version will be asked for every new project.")
+                else:
+                    logger.log(SUCCESS, f"Default python version set to {selected_option}")
+
+        elif history[0] == "new_template":
             # ask for the folder
             location = InitQuestions.ask_just_location()
 
             core_init(
                 template_path=DATA_PATH / "template_scaffolding",
-                location=location
+                location=location,
+                python_version=get_current_python_version()
             )
+
         elif history[0] == "change_env_manager":
             response = SettingsQuestions.confirm_change_env_manager(actual_selection)
             if response == YES:

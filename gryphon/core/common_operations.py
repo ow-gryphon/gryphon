@@ -11,7 +11,7 @@ import subprocess
 import shutil
 import git
 from .core_text import Text
-from ..constants import SUCCESS, VENV
+from ..constants import SUCCESS, VENV, ALWAYS_ASK
 
 
 logger = logging.getLogger('gryphon')
@@ -101,14 +101,25 @@ def initial_git_commit(repository: git.Repo):
 
 # VENV
 
-def create_venv(folder=None):
+def create_venv(folder=None, python_version=None):
     """Function to a virtual environment inside a folder."""
+    python_path = "python"
+    if python_version is not None and python_version != ALWAYS_ASK:
+        # create conda env with the asked version
+        # maybe to have a single repository with conda environments for each python version
+        # and then use this python path to create the venv
+        create_conda_env(
+            folder=folder,
+            python_version=python_version
+        )
+        python_path = "env"
+
     target_folder = get_destination_path(folder)
     venv_path = target_folder / VENV
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
-    os.system(f"python -m venv \"{venv_path}\"")
+    os.system(f"{python_path} -m venv \"{venv_path}\"")
     logger.log(SUCCESS, "Done creating virtual environment.")
 
 
@@ -239,7 +250,7 @@ def create_conda_env(folder=None, python_version=None):
     execute_and_log("conda config --append channels conda-forge")
     command = f"conda create --prefix={conda_path} -y"
     if python_version:
-        command += f" --python={python_version}"
+        command += f" python={python_version}"
 
     return_code = execute_and_log(command)
     if return_code is not None:
@@ -289,7 +300,7 @@ def install_extra_nbextensions_conda(folder_path):
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         conda_pip = conda_path / "Scripts" / "pip.exe"
-        conda_pip = conda_path / "Scripts" / "python.exe"
+        conda_python = conda_path / "Scripts" / "python.exe"
     else:
         conda_pip = conda_path / "bin" / "pip"
         conda_python = conda_path / "bin" / "python"
@@ -302,11 +313,11 @@ def install_extra_nbextensions_conda(folder_path):
         raise RuntimeError(f"Failed on pip install command. {e}")
 
     os.chdir(target_folder)
-    execute_and_log(f'nohup {conda_python} -m jupyter nbextensions_configurator enable --user')
-    execute_and_log(f'nohup {conda_python} -m jupyter contrib nbextension install --user')
-    execute_and_log(f'nohup {conda_python} -m jupyter nbextension enable codefolding/main --user')
-    execute_and_log(f'nohup {conda_python} -m jupyter nbextension enable toc2/main --user')
-    execute_and_log(f'nohup {conda_python} -m jupyter nbextension enable collapsible_headings/main --user')
+    execute_and_log(f'(nohup {conda_python} -m jupyter nbextensions_configurator enable --user) >> .output')
+    execute_and_log(f'(nohup {conda_python} -m jupyter contrib nbextension install --user) >> .output')
+    execute_and_log(f'(nohup {conda_python} -m jupyter nbextension enable codefolding/main --user) >> .output')
+    execute_and_log(f'(nohup {conda_python} -m jupyter nbextension enable toc2/main --user) >> .output')
+    execute_and_log(f'(nohup {conda_python} -m jupyter nbextension enable collapsible_headings/main --user) >> .output')
     os.chdir(target_folder.parent)
 
 

@@ -1,5 +1,5 @@
-click>=8.0.1
-virtualenv
+#click>=8.0.1
+#virtualenv
 questionary
 GitPython
 colorlog
@@ -7,5 +7,5 @@ pytest
 
 #pexpect
 #wexpect
-pytest-cov
-pytest-mock
+#pytest-cov
+#pytest-mock

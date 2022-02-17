@@ -73,6 +73,7 @@ class Text:
     no_virtual_environment_remainder = "The current folder does not have a virtual environment in it."
 
     settings_ask_which_registry_delete = "Choose which registry to remove?"
+    settings_ask_python_version = "Choose the python version you want to use"
     settings_confirm_restore_defaults = "Confirm that you want to restore EVERY gryphon settings to the default?"
     settings_confirm_restorer_registry_defaults = "Confirm that you want to restore gryphon registry to the default?"
 
