@@ -218,5 +218,3 @@ def settings(data_path, _):
 
         history = []
         print("\n")
-
-# TODO: See how to use different python versions using conda and venv

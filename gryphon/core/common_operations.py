@@ -11,7 +11,7 @@ import subprocess
 import shutil
 import git
 from .core_text import Text
-from ..constants import SUCCESS, VENV, ALWAYS_ASK
+from ..constants import SUCCESS, VENV, ALWAYS_ASK, GRYPHON_HOME
 
 
 logger = logging.getLogger('gryphon')
@@ -105,14 +105,20 @@ def create_venv(folder=None, python_version=None):
     """Function to a virtual environment inside a folder."""
     python_path = "python"
     if python_version is not None and python_version != ALWAYS_ASK:
-        # create conda env with the asked version
-        # maybe to have a single repository with conda environments for each python version
-        # and then use this python path to create the venv
-        create_conda_env(
-            folder=folder,
-            python_version=python_version
-        )
-        python_path = "env"
+
+        env_folder = GRYPHON_HOME / f"reserved_env_python_{python_version}"
+        if not env_folder.is_dir():
+            logger.info(f"Installing python version with Conda.")
+            create_conda_env(
+                folder=GRYPHON_HOME / f"reserved_env_python_{python_version}",
+                python_version=python_version
+            )
+
+        if platform.system() == "Windows":
+            # On Windows the venv folder structure is different from unix
+            python_path = env_folder / "envs" / "Scripts" / "python.exe"
+        else:
+            python_path = env_folder / "envs" / "bin" / "python"
 
     target_folder = get_destination_path(folder)
     venv_path = target_folder / VENV
