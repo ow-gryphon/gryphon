@@ -11,6 +11,7 @@ from .core import \
     init as core_init
 from .core.registry import RegistryCollection
 from .cli import helpers
+from .constants import DEFAULT_PYTHON_VERSION
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -64,6 +65,7 @@ def init(template, location, extra):
     core_init(
         template_path=template.path,
         location=location,
+        python_version=DEFAULT_PYTHON_VERSION,
         **extra_parameters
     )
 

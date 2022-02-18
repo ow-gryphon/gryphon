@@ -9,7 +9,7 @@ from .utils import (
     remove_folder,
     create_folder,
     get_data_folder,
-    get_venv_path,
+    get_venv_path, get_conda_path,
     create_folder_with_venv,
     get_pip_path,
     activate_venv
@@ -55,6 +55,16 @@ def get_pip_libraries() -> callable:
         libs = list(map(path.basename, lib_folders))
 
         return libs
+
+    return _get_libraries
+
+
+@pytest.fixture
+def get_conda_libraries() -> callable:
+
+    def _get_libraries(folder=Path.cwd()) -> str:
+        conda_path = get_conda_path(base_folder=folder)
+        return os.popen(f"conda list --explicit --prefix {conda_path}").read()
 
     return _get_libraries
 

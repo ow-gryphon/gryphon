@@ -14,18 +14,18 @@ def test_cli_1(setup, teardown, get_pip_libraries):
     cwd = setup()
 
     try:
-        os.system(f"gryph init basic_analytics {project_folder}")
-        os.chdir(project_folder)
-        os.system(f"gryph generate explore_data_basic {file_name}")
-        os.system(f"gryph add {lib_name}")
+        os.system(f"gryph init basic_analytics {cwd / project_folder}")
+        os.chdir(cwd / project_folder)
+        os.system(f"cd {cwd / project_folder} && gryph generate explore_data_basic {file_name}")
+        os.system(f"cd {cwd / project_folder} && gryph add {lib_name}")
         os.chdir(cwd)
 
         assert (cwd / project_folder).is_dir()
         assert (cwd / project_folder / "notebooks").is_dir()
 
+        libs = get_pip_libraries(cwd / project_folder)
+        assert lib_name in libs
         # TODO: Find way to activate venv before running add command
-    except Exception as e:
-        pytest.fail("Raised exception", e)
     finally:
         teardown()
 

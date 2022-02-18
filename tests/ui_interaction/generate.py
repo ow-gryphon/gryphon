@@ -1,6 +1,6 @@
 import platform
 from gryphon.wizard.wizard_text import Text
-from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE_1, SUCCESS_MESSAGE
+from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE, SUCCESS_MESSAGE
 
 if platform.system() != "Windows":
     import pexpect
@@ -31,7 +31,7 @@ def wizard_generate(file_name):
     child.sendcontrol('m')
 
     # Confirm to proceed
-    child.expect(CONFIRMATION_MESSAGE_1)
+    child.expect(CONFIRMATION_MESSAGE)
     child.sendcontrol('m')
 
     child.expect(SUCCESS_MESSAGE)

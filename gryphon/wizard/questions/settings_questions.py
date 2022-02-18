@@ -39,18 +39,20 @@ class SettingsQuestions:
             instruction=Text.add_prompt_instruction
         ).unsafe_ask()
 
+    @classmethod
     @base_question
-    def confirm_restore_defaults(self):
+    def confirm_restore_defaults(cls):
         return questionary.select(
             message=Text.settings_confirm_restore_defaults,
-            choices=self.base_choices
+            choices=cls.base_choices
         ).unsafe_ask()
 
+    @classmethod
     @base_question
-    def confirm_restore_registry_defaults(self):
+    def confirm_restore_registry_defaults(cls):
         return questionary.select(
             message=Text.settings_confirm_restorer_registry_defaults,
-            choices=self.base_choices
+            choices=cls.base_choices
         ).unsafe_ask()
 
     @classmethod

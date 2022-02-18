@@ -31,9 +31,11 @@ REFERENCE_LINK = "reference_link"
 YES = "yes"
 NO = "no"
 
-VENV = ".venv"
+VENV_FOLDER = ".venv"
 SUCCESS = 21
 DEFAULT_ENV = "venv"
+CONDA = "conda"
+VENV = "venv"
 
 GRYPHON_HOME = Path.home() / ".gryphon"
 PACKAGE_PATH = Path(__file__).parent

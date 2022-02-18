@@ -2,10 +2,7 @@ import json
 import shutil
 
 from gryphon.core.settings import SettingsManager
-from .utils import TEST_FOLDER
-
-CONFIG_FILE_NAME = "gryphon_config.json"
-MOCK_FUNCTION = 'gryphon.core.settings.SettingsManager.get_config_path'
+from .utils import TEST_FOLDER, CONFIG_FILE_NAME, MOCK_CONFIG_FILE_PATH
 
 
 def base_test(function):
@@ -30,7 +27,7 @@ def test_restore_default_settings(setup, teardown, mocker):
         )
 
         with mocker.patch(
-                target=MOCK_FUNCTION,
+                target=MOCK_CONFIG_FILE_PATH,
                 return_value=file
         ):
 
@@ -63,7 +60,7 @@ def test_change_environment_manager(setup, teardown, mocker):
         )
 
         with mocker.patch(
-                target=MOCK_FUNCTION,
+                target=MOCK_CONFIG_FILE_PATH,
                 return_value=file
         ):
 
@@ -96,7 +93,7 @@ def test_add_git_template_registry(setup, teardown, mocker):
         )
 
         with mocker.patch(
-                target=MOCK_FUNCTION,
+                target=MOCK_CONFIG_FILE_PATH,
                 return_value=file
         ):
 
@@ -135,7 +132,7 @@ def test_add_local_template_registry(setup, teardown, mocker):
         )
 
         with mocker.patch(
-                target=MOCK_FUNCTION,
+                target=MOCK_CONFIG_FILE_PATH,
                 return_value=file
         ):
 
@@ -173,7 +170,7 @@ def test_remove_template_registry(setup, teardown, mocker):
         )
 
         with mocker.patch(
-                target=MOCK_FUNCTION,
+                target=MOCK_CONFIG_FILE_PATH,
                 return_value=file
         ):
 
@@ -207,7 +204,7 @@ def test_restore_registries(setup, teardown, mocker):
         )
 
         with mocker.patch(
-                target=MOCK_FUNCTION,
+                target=MOCK_CONFIG_FILE_PATH,
                 return_value=file
         ):
 

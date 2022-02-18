@@ -11,7 +11,7 @@ import subprocess
 import shutil
 import git
 from .core_text import Text
-from ..constants import SUCCESS, VENV, ALWAYS_ASK, GRYPHON_HOME
+from ..constants import SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME
 
 
 logger = logging.getLogger('gryphon')
@@ -121,7 +121,7 @@ def create_venv(folder=None, python_version=None):
             python_path = env_folder / "envs" / "bin" / "python"
 
     target_folder = get_destination_path(folder)
-    venv_path = target_folder / VENV
+    venv_path = target_folder / VENV_FOLDER
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
@@ -138,9 +138,9 @@ def install_libraries_venv(folder=None):
 
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
-        pip_path = target_folder / VENV / "Scripts" / "pip.exe"
+        pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
     else:
-        pip_path = target_folder / VENV / "bin" / "pip"
+        pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
 
     # Install requirements
     logger.info("Installing requirements. This may take several minutes ...")
@@ -170,12 +170,12 @@ def install_extra_nbextensions_venv(folder_path):
 
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
-        pip_path = target_folder / VENV / "Scripts" / "pip.exe"
-        activate_env_command = target_folder / VENV / "Scripts" / "activate.bat"
+        pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
+        activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
 
     else:
-        pip_path = target_folder / VENV / "bin" / "pip"
-        activate_path = target_folder / VENV / "bin" / "activate"
+        pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
+        activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
         activate_env_command = str(activate_path)
         os.system(f"chmod 777 {activate_path}")
 
@@ -194,7 +194,7 @@ def install_extra_nbextensions_venv(folder_path):
     for lib in ["jupyter_nbextensions_configurator", "jupyter_contrib_nbextensions"]:
         if lib not in requirements:
             with open(requirements_path, "a") as f2:
-                f2.write(f"\n{lib}\n")
+                f2.write(f"\n{lib}")
 
     try:
         execute_and_log(f'{activate_env_command} && pip install jupyter_contrib_nbextensions')
@@ -237,7 +237,7 @@ def change_shell_folder_and_activate_venv(location):
         else:
             logger.info("Opening your new project folder and activating virtual environment.")
 
-            activate_path = target_folder / VENV / "bin" / "activate"
+            activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
             os.chdir(target_folder)
 
             shell = os.environ.get('SHELL', '/bin/sh')
@@ -265,7 +265,7 @@ def create_conda_env(folder=None, python_version=None):
     logger.log(SUCCESS, "Done creating virtual environment.")
 
 
-def install_libraries_conda(folder):
+def install_libraries_conda(folder=None):
     logger.info("Installing requirements. This may take several minutes ...")
     target_folder = get_destination_path(folder)
     conda_path = target_folder / 'envs'
@@ -301,19 +301,17 @@ def install_extra_nbextensions_conda(folder_path):
     for lib in ["jupyter_nbextensions_configurator", "jupyter_contrib_nbextensions"]:
         if lib not in requirements:
             with open(requirements_path, "a") as f2:
-                f2.write(f"\n{lib}\n")
+                f2.write(f"\n{lib}")
 
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
-        conda_pip = conda_path / "Scripts" / "pip.exe"
         conda_python = conda_path / "Scripts" / "python.exe"
     else:
-        conda_pip = conda_path / "bin" / "pip"
         conda_python = conda_path / "bin" / "python"
 
     try:
-        execute_and_log(f'{conda_pip} install jupyter_contrib_nbextensions')
-        execute_and_log(f'{conda_pip} install jupyter_nbextensions_configurator')
+        execute_and_log(f'conda install jupyter_contrib_nbextensions --prefix={conda_path}')
+        execute_and_log(f'conda install jupyter_nbextensions_configurator --prefix={conda_path}')
 
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed on pip install command. {e}")

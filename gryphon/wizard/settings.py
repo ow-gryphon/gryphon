@@ -1,9 +1,8 @@
-import os
 import json
 import logging
 from .functions import (
     erase_lines, get_current_tree_state_by_value,
-    filter_chosen_option_by_value
+    filter_chosen_option_by_value, list_conda_available_python_versions
 )
 from .questions import SettingsQuestions, InitQuestions
 from ..core.init import init as core_init
@@ -20,41 +19,6 @@ logger = logging.getLogger('gryphon')
 def back_to_previous(history, **kwargs):
     history.pop()
     erase_lines(**kwargs)
-
-
-def list_conda_available_python_versions():
-    logger.info("Listing possible python versions ...")
-    logger.info("It might take a while ...")
-
-    version_file = DATA_PATH / "versions_raw.txt"
-    os.system(f'conda search python >> {version_file}')
-    with open(version_file, "r") as f:
-        line = True
-        all_versions = []
-        while line:
-            line = f.readline()
-            if "python" in line:
-                version = line[6:].strip().split(' ')[0]
-                all_versions.append(version)
-
-    displayed_versions = set(
-        map(
-            lambda x: '.'.join(x.split(".")[:-1]),
-            all_versions
-        )
-    )
-    erase_lines()
-
-    displayed_versions = sorted(
-        displayed_versions,
-        key=lambda x: int(x.split(".")[1]) if "." in x else 0
-    )
-
-    displayed_versions = sorted(
-        displayed_versions,
-        key=lambda x: x.split(".")[0]
-    )
-    return displayed_versions
 
 
 def handle_current_env_manager(tree_level):

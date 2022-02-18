@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import pytest
 from .utils import (
-    create_folder_with_venv,
+    create_folder_with_venv, create_folder_with_conda_env,
     get_venv_path, get_conda_path,
     TEST_FOLDER
 )
@@ -127,6 +127,32 @@ def test_install_libraries_2(setup, teardown):
     try:
         with pytest.raises(RuntimeError):
             install_libraries_venv(folder_path)
+
+    finally:
+        teardown()
+
+
+def test_install_libraries_conda_1(setup, teardown, get_conda_libraries):
+    """
+    Test case:
+    In a prepared folder with venv, install libraries from the requirements.txt
+    """
+    cwd = setup()
+
+    create_folder_with_conda_env(folder_name=cwd)
+    try:
+
+        libs = get_conda_libraries(cwd)
+        assert "numpy" not in libs
+        assert "pandas" not in libs
+
+        install_libraries_conda(cwd)
+        conda_path = get_conda_path(cwd)
+        assert conda_path.is_dir()
+
+        libs = get_conda_libraries(cwd)
+        assert "numpy" in libs
+        assert "pandas" in libs
 
     finally:
         teardown()

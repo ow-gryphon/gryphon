@@ -1,9 +1,10 @@
+import os
 import logging
 import platform
 from pathlib import Path
 from typing import Tuple
 from textwrap import fill
-from ..constants import CHILDREN, NAME, VENV, VALUE
+from ..constants import CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH
 
 
 logger = logging.getLogger('gryphon')
@@ -94,8 +95,43 @@ def get_option_names(tree):
 def current_folder_has_venv():
     cwd = Path.cwd()
     if platform.system() == "Windows":
-        activate_path = cwd / VENV / "Scripts" / "activate.bat"
+        activate_path = cwd / VENV_FOLDER / "Scripts" / "activate.bat"
     else:
-        activate_path = cwd / VENV / "bin" / "activate"
+        activate_path = cwd / VENV_FOLDER / "bin" / "activate"
 
     return activate_path.is_file()
+
+
+def list_conda_available_python_versions():
+    logger.info("Listing possible python versions ...")
+    logger.info("It might take a while ...")
+
+    version_file = DATA_PATH / "versions_raw.txt"
+    os.system(f'conda search python >> {version_file}')
+    with open(version_file, "r") as f:
+        line = True
+        all_versions = []
+        while line:
+            line = f.readline()
+            if "python" in line:
+                version = line[6:].strip().split(' ')[0]
+                all_versions.append(version)
+
+    displayed_versions = set(
+        map(
+            lambda x: '.'.join(x.split(".")[:-1]),
+            all_versions
+        )
+    )
+    erase_lines()
+
+    displayed_versions = sorted(
+        displayed_versions,
+        key=lambda x: int(x.split(".")[1]) if "." in x else 0
+    )
+
+    displayed_versions = sorted(
+        displayed_versions,
+        key=lambda x: x.split(".")[0]
+    )
+    return displayed_versions

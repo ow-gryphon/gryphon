@@ -133,3 +133,4 @@ dmypy.json
 token.txt
 /.scannerwork/
 gryphon/data/template_registry/**
+.ipynb_checkpoints/

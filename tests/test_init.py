@@ -10,7 +10,8 @@ def test_init_1(setup, teardown):
     try:
         init(
             template_path=TEST_FOLDER / "data" / "analytics",
-            location=project
+            location=project,
+            python_version="3.7"
         )
         scr_path = project / "src"
         notebooks_path = project / "notebooks"

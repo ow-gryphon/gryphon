@@ -109,11 +109,11 @@ def did_you_mean_gryphon():
 
 # DONE: Power user configurations
 # DONE: Fix the installation of the notebook extensions
-# TODO: be able to select python version for each project both conda and venv
+# DONE: be able to select python version for each project both conda and venv
+# TODO: Create config file separated from the .rc file
 # TODO: Create an specific function to deal with the template scaffolding feature
 #   instead of using the init function
-# TODO: Create config file separated from the .rc file
-# TODO: implement test for the conda environments (use "conda list --explicit" to find installed packages)
+# DONE: implement test for the conda environments (use "conda list --explicit" to find installed packages)
 
 # TODO: create enums for some constants
 # TODO: Test installation.
