@@ -27,7 +27,7 @@ formatter = ColoredFormatter(
         'SUCCESS': 'green',
         'WARNING': 'yellow',
         'ERROR': 'red',
-        'CRITICAL': 'red,bg_white',
+        'CRITICAL': 'red,bg_white'
     }
 )
 
