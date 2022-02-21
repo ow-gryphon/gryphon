@@ -1,4 +1,3 @@
-import json
 from gryphon.core.init import init
 from .utils import TEST_FOLDER
 

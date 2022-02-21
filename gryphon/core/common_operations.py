@@ -80,7 +80,8 @@ def copy_project_template(template_source: Path, template_destiny: Path):
 def execute_and_log(command):
     cmd = os.popen(command)
     output = cmd.read()
-    logger.debug(output)
+    for line in output.split('\n'):
+        logger.debug(line)
 
     # status code
     return cmd.close()
@@ -151,11 +152,8 @@ def install_libraries_venv(folder=None):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    cmd = os.popen(f'{str(pip_path)} install -r {str(requirements_path)}')
-    output = cmd.read()
-    logger.debug(output)
-    return_code = cmd.close()
-    if cmd.close() is not None:
+    return_code = execute_and_log(f'{str(pip_path)} install -r {str(requirements_path)}')
+    if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
 
     logger.log(SUCCESS, "Installation successful!")

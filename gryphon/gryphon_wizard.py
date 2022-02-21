@@ -65,8 +65,6 @@ def main():
     if debug:
         logger.warning("Starting Gryphon in debug mode.")
         logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
 
     logger.info(Text.welcome)
 
