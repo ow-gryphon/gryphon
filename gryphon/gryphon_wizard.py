@@ -30,15 +30,17 @@ def output_error(er: Exception):
 
 if platform.system() == "Windows":
     # noinspection PyUnresolvedReferences,PyPackageRequirements
-    from colorama import init
-    init()
+    from colorama import init as init_colorama
+    init_colorama()
 
 try:
     with open(CONFIG_FILE, "r") as f:
         settings_file = json.load(f)
 
 except FileNotFoundError:
-    os.makedirs(GRYPHON_HOME)
+    if not GRYPHON_HOME.is_dir():
+        os.makedirs(GRYPHON_HOME)
+    
     shutil.copy(
         src=DEFAULT_CONFIG_FILE,
         dst=CONFIG_FILE
@@ -70,7 +72,7 @@ def main():
 
     while True:
         chosen_command = CommonQuestions.main_question()
-
+        
         function = {
             INIT: init,
             GENERATE: generate,
