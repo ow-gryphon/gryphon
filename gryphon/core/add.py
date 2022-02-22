@@ -5,7 +5,7 @@ import json
 import logging
 from .common_operations import (
     install_libraries_venv, append_requirement,
-    rollback_append_requirement, install_libraries_conda
+    rollback_append_requirement, install_libraries_conda, log_add_library
 )
 from .settings import SettingsManager
 from ..constants import VENV, CONDA
@@ -39,3 +39,5 @@ def add(library_name):
         rollback_append_requirement(library_name)
         logger.warning("Rolled back the changes from last command.")
         raise e
+    else:
+        log_add_library(library_name)

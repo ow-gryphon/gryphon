@@ -411,7 +411,6 @@ def log_operation(template, performed_action: str, logfile=None):
     if logfile is None:
         logfile = Path.cwd() / ".gryphon_history"
 
-    print(logfile)
     with open(logfile, "r+", encoding="utf-8") as f:
         contents = json.load(f)
 
@@ -424,6 +423,28 @@ def log_operation(template, performed_action: str, logfile=None):
                 created_at=str(datetime.now())
             )
         )
+
+        f.seek(0)
+        f.write(json.dumps(new_contents))
+        f.truncate()
+
+
+def log_add_library(libraries, logfile=None):
+
+    if logfile is None:
+        logfile = Path.cwd() / ".gryphon_history"
+
+    with open(logfile, "r+", encoding="utf-8") as f:
+        contents = json.load(f)
+
+        new_contents = contents.copy()
+        for lib in libraries:
+            new_contents.setdefault("libraries", []).append(
+                dict(
+                    name=lib,
+                    added_at=str(datetime.now())
+                )
+            )
 
         f.seek(0)
         f.write(json.dumps(new_contents))

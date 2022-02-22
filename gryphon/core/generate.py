@@ -14,7 +14,7 @@ from .common_operations import (
     append_requirement,
     install_libraries_venv,
     get_rc_file,
-    log_operation, log_new_files
+    log_operation, log_new_files, log_add_library
 )
 from ..constants import GENERATE
 
@@ -32,6 +32,7 @@ def generate(template_path: Path, requirements: list, **kwargs):
     for r in requirements:
         append_requirement(r)
 
+    log_add_library(requirements)
     install_libraries_venv()
 
     template = Template.template_from_path(template_path)

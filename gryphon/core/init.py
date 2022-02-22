@@ -22,8 +22,6 @@ from .common_operations import (
 
 
 logger = logging.getLogger('gryphon')
-PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_PATH = Path(PACKAGE_PATH).parent / "data"
 
 
 def init(template, location, python_version, **kwargs):
