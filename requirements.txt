@@ -5,7 +5,7 @@ GitPython
 colorlog
 pytest
 
-pexpect
+#pexpect
 #wexpect
 pytest-cov
 pytest-mock
