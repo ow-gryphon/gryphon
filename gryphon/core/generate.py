@@ -12,14 +12,10 @@ from .common_operations import (
     copy_project_template,
     append_requirement,
     install_libraries_venv,
-    get_rc_file, populate_rc_file
+    get_rc_file
 )
 
 logger = logging.getLogger('gryphon')
-
-# TODO: Think about how to give some help and examples about the commands
-
-
 PACKAGE_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
 
 
@@ -35,7 +31,7 @@ def generate(template_path: Path, requirements: list, **kwargs):
 
     install_libraries_venv()
     rc_file = get_rc_file()
-    populate_rc_file(rc_file, f"GENERATE {template_path} {kwargs}")
+    # populate_rc_file(rc_file, f"GENERATE {template_path} {kwargs}")
 
 
 def pattern_replacement(input_file, mapper):

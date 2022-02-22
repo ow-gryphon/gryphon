@@ -1,7 +1,6 @@
 import shutil
 from pathlib import Path
 from .template_registry import TemplateRegistry
-from ..common_operations import remove_folder
 
 
 class LocalRegistry(TemplateRegistry):
@@ -16,7 +15,7 @@ class LocalRegistry(TemplateRegistry):
         assert len(str(self.registry_folder))
 
         if self.registry_folder.is_dir():
-            remove_folder(self.registry_folder)
+            shutil.rmtree(self.registry_folder, ignore_errors=False)
 
         self._copy_registry()
         super().__init__(templates_path=self.registry_folder)

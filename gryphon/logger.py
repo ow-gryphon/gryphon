@@ -1,10 +1,8 @@
-import logging
 import os
+import logging
 from logging.handlers import RotatingFileHandler
 from colorlog import ColoredFormatter
 from .constants import GRYPHON_HOME
-
-LOG_LEVEL = logging.DEBUG
 
 """
 CRITICAL 50
@@ -22,8 +20,6 @@ logging.addLevelName(21, 'SUCCESS')
 formatter = ColoredFormatter(
     "%(log_color)s%(message)s",
     log_colors={
-        # 'DEBUG': 'white',
-        # 'INFO': 'white',
         'SUCCESS': 'green',
         'WARNING': 'yellow',
         'ERROR': 'red',
@@ -31,30 +27,30 @@ formatter = ColoredFormatter(
     }
 )
 
-stream = logging.StreamHandler()
-stream.setLevel(logging.INFO)
-stream.setFormatter(formatter)
 
-logger = logging.getLogger('gryphon')
-logger.addHandler(stream)
-
-file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+console_handler = logging.StreamHandler()
+console_handler.set_name("console")
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
 
 
 LOGFILE = GRYPHON_HOME / "logs" / "app.log"
 if not LOGFILE.is_file():
     if not LOGFILE.parent.is_dir():
         os.makedirs(LOGFILE.parent)
+    open(LOGFILE, "w").close()
 
-    with open(LOGFILE, "w"):
-        pass
-
-
-fh = RotatingFileHandler(
+file_handler = RotatingFileHandler(
     filename=LOGFILE,
     maxBytes=(1048576*5),
     backupCount=20
 )
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(file_formatter)
-logger.addHandler(fh)
+file_handler.set_name("file")
+file_handler.setLevel(logging.DEBUG)
+file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(file_formatter)
+
+
+logger = logging.getLogger('gryphon')
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)

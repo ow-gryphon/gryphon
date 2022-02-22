@@ -1,6 +1,7 @@
 """
 Module containing tests about the functions in the file common_operations.py
 """
+import json
 import os
 from pathlib import Path
 from os import path
@@ -12,6 +13,7 @@ from .utils import (
     get_venv_path, get_conda_path,
     TEST_FOLDER
 )
+from gryphon.core.registry import Template
 from gryphon.core.common_operations import (
     create_venv,
     create_conda_env,
@@ -19,7 +21,8 @@ from gryphon.core.common_operations import (
     install_libraries_venv,
     copy_project_template,
     init_new_git_repo,
-    initial_git_commit
+    initial_git_commit,
+    log_new_files
 )
 
 
@@ -230,6 +233,33 @@ def test_git_commit_1(setup, teardown):
             stderr=subprocess.STDOUT
         ).stdout.decode()
         assert "Initial commit" in logs
+
+    finally:
+        teardown()
+
+
+def test_log_new_files(setup, teardown):
+    cwd = setup()
+    log_file = cwd / "sample_log"
+    with open(log_file, "w") as f:
+        f.write("{}")
+
+    try:
+        template_path = TEST_FOLDER / "data" / "trivial"
+        template = Template.template_from_path(template_path)
+
+        log_new_files(
+            template=template,
+            performed_action="init",
+            logfile=log_file
+        )
+
+        with open(log_file, "r") as f:
+            contents = json.load(f)
+            assert "files" in contents
+            assert len(contents["files"]) == 2
+            for files in contents["files"]:
+                assert "/home/" not in files["path"]
 
     finally:
         teardown()

@@ -66,7 +66,9 @@ def main():
     debug = parser.parse_args().debug
     if debug:
         logger.warning("Starting Gryphon in debug mode.")
-        logger.setLevel(logging.DEBUG)
+
+        handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
+        handler.setLevel(logging.DEBUG)
 
     logger.info(Text.welcome)
 
@@ -110,7 +112,7 @@ def did_you_mean_gryphon():
 # DONE: Power user configurations
 # DONE: Fix the installation of the notebook extensions
 # DONE: be able to select python version for each project both conda and venv
-# TODO: Create config file separated from the .rc file
+# DONE: Create Log separated from the .rc file
 # TODO: Create an specific function to deal with the template scaffolding feature
 #   instead of using the init function
 # DONE: implement test for the conda environments (use "conda list --explicit" to find installed packages)

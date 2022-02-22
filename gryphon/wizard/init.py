@@ -59,7 +59,7 @@ def init(_, registry):
             location = InitQuestions.ask_init_location()
 
         core_init(
-            template_path=template.path,
+            template=template,
             location=location,
             python_version=chosen_version,
             **extra_parameters

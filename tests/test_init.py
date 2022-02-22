@@ -1,4 +1,5 @@
 from gryphon.core.init import init
+from gryphon.core.registry import Template
 from .utils import TEST_FOLDER
 
 
@@ -7,8 +8,10 @@ def test_init_1(setup, teardown):
     project = cwd / "project"
 
     try:
+
+        template = Template.template_from_path(TEST_FOLDER / "data" / "analytics")
         init(
-            template_path=TEST_FOLDER / "data" / "analytics",
+            template=template,
             location=project,
             python_version="3.7"
         )

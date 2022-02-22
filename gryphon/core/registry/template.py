@@ -1,3 +1,6 @@
+import os
+import json
+from pathlib import Path
 
 
 class Template:
@@ -14,3 +17,16 @@ class Template:
         self.sector = template_metadata.get("sector", [])
         self.topic = template_metadata.get("topic", [])
         self.keywords = template_metadata.get("keywords", [])
+        self.version = template_metadata.get("version", "")
+
+    @classmethod
+    def template_from_path(cls, template_path: Path):
+
+        with open(template_path / "metadata.json", "r", encoding="utf-8") as f:
+            metadata = json.load(f)
+
+        return cls(
+            template_name=os.path.basename(template_path),
+            template_path=template_path,
+            template_metadata=metadata
+        )

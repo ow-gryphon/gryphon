@@ -1,18 +1,19 @@
 """
 File containing operations that are common to the commands.
 """
-
-import sys
 import os
+import sys
+import json
+import glob
 import logging
-from pathlib import Path
 import platform
-import subprocess
 import shutil
+from datetime import datetime
+from pathlib import Path
 import git
+from .registry.template import Template
 from .core_text import Text
-from ..constants import SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME
-
+from ..constants import SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME, GENERATE, INIT
 
 logger = logging.getLogger('gryphon')
 
@@ -194,12 +195,11 @@ def install_extra_nbextensions_venv(folder_path):
             with open(requirements_path, "a") as f2:
                 f2.write(f"\n{lib}")
 
-    try:
-        execute_and_log(f'{activate_env_command} && pip install jupyter_contrib_nbextensions')
-        execute_and_log(f'{activate_env_command} && pip install jupyter_nbextensions_configurator')
+    return_code = execute_and_log(f'{activate_env_command} && pip install jupyter_contrib_nbextensions '
+                                  f'jupyter_nbextensions_configurator')
 
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed on pip install command. {e}")
+    if return_code is not None:
+        raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
     execute_and_log(f"{activate_env_command} && nohup jupyter nbextensions_configurator enable --user")
@@ -307,12 +307,11 @@ def install_extra_nbextensions_conda(folder_path):
     else:
         conda_python = conda_path / "bin" / "python"
 
-    try:
-        execute_and_log(f'conda install jupyter_contrib_nbextensions --prefix={conda_path}')
-        execute_and_log(f'conda install jupyter_nbextensions_configurator --prefix={conda_path}')
+    return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
+                                  f'jupyter_nbextensions_configurator --prefix={conda_path}')
 
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed on pip install command. {e}")
+    if return_code is not None:
+        raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
     execute_and_log(f'(nohup {conda_python} -m jupyter nbextensions_configurator enable --user) >> .output')
@@ -366,18 +365,66 @@ def get_rc_file(folder=Path.cwd()):
     """
     Updates the needed options inside the .labskitrc file.
     """
-    path = folder / ".gryphon_log"
+    path = folder / ".gryphon_history"
     if path.is_file():
         return path
 
-    open(path, "w").close()
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("{}")
 
     return path
 
 
-def populate_rc_file(rc_file, action):
-    """
-    Updates the needed options inside the .labskitrc file.
-    """
-    with open(rc_file, "a") as f:
-        f.write(action + '\n')
+def log_new_files(template: Template, performed_action: str, logfile=None):
+
+    assert performed_action in [INIT, GENERATE]
+    if logfile is None:
+        logfile = Path.cwd() / ".gryphon_history"
+
+    files_and_folders = glob.glob(str(template.path / "template" / "**"), recursive=True)
+    files = list(filter(lambda x: x.is_file(), map(Path, files_and_folders)))
+
+    with open(logfile, "r+", encoding="utf-8") as f:
+        contents = json.load(f)
+
+        new_contents = contents.copy()
+        for file in files:
+            new_contents.setdefault("files", []).append(
+                dict(
+                    path=str(file.relative_to(template.path / "template")),
+                    template_name=template.name,
+                    version=template.version,
+                    action=performed_action,
+                    created_at=str(datetime.now())
+                )
+            )
+
+        f.seek(0)
+        f.write(json.dumps(new_contents))
+        f.truncate()
+
+
+def log_operation(template, performed_action: str, logfile=None):
+
+    assert performed_action in [INIT, GENERATE]
+
+    if logfile is None:
+        logfile = Path.cwd() / ".gryphon_history"
+
+    print(logfile)
+    with open(logfile, "r+", encoding="utf-8") as f:
+        contents = json.load(f)
+
+        new_contents = contents.copy()
+        new_contents.setdefault("operations", []).append(
+            dict(
+                template_name=template.name,
+                version=template.version,
+                action=performed_action,
+                created_at=str(datetime.now())
+            )
+        )
+
+        f.seek(0)
+        f.write(json.dumps(new_contents))
+        f.truncate()
