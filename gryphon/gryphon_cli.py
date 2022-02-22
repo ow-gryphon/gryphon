@@ -63,7 +63,7 @@ def init(template, location, extra):
 
     template = existing_templates[template]
     core_init(
-        template_path=template.path,
+        template=template,
         location=location,
         python_version=DEFAULT_PYTHON_VERSION,
         **extra_parameters

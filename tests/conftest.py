@@ -27,6 +27,9 @@ def setup() -> callable:
             remove_folder(SANDBOX_PATH)
         create_folder(SANDBOX_PATH)
         os.chdir(SANDBOX_PATH)
+        with open(".gryphon_history", "w") as f:
+            f.write("{}")
+
         return Path.cwd()
     return _setup
 

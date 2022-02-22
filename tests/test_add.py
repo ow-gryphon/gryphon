@@ -6,7 +6,6 @@ from .utils import (
 )
 
 
-
 def test_add_1(setup, teardown, get_pip_libraries):
     lib = "scipy"
 
