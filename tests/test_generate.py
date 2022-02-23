@@ -1,3 +1,4 @@
+import json
 import shutil
 from os import path
 from gryphon.core.generate import (
@@ -118,6 +119,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         generate(
             template_path=TEST_FOLDER / "data" / "mlclustering",
             requirements=["scipy"],
+            folder=cwd,
             **{"fileName": file_name}
         )
 
@@ -125,6 +127,15 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         assert "scipy" in libraries
         assert (cwd / "readme_mlclustering.md").is_file()
         assert (cwd / "src" / f"clustering_{file_name}.py").is_file()
+
+        log_file = cwd / ".gryphon_history"
+
+        assert log_file.is_file()
+        with open(log_file, "r", encoding="utf-8") as f:
+            history = json.load(f)
+            assert "files" in history
+            assert "operations" in history
+            assert len(history["operations"]) == 1
 
     finally:
         teardown()

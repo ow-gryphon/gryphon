@@ -22,7 +22,7 @@ from ..constants import GENERATE
 logger = logging.getLogger('gryphon')
 
 
-def generate(template_path: Path, requirements: list, **kwargs):
+def generate(template_path: Path, requirements: list, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
@@ -38,7 +38,7 @@ def generate(template_path: Path, requirements: list, **kwargs):
     template = Template.template_from_path(template_path)
 
     # RC file
-    rc_file = get_rc_file(Path.cwd())
+    rc_file = get_rc_file(folder)
     log_operation(template, performed_action=GENERATE, logfile=rc_file)
     log_new_files(template, performed_action=GENERATE, logfile=rc_file)
 

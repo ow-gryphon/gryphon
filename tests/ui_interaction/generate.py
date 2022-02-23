@@ -9,7 +9,7 @@ else:
     import wexpect as pexpect
 
 
-def wizard_generate(file_name):
+def wizard_generate():
     child = pexpect.spawn(command='gryphon')
 
     # » Load template code into an existing project
@@ -26,7 +26,7 @@ def wizard_generate(file_name):
     child.send(KEY_DOWN)
     child.sendcontrol('m')
 
-    # Placeholder
+    #  » Regression and Classification modeling for NCT
     child.expect(Text.generate_prompt_template_question)
     child.sendcontrol('m')
 

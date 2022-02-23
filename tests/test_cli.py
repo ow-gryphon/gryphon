@@ -1,3 +1,4 @@
+import json
 import os
 import pytest
 from tests.ui_interaction.init import wizard_init
@@ -24,15 +25,13 @@ def test_cli_1(setup, teardown, get_pip_libraries):
         assert (cwd / project_folder / "notebooks").is_dir()
 
         libs = get_pip_libraries(cwd / project_folder)
-        assert lib_name in libs
-        # TODO: Find way to activate venv before running add command
+        assert "sklearn" in libs
     finally:
         teardown()
 
 
 def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
 
-    file_name = "segmentation"
     project_folder = "project"
     lib_name = "scikit-learn"
 
@@ -45,10 +44,21 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
         assert (cwd / project_folder / "data").is_dir()
 
         os.chdir(cwd / project_folder)
-        wizard_generate(file_name)
+        wizard_generate()
 
         wizard_add_typing(lib_name)
         wizard_add_matplotlib()
-        # TODO: Find way to activate venv before running add command
+
+        libs = get_pip_libraries(cwd / project_folder)
+        assert "sklearn" in libs
+        assert "matplotlib" in libs
+
+        with open(cwd / project_folder / ".gryphon_history", "r", encoding="utf-8") as f:
+            history = json.load(f)
+            assert "files" in history
+            assert "operations" in history
+            assert len(history["operations"]) == 4
+
     finally:
+        return
         teardown()
