@@ -43,7 +43,8 @@ if not LOGFILE.is_file():
 file_handler = RotatingFileHandler(
     filename=LOGFILE,
     maxBytes=(1048576*5),
-    backupCount=20
+    backupCount=20,
+    encoding="UTF-8"
 )
 file_handler.set_name("file")
 file_handler.setLevel(logging.DEBUG)
