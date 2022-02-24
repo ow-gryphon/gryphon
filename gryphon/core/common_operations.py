@@ -13,7 +13,7 @@ from pathlib import Path
 import git
 from .registry.template import Template
 from .core_text import Text
-from ..constants import SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME, GENERATE, INIT
+from ..constants import SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME, GENERATE, INIT, SYSTEM_DEFAULT
 
 logger = logging.getLogger('gryphon')
 
@@ -79,6 +79,7 @@ def copy_project_template(template_source: Path, template_destiny: Path):
 
 
 def execute_and_log(command):
+    logger.debug(f"command: {command}")
     cmd = os.popen(command)
     output = cmd.read()
     for line in output.split('\n'):
@@ -106,28 +107,33 @@ def initial_git_commit(repository: git.Repo):
 def create_venv(folder=None, python_version=None):
     """Function to a virtual environment inside a folder."""
     python_path = "python"
-    if python_version is not None and python_version != ALWAYS_ASK:
+    if python_version and python_version != ALWAYS_ASK:
 
-        env_folder = GRYPHON_HOME / f"reserved_env_python_{python_version}"
-        if not env_folder.is_dir():
-            logger.info(f"Installing python version with Conda.")
-            create_conda_env(
-                folder=GRYPHON_HOME / f"reserved_env_python_{python_version}",
-                python_version=python_version
-            )
+        if python_version != SYSTEM_DEFAULT:
 
-        if platform.system() == "Windows":
-            # On Windows the venv folder structure is different from unix
-            python_path = env_folder / "envs" / "Scripts" / "python.exe"
-        else:
-            python_path = env_folder / "envs" / "bin" / "python"
+            env_folder = GRYPHON_HOME / f"reserved_env_python_{python_version}"
+            if not env_folder.is_dir():
+                logger.info(f"Installing python version with Conda.")
+                create_conda_env(
+                    folder=GRYPHON_HOME / f"reserved_env_python_{python_version}",
+                    python_version=python_version
+                )
+
+            if platform.system() == "Windows":
+                # On Windows the venv folder structure is different from unix
+                python_path = env_folder / "envs" / "python.exe"
+            else:
+                python_path = env_folder / "envs" / "bin" / "python"
 
     target_folder = get_destination_path(folder)
     venv_path = target_folder / VENV_FOLDER
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
-    os.system(f"{python_path} -m venv \"{venv_path}\"")
+    return_code = execute_and_log(f"{python_path} -m venv \"{venv_path}\"")
+    if return_code:
+        raise RuntimeError("Failed to create virtual environment.")
+
     logger.log(SUCCESS, "Done creating virtual environment.")
 
 
@@ -251,9 +257,11 @@ def create_conda_env(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
-    execute_and_log("conda config --append channels conda-forge")
+
+    execute_and_log("nohup conda config --append channels conda-forge")
     command = f"conda create --prefix={conda_path} -y"
-    if python_version:
+
+    if python_version and python_version != SYSTEM_DEFAULT:
         command += f" python={python_version}"
 
     return_code = execute_and_log(command)
@@ -266,9 +274,11 @@ def create_conda_env(folder=None, python_version=None):
 def install_libraries_conda(folder=None):
     logger.info("Installing requirements. This may take several minutes ...")
     target_folder = get_destination_path(folder)
+
+    requirements_path = target_folder / "requirements.txt"
     conda_path = target_folder / 'envs'
 
-    return_code = execute_and_log(f"conda install --prefix {conda_path} --file requirements.txt -y")
+    return_code = execute_and_log(f"conda install --prefix {conda_path} --file {requirements_path} -y")
 
     if return_code is not None:
         raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
@@ -303,7 +313,7 @@ def install_extra_nbextensions_conda(folder_path):
 
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
-        conda_python = conda_path / "Scripts" / "python.exe"
+        conda_python = conda_path / "python.exe"
     else:
         conda_python = conda_path / "bin" / "python"
 

@@ -60,5 +60,4 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
             assert len(history["operations"]) == 4
 
     finally:
-        return
         teardown()

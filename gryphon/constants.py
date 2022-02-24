@@ -1,17 +1,6 @@
 from pathlib import Path
 
 
-BACK = "back"
-TYPING = "type"
-NODE = "node"
-LEAF = "leaf"
-
-SEARCH_BY_KEYWORD = "Search by keyword"
-METHODOLOGY = "Methodology"
-USE_CASES = "Use-cases"
-TOPIC = "Navigate by Topic"
-SECTOR = "Navigate by Sector"
-
 # commands
 QUIT = "quit"
 GENERATE = "generate"
@@ -21,26 +10,47 @@ ABOUT = "about"
 SETTINGS = "settings"
 
 # tree related
+NODE = "node"
+LEAF = "leaf"
 CHILDREN = "children"
 NAME = "name"
 VALUE = "value"
+
+# add tree
 SHORT_DESC = "short_description"
 LONG_DESC = "long_description"
 REFERENCE_LINK = "reference_link"
 
+# generate tree
+SEARCH_BY_KEYWORD = "Search by keyword"
+METHODOLOGY = "Methodology"
+USE_CASES = "Use-cases"
+TOPIC = "Navigate by Topic"
+SECTOR = "Navigate by Sector"
+TYPING = "type"
+
+# choices
 YES = "yes"
 NO = "no"
+BACK = "back"
 
-VENV_FOLDER = ".venv"
+# log
 SUCCESS = 21
-DEFAULT_ENV = "venv"
-CONDA = "conda"
-VENV = "venv"
 
+# environment
+VENV_FOLDER = ".venv"
+DEFAULT_ENV = "venv"
+VENV = "venv"
+CONDA = "conda"
+
+# path
 GRYPHON_HOME = Path.home() / ".gryphon"
 PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "data"
 CONFIG_FILE = GRYPHON_HOME / "gryphon_config.json"
 DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"
+
+# Python versions
 DEFAULT_PYTHON_VERSION = "3.8"
 ALWAYS_ASK = "always_ask"
+SYSTEM_DEFAULT = "system_default"

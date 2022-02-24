@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (YES, NO, NAME, VALUE, ALWAYS_ASK)
+from ...constants import (YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT)
 
 
 class SettingsQuestions:
@@ -63,11 +63,12 @@ class SettingsQuestions:
             choices=cls.base_choices
         ).unsafe_ask()
 
+    @classmethod
     @base_question
-    def confirm_remove_registry(self):
+    def confirm_remove_registry(cls):
         return questionary.select(
             message=Text.settings_confirm_remove_registry,
-            choices=self.base_choices
+            choices=cls.base_choices
         ).unsafe_ask()
 
     @classmethod
@@ -127,13 +128,21 @@ class SettingsQuestions:
     @staticmethod
     @base_question
     def ask_python_version(versions, current_version):
+        message = Text.settings_python_use_system_default
         choices = [
+            Choice(
+                title=message if SYSTEM_DEFAULT != current_version else f"{message} (current)",
+                value=SYSTEM_DEFAULT
+            )
+        ]
+
+        choices.extend([
             Choice(
                 title=v if v != current_version else f"{v} (current)",
                 value=v
             )
             for v in versions
-        ]
+        ])
 
         choices.extend([
             Separator(),

@@ -109,6 +109,12 @@ def main():
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
+
+# DONE: Make the global python version the default
+# DONE: windows conda path is wrong
+# DONE: did not found requirements.
+# DONE: self on the
+
 # DONE: Power user configurations
 # DONE: Fix the installation of the notebook extensions
 # DONE: be able to select python version for each project both conda and venv
