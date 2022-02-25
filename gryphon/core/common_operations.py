@@ -172,7 +172,8 @@ def install_extra_nbextensions_venv(folder_path):
         """
     target_folder = get_destination_path(folder_path)
     requirements_path = target_folder / REQUIREMENTS
-    nohup = ""
+    # nohup = " "
+    nohup = "nohup "
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
@@ -183,7 +184,6 @@ def install_extra_nbextensions_venv(folder_path):
         activate_env_command = str(activate_path)
         os.system(f"chmod 777 {activate_path}")
         nohup = "nohup "
-
 
     # Install requirements
     logger.info("Installing extra notebook extensions.")
@@ -312,14 +312,14 @@ def install_extra_nbextensions_conda(folder_path):
             with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
-    nohup = ""
+    # nohup = ""
+    nohup = "nohup "
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
     else:
         conda_python = conda_path / "bin" / "python"
         nohup = "nohup "
-
 
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
                                   f'jupyter_nbextensions_configurator --prefix={conda_path}')
