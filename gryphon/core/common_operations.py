@@ -194,12 +194,12 @@ def install_extra_nbextensions_venv(folder_path):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    with open(requirements_path, "r") as f1:
+    with open(requirements_path, "r", encoding="UTF-8") as f1:
         requirements = f1.read()
 
     for lib in ["jupyter_nbextensions_configurator", "jupyter_contrib_nbextensions"]:
         if lib not in requirements:
-            with open(requirements_path, "a") as f2:
+            with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
     return_code = execute_and_log(f'{activate_env_command} && pip install jupyter_contrib_nbextensions '
@@ -304,12 +304,12 @@ def install_extra_nbextensions_conda(folder_path):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    with open(requirements_path, "r") as f1:
+    with open(requirements_path, "r", encoding="UTF-8") as f1:
         requirements = f1.read()
 
     for lib in ["jupyter_nbextensions_configurator", "jupyter_contrib_nbextensions"]:
         if lib not in requirements:
-            with open(requirements_path, "a") as f2:
+            with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
     nohup = ""

@@ -22,7 +22,7 @@ def back_to_previous(history, **kwargs):
 
 
 def handle_current_env_manager(tree_level):
-    with open(CONFIG_FILE, "r") as f:
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         current_env = json.load(f).get("environment_management", DEFAULT_ENV)
 
     response = []
@@ -38,7 +38,7 @@ def handle_current_env_manager(tree_level):
 
 
 def get_current_python_version():
-    with open(CONFIG_FILE, "r") as f:
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         return json.load(f).get(
             "default_python_version",
             DEFAULT_PYTHON_VERSION

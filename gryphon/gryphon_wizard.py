@@ -34,7 +34,7 @@ if platform.system() == "Windows":
     init_colorama()
 
 try:
-    with open(CONFIG_FILE, "r") as f:
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
 
 except FileNotFoundError:
@@ -45,7 +45,7 @@ except FileNotFoundError:
         src=DEFAULT_CONFIG_FILE,
         dst=CONFIG_FILE
     )
-    with open(CONFIG_FILE, "r") as f:
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
 
 try:

@@ -96,7 +96,7 @@ def generate(data_path, registry):
     if not current_folder_has_venv():
         logger.warning(Text.no_virtual_environment_remainder)
 
-    with open(data_path / "category_tree.json") as file:
+    with open(data_path / "category_tree.json", encoding="UTF-8") as file:
         full_tree = json.load(file)
 
     state = dict(

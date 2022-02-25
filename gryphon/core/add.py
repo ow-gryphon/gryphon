@@ -24,7 +24,7 @@ def add(library_name):
     logger.info("Adding required lib.")
     append_requirement(library_name)
     try:
-        with open(SettingsManager.get_config_path(), "r") as f:
+        with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
             env_manager = json.load(f)["environment_management"]
 
         if env_manager == VENV:

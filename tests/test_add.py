@@ -15,7 +15,7 @@ def test_add_1(setup, teardown, get_pip_libraries):
         create_folder_with_venv()
         add(library_name=lib)
 
-        with open(cwd / "requirements.txt") as r:
+        with open(cwd / "requirements.txt", encoding="UTF-8") as r:
             requirements = r.read()
             assert lib in requirements
 
@@ -47,7 +47,7 @@ def test_add_2(setup, teardown, get_conda_libraries, mocker):
         ):
             add(library_name=lib)
 
-        with open(cwd / "requirements.txt") as r:
+        with open(cwd / "requirements.txt", encoding="UTF-8") as r:
             requirements = r.read()
             assert lib in requirements
 

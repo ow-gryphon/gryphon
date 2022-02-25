@@ -38,7 +38,7 @@ LOGFILE = GRYPHON_HOME / "logs" / "app.log"
 if not LOGFILE.is_file():
     if not LOGFILE.parent.is_dir():
         os.makedirs(LOGFILE.parent)
-    open(LOGFILE, "w").close()
+    open(LOGFILE, "w", encoding="UTF-8").close()
 
 file_handler = RotatingFileHandler(
     filename=LOGFILE,

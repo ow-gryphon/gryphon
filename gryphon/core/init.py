@@ -29,7 +29,7 @@ def init(template, location, python_version, **kwargs):
     Init command from the OW Gryphon CLI.
     """
     kwargs.copy()
-    with open(CONFIG_FILE) as f:
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         data = json.load(f)
         env_type = data.get("environment_management", DEFAULT_ENV)
 
