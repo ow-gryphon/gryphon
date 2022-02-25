@@ -1,11 +1,11 @@
 """
 Module containing the code for the init command in the CLI.
 """
-import os
 import json
 import logging
 from pathlib import Path
-from ..constants import DEFAULT_ENV, CONFIG_FILE, INIT, VENV, CONDA
+from .settings import SettingsManager
+from ..constants import DEFAULT_ENV, INIT, VENV, CONDA
 from .common_operations import (
     install_libraries_venv,
     copy_project_template,
@@ -29,7 +29,7 @@ def init(template, location, python_version, **kwargs):
     Init command from the OW Gryphon CLI.
     """
     kwargs.copy()
-    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
+    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
         data = json.load(f)
         env_type = data.get("environment_management", DEFAULT_ENV)
 

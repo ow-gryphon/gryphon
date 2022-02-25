@@ -9,8 +9,8 @@ else:
     import wexpect as pexpect
 
 
-def wizard_generate():
-    child = pexpect.spawn(command='gryphon')
+def wizard_generate(folder):
+    child = pexpect.spawn(command=f'cd {folder} && gryphon')
 
     # » Load template code into an existing project
     child.expect(WELCOME_MESSAGE)

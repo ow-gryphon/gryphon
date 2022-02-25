@@ -122,6 +122,10 @@ def did_you_mean_gryphon():
 # TODO: Create an specific function to deal with the template scaffolding feature
 #   instead of using the init function
 # DONE: implement test for the conda environments (use "conda list --explicit" to find installed packages)
+# TODO: On generate, check if there are both a conda and a venv inside folder and use the one that is available
+
+
+
 
 # TODO: create enums for some constants
 # TODO: Test installation.

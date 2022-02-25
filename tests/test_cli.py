@@ -1,6 +1,5 @@
 import json
 import os
-import pytest
 from tests.ui_interaction.init import wizard_init
 from tests.ui_interaction.generate import wizard_generate
 from tests.ui_interaction.add import wizard_add_typing, wizard_add_matplotlib
@@ -10,7 +9,7 @@ def test_cli_1(setup, teardown, get_pip_libraries):
 
     file_name = "segmentation"
     project_folder = "project"
-    lib_name = "scikit-learn"
+    lib_name = "matplotlib"
 
     cwd = setup()
 
@@ -25,7 +24,7 @@ def test_cli_1(setup, teardown, get_pip_libraries):
         assert (cwd / project_folder / "notebooks").is_dir()
 
         libs = get_pip_libraries(cwd / project_folder)
-        assert "sklearn" in libs
+        assert lib_name in libs
     finally:
         teardown()
 
@@ -37,19 +36,19 @@ def test_wizard_1(setup, install_gryphon, teardown, get_pip_libraries):
 
     cwd = setup()
     # install_gryphon(cwd)
+
     try:
-        wizard_init(project_folder)
-        assert (cwd / project_folder).is_dir()
-        assert (cwd / project_folder / "notebooks").is_dir()
-        assert (cwd / project_folder / "data").is_dir()
+        wizard_init(cwd)
+        assert (cwd / "notebooks").is_dir()
+        assert (cwd / "data").is_dir()
 
-        os.chdir(cwd / project_folder)
-        wizard_generate()
+        os.chdir(cwd)
+        wizard_generate(cwd)
 
-        wizard_add_typing(lib_name)
-        wizard_add_matplotlib()
+        wizard_add_typing(cwd, lib_name)
+        wizard_add_matplotlib(cwd)
 
-        libs = get_pip_libraries(cwd / project_folder)
+        libs = get_pip_libraries(cwd)
         assert "sklearn" in libs
         assert "matplotlib" in libs
 

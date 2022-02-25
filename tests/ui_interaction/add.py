@@ -9,9 +9,9 @@ else:
     import wexpect as pexpect
 
 
-def wizard_add_typing(lib_name):
+def wizard_add_typing(folder, lib_name):
 
-    child = pexpect.spawn(command=f'gryphon')
+    child = pexpect.spawn(command=f'cd {folder} && gryphon')
 
     # » Install Python libraries/packages
     child.expect(WELCOME_MESSAGE)
@@ -34,9 +34,9 @@ def wizard_add_typing(lib_name):
     child.close()
 
 
-def wizard_add_matplotlib():
+def wizard_add_matplotlib(folder):
 
-    child = pexpect.spawn(command='gryphon')
+    child = pexpect.spawn(command=f'cd {folder} && gryphon')
 
     # » Install Python libraries/packages
     child.expect(WELCOME_MESSAGE)
