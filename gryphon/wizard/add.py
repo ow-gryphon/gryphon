@@ -20,7 +20,7 @@ def add(data_path, _):
     navigation_history = []
     chosen_option = ""
 
-    with open(data_path / "library_tree.json") as file:
+    with open(data_path / "library_tree.json", encoding="UTF-8") as file:
         full_tree = json.load(file)
 
     while True:
