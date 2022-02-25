@@ -172,17 +172,18 @@ def install_extra_nbextensions_venv(folder_path):
         """
     target_folder = get_destination_path(folder_path)
     requirements_path = target_folder / REQUIREMENTS
-
+    nohup = ""
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
         activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
-
     else:
         pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
         activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
         activate_env_command = str(activate_path)
         os.system(f"chmod 777 {activate_path}")
+        nohup = "nohup "
+
 
     # Install requirements
     logger.info("Installing extra notebook extensions.")
@@ -208,11 +209,11 @@ def install_extra_nbextensions_venv(folder_path):
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextensions_configurator enable --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter contrib nbextension install --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable codefolding/main --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable toc2/main --user")
-    execute_and_log(f"{activate_env_command} && nohup jupyter nbextension enable collapsible_headings/main --user")
+    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextensions_configurator enable --user")
+    execute_and_log(f"{activate_env_command} && {nohup}jupyter contrib nbextension install --user")
+    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable codefolding/main --user")
+    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable toc2/main --user")
+    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable collapsible_headings/main --user")
     os.chdir(target_folder.parent)
 
 
@@ -258,7 +259,7 @@ def create_conda_env(folder=None, python_version=None):
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
 
-    execute_and_log("nohup conda config --append channels conda-forge")
+    execute_and_log("conda config --append channels conda-forge")
     command = f"conda create --prefix={conda_path} -y"
 
     if python_version and python_version != SYSTEM_DEFAULT:
@@ -311,11 +312,14 @@ def install_extra_nbextensions_conda(folder_path):
             with open(requirements_path, "a") as f2:
                 f2.write(f"\n{lib}")
 
+    nohup = ""
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
     else:
         conda_python = conda_path / "bin" / "python"
+        nohup = "nohup "
+
 
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
                                   f'jupyter_nbextensions_configurator --prefix={conda_path}')
@@ -324,11 +328,11 @@ def install_extra_nbextensions_conda(folder_path):
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f'(nohup {conda_python} -m jupyter nbextensions_configurator enable --user) >> .output')
-    execute_and_log(f'(nohup {conda_python} -m jupyter contrib nbextension install --user) >> .output')
-    execute_and_log(f'(nohup {conda_python} -m jupyter nbextension enable codefolding/main --user) >> .output')
-    execute_and_log(f'(nohup {conda_python} -m jupyter nbextension enable toc2/main --user) >> .output')
-    execute_and_log(f'(nohup {conda_python} -m jupyter nbextension enable collapsible_headings/main --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextensions_configurator enable --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter contrib nbextension install --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable codefolding/main --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable toc2/main --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable collapsible_headings/main --user) >> .output')
     os.chdir(target_folder.parent)
 
 
