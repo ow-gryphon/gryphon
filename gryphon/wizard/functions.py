@@ -4,7 +4,8 @@ import platform
 from pathlib import Path
 from typing import Tuple
 from textwrap import fill
-from ..constants import CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH
+from ..constants import (CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH,
+                         MIN_MAJOR_VERSION,MIN_MINOR_VERSION)
 
 
 logger = logging.getLogger('gryphon')
@@ -115,7 +116,10 @@ def list_conda_available_python_versions():
             line = f.readline()
             if "python" in line:
                 version = line[6:].strip().split(' ')[0]
-                all_versions.append(version)
+                version_major, version_minor = version.split('.')[0:2]
+                if (float(version_major) >= MIN_MAJOR_VERSION and
+                    float(version_minor) >= MIN_MINOR_VERSION):
+                        all_versions.append(version)
 
     displayed_versions = set(
         map(
