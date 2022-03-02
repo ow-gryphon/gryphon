@@ -5,10 +5,10 @@ from .functions import (
     filter_chosen_option_by_value, list_conda_available_python_versions
 )
 from .questions import SettingsQuestions, InitQuestions
-from ..core.init import init as core_init
+from ..core.common_operations import get_current_python_version
 from ..constants import (
     BACK, YES, CHILDREN, SUCCESS, CONFIG_FILE, DEFAULT_ENV,
-    NAME, VALUE, DATA_PATH, DEFAULT_PYTHON_VERSION, ALWAYS_ASK
+    NAME, VALUE, ALWAYS_ASK
 )
 from ..core.settings import SettingsManager
 
@@ -35,14 +35,6 @@ def handle_current_env_manager(tree_level):
         )
         response.append(entry)
     return response
-
-
-def get_current_python_version():
-    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
-        return json.load(f).get(
-            "default_python_version",
-            DEFAULT_PYTHON_VERSION
-        )
 
 
 def settings(data_path, _):
@@ -98,11 +90,7 @@ def settings(data_path, _):
             # ask for the folder
             location = InitQuestions.ask_just_location()
 
-            core_init(
-                template_path=DATA_PATH / "template_scaffolding",
-                location=location,
-                python_version=get_current_python_version()
-            )
+            manager.render_template_scaffolding(location)
 
         elif history[0] == "change_env_manager":
             response = SettingsQuestions.confirm_change_env_manager(actual_selection)

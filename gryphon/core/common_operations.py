@@ -13,7 +13,10 @@ from pathlib import Path
 import git
 from .registry.template import Template
 from .core_text import Text
-from ..constants import SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME, GENERATE, INIT, SYSTEM_DEFAULT
+from ..constants import (
+    SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
+    GENERATE, INIT, SYSTEM_DEFAULT, CONFIG_FILE, DEFAULT_PYTHON_VERSION
+)
 
 logger = logging.getLogger('gryphon')
 
@@ -209,11 +212,18 @@ def install_extra_nbextensions_venv(folder_path):
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextensions_configurator enable --user")
-    execute_and_log(f"{activate_env_command} && {nohup}jupyter contrib nbextension install --user")
-    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable codefolding/main --user")
-    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable toc2/main --user")
-    execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable collapsible_headings/main --user")
+    execute_and_log(f"{activate_env_command} "
+                    f"&& {nohup}jupyter nbextensions_configurator enable --user"
+                    f"&& {nohup}jupyter contrib nbextension install --user"
+                    f"&& {nohup}jupyter nbextension enable codefolding/main --user"
+                    f"&& {nohup}jupyter nbextension enable toc2/main --user"
+                    f"&& {nohup}jupyter nbextension enable collapsible_headings/main --user")
+
+    # execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextensions_configurator enable --user")
+    # execute_and_log(f"{activate_env_command} && {nohup}jupyter contrib nbextension install --user")
+    # execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable codefolding/main --user")
+    # execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable toc2/main --user")
+    # execute_and_log(f"{activate_env_command} && {nohup}jupyter nbextension enable collapsible_headings/main --user")
     os.chdir(target_folder.parent)
 
 
@@ -463,3 +473,11 @@ def log_add_library(libraries, logfile=None):
         f.seek(0)
         f.write(json.dumps(new_contents))
         f.truncate()
+
+
+def get_current_python_version():
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
+        return json.load(f).get(
+            "default_python_version",
+            DEFAULT_PYTHON_VERSION
+        )

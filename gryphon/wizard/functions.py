@@ -4,7 +4,9 @@ import platform
 from pathlib import Path
 from typing import Tuple
 from textwrap import fill
-from ..constants import CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH
+from ..constants import (
+    CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH
+)
 
 
 logger = logging.getLogger('gryphon')

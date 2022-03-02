@@ -56,7 +56,7 @@ def init(template, location, python_version, **kwargs):
         # VENV
         create_venv(folder=location, python_version=python_version)
         install_libraries_venv(folder=location)
-        install_extra_nbextensions_venv(location)
+        # install_extra_nbextensions_venv(location)
         change_shell_folder_and_activate_venv(location)
     elif env_type == CONDA:
         # CONDA
