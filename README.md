@@ -8,6 +8,17 @@ To install OW Gryphon run the following command on the root folder of this repo.
 pip install .
 ```
 
+### Dependencies
+
+OW Gryphon requires Python version 3.7 or later. In addition, it has the following dependencies:
+
+- click>=8.0.1
+- virtualenv
+- questionary
+- GitPython
+- colorlog
+- pytest
+
 ### How to use
 
 Once installed, you can use OW Gryphon through the command line.

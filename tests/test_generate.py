@@ -1,6 +1,9 @@
 import json
 import shutil
 from os import path
+
+import pytest
+
 from gryphon.core.generate import (
     generate,
     parse_project_template,
@@ -136,6 +139,23 @@ def test_generate_5(setup, teardown, get_pip_libraries):
             assert "files" in history
             assert "operations" in history
             assert len(history["operations"]) == 1
+
+    finally:
+        teardown()
+
+
+def test_generate_6(setup, teardown):
+    try:
+        cwd = setup()
+        create_folder_with_venv(cwd)
+
+        generate(
+            template_path=TEST_FOLDER / "data" / "registry_with_git_folder",
+            requirements=[]
+        )
+
+        assert not os.path.isdir(cwd / ".git")
+        assert not os.path.isfile(cwd / ".git" / "test.txt")
 
     finally:
         teardown()

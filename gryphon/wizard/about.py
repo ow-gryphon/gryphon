@@ -14,7 +14,7 @@ logger = logging.getLogger('gryphon')
 def about(data_path, _):
     logger.info(Text.about)
 
-    with open(data_path / "links_about.json", encoding="UTF-8") as f:
+    with open(data_path / "links_about.json", encoding='utf-8') as f:
         links = json.loads(f.read())
 
     response = None
