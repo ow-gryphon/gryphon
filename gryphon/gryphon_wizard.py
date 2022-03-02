@@ -1,13 +1,13 @@
 """
 Gryphon interactive wizard.
 """
-import logging
 import os
-import shutil
-import traceback
 import json
+import shutil
+import logging
 import platform
 import argparse
+import traceback
 from .core.registry import RegistryCollection
 from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
@@ -109,22 +109,7 @@ def main():
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
-
-# DONE: Make the global python version the default
-# DONE: windows conda path is wrong
-# DONE: did not found requirements.
-# DONE: self on the
-
-# DONE: Power user configurations
-# DONE: Fix the installation of the notebook extensions
-# DONE: be able to select python version for each project both conda and venv
-# DONE: Create Log separated from the .rc file
-# DONE: Create an specific function to deal with the template scaffolding feature
-#   instead of using the init function
-# DONE: implement test for the conda environments (use "conda list --explicit" to find installed packages)
 # TODO: On generate, check if there are both a conda and a venv inside folder and use the one that is available
-
-
 # TODO: create enums for some constants
 # TODO: Test installation.
 # TODO: Whether to install gryphon inside the .venv created for projects or not
