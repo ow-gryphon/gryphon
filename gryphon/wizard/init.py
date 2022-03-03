@@ -32,11 +32,7 @@ def init(_, registry):
 
         if settings.get("default_python_version") == ALWAYS_ASK:
             versions = list_conda_available_python_versions()
-            possible_versions = list(filter(
-                lambda x: x.split(".")[0] >= "3" and int(x.split(".")[1]) >= 6,
-                versions
-            ))
-            chosen_version = InitQuestions.ask_python_version(possible_versions)
+            chosen_version = InitQuestions.ask_python_version(versions)
         else:
             chosen_version = settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
 
