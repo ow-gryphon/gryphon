@@ -12,7 +12,6 @@ from .common_operations import (
     create_venv,
     init_new_git_repo,
     initial_git_commit,
-    change_shell_folder_and_activate_venv,
     create_conda_env,
     get_current_python_version
 )
@@ -106,6 +105,10 @@ class SettingsManager:
 
         with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
             contents = json.load(f)
+
+            contents.setdefault("git_registry", {})
+            contents.setdefault("local_registry", {})
+
             contents["git_registry"] = default_settings["git_registry"]
             contents["local_registry"] = default_settings["local_registry"]
 
