@@ -1,7 +1,7 @@
 import logging
 from questionary import Choice
-from ..constants import BACK
 from ..wizard_text import Text
+from ...constants import BACK
 
 logger = logging.getLogger('gryphon')
 

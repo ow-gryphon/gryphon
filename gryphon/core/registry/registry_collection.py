@@ -1,4 +1,5 @@
 import logging
+import git
 from pathlib import Path
 from typing import List
 from .template_registry import TemplateRegistry
@@ -48,12 +49,17 @@ class RegistryCollection:
 
         # git ones
         for name, url in git_registry.items():
-            reg = GitRegistry(
-                registry_name=name,
-                registry_url=url,
-                registry_folder=data_path
-            )
-            template_registries.append(reg)
+            try:
+                reg = GitRegistry(
+                    registry_name=name,
+                    registry_url=url,
+                    registry_folder=data_path
+                )
+                template_registries.append(reg)
+
+            except git.GitCommandError as er:
+                if "does not exist" in str(er):
+                    logger.warning(f"Git template registry \"{name}\" at \"{url}\" was not found.")
 
         # local ones
         for name, path in local_registry.items():

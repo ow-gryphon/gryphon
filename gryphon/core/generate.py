@@ -7,22 +7,22 @@ import shutil
 from pathlib import Path
 import glob
 import logging
+from .registry import Template
 from .common_operations import (
     get_destination_path,
     copy_project_template,
     append_requirement,
-    install_libraries
+    install_libraries_venv,
+    get_rc_file,
+    log_operation, log_new_files, log_add_library
 )
+from ..constants import GENERATE
+
 
 logger = logging.getLogger('gryphon')
 
-# TODO: Think about how to give some help and examples about the commands
 
-
-PACKAGE_PATH = Path(os.path.dirname(os.path.realpath(__file__)))
-
-
-def generate(template_path: Path, requirements: list, **kwargs):
+def generate(template_path: Path, requirements: list, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
@@ -32,7 +32,15 @@ def generate(template_path: Path, requirements: list, **kwargs):
     for r in requirements:
         append_requirement(r)
 
-    install_libraries()
+    log_add_library(requirements)
+    install_libraries_venv()
+
+    template = Template.template_from_path(template_path)
+
+    # RC file
+    rc_file = get_rc_file(folder)
+    log_operation(template, performed_action=GENERATE, logfile=rc_file)
+    log_new_files(template, performed_action=GENERATE, logfile=rc_file)
 
 
 def pattern_replacement(input_file, mapper):

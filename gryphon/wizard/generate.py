@@ -1,18 +1,18 @@
 import json
 import logging
 from typing import Dict
-from gryphon.core.registry import Template
-import gryphon.core as gryphon
 from .functions import (
-    display_template_information, erase_lines,
+    display_template_information, erase_lines, current_folder_has_venv,
     get_current_tree_state, get_option_names, filter_chosen_option
-)
-from .constants import (
-    USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
-    BACK, QUIT, GENERATE, NO, CHILDREN
 )
 from .wizard_text import Text
 from .questions import GenerateQuestions
+from ..constants import (
+    USE_CASES, METHODOLOGY, TOPIC, SECTOR, SEARCH_BY_KEYWORD,
+    BACK, QUIT, GENERATE, NO, CHILDREN
+)
+from ..core import generate as core_generate
+from ..core.registry import Template
 
 
 logger = logging.getLogger('gryphon')
@@ -93,7 +93,10 @@ def ask_which_template(state: dict):
 def generate(data_path, registry):
     """generates templates based on arguments and configurations."""
 
-    with open(data_path / "category_tree.json", encoding='utf-8') as file:
+    if not current_folder_has_venv():
+        logger.warning(Text.no_virtual_environment_remainder)
+
+    with open(data_path / "category_tree.json", encoding="UTF-8") as file:
         full_tree = json.load(file)
 
     state = dict(
@@ -147,7 +150,7 @@ def generate(data_path, registry):
 
                 extra_parameters = {}
                 if len(template.arguments):
-                    logger.debug(Text.generate_ask_extra_parameters)
+                    logger.info(Text.generate_ask_extra_parameters)
                     extra_parameters = GenerateQuestions.ask_extra_arguments(template.arguments)
 
                 response = GenerateQuestions.confirm_generate(
@@ -159,7 +162,7 @@ def generate(data_path, registry):
                     erase_lines(n_lines=len(extra_parameters) + 2 + 1 + n_lines)
                     continue
 
-                gryphon.generate(
+                core_generate(
                     template_path=template.path,
                     requirements=template.dependencies,
                     **extra_parameters,

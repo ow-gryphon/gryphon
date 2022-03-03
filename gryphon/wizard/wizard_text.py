@@ -1,14 +1,14 @@
 class Text:
     welcome = """
-         ██████  ██████  ██    ██ ██████  ██   ██  ██████  ███    ██ 
-        ██       ██   ██  ██  ██  ██   ██ ██   ██ ██    ██ ████   ██ 
-        ██   ███ ██████    ████   ██████  ███████ ██    ██ ██ ██  ██ 
-        ██    ██ ██   ██    ██    ██      ██   ██ ██    ██ ██  ██ ██ 
-         ██████  ██   ██    ██    ██      ██   ██  ██████  ██   ████ 
-             
+         ██████  ██████  ██    ██ ██████  ██   ██  ██████  ███    ██
+        ██       ██   ██  ██  ██  ██   ██ ██   ██ ██    ██ ████   ██
+        ██   ███ ██████    ████   ██████  ███████ ██    ██ ██ ██  ██
+        ██    ██ ██   ██    ██    ██      ██   ██ ██    ██ ██  ██ ██
+         ██████  ██   ██    ██    ██      ██   ██  ██████  ██   ████
+        
         Welcome to OW Gryphon - your data and analytics toolkit!
         (press Ctrl+C at any time to quit)
-        
+
     """
     about = """
     Gryphon is a toolkit designed to make it easy to use Python for data analytics. 
@@ -30,6 +30,7 @@ class Text:
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
     about_display_option = "About OW Gryphon"
+    settings_display_option = "Advanced options"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"
@@ -69,3 +70,19 @@ class Text:
     could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
     generate_keyword_argument = "Type the keyword you want to search for:"
 
+    no_virtual_environment_remainder = "The current folder does not have a virtual environment in it."
+
+    settings_ask_which_registry_delete = "Choose which registry to remove?"
+    settings_python_use_system_default = "Use system default"
+    settings_ask_python_version = "Choose the python version you want to use"
+    settings_confirm_restore_defaults = "Confirm that you want to restore EVERY gryphon settings to the default?"
+    settings_confirm_restorer_registry_defaults = "Confirm that you want to restore gryphon registry to the default?"
+
+    settings_ask_registry_name = "Give a name to the new registry (ctrl+c to exit):"
+    settings_confirm_remove_registry = "Confirm that you want to remove that registry from gryphon?"
+
+    settings_ask_git_url = "Type the registry git url (i.e. https://github.com/your_github_user/your_github_repo):"
+    settings_ask_local_path = "Type the registry path (i.e. /home/user/your_local_registry):"
+
+    settings_confirm_change_env_manager = "Do you really want to change the environment manager to {env_manager}? "
+    settings_confirm_registry_addition = "Confirm that you want to add the new {registry_name} registry to gryphon?"

@@ -1,6 +1,7 @@
 """
 Setup module for the gryphon package.
 """
+import glob
 from pathlib import Path
 from setuptools import setup, find_packages
 
@@ -8,8 +9,17 @@ package_files = [
     str(Path('data') / 'gryphon_config.json'),
     str(Path('data') / 'library_tree.json'),
     str(Path('data') / 'links_about.json'),
-    str(Path('data') / 'category_tree.json')
+    str(Path('data') / 'category_tree.json'),
+    str(Path('data') / 'settings_tree.json')
 ]
+
+template_files = glob.glob(
+    str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" / "**"),
+    recursive=True
+)
+template_files = map(lambda x: x[8:], template_files)
+
+package_files.extend(template_files)
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

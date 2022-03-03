@@ -5,7 +5,7 @@ import logging
 from .functions import erase_lines
 from .wizard_text import Text
 from .questions import CommonQuestions
-from .constants import QUIT, BACK
+from ..constants import QUIT, BACK
 
 
 logger = logging.getLogger('gryphon')
@@ -25,7 +25,7 @@ def about(data_path, _):
             return
 
         if response == BACK:
-            erase_lines(n_lines=8)
+            erase_lines(n_lines=len(Text.about.split('\n')) + 2)
             return BACK
 
         if platform.system() == "Windows":

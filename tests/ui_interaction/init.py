@@ -18,17 +18,17 @@ def wizard_init(project_folder):
     child.sendcontrol('m')
 
     child.expect(Text.init_prompt_template_question)
-    child.send(KEY_DOWN)
-    #   Basic analytics template
-    #  » Advanced analytics template
+    # child.send(KEY_DOWN)
+    # » Basic analytics template
+    #   Advanced analytics template
     child.sendcontrol('m')
 
     child.expect(Text.init_prompt_location_question)
-    child.send(project_folder)
+    child.send(str(project_folder))
     child.sendcontrol('m')
 
     child.expect(CONFIRMATION_MESSAGE)
     child.sendcontrol('m')
 
-    child.expect(SUCCESS_MESSAGE)
+    child.expect(SUCCESS_MESSAGE, timeout=300)
     child.close()

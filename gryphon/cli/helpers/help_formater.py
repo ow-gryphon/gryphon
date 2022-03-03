@@ -2,7 +2,7 @@
 Help text generation.
 """
 from typing import Dict
-from gryphon.core.registry import Template
+from ...core.registry import Template
 
 
 def get_command_help(templates: Dict[str, Template]):

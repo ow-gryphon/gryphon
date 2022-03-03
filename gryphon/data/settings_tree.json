@@ -1,0 +1,50 @@
+[
+	{
+		"name": "Create new gryphon template (basic scaffolding)",
+		"value": "new_template"
+	},
+	{
+		"name": "Select environment manager",
+		"value": "change_env_manager",
+		"children": [
+			{
+				"name": "Conda",
+				"value": "conda"
+			},
+			{
+				"name": "Virtual environment",
+				"value": "venv"
+			}
+		]
+	},
+	{
+		"name": "Select Python version",
+		"value": "change_python_version"
+	},
+	{
+		"name": "Template registry management",
+		"value": "registry_options",
+		"children": [
+			{
+				"name": "Add remote registry (git repo)",
+				"value": "add_remote"
+			},
+			{
+				"name": "Add local registry (computer folder)",
+				"value": "add_local"
+			},
+			{
+				"name": "Remove a registry",
+				"value": "remove_registry"
+			},
+			{
+				"name": "Restore to default registries",
+				"value": "restore_default_registry"
+			}
+		]
+	},
+	{
+		"name": "Restore default settings",
+		"value": "restore_defaults"
+	}
+]

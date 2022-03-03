@@ -1,4 +1,5 @@
-import os
+import json
+import shutil
 from os import path
 
 import pytest
@@ -11,15 +12,22 @@ from gryphon.core.generate import (
 from .utils import create_folder_with_venv, TEST_FOLDER
 
 
-def test_generate_1(data_folder):
+def test_generate_1(setup, teardown, data_folder):
     """
     Tests the template replacement: Success case
     """
-    expected_file = path.join(data_folder, "sample_template.py")
+    file_name = "sample_template.py.handlebars"
 
+    cwd = setup()
+    template = data_folder / file_name
+    expected_file = cwd / "sample_template.py"
+    shutil.copyfile(
+        src=template,
+        dst=cwd / file_name
+    )
     try:
         pattern_replacement(
-            input_file=path.join(data_folder, "sample_template.py.handlebars"),
+            input_file=cwd / file_name,
             mapper={"lib": "pandas", "alias": "pd"}
         )
 
@@ -30,29 +38,35 @@ def test_generate_1(data_folder):
             assert "pd" in contents
             assert contents == "import pandas as pd"
     finally:
-        os.remove(expected_file)
+        teardown()
 
 
-def test_generate_2(data_folder):
+def test_generate_2(setup, teardown, data_folder):
     """
     Tests the template replacement: missing replacement patterns
     """
-    expected_file = path.join(data_folder, "sample_template.py")
-
+    file_name = "sample_template.py.handlebars"
+    cwd = setup()
+    template = data_folder / file_name
+    expected_file = cwd / "sample_template.py"
+    shutil.copyfile(
+        src=template,
+        dst=cwd / file_name
+    )
     try:
         pattern_replacement(
-            input_file=path.join(data_folder, "sample_template.py.handlebars"),
+            input_file=cwd / file_name,
             mapper={"lib": "pandas"}
         )
 
         assert path.isfile(expected_file)
         with open(expected_file, "r") as f:
             contents = f.read()
-            assert "pandas" in contents
-            assert "{{alias}}" in contents
-            assert contents == "import pandas as {{alias}}"
+        assert "pandas" in contents
+        assert "{{alias}}" in contents
+        assert contents == "import pandas as {{alias}}"
     finally:
-        os.remove(expected_file)
+        teardown()
 
 
 def test_generate_3(data_folder):
@@ -108,6 +122,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         generate(
             template_path=TEST_FOLDER / "data" / "mlclustering",
             requirements=["scipy"],
+            folder=cwd,
             **{"fileName": file_name}
         )
 
@@ -115,6 +130,15 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         assert "scipy" in libraries
         assert (cwd / "readme_mlclustering.md").is_file()
         assert (cwd / "src" / f"clustering_{file_name}.py").is_file()
+
+        log_file = cwd / ".gryphon_history"
+
+        assert log_file.is_file()
+        with open(log_file, "r", encoding="utf-8") as f:
+            history = json.load(f)
+            assert "files" in history
+            assert "operations" in history
+            assert len(history["operations"]) == 1
 
     finally:
         teardown()

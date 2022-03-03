@@ -1,9 +1,9 @@
 import questionary
 from questionary import Choice, Separator
+from .common_functions import base_question, get_back_choice, logger
 from ..wizard_text import Text
-from ..constants import (BACK, YES, NO)
 from ..functions import wrap_text
-from .common import base_question, get_back_choice, logger
+from ...constants import (BACK, YES, NO, SYSTEM_DEFAULT)
 
 
 class InitQuestions:
@@ -90,3 +90,41 @@ class InitQuestions:
                 )
             ]
         ).unsafe_ask(), n_lines
+
+    @staticmethod
+    @base_question
+    def ask_just_location():
+        return (
+            questionary
+            .text(message=Text.init_prompt_location_question)
+            .unsafe_ask()
+        )
+
+    @staticmethod
+    @base_question
+    def ask_python_version(versions):
+
+        choices = [
+            Choice(
+                title=Text.settings_python_use_system_default,
+                value=SYSTEM_DEFAULT
+            )
+        ]
+        choices.extend([
+            Choice(
+                title=v,
+                value=v
+            )
+            for v in versions
+        ])
+
+        choices.extend([
+            Separator(),
+            get_back_choice()
+        ])
+
+        return questionary.select(
+            message=Text.settings_ask_python_version,
+            choices=choices,
+            use_indicator=True
+        ).unsafe_ask()
