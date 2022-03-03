@@ -322,27 +322,26 @@ def install_extra_nbextensions_conda(folder_path):
             with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
-    # nohup = ""
-    nohup = "nohup "
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
+        nohup = "START /B "
     else:
         conda_python = conda_path / "bin" / "python"
         nohup = "nohup "
 
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator --prefix={conda_path}')
+                                  f'jupyter_nbextensions_configurator --prefix={conda_path} --yes')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextensions_configurator enable --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter contrib nbextension install --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable codefolding/main --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable toc2/main --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable collapsible_headings/main --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextensions_configurator enable --user) >> .output 2>&1')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter contrib nbextension install --user) >> .output 2>&1')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable codefolding/main --user) >> .output 2>&1')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable toc2/main --user) >> .output 2>&1')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable collapsible_headings/main --user) >> .output 2>&1')
     os.chdir(target_folder.parent)
 
 
