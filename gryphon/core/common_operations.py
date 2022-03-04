@@ -214,7 +214,7 @@ def install_extra_nbextensions_venv(folder_path):
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f"{activate_env_command} "
+    execute_and_log(f"{activate_env_command} "  
                     f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
                     f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
                     f"&& ({silent} jupyter nbextension enable codefolding/main --user) {redirect}"
