@@ -345,6 +345,20 @@ def install_extra_nbextensions_conda(folder_path):
     os.chdir(target_folder.parent)
 
 
+def change_shell_folder_and_activate_conda_env(location):
+
+    if 'pytest' not in sys.modules:
+        target_folder = get_destination_path(location)
+        logger.warning(f"""
+            {Text.install_end_message_1}
+
+            >> cd {target_folder}
+            >> conda activate --prefix={target_folder / "envs"}
+
+            {Text.install_end_message_2}
+        """)
+
+
 # requirements.txt UTILS
 
 def append_requirement(library_name):
