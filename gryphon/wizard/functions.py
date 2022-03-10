@@ -12,6 +12,11 @@ from ..constants import (
 logger = logging.getLogger('gryphon')
 
 
+class BackSignal(Exception):
+    def __init__(self):
+        super().__init__()
+
+
 def erase_lines(n_lines=2):
     for _ in range(n_lines):
         logger.info("\033[A                                                          \033[A")

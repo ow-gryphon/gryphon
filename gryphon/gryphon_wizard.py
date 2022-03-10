@@ -86,7 +86,6 @@ def main():
 
         try:
             response = function(DATA_PATH, registry)
-
             if response != BACK:
                 if chosen_command in [GENERATE, ADD]:
                     logger.info("\n\n")

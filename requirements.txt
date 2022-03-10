@@ -9,3 +9,4 @@ pytest
 #wexpect
 pytest-cov
 pytest-mock
+transitions

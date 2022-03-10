@@ -1,5 +1,6 @@
 from .add import add
-from .init import init
+# from .init import init
+from .init_new import init
 from .generate import generate
 from .about import about
 from .exit_program import exit_program
