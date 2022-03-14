@@ -31,6 +31,8 @@ class Machine:
         if transition is None:
             raise HaltSignal()
 
+        context = transition.callback(context)
+
         self.history.append(self.current_state.name)
         return context
 

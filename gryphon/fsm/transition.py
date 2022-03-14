@@ -1,13 +1,12 @@
-
-def dummy(*_, **__):
-    pass
-
-
 def negate_condition(condition: callable):
     def _f(context):
         return not condition(context)
 
     return _f
+
+
+def dummy(context: dict) -> dict:
+    return context
 
 
 class Transition:
@@ -19,6 +18,6 @@ class Transition:
     def check_condition(self, context):
         transition = self.condition(context)
         assert isinstance(transition, bool)
-        if transition:
-            self.callback(context)
         return transition
+
+

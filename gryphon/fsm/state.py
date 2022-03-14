@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Dict
 
 
 class State(ABC):
@@ -24,7 +23,7 @@ class State(ABC):
 
             if passed and already_transitioned:
                 raise RuntimeError(f"State transitioned simultaneously for more than one state "
-                                   f"[{transition_passed.next_state.name}, {t.next_state.name}].")
+                                   f"[{transition_passed.next_state}, {t.next_state}].")
             elif passed:
                 already_transitioned = True
                 transition_passed = t
