@@ -1,35 +1,31 @@
 from pathlib import Path
-from typing import List, Dict, Tuple
 from ..functions import erase_lines
 from ..questions import InitQuestions
-from ...finite_state_machine import State, Transition
+from ...fsm import State, Transition
 from ...constants import YES, NO
 
 
-def confirmation_success_callback(*_, **kwargs):
-    n_lines = kwargs["n_lines"]
+def confirmation_success_callback(context):
+    n_lines = context["n_lines"]
     erase_lines(n_lines=n_lines + 2)
 
 
-def _change_from_confirmation_to_install(*_, **kwargs):
-    confirmed = kwargs["confirmed"]
+def _change_from_confirmation_to_install(context):
+    confirmed = context["confirmed"]
     return confirmed == YES
 
 
-def _change_from_confirmation_to_ask_template(*_, **kwargs):
-    confirmed = kwargs["confirmed"]
+def _change_from_confirmation_to_ask_template(context):
+    confirmed = context["confirmed"]
     return confirmed == NO
 
 
-def _change_from_confirmation_to_ask_location_again(*_, **kwargs):
-    confirmed = kwargs["confirmed"]
+def _change_from_confirmation_to_ask_location_again(context):
+    confirmed = context["confirmed"]
     return confirmed == "change_location"
 
 
 class Confirmation(State):
-
-    def __init__(self):
-        super().__init__(self.name, self.transitions)
 
     name = "confirmation"
     transitions = [
@@ -48,10 +44,10 @@ class Confirmation(State):
         )
     ]
 
-    def on_start(self, *args, **kwargs) -> Tuple[List, Dict]:
-        template = kwargs["template"]
-        location = kwargs["location"]
-        extra_parameters = kwargs["extra_parameters"]
+    def on_start(self, context: dict) -> dict:
+        template = context["template"]
+        location = context["location"]
+        extra_parameters = context["extra_parameters"]
 
         confirmed, n_lines = InitQuestions.confirm_init(
             template=template,
@@ -59,8 +55,8 @@ class Confirmation(State):
             **extra_parameters
         )
 
-        kwargs.update(dict(
+        context.update(dict(
             n_lines=n_lines,
             confirmed=confirmed
         ))
-        return list(args), dict(kwargs)
+        return context

@@ -5,7 +5,7 @@ class HaltSignal(Exception):
         super().__init__()
 
 
-class FSM:
+class Machine:
 
     def __init__(self, initial_state, possible_states):
         self.history = [initial_state.name]
@@ -23,20 +23,20 @@ class FSM:
             ]
             raise RuntimeError(f"State '{name}' not found in possible states: {names}")
 
-    def run_interaction(self, *args, **kwargs):
-        args, kwargs = self.current_state.on_start(*args, **kwargs)
-        transition = self.current_state.check_transitions(*args, **kwargs)
+    def run_interaction(self, context: dict):
+        context = self.current_state.on_start(context)
+        transition = self.current_state.check_transitions(context)
 
         self.current_state = self.find_state_by_name(transition.next_state)
         if transition is None:
             raise HaltSignal()
 
         self.history.append(self.current_state.name)
-        return args, kwargs
+        return context
 
     def run(self):
-        args, kwargs = [], {}
+        context = {}
         while self.current_state and not self.current_state.is_final_state():
-            args, kwargs = self.run_interaction(*args, **kwargs)
+            context = self.run_interaction(context)
 
-        self.current_state.on_start(*args, **kwargs)
+        self.current_state.on_start(context)

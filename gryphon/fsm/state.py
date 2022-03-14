@@ -3,13 +3,14 @@ from typing import List, Tuple, Dict
 
 
 class State(ABC):
+    name = None
+    transitions = []
 
-    def __init__(self, name: str, transitions: List):
-        self.name = name
-        self.transitions = transitions
+    def __init__(self):
+        pass
 
     @abstractmethod
-    def on_start(self, *args, **kwargs) -> Tuple[List, Dict]:
+    def on_start(self, context: dict) -> dict:
         pass
 
     def is_final_state(self):

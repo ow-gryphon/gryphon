@@ -4,8 +4,8 @@ def dummy(*_, **__):
 
 
 def negate_condition(condition: callable):
-    def _f(*args, **kwargs):
-        return not condition(*args, **kwargs)
+    def _f(context):
+        return not condition(context)
 
     return _f
 
@@ -16,9 +16,9 @@ class Transition:
         self.condition = condition
         self.callback = callback
 
-    def check_condition(self, *args, **kwargs):
-        transition = self.condition(*args, **kwargs)
+    def check_condition(self, context):
+        transition = self.condition(context)
         assert isinstance(transition, bool)
         if transition:
-            self.callback(*args, **kwargs)
+            self.callback(context)
         return transition
