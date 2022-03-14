@@ -1,5 +1,4 @@
-# from .add import add
-from .add_new import add
+from .add import add
 from .init import init
 from .generate import generate
 from .about import about

@@ -2,11 +2,11 @@ import logging
 import os
 import json
 import platform
-from .functions import erase_lines, get_current_tree_state, filter_chosen_option, current_folder_has_venv
-from .questions import AddQuestions
-from .wizard_text import Text
-from ..core import add as core_add
-from ..constants import BACK, TYPING, CHILDREN, NAME, YES, NO
+from wizard.functions import erase_lines, get_current_tree_state, filter_chosen_option, current_folder_has_venv
+from wizard.questions import AddQuestions
+from wizard.wizard_text import Text
+from core import add as core_add
+from constants import BACK, TYPING, CHILDREN, NAME, YES, NO
 
 logger = logging.getLogger('gryphon')
 

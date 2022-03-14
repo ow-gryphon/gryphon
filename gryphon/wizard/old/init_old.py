@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
-from .settings import list_conda_available_python_versions
-from .functions import erase_lines
-from .questions import InitQuestions
-from ..core import init as core_init
-from ..constants import (
+from wizard.settings import list_conda_available_python_versions
+from wizard.functions import erase_lines
+from wizard.questions import InitQuestions
+from core import init as core_init
+from constants import (
     INIT, BACK, NO, CONFIG_FILE, DEFAULT_PYTHON_VERSION,
     ALWAYS_ASK
 )
