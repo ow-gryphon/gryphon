@@ -332,17 +332,18 @@ def install_extra_nbextensions_conda(folder_path):
         nohup = "nohup "
 
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator --prefix={conda_path}')
+                                  f'jupyter_nbextensions_configurator --prefix={conda_path} --yes')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextensions_configurator enable --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter contrib nbextension install --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable codefolding/main --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable toc2/main --user) >> .output')
-    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable collapsible_headings/main --user) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextensions_configurator enable --user --yes) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter contrib nbextension install --user --yes) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable codefolding/main --user --yes) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter nbextension enable toc2/main --user --yes) >> .output')
+    execute_and_log(f'({nohup}{conda_python} -m jupyter '
+                    f'nbextension enable collapsible_headings/main --user --yes) >> .output')
     os.chdir(target_folder.parent)
 
 
@@ -457,22 +458,25 @@ def log_add_library(libraries, logfile=None):
 
     if logfile is None:
         logfile = Path.cwd() / ".gryphon_history"
+    try:
+        with open(logfile, "r+", encoding="utf-8") as f:
+            contents = json.load(f)
 
-    with open(logfile, "r+", encoding="utf-8") as f:
-        contents = json.load(f)
-
-        new_contents = contents.copy()
-        for lib in libraries:
-            new_contents.setdefault("libraries", []).append(
-                dict(
-                    name=lib,
-                    added_at=str(datetime.now())
+            new_contents = contents.copy()
+            for lib in libraries:
+                new_contents.setdefault("libraries", []).append(
+                    dict(
+                        name=lib,
+                        added_at=str(datetime.now())
+                    )
                 )
-            )
 
-        f.seek(0)
-        f.write(json.dumps(new_contents))
-        f.truncate()
+            f.seek(0)
+            f.write(json.dumps(new_contents))
+            f.truncate()
+    except FileNotFoundError:
+        raise RuntimeError("The .gryphon_history file was not found, therefore you are not inside a "
+                           "Gryphon project directory.")
 
 
 def get_current_python_version():
