@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT)
+from ...constants import (YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT, CHANGE_LOCATION)
 
 
 class SettingsQuestions:
@@ -158,4 +158,30 @@ class SettingsQuestions:
             message=Text.settings_ask_python_version,
             choices=choices,
             use_indicator=True
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def confirm_new_template(location):
+        message = (
+            Text.settings_confirm_new_template
+            .replace("{location}", str(location))
+        )
+
+        return questionary.select(
+            message=message,
+            choices=[
+                Choice(
+                    title="Yes",
+                    value=YES
+                ),
+                Choice(
+                    title="No",
+                    value=NO
+                ),
+                Choice(
+                    title="Change project location",
+                    value=CHANGE_LOCATION
+                )
+            ]
         ).unsafe_ask()

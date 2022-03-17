@@ -33,6 +33,7 @@ TYPING = "type"
 YES = "yes"
 NO = "no"
 BACK = "back"
+CHANGE_LOCATION = "change_location"
 
 # log
 SUCCESS = 21

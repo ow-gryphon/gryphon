@@ -1,5 +1,5 @@
 import json
-from ..settings import list_conda_available_python_versions
+from ..functions import list_conda_available_python_versions
 from ..questions import InitQuestions
 from ...fsm import State, Transition, negate_condition
 from ...constants import BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE

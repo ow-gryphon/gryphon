@@ -1,8 +1,8 @@
 import json
 import shutil
+import os
 from os import path
 
-import pytest
 
 from gryphon.core.generate import (
     generate,
@@ -150,7 +150,7 @@ def test_generate_6(setup, teardown):
         create_folder_with_venv(cwd)
 
         generate(
-            template_path=TEST_FOLDER / "data" / "registry_with_git_folder",
+            template_path=TEST_FOLDER / "data" / "registry_with_git_folder"/ "",
             requirements=[]
         )
 
