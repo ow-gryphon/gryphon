@@ -162,7 +162,7 @@ def install_libraries_venv(folder=None):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    return_code = execute_and_log(f'{str(pip_path)} install -r {str(requirements_path)}')
+    return_code = execute_and_log(f'{str(pip_path)} install -r {str(requirements_path)} --disable-pip-version-check')
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
 
@@ -206,7 +206,7 @@ def install_extra_nbextensions_venv(folder_path):
                 f2.write(f"\n{lib}")
 
     return_code = execute_and_log(f'{activate_env_command} && pip install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator')
+                                  f'jupyter_nbextensions_configurator --disable-pip-version-check')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
@@ -268,8 +268,8 @@ def create_conda_env(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
-
-    execute_and_log("conda config --append channels conda-forge")
+    execute_and_log("conda config --set notify_outdated_conda false")
+    execute_and_log("conda config --append channels conda-forge --json >> out.json && rm out.json")
     command = f"conda create --prefix={conda_path} -y"
 
     if python_version and python_version != SYSTEM_DEFAULT:
@@ -289,6 +289,7 @@ def install_libraries_conda(folder=None):
     requirements_path = target_folder / "requirements.txt"
     conda_path = target_folder / 'envs'
 
+    execute_and_log("conda config --set notify_outdated_conda false")
     return_code = execute_and_log(f"conda install --prefix {conda_path} --file {requirements_path} -y")
 
     if return_code is not None:
@@ -331,6 +332,7 @@ def install_extra_nbextensions_conda(folder_path):
         conda_python = conda_path / "bin" / "python"
         nohup = "nohup "
 
+    execute_and_log("conda config --set notify_outdated_conda false")
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
                                   f'jupyter_nbextensions_configurator --prefix={conda_path} --yes')
 
