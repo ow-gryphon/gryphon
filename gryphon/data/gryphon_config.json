@@ -3,6 +3,12 @@
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
     },
+    "template_indexes": {
+        "grypi": {
+            "url": "https://ow-gryphon.github.io/grypi/",
+            "repo": "https://github.com/ow-gryphon/grypi.git"
+        }
+    },
     "environment_management": "venv",
     "ask_python_version_on_init": false,
     "default_python_version": "system_default"

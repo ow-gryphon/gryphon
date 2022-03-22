@@ -8,6 +8,7 @@ class Template:
 
         self.name = template_name
         self.path = template_path
+        self.command = template_metadata.get("command", "")
 
         self.arguments = template_metadata.get("arguments", [])
         self.dependencies = template_metadata.get("dependencies", [])

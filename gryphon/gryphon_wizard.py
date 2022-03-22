@@ -8,7 +8,7 @@ import logging
 import platform
 import argparse
 import traceback
-from .core.registry import RegistryCollection
+from .core.registry import TemplateCollection
 from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
 from .wizard.questions import CommonQuestions
@@ -48,17 +48,6 @@ except FileNotFoundError:
     with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
 
-try:
-    # loads registry of templates to memory
-    registry = RegistryCollection.from_config_file(
-        settings=settings_file,
-        data_path=DATA_PATH / "template_registry"
-    )
-except Exception as e:
-    logger.error(f'Registry loading error.')
-    output_error(e)
-    exit(1)
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -69,6 +58,15 @@ def main():
 
         handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
         handler.setLevel(logging.DEBUG)
+
+    try:
+        registry = TemplateCollection(
+            index_list=settings_file["template_indexes"]
+        )
+    except Exception as e:
+        logger.error(f'Registry loading error.')
+        output_error(e)
+        exit(1)
 
     logger.info(Text.welcome)
 
