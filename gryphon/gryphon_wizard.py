@@ -117,6 +117,17 @@ def did_you_mean_gryphon():
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
 
+# TODO: For local templates you don't need to copy it to a temp
+#  folder inside site-packages
+
+# TODO: Prefix files from local templates as local_
+# TODO: show registry names on gryphon menu.
+
+# TODO: Check if the user is really on a gryphon project folder
+
+# TODO: Adress the issue of updating missing keys from the
+#  gryphon_settings.json on new installs
+
 
 if __name__ == '__main__':
     main()

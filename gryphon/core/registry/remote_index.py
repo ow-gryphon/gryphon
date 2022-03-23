@@ -49,7 +49,7 @@ class RemoteIndex:
             templates[command].update({
                 metadata["path"].parts[-1]: Template(
                     template_name=metadata["path"].parts[-1],
-                    template_path=metadata["path"],
+                    template_path=self.index_url,
                     template_metadata=metadata
                 )
                 for metadata in metadata_list
@@ -67,7 +67,7 @@ class RemoteIndex:
 
 
 class TemplateCollection:
-    def __init__(self, index_list: Dict[str, Dict]):
+    def __init__(self, index_list: List[Dict[str, str]]):
         self.index_list = index_list
 
         self.indexes = self.create_indexes()
@@ -75,8 +75,8 @@ class TemplateCollection:
 
     def create_indexes(self) -> List[RemoteIndex]:
         return [
-            RemoteIndex(index_url=links["url"], index_repo=links["repo"], index_name=name)
-            for name, links in self.index_list.items()
+            RemoteIndex(index_url=links["url"], index_repo=links["repo"], index_name=links["name"])
+            for links in self.index_list
         ]
 
     def unify_templates(self) -> Dict[str, Dict[str, Template]]:

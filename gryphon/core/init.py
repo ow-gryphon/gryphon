@@ -1,8 +1,13 @@
 """
 Module containing the code for the init command in the CLI.
 """
+import glob
 import json
 import logging
+import os
+import shutil
+import zipfile
+from typing import List
 from pathlib import Path
 from .settings import SettingsManager
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA
@@ -18,11 +23,50 @@ from .common_operations import (
     get_rc_file,
     create_conda_env, install_libraries_conda,
     install_extra_nbextensions_venv,
-    install_extra_nbextensions_conda
+    install_extra_nbextensions_conda,
+    execute_and_log
 )
 
 
 logger = logging.getLogger('gryphon')
+
+
+def download_template(template) -> Path:
+    # TODO: This implementation doesn't address cases where one template depends
+    #  on another from a different index
+
+    # TODO: Pip path is different between platforms (linux vs windows)
+
+    temp_folder = Path().cwd() / ".temp"
+    execute_and_log(
+        f"pip --disable-pip-version-check download {template.name} "
+        f"-i {template.template_index} "
+        f"-d {temp_folder}"
+    )
+    return temp_folder
+
+
+def unzip_templates(path: Path) -> Path:
+    zip_files = glob.glob(str(path / "*.zip"))
+    target_folder = path / "unzip"
+    if target_folder.is_dir():
+        os.makedirs(target_folder)
+
+    for file in zip_files:
+        with zipfile.ZipFile(file, 'r') as zip_ref:
+            zip_ref.extractall(target_folder)
+    return target_folder
+
+
+def unify_templates(target_folder: Path) -> Path:
+    expanded_folders = glob.glob(str(target_folder / "*"))
+    destination_folder = Path().cwd() / ".target"
+    for folder in expanded_folders:
+        shutil.copytree(
+            src=Path(folder) / "template",
+            dst=destination_folder
+        )
+    return destination_folder
 
 
 def init(template, location, python_version, **kwargs):
@@ -30,6 +74,7 @@ def init(template, location, python_version, **kwargs):
     Init command from the OW Gryphon CLI.
     """
     kwargs.copy()
+
     with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
         data = json.load(f)
         env_type = data.get("environment_management", DEFAULT_ENV)
@@ -37,11 +82,18 @@ def init(template, location, python_version, **kwargs):
     logger.info("Creating project scaffolding.")
     logger.info(f"Initializing project at {location}")
 
-    # Files
-    copy_project_template(
-        template_destiny=Path(location),
-        template_source=Path(template.path)
+    temporary_folder = download_template(template)
+    zip_folder = unzip_templates(temporary_folder)
+    template_folder = unify_templates(zip_folder)
+
+    # Move files to destination
+    shutil.copytree(
+        src=Path(template_folder),
+        dst=Path(location),
+        dirs_exist_ok=True
     )
+    shutil.rmtree(temporary_folder)
+    shutil.rmtree(template_folder)
 
     # RC file
     rc_file = get_rc_file(Path.cwd() / location)
