@@ -163,7 +163,7 @@ def generate(data_path, registry):
                     continue
 
                 core_generate(
-                    template_path=template.path,
+                    template=template,
                     requirements=template.dependencies,
                     **extra_parameters,
                 )

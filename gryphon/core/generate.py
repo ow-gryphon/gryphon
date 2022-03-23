@@ -10,11 +10,11 @@ import logging
 from .registry import Template
 from .common_operations import (
     get_destination_path,
-    copy_project_template,
     append_requirement,
     install_libraries_venv,
     get_rc_file,
-    log_operation, log_new_files, log_add_library
+    log_operation, log_new_files, log_add_library,
+    download_template, unzip_templates, unify_templates
 )
 from ..constants import GENERATE
 
@@ -22,20 +22,26 @@ from ..constants import GENERATE
 logger = logging.getLogger('gryphon')
 
 
-def generate(template_path: Path, requirements: list, folder=Path.cwd(), **kwargs):
+def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
     logger.info("Generating template.")
-    parse_project_template(template_path, kwargs)
+
+    temporary_folder = download_template(template)
+    zip_folder = unzip_templates(temporary_folder)
+    template_folder = unify_templates(zip_folder)
+
+    parse_project_template(template_folder, kwargs)
+
+    shutil.rmtree(temporary_folder)
+    shutil.rmtree(template_folder)
 
     for r in requirements:
         append_requirement(r)
 
     log_add_library(requirements)
     install_libraries_venv()
-
-    template = Template.template_from_path(template_path)
 
     # RC file
     rc_file = get_rc_file(folder)
@@ -83,9 +89,11 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     # Copy files to a temporary folder
     logger.info(f"Creating files at {definitive_path}")
 
-    copy_project_template(
-        template_destiny=temp_path,
-        template_source=template_path
+    # Move files to destination
+    shutil.copytree(
+        src=Path(template_path),
+        dst=Path(temp_path),
+        dirs_exist_ok=True
     )
 
     # Replace patterns and rename files

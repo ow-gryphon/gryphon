@@ -1,19 +1,14 @@
 """
 Module containing the code for the init command in the CLI.
 """
-import glob
 import json
 import logging
-import os
 import shutil
-import zipfile
-from typing import List
 from pathlib import Path
 from .settings import SettingsManager
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA
 from .common_operations import (
     install_libraries_venv,
-    copy_project_template,
     create_venv,
     init_new_git_repo,
     initial_git_commit,
@@ -24,49 +19,12 @@ from .common_operations import (
     create_conda_env, install_libraries_conda,
     install_extra_nbextensions_venv,
     install_extra_nbextensions_conda,
-    execute_and_log
+    download_template, unzip_templates,
+    unify_templates
 )
 
 
 logger = logging.getLogger('gryphon')
-
-
-def download_template(template) -> Path:
-    # TODO: This implementation doesn't address cases where one template depends
-    #  on another from a different index
-
-    # TODO: Pip path is different between platforms (linux vs windows)
-
-    temp_folder = Path().cwd() / ".temp"
-    execute_and_log(
-        f"pip --disable-pip-version-check download {template.name} "
-        f"-i {template.template_index} "
-        f"-d {temp_folder}"
-    )
-    return temp_folder
-
-
-def unzip_templates(path: Path) -> Path:
-    zip_files = glob.glob(str(path / "*.zip"))
-    target_folder = path / "unzip"
-    if target_folder.is_dir():
-        os.makedirs(target_folder)
-
-    for file in zip_files:
-        with zipfile.ZipFile(file, 'r') as zip_ref:
-            zip_ref.extractall(target_folder)
-    return target_folder
-
-
-def unify_templates(target_folder: Path) -> Path:
-    expanded_folders = glob.glob(str(target_folder / "*"))
-    destination_folder = Path().cwd() / ".target"
-    for folder in expanded_folders:
-        shutil.copytree(
-            src=Path(folder) / "template",
-            dst=destination_folder
-        )
-    return destination_folder
 
 
 def init(template, location, python_version, **kwargs):

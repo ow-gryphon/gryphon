@@ -8,6 +8,7 @@ import glob
 import logging
 import platform
 import shutil
+import zipfile
 from datetime import datetime
 from pathlib import Path
 import git
@@ -501,3 +502,45 @@ def get_current_python_version():
             "default_python_version",
             DEFAULT_PYTHON_VERSION
         )
+
+
+# TEMPLATE DOWNLOAD
+
+def download_template(template) -> Path:
+    # TODO: This implementation doesn't address cases where one template depends
+    #  on another from a different index
+
+    # TODO: Pip path is different between platforms (linux vs windows)
+
+    temp_folder = Path().cwd() / ".temp"
+    status_code = execute_and_log(
+        f"pip --disable-pip-version-check download {template.name} "
+        f"-i {template.template_index} "
+        f"-d {temp_folder}"
+    )
+    if status_code is not None:
+        raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")
+    return temp_folder
+
+
+def unzip_templates(path: Path) -> Path:
+    zip_files = glob.glob(str(path / "*.zip"))
+    target_folder = path / "unzip"
+    if target_folder.is_dir():
+        os.makedirs(target_folder)
+
+    for file in zip_files:
+        with zipfile.ZipFile(file, 'r') as zip_ref:
+            zip_ref.extractall(target_folder)
+    return target_folder
+
+
+def unify_templates(target_folder: Path) -> Path:
+    expanded_folders = glob.glob(str(target_folder / "*"))
+    destination_folder = Path().cwd() / ".target"
+    for folder in expanded_folders:
+        shutil.copytree(
+            src=Path(folder) / "template",
+            dst=destination_folder
+        )
+    return destination_folder
