@@ -6,14 +6,14 @@ from typing import List, Dict
 from pathlib import Path
 from git import Repo
 from .template import Template
-from ...constants import DATA_PATH
+from ...constants import GRYPHON_HOME
 
 
 class RemoteIndex:
     def __init__(self, index_url: str, index_repo: str, index_name: str):
         self.index_url = index_url
         self.index_repo = index_repo
-        self.index_local_path = DATA_PATH / "index" / index_name
+        self.index_local_path = GRYPHON_HOME / "index" / index_name
 
         if not self.index_local_path.is_dir():
             os.makedirs(self.index_local_path)
