@@ -50,7 +50,8 @@ class RemoteIndex:
                 metadata["path"].parts[-1]: Template(
                     template_name=metadata["path"].parts[-1],
                     template_path=self.index_url,
-                    template_metadata=metadata
+                    template_metadata=metadata,
+                    registry_type="remote index"
                 )
                 for metadata in metadata_list
             })

@@ -15,8 +15,14 @@ from .template import Template
 logger = logging.getLogger('gryphon')
 
 
+def insert_index_name(metadata, index_type):
+    metadata["display_name"] = f'{metadata["display_name"]} ({index_type})'
+    return metadata
+
+
 class TemplateRegistry:
     """Class that loads commands and metadata from the ./data folder."""
+    type = ""
 
     def __init__(self, templates_path: Path):
         self.path = templates_path
@@ -32,10 +38,11 @@ class TemplateRegistry:
                 continue
 
             self.template_data[command_name] = {
-                os.path.basename(path): Template(
+                f"{os.path.basename(path)}_{self.type}": Template(
                     template_name=os.path.basename(path),
                     template_path=Path(path),
-                    template_metadata=self.load_metadata(Path(path))
+                    template_metadata=self.load_metadata(Path(path)),
+                    registry_type=self.type
                 )
                 for path in folders
             }

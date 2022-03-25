@@ -20,7 +20,7 @@ from .common_operations import (
     install_extra_nbextensions_venv,
     install_extra_nbextensions_conda,
     download_template, unzip_templates,
-    unify_templates
+    unify_templates, copy_project_template
 )
 
 
@@ -40,18 +40,27 @@ def init(template, location, python_version, **kwargs):
     logger.info("Creating project scaffolding.")
     logger.info(f"Initializing project at {location}")
 
-    temporary_folder = download_template(template)
-    zip_folder = unzip_templates(temporary_folder)
-    template_folder = unify_templates(zip_folder)
+    if template.registry_type == "remote index":
 
-    # Move files to destination
-    shutil.copytree(
-        src=Path(template_folder),
-        dst=Path(location),
-        dirs_exist_ok=True
-    )
-    shutil.rmtree(temporary_folder)
-    shutil.rmtree(template_folder)
+        temporary_folder = download_template(template)
+        zip_folder = unzip_templates(temporary_folder)
+        template_folder = unify_templates(zip_folder)
+
+        # Move files to destination
+        shutil.copytree(
+            src=Path(template_folder),
+            dst=Path(location),
+            dirs_exist_ok=True
+        )
+        shutil.rmtree(temporary_folder)
+        shutil.rmtree(template_folder)
+
+    elif template.registry_type == "local":
+
+        copy_project_template(
+            template_destiny=Path(location),
+            template_source=Path(template.path)
+        )
 
     # RC file
     rc_file = get_rc_file(Path.cwd() / location)

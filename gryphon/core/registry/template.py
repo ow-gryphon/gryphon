@@ -4,12 +4,13 @@ from pathlib import Path
 
 
 class Template:
-    def __init__(self, template_name, template_path, template_metadata):
+    def __init__(self, template_name, template_path, template_metadata, registry_type):
 
         self.name = template_name
         self.path = Path(template_path)
 
         self.template_index = template_path
+        self.registry_type = registry_type
         self.command = template_metadata.get("command", "")
 
         self.arguments = template_metadata.get("arguments", [])

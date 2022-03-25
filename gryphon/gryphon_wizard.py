@@ -8,7 +8,7 @@ import logging
 import platform
 import argparse
 import traceback
-from .core.registry import TemplateCollection
+from .core.registry import RegistryCollection
 from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
 from .wizard.questions import CommonQuestions
@@ -37,6 +37,16 @@ try:
     with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
 
+    with open(DEFAULT_CONFIG_FILE, "r", encoding="UTF-8") as f:
+        default_settings_file = json.load(f)
+
+    try:
+        if settings_file["config_version"] < default_settings_file["config_version"]:
+            shutil.rmtree(CONFIG_FILE)
+            raise FileNotFoundError()
+    except KeyError:
+        raise FileNotFoundError()
+
 except FileNotFoundError:
     if not GRYPHON_HOME.is_dir():
         os.makedirs(GRYPHON_HOME)
@@ -60,8 +70,13 @@ def main():
         handler.setLevel(logging.DEBUG)
 
     try:
-        registry = TemplateCollection(
-            index_list=settings_file["template_indexes"]
+        # registry = TemplateCollection(
+        #     index_list=settings_file["template_indexes"]
+        # )
+
+        registry = RegistryCollection.from_config_file(
+            settings=settings_file,
+            data_path=GRYPHON_HOME / "registry"
         )
     except Exception as e:
         logger.error(f'Registry loading error.')
@@ -117,15 +132,15 @@ def did_you_mean_gryphon():
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
 
-# TODO: For local templates you don't need to copy it to a temp
+# DONE: For local templates you don't need to copy it to a temp
 #  folder inside site-packages
 
-# TODO: Prefix files from local templates as local_
-# TODO: show registry names on gryphon menu.
+# DONE: Prefix files from local templates as local_
+# DONE: show registry names on gryphon menu.
 
 # TODO: Check if the user is really on a gryphon project folder
 
-# TODO: Adress the issue of updating missing keys from the
+# DONE: Address the issue of updating missing keys from the
 #  gryphon_settings.json on new installs
 
 

@@ -27,7 +27,7 @@ class GenerateQuestions:
     def ask_which_template(metadata):
         options = [
             Choice(
-                title=template.display_name,
+                title=f"{template.display_name} ({template.registry_type})",
                 value=name
             )
             for name, template in metadata.items()

@@ -27,15 +27,19 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
     Generate command from the OW Gryphon CLI.
     """
     logger.info("Generating template.")
+    if template.registry_type == "remote index":
 
-    temporary_folder = download_template(template)
-    zip_folder = unzip_templates(temporary_folder)
-    template_folder = unify_templates(zip_folder)
+        temporary_folder = download_template(template)
+        zip_folder = unzip_templates(temporary_folder)
+        template_folder = unify_templates(zip_folder)
 
-    parse_project_template(template_folder, kwargs)
+        parse_project_template(template_folder, kwargs)
 
-    shutil.rmtree(temporary_folder)
-    shutil.rmtree(template_folder)
+        shutil.rmtree(temporary_folder)
+        shutil.rmtree(template_folder)
+
+    elif template.registry_type == "local":
+        parse_project_template(template.path, kwargs)
 
     for r in requirements:
         append_requirement(r)
