@@ -55,9 +55,6 @@ def escape_windows_path(folder_path):
 
 
 # BASH UTILS
-
-
-
 def on_error(func, path, exc):
     value = exc[1]  # os.rmdir
     if func in (os.unlink,  os.remove) and value.errno == errno.EACCES:
@@ -65,6 +62,7 @@ def on_error(func, path, exc):
         try:
             func(path)
         except PermissionError:
+            logger.error(f"Permission error on {path}. Something might go wrong.")
             pass
     else:
         if func == os.rmdir:
@@ -152,7 +150,7 @@ def create_venv(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
-    return_code = execute_and_log(f"{python_path} -m venv \"{venv_path}\"")
+    return_code = execute_and_log(f"{str(python_path)} -m venv \"{str(venv_path)}\"")
     if return_code:
         raise RuntimeError("Failed to create virtual environment.")
 
@@ -528,13 +526,12 @@ def download_template(template) -> Path:
     # TODO: This implementation doesn't address cases where one template depends
     #  on another from a different index
 
-    # TODO: Pip path is different between platforms (linux vs windows)
-
     temp_folder = Path().cwd() / ".temp"
     status_code = execute_and_log(
         f"pip --disable-pip-version-check download {template.name} "
         f"-i {template.template_index} "
-        f"-d {temp_folder}"
+        f"-d {temp_folder} "
+        f"--trusted-host ow-gryphon.github.io"  # TODO: Find a definitive solution for this
     )
     if status_code is not None:
         raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")

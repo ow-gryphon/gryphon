@@ -1,13 +1,11 @@
 {
-    "v0.0.1": {
-        "display_name": "",
-        "dependencies": [],
-        "keywords": [],
-        "methodology": [],
-        "topic": [],
+    "display_name": "",
+    "keywords": [],
+    "methodology": [],
+    "topic": [],
+    "command": "", // Check if it is the same as earlier versions
+    "author": "",
 
-        "description": "",
-        "command": "",
-        "author": ""
-    }
+    "description": "",
+    "dependencies": []
 }
