@@ -7,12 +7,13 @@ import json
 import glob
 import logging
 import platform
+import errno
+import stat
 import shutil
 import zipfile
 from datetime import datetime
 from pathlib import Path
 import git
-from .registry.template import Template
 from .core_text import Text
 from ..constants import (
     SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
@@ -55,11 +56,28 @@ def escape_windows_path(folder_path):
 
 # BASH UTILS
 
-def remove_folder(folder: Path):
+
+
+def on_error(func, path, exc):
+    value = exc[1]  # os.rmdir
+    if func in (os.unlink,  os.remove) and value.errno == errno.EACCES:
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+        try:
+            func(path)
+        except PermissionError:
+            pass
+    else:
+        if func == os.rmdir:
+            shutil.rmtree(path)
+            return
+        raise RuntimeError("File permission error.")
+
+
+def remove_folder(folder):
     """
     Removes a folder (location relative to cwd or absolute).
     """
-    shutil.rmtree(folder, ignore_errors=False)
+    shutil.rmtree(folder, ignore_errors=False, onerror=on_error)
 
 
 def create_folder(folder: Path):
@@ -420,7 +438,7 @@ def get_rc_file(folder=Path.cwd()):
     return path
 
 
-def log_new_files(template: Template, performed_action: str, logfile=None):
+def log_new_files(template, performed_action: str, logfile=None):
 
     assert performed_action in [INIT, GENERATE]
     if logfile is None:

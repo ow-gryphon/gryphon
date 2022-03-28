@@ -6,6 +6,7 @@ from typing import List, Dict
 from pathlib import Path
 from git import Repo
 from .template import Template
+from ..common_operations import remove_folder
 from ...constants import GRYPHON_HOME
 
 
@@ -18,7 +19,7 @@ class RemoteIndex:
         if not self.index_local_path.is_dir():
             os.makedirs(self.index_local_path)
         else:
-            shutil.rmtree(self.index_local_path)
+            remove_folder(self.index_local_path)
 
         self.repo = Repo.clone_from(self.index_repo, self.index_local_path)
 
