@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  update-index:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -51,7 +51,6 @@ jobs:
           user_name: 'vittorfp'
           commit_message: 'Updating index for the template ${{github.repository}}.'
 
-
       - name: Pushes ${{github.event.repository.name}}/index.html file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
@@ -64,3 +63,18 @@ jobs:
           user_email: 'vittorfpereira@gmail.com'
           user_name: 'vittorfp'
           commit_message: 'Updating index for the template ${{github.repository}}.'
+
+      - name: Pushes metadata file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'template/metadata.json'
+          destination_repo: 'ow-gryphon/grypi'
+          destination_folder: ${{ github.event.repository.name }}
+          destination_branch: 'master'
+          user_email: 'vittorfpereira@gmail.com'
+          user_name: 'vittorfp'
+          commit_message: 'Adding metadata for the template ${{github.repository}}.'
+
+# TODO: Make the necessary changes in the workflow in order to append to the metadata.json file instead of just copying the new one.
