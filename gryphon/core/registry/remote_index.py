@@ -1,7 +1,7 @@
 import os
 import json
 import glob
-import shutil
+from distutils.version import StrictVersion
 from typing import List, Dict
 from pathlib import Path
 from git import Repo
@@ -35,9 +35,14 @@ class RemoteIndex:
         for file in metadata_files:
             with open(file, "r", encoding="UTF-8") as f:
                 contents = json.load(f)
-                contents["path"] = Path(file).parent
-                assert contents["command"] in ["generate", "init"]
-                metadata_contents[contents["command"]].append(contents)
+
+                list(contents.keys()).sort(key=lambda x: StrictVersion(x[1:]))
+                latest_version = list(contents.keys())[-1]
+                latest = contents[latest_version]
+
+                latest["path"] = Path(file).parent
+                assert latest["command"] in ["generate", "init"]
+                metadata_contents[latest["command"]].append(latest)
 
         return metadata_contents
 
