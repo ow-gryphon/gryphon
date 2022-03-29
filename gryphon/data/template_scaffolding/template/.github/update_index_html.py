@@ -2,7 +2,6 @@ import os
 import re
 import json
 import copy
-import re
 import shutil
 
 # noinspection PyPackageRequirements
@@ -11,7 +10,10 @@ from bs4 import BeautifulSoup
 INDEX_FILE = "grypi/index.html"
 TEMPLATE_FILE = "grypi/pkg_template.html"
 
-VERSION_PATTERN = re.compile("^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
+VERSION_PATTERN = re.compile(
+    "^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+    "(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+)
 
 
 def normalize(name):

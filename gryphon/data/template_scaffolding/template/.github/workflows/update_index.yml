@@ -74,7 +74,6 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          pip install beautifulsoup4
           python template/.github/update_metadata_json.py
 
       - name: Pushes metadata file
