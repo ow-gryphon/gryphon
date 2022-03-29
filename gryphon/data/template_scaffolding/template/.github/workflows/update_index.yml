@@ -16,6 +16,9 @@ jobs:
         python-version: [3.6]
 
     steps:
+
+      # SETUP
+
       - name: Checkout grypi repo
         uses: actions/checkout@v3
         with:
@@ -32,12 +35,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Run Action
+      # UPDATE INDEX
+
+      - name: Update index files
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           pip install beautifulsoup4
-          python template/.github/actions.py
+          python template/.github/update_index_html.py
 
       - name: Pushes index.html file
         uses: dmnemec/copy_file_to_another_repo_action@main
@@ -64,6 +69,14 @@ jobs:
           user_name: 'vittorfp'
           commit_message: 'Updating index for the template ${{github.repository}}.'
 
+      # UPDATE METADATA JSON
+      - name: Generates metadata file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          pip install beautifulsoup4
+          python template/.github/update_metadata_json.py
+
       - name: Pushes metadata file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
@@ -76,5 +89,3 @@ jobs:
           user_email: 'vittorfpereira@gmail.com'
           user_name: 'vittorfp'
           commit_message: 'Adding metadata for the template ${{github.repository}}.'
-
-# TODO: Make the necessary changes in the workflow in order to append to the metadata.json file instead of just copying the new one.
