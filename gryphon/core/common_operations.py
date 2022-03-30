@@ -175,6 +175,7 @@ def install_extra_nbextensions_venv(folder_path):
     """
     target_folder = get_destination_path(folder_path)
     requirements_path = target_folder / REQUIREMENTS
+    print(str(requirements_path))
 
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
@@ -207,19 +208,24 @@ def install_extra_nbextensions_venv(folder_path):
             with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
-    return_code = execute_and_log(f'{activate_env_command} && pip --disable-pip-version-check 
+    return_code = execute_and_log(f'{activate_env_command} && pip --disable-pip-version-check '
                                   f'install jupyter_contrib_nbextensions jupyter_nbextensions_configurator')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f"{activate_env_command} "  
-                    f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
-                    f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
-                    f"&& ({silent} jupyter nbextension enable codefolding/main --user) {redirect}"
-                    f"&& ({silent} jupyter nbextension enable toc2/main --user) {redirect}"
-                    f"&& ({silent} jupyter nbextension enable collapsible_headings/main --user) {redirect}")
+    return_code = execute_and_log(
+        f"{activate_env_command} "
+        f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
+        f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
+        f"&& ({silent} jupyter nbextension enable codefolding/main --user) {redirect}"
+        f"&& ({silent} jupyter nbextension enable toc2/main --user) {redirect}"
+        f"&& ({silent} jupyter nbextension enable collapsible_headings/main --user) {redirect}"
+    )
+
+    if return_code is not None:
+        raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
 
     os.chdir(target_folder.parent)
 
@@ -345,12 +351,32 @@ def install_extra_nbextensions_conda(folder_path):
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f'({silent} {conda_python} -m jupyter nbextensions_configurator enable --user --yes) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m jupyter nbextension enable codefolding/main --user --yes) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m jupyter contrib nbextension install --user --yes) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m jupyter nbextension enable toc2/main --user --yes) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m '
-                    f'jupyter nbextension enable collapsible_headings/main --user) {redirect}')
+
+    try:
+        return_code = execute_and_log(
+            f'({silent} {conda_python} -m jupyter nbextensions_configurator enable --user --yes) {redirect}')
+        assert return_code is not None
+
+        return_code = execute_and_log(
+            f'({silent} {conda_python} -m jupyter nbextension enable codefolding/main --user --yes) {redirect}')
+        assert return_code is not None
+
+        return_code = execute_and_log(
+            f'({silent} {conda_python} -m jupyter contrib nbextension install --user --yes) {redirect}')
+        assert return_code is not None
+
+        return_code = execute_and_log(
+            f'({silent} {conda_python} -m jupyter nbextension enable toc2/main --user --yes) {redirect}')
+        assert return_code is not None
+
+        return_code = execute_and_log(
+            f'({silent} {conda_python} -m '
+            f'jupyter nbextension enable collapsible_headings/main --user) {redirect}'
+        )
+        assert return_code is not None
+
+    except AssertionError:
+        raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
 
     os.chdir(target_folder.parent)
 

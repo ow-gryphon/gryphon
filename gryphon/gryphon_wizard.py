@@ -121,3 +121,13 @@ def did_you_mean_gryphon():
 
 if __name__ == '__main__':
     main()
+
+# DONE: permit only after python 3.7
+# DONE: say that 3.7 is slower than the other ones
+# DONE: finite state machine not return context in some condition function
+# DONE: error when navigating to a category called cyber risk (it does not have any one)
+# DONE: treat notebook extensions error
+# TODO: warn the user if the path typed already exists
+# TODO: 3.9 should be the default
+# TODO: check conda and pip version on gryphon startup
+# TODO: add option to try another keyword for search

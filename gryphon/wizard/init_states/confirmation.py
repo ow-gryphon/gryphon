@@ -5,22 +5,23 @@ from ...fsm import State, Transition
 from ...constants import YES, NO
 
 
-def confirmation_success_callback(context):
+def confirmation_success_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
     erase_lines(n_lines=n_lines + 2)
+    return context
 
 
-def _change_from_confirmation_to_install(context):
+def _change_from_confirmation_to_install(context: dict) -> bool:
     confirmed = context["confirmed"]
     return confirmed == YES
 
 
-def _change_from_confirmation_to_ask_template(context):
+def _change_from_confirmation_to_ask_template(context: dict) -> bool:
     confirmed = context["confirmed"]
     return confirmed == NO
 
 
-def _change_from_confirmation_to_ask_location_again(context):
+def _change_from_confirmation_to_ask_location_again(context: dict) -> bool:
     confirmed = context["confirmed"]
     return confirmed == "change_location"
 

@@ -20,7 +20,7 @@ def filter_templates_by_category(state: dict) -> dict:
             ) or (
                 state["history"][0] == USE_CASES and
                 state["history"][1] == TOPIC and
-                state["history"][3] in template.topic
+                state["history"][2] in template.topic
             )
         )
     }

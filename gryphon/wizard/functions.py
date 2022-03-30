@@ -142,9 +142,11 @@ def list_conda_available_python_versions():
         key=lambda x: x.split(".")[0]
     )
 
-    # no version lower than 3.6 will be permitted
+    # no version lower than 3.7 will be permitted
+    major = 3
+    minor = 7
     possible_versions = list(filter(
-        lambda x: x.split(".")[0] >= "3" and int(x.split(".")[1]) >= 6,
+        lambda x: x.split(".")[0] >= str(major) and int(x.split(".")[1]) >= minor,
         displayed_versions
     ))
     return possible_versions
