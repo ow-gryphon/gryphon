@@ -181,7 +181,8 @@ def install_extra_nbextensions_venv(folder_path):
         pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
         activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
         silent = "START /B"
-        redirect = ">> .output 2>&1"
+        # redirect = ">> .output 2>&1"
+        redirect = ">nul 2>&1"
     else:
         pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
         activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
@@ -336,7 +337,8 @@ def install_extra_nbextensions_conda(folder_path):
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
         silent = "START /B"
-        redirect = ">> .output 2>&1"
+        # redirect = ">> .output 2>&1"
+        redirect = ">nul 2>&1"
     else:
         conda_python = conda_path / "bin" / "python"
         silent = "nohup"
@@ -347,32 +349,32 @@ def install_extra_nbextensions_conda(folder_path):
                                   f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes')
 
     if return_code is not None:
-        raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
+        raise RuntimeError(f"Failed on conda install command. Return code: {return_code}")
 
     os.chdir(target_folder)
 
     try:
         return_code = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter nbextensions_configurator enable --user --yes) {redirect}')
-        assert return_code is not None
+        assert return_code is None
 
         return_code = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter nbextension enable codefolding/main --user --yes) {redirect}')
-        assert return_code is not None
+        assert return_code is None
 
         return_code = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter contrib nbextension install --user --yes) {redirect}')
-        assert return_code is not None
+        assert return_code is None
 
         return_code = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter nbextension enable toc2/main --user --yes) {redirect}')
-        assert return_code is not None
+        assert return_code is None
 
         return_code = execute_and_log(
             f'({silent} \"{conda_python}\" -m '
             f'jupyter nbextension enable collapsible_headings/main --user) {redirect}'
         )
-        assert return_code is not None
+        assert return_code is None
 
     except AssertionError:
         raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
