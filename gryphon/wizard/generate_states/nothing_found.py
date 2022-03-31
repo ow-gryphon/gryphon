@@ -1,25 +1,29 @@
 from ..questions import GenerateQuestions
 from ..functions import erase_lines, BackSignal
 from ...fsm import Transition, State
-from ...constants import BACK, QUIT
+from ...constants import BACK, QUIT, SEARCH_BY_KEYWORD, TYPE_AGAIN
 
 
 def ask_what_to_do_if_nothing_found(state: dict):
-    response = GenerateQuestions.nothing_found()
+
+    if state["actual_selection"] == SEARCH_BY_KEYWORD:
+        response = GenerateQuestions.nothing_found_typing()
+    else:
+        response = GenerateQuestions.nothing_found()
+
     if response == QUIT:
         exit(0)
 
-    if response == BACK:
-        erase_lines(n_lines=2)
-
-    if len(state["history"]) >= 1:
-        state["history"].pop()
-    else:
-        raise BackSignal()
+    return response
 
 
-def _callback_nothing_found(context: dict) -> dict:
-    ask_what_to_do_if_nothing_found(context)
+def _callback_ask_keyword(context: dict) -> dict:
+    erase_lines()
+    return context
+
+
+def _callback_ask_category(context: dict) -> dict:
+    erase_lines(n_lines=3)
     return context
 
 
@@ -27,15 +31,18 @@ class NothingFound(State):
     name = "nothing_found"
     transitions = [
         Transition(
-            next_state="ask_category",
-            condition=lambda context: not bool(len(context["filtered_templates"])),
-            callback=_callback_nothing_found
+            next_state="ask_keyword",
+            condition=lambda context: context["what_to_do"] == TYPE_AGAIN,
+            callback=_callback_ask_keyword
         ),
         Transition(
-            next_state="ask_template",
-            condition=lambda context: bool(len(context["filtered_templates"]))
+            next_state="ask_category",
+            condition=lambda context: context["what_to_do"] == BACK,
+            callback=_callback_ask_category
         )
     ]
 
     def on_start(self, context: dict) -> dict:
+        context["what_to_do"] = ask_what_to_do_if_nothing_found(context)
+
         return context

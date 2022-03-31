@@ -4,3 +4,4 @@ from .nothing_found import NothingFound
 from .ask_template import AskTemplate
 from .confirmation import Confirmation
 from .install import Install
+from .ask_keyword import AskKeyword

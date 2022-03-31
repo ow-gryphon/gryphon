@@ -1,5 +1,6 @@
 from .generate_states import (
-    AskCategory, FilterTemplates, NothingFound, AskTemplate, Confirmation, Install
+    AskCategory, FilterTemplates, NothingFound,
+    AskTemplate, Confirmation, Install, AskKeyword
 )
 from .functions import BackSignal
 from ..constants import BACK
@@ -15,10 +16,11 @@ def generate(data_path, registry):
     ask_template = AskTemplate()
     confirmation = Confirmation()
     install = Install()
+    ask_keyword = AskKeyword()
 
     possible_states = [
         ask_category, filter_templates, nothing_found,
-        ask_template, confirmation, install
+        ask_template, confirmation, install, ask_keyword
     ]
 
     machine = Machine(

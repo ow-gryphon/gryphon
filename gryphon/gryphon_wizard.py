@@ -127,7 +127,10 @@ if __name__ == '__main__':
 # DONE: finite state machine not return context in some condition function
 # DONE: error when navigating to a category called cyber risk (it does not have any one)
 # DONE: treat notebook extensions error
+# DONE: add option to try another keyword for search
 # TODO: warn the user if the path typed already exists
+    # this should be after the core_init start or before the confirmation
+    # if it is before the confirmation it should make hard to go back to the previous menu
+    # without erasing the wrong number of lines. The only way out is to have a flag on the context.
 # TODO: 3.9 should be the default
 # TODO: check conda and pip version on gryphon startup
-# TODO: add option to try another keyword for search

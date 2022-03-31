@@ -4,31 +4,7 @@ from ..functions import (
     erase_lines, get_current_tree_state, get_option_names, BackSignal
 )
 from ...fsm import Transition, State
-from ...constants import SEARCH_BY_KEYWORD, BACK, QUIT, GENERATE
-
-
-def ask_what_to_do_if_nothing_found(state: dict):
-    response = GenerateQuestions.nothing_found()
-    if response == QUIT:
-        exit(0)
-
-    if response == BACK:
-        erase_lines(n_lines=2)
-
-    if len(state["history"]) >= 1:
-        state["history"].pop()
-    else:
-        raise BackSignal()
-
-
-def filter_by_keyword(keyword_to_find, templates):
-    if keyword_to_find not in ['', ' ']:
-        return {
-            name: template
-            for name, template in templates.items()
-            if keyword_to_find.lower() in '\t'.join(template.keywords).lower()
-        }
-    return []
+from ...constants import SEARCH_BY_KEYWORD, BACK, GENERATE
 
 
 # CONDITIONS AND CALLBACKS
@@ -55,12 +31,6 @@ def _condition_ask_category_to_type_keyword(context: dict) -> bool:
     return context["actual_selection"] == SEARCH_BY_KEYWORD
 
 
-def _callback_ask_category_to_type_keyword(context: dict) -> dict:
-    keyword = GenerateQuestions.generate_keyword_question()
-    context["filtered_templates"] = filter_by_keyword(keyword, context["templates"])
-    return context
-
-
 class AskCategory(State):
     name = "ask_category"
     transitions = [
@@ -74,9 +44,8 @@ class AskCategory(State):
             condition=_condition_ask_category_to_ask_category
         ),
         Transition(
-            next_state="ask_category",
-            condition=_condition_ask_category_to_type_keyword,
-            callback=_callback_ask_category_to_type_keyword
+            next_state="ask_keyword",
+            condition=_condition_ask_category_to_type_keyword
         )
     ]
 

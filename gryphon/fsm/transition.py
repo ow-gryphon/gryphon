@@ -17,7 +17,13 @@ class Transition:
 
     def check_condition(self, context):
         transition = self.condition(context)
-        assert isinstance(transition, bool)
+
+        if not isinstance(transition, bool):
+            raise RuntimeError(f"Wrong transition return type. "
+                               f"Next state: {self.next_state} "
+                               f"Returned: {transition} "
+                               f"Return type: {type(transition)} "
+                               f"Expected: Bool")
         return transition
 
 

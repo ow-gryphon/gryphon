@@ -85,14 +85,14 @@ def filter_chosen_option(option, tree):
     try:
         return list(filter(lambda x: x[NAME] == option, tree))[0]
     except IndexError:
-        raise RuntimeError("Error in the menu navigation.")
+        raise ValueError("Error in the menu navigation (name search).")
 
 
 def filter_chosen_option_by_value(option, tree):
     try:
         return list(filter(lambda x: x[VALUE] == option, tree))[0]
     except IndexError:
-        raise RuntimeError("Error in the menu navigation.")
+        raise ValueError("Error in the menu navigation (value search).")
 
 
 def get_option_names(tree):
