@@ -76,7 +76,7 @@ def copy_project_template(template_source: Path, template_destiny: Path):
 
     shutil.copytree(
         src=template_path,
-        dst=template_destiny,
+        dst=rf'{str(template_destiny)}',
         dirs_exist_ok=True
     )
 
@@ -133,7 +133,7 @@ def create_venv(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
-    return_code = execute_and_log(f"{python_path} -m venv \"{venv_path}\"")
+    return_code = execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
     if return_code:
         raise RuntimeError("Failed to create virtual environment.")
 
@@ -162,7 +162,7 @@ def install_libraries_venv(folder=None):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    return_code = execute_and_log(f'{str(pip_path)} install -r {str(requirements_path)} --disable-pip-version-check')
+    return_code = execute_and_log(f'\"{pip_path}\" install -r \"{requirements_path}\" --disable-pip-version-check')
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
 
@@ -175,7 +175,6 @@ def install_extra_nbextensions_venv(folder_path):
     """
     target_folder = get_destination_path(folder_path)
     requirements_path = target_folder / REQUIREMENTS
-    print(str(requirements_path))
 
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
@@ -187,7 +186,7 @@ def install_extra_nbextensions_venv(folder_path):
         pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
         activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
         activate_env_command = str(activate_path)
-        os.system(f"chmod 777 {activate_path}")
+        os.system(f"chmod 777 \"{activate_path}\"")
         silent = "nohup"
         redirect = ""
 
@@ -208,7 +207,7 @@ def install_extra_nbextensions_venv(folder_path):
             with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
-    return_code = execute_and_log(f'{activate_env_command} && pip --disable-pip-version-check '
+    return_code = execute_and_log(f'\"{activate_env_command}\" && pip --disable-pip-version-check '
                                   f'install jupyter_contrib_nbextensions jupyter_nbextensions_configurator')
 
     if return_code is not None:
@@ -216,7 +215,7 @@ def install_extra_nbextensions_venv(folder_path):
 
     os.chdir(target_folder)
     return_code = execute_and_log(
-        f"{activate_env_command} "
+        f"\"{activate_env_command}\" "
         f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
         f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
         f"&& ({silent} jupyter nbextension enable codefolding/main --user) {redirect}"
@@ -249,12 +248,12 @@ def change_shell_folder_and_activate_venv(location):
 
                 ANACONDA PROMPT/COMMAND PROMPT:
 
-                >> cd {target_folder}
+                >> cd \"{target_folder}\"
                 >> .venv\\Scripts\\activate.bat
                 
                 GIT BASH:
                 
-                >> cd {str(target_folder).replace(chr(92),'/')}
+                >> cd \"{str(target_folder).replace(chr(92),'/')}\"
                 >> source .venv/Scripts/activate
 
                 {Text.install_end_message_2}
@@ -280,7 +279,7 @@ def create_conda_env(folder=None, python_version=None):
     logger.info(f"Creating Conda virtual environment in {conda_path}")
     execute_and_log("conda config --set notify_outdated_conda false")
     execute_and_log("conda config --append channels conda-forge --json >> out.json && rm out.json")
-    command = f"conda create --prefix={conda_path} -y"
+    command = f"conda create --prefix=\"{conda_path}\" -y"
 
     if python_version and python_version != SYSTEM_DEFAULT:
         command += f" python={python_version}"
@@ -300,7 +299,7 @@ def install_libraries_conda(folder=None):
     conda_path = target_folder / 'envs'
 
     execute_and_log("conda config --set notify_outdated_conda false")
-    return_code = execute_and_log(f"conda install --prefix {conda_path} --file {requirements_path} -y")
+    return_code = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -y")
 
     if return_code is not None:
         raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
@@ -345,7 +344,7 @@ def install_extra_nbextensions_conda(folder_path):
 
     execute_and_log("conda config --set notify_outdated_conda false")
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator --prefix={conda_path} --yes')
+                                  f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
@@ -354,23 +353,23 @@ def install_extra_nbextensions_conda(folder_path):
 
     try:
         return_code = execute_and_log(
-            f'({silent} {conda_python} -m jupyter nbextensions_configurator enable --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter nbextensions_configurator enable --user --yes) {redirect}')
         assert return_code is not None
 
         return_code = execute_and_log(
-            f'({silent} {conda_python} -m jupyter nbextension enable codefolding/main --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter nbextension enable codefolding/main --user --yes) {redirect}')
         assert return_code is not None
 
         return_code = execute_and_log(
-            f'({silent} {conda_python} -m jupyter contrib nbextension install --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter contrib nbextension install --user --yes) {redirect}')
         assert return_code is not None
 
         return_code = execute_and_log(
-            f'({silent} {conda_python} -m jupyter nbextension enable toc2/main --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter nbextension enable toc2/main --user --yes) {redirect}')
         assert return_code is not None
 
         return_code = execute_and_log(
-            f'({silent} {conda_python} -m '
+            f'({silent} \"{conda_python}\" -m '
             f'jupyter nbextension enable collapsible_headings/main --user) {redirect}'
         )
         assert return_code is not None
@@ -389,7 +388,7 @@ def change_shell_folder_and_activate_conda_env(location):
             {Text.install_end_message_1}
 
             >> cd {target_folder}
-            >> conda activate --prefix={target_folder / "envs"}
+            >> conda activate --prefix=\"{target_folder / "envs"}\"
 
             {Text.install_end_message_2}
         """)
