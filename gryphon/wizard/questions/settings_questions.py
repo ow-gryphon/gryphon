@@ -1,8 +1,13 @@
+import json
+
 import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT)
+from ...constants import (
+    YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT, CHANGE_LOCATION,
+    DATA_PATH
+)
 
 
 class SettingsQuestions:
@@ -128,6 +133,9 @@ class SettingsQuestions:
     @staticmethod
     @base_question
     def ask_python_version(versions, current_version):
+        with open(DATA_PATH / "python_versions_observations.json", "r", encoding="utf-8") as f:
+            obs = json.load(f)
+
         message = Text.settings_python_use_system_default
         choices = [
             Choice(
@@ -138,7 +146,8 @@ class SettingsQuestions:
 
         choices.extend([
             Choice(
-                title=v if v != current_version else f"{v} (current)",
+                title=(v if v != current_version else f"{v} (current)") +
+                      (f' ({obs[v]})' if v in obs else ''),
                 value=v
             )
             for v in versions
@@ -158,4 +167,30 @@ class SettingsQuestions:
             message=Text.settings_ask_python_version,
             choices=choices,
             use_indicator=True
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def confirm_new_template(location):
+        message = (
+            Text.settings_confirm_new_template
+            .replace("{location}", str(location))
+        )
+
+        return questionary.select(
+            message=message,
+            choices=[
+                Choice(
+                    title="Yes",
+                    value=YES
+                ),
+                Choice(
+                    title="No",
+                    value=NO
+                ),
+                Choice(
+                    title="Change project location",
+                    value=CHANGE_LOCATION
+                )
+            ]
         ).unsafe_ask()

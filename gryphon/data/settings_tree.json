@@ -17,6 +17,7 @@
 			}
 		]
 	},
+
 	{
 		"name": "Select Python version",
 		"value": "change_python_version"
@@ -46,5 +47,9 @@
 	{
 		"name": "Restore default settings",
 		"value": "restore_defaults"
+	},
+	{
+		"name": "Update conda",
+		"value": "update_conda"
 	}
 ]

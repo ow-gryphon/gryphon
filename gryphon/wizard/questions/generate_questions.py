@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (QUIT, YES, NO)
+from ...constants import (QUIT, YES, NO, TYPE_AGAIN)
 
 
 class GenerateQuestions:
@@ -91,6 +91,27 @@ class GenerateQuestions:
     @base_question
     def nothing_found():
         choices = [
+            get_back_choice(),
+            Choice(
+                title="Quit",
+                value=QUIT
+            ),
+        ]
+
+        return questionary.select(
+            message=Text.could_not_find_any_templates,
+            choices=choices
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def nothing_found_typing():
+        choices = [
+            Choice(
+                title="Try another keyword",
+                value=TYPE_AGAIN
+            ),
+            Separator(),
             get_back_choice(),
             Choice(
                 title="Quit",

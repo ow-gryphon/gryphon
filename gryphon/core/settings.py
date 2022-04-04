@@ -109,8 +109,8 @@ class SettingsManager:
             contents.setdefault("git_registry", {})
             contents.setdefault("local_registry", {})
 
-            contents["git_registry"] = default_settings["git_registry"]
-            contents["local_registry"] = default_settings["local_registry"]
+            contents["git_registry"] = default_settings.get("git_registry", {})
+            contents["local_registry"] = default_settings.get("local_registry", {})
 
             f.seek(0)
             f.write(json.dumps(contents))

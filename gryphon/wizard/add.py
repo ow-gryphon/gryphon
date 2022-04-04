@@ -1,12 +1,12 @@
 import logging
-import os
-import json
-import platform
-from .functions import erase_lines, get_current_tree_state, filter_chosen_option, current_folder_has_venv
-from .questions import AddQuestions
-from .wizard_text import Text
-from ..core import add as core_add
-from ..constants import BACK, TYPING, CHILDREN, NAME, YES, NO
+from .functions import BackSignal
+from ..constants import BACK
+from .add_states import (
+    AskOption, LibraryChosen, Confirmation, AddLibrary,
+    TypeLibraryName
+)
+from ..fsm import Machine, HaltSignal
+
 
 logger = logging.getLogger('gryphon')
 
@@ -14,76 +14,27 @@ logger = logging.getLogger('gryphon')
 def add(data_path, _):
     """add templates based on arguments and configurations."""
 
-    if not current_folder_has_venv():
-        logger.warning(Text.no_virtual_environment_remainder)
+    ask_option = AskOption(data_path)
+    library_chosen = LibraryChosen()
+    confirmation = Confirmation()
+    add_library = AddLibrary()
+    type_library_name = TypeLibraryName()
 
-    navigation_history = []
-    chosen_option = ""
+    possible_states = [
+        ask_option, library_chosen, confirmation, add_library, type_library_name
+    ]
 
-    with open(data_path / "library_tree.json", encoding='utf-8') as file:
-        full_tree = json.load(file)
-
-    while True:
-        lib_tree = get_current_tree_state(
-            tree=full_tree,
-            history=navigation_history
-        )
-
-        if not len(lib_tree):
-            break
-
-        # chosen option
-        chosen_option = AddQuestions.get_add_option(lib_tree)
-
-        if chosen_option == BACK:
-            # return to the main menu
-            if len(navigation_history) >= 1:
-                navigation_history.pop()
-                erase_lines(n_lines=2)
-                continue
-            else:
-                erase_lines(n_lines=2)
-                return BACK
-        elif chosen_option == TYPING:
-            # type the bare lib name
-            chosen_option = {NAME: AddQuestions.get_lib_via_keyboard()}
-        else:
-            node = filter_chosen_option(chosen_option, lib_tree)
-            if CHILDREN not in node:
-                # this is the leaf item
-                chosen_option = node
-            else:
-                # we are not in the leaf yet
-                navigation_history.append(chosen_option)
-                continue
-
-        response = None
-        while response != YES:
-
-            response, n_lines = AddQuestions.confirm_add(chosen_option)
-
-            if response == NO:
-                # navigation_history.pop()
-                erase_lines(n_lines=2)
-                erase_lines(n_lines=n_lines)
-                break
-
-            if response != YES:
-
-                if platform.system() == "Windows":
-                    os.system(f"start {response}")
-                    erase_lines(n_lines=1)
-                else:
-                    os.system(f"""nohup xdg-open "{response}" """)
-                    os.system(f"""rm nohup.out""")
-                    erase_lines()
-                erase_lines(n_lines=n_lines)
-
-        if response == NO:
-            continue
-
-        break
-
-    core_add(
-        library_name=chosen_option[NAME]
+    machine = Machine(
+        initial_state=ask_option,
+        possible_states=possible_states
     )
+
+    try:
+        machine.run()
+    except BackSignal:
+        return BACK
+    except HaltSignal:
+        return
+
+# TODO: Check which env manager we have on the folder
+#  in order to install on the right one
