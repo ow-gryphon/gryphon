@@ -8,3 +8,4 @@ from .restore_default_registry import RestoreDefaultRegistry
 from .add_remote_registry import AddRemoteRegistry
 from .add_local_registry import AddLocalRegistry
 from .remove_registry import RemoveRegistry
+from .update_conda import UpdateConda

@@ -5,7 +5,7 @@ from .settings_states import (
     AskOption, PerformAction, ChangePythonVersion,
     NewTemplate, ChangeEnvManager, RestoreDefaults,
     RestoreDefaultRegistry, AddRemoteRegistry,
-    AddLocalRegistry, RemoveRegistry
+    AddLocalRegistry, RemoveRegistry, UpdateConda
 )
 from ..constants import (
     CONFIG_FILE, DEFAULT_ENV, NAME, VALUE, BACK
@@ -41,21 +41,12 @@ def settings(data_path, _):
     """Shows some configurations for power users."""
 
     ask_option = AskOption(data_path)
-    perform_action = PerformAction()
-    change_python_version = ChangePythonVersion()
-    new_template = NewTemplate()
-    change_env_manager = ChangeEnvManager()
-    restore_defaults = RestoreDefaults()
-    restore_default_registry = RestoreDefaultRegistry()
-    add_remote_registry = AddRemoteRegistry()
-    add_local_registry = AddLocalRegistry()
-    remove_registry = RemoveRegistry()
 
     possible_states = [
-        ask_option, perform_action, change_python_version,
-        new_template, change_env_manager, restore_defaults,
-        restore_default_registry, add_remote_registry,
-        add_local_registry, remove_registry
+        ask_option, PerformAction(), ChangePythonVersion(),
+        NewTemplate(), ChangeEnvManager(), RestoreDefaults(),
+        RestoreDefaultRegistry(), AddRemoteRegistry(),
+        AddLocalRegistry(), RemoveRegistry(), UpdateConda()
     ]
 
     machine = Machine(

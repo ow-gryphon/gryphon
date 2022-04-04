@@ -56,6 +56,10 @@ def _condition_from_perform_action_to_restore_defaults(context: dict) -> bool:
     return context["history"][0] == "restore_defaults"
 
 
+def _condition_from_perform_action_to_update_conda(context: dict) -> bool:
+    return context["history"][0] == "update_conda"
+
+
 def _callback_from_perform_action_to_change_python_version(context: dict) -> dict:
     return context
 
@@ -96,6 +100,11 @@ class PerformAction(State):
         Transition(
             next_state="remove_registry",
             condition=_condition_from_perform_action_to_remove_registry
+        ),
+
+        Transition(
+            next_state="update_conda",
+            condition=_condition_from_perform_action_to_update_conda
         )
     ]
 

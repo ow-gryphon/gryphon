@@ -132,5 +132,4 @@ if __name__ == '__main__':
     # this should be after the core_init start or before the confirmation
     # if it is before the confirmation it should make hard to go back to the previous menu
     # without erasing the wrong number of lines. The only way out is to have a flag on the context.
-# TODO: check conda and pip version on gryphon startup
 # Trying to find .venv when the environment is set to conda (should use envs folder)
