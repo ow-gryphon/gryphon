@@ -3,20 +3,22 @@ Module containing the code for the generate command in then CLI.
 """
 
 import os
+import json
 import shutil
 from pathlib import Path
 import glob
 import logging
 from .registry import Template
+from .settings import SettingsManager
 from .common_operations import (
     get_destination_path,
     append_requirement,
-    install_libraries_venv,
+    install_libraries_venv, install_libraries_conda,
     get_rc_file,
     log_operation, log_new_files, log_add_library,
     download_template, unzip_templates, unify_templates
 )
-from ..constants import GENERATE
+from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA
 
 
 logger = logging.getLogger('gryphon')
@@ -26,6 +28,10 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
     """
     Generate command from the OW Gryphon CLI.
     """
+    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
+        data = json.load(f)
+        env_type = data.get("environment_management", DEFAULT_ENV)
+
     logger.info("Generating template.")
     if template.registry_type == "remote index":
 
@@ -45,7 +51,10 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
         append_requirement(r)
 
     log_add_library(requirements)
-    install_libraries_venv()
+    if env_type == VENV:
+        install_libraries_venv()
+    elif env_type == CONDA:
+        install_libraries_conda()
 
     # RC file
     rc_file = get_rc_file(folder)

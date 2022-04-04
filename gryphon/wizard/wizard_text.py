@@ -86,3 +86,6 @@ class Text:
 
     settings_confirm_change_env_manager = "Do you really want to change the environment manager to {env_manager}? "
     settings_confirm_registry_addition = "Confirm that you want to add the new {registry_name} registry to gryphon?"
+
+    settings_confirm_new_template = "Confirm that you want to create a new template scaffolding inside the " \
+                                    "folder '{location}'?"

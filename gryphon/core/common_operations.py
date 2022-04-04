@@ -71,7 +71,7 @@ def on_error(func, path, exc):
         raise RuntimeError("File permission error.")
 
 
-def remove_folder(folder):
+def remove_folder(folder: Path):
     """
     Removes a folder (location relative to cwd or absolute).
     """
@@ -93,7 +93,7 @@ def copy_project_template(template_source: Path, template_destiny: Path):
 
     shutil.copytree(
         src=template_path,
-        dst=template_destiny,
+        dst=rf'{str(template_destiny)}',
         dirs_exist_ok=True
     )
 
@@ -150,7 +150,7 @@ def create_venv(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
-    return_code = execute_and_log(f"{str(python_path)} -m venv \"{str(venv_path)}\"")
+    return_code = execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
     if return_code:
         raise RuntimeError("Failed to create virtual environment.")
 
@@ -179,7 +179,7 @@ def install_libraries_venv(folder=None):
     if not requirements_path.is_file():
         raise FileNotFoundError("requirements.txt file not found.")
 
-    return_code = execute_and_log(f'{str(pip_path)} install -r {str(requirements_path)}')
+    return_code = execute_and_log(f'\"{pip_path}\" install -r \"{requirements_path}\" --disable-pip-version-check')
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
 
@@ -198,12 +198,13 @@ def install_extra_nbextensions_venv(folder_path):
         pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
         activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
         silent = "START /B"
-        redirect = ">> .output 2>&1"
+        # redirect = ">> .output 2>&1"
+        redirect = ">nul 2>&1"
     else:
         pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
         activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
         activate_env_command = str(activate_path)
-        os.system(f"chmod 777 {activate_path}")
+        os.system(f"chmod 777 \"{activate_path}\"")
         silent = "nohup"
         redirect = ""
 
@@ -224,19 +225,24 @@ def install_extra_nbextensions_venv(folder_path):
             with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
-    return_code = execute_and_log(f'{activate_env_command} '
-                                  f'&& pip install jupyter_contrib_nbextensions jupyter_nbextensions_configurator')
+    return_code = execute_and_log(f'\"{activate_env_command}\" && pip --disable-pip-version-check '
+                                  f'install jupyter_contrib_nbextensions jupyter_nbextensions_configurator')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f"{activate_env_command} "  
-                    f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
-                    f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
-                    f"&& ({silent} jupyter nbextension enable codefolding/main --user) {redirect}"
-                    f"&& ({silent} jupyter nbextension enable toc2/main --user) {redirect}"
-                    f"&& ({silent} jupyter nbextension enable collapsible_headings/main --user) {redirect}")
+    return_code = execute_and_log(
+        f"\"{activate_env_command}\" "
+        f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
+        f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
+        f"&& ({silent} jupyter nbextension enable codefolding/main --user) {redirect}"
+        f"&& ({silent} jupyter nbextension enable toc2/main --user) {redirect}"
+        f"&& ({silent} jupyter nbextension enable collapsible_headings/main --user) {redirect}"
+    )
+
+    if return_code is not None:
+        raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
 
     os.chdir(target_folder.parent)
 
@@ -260,12 +266,12 @@ def change_shell_folder_and_activate_venv(location):
 
                 ANACONDA PROMPT/COMMAND PROMPT:
 
-                >> cd {target_folder}
+                >> cd \"{target_folder}\"
                 >> .venv\\Scripts\\activate.bat
                 
                 GIT BASH:
                 
-                >> cd {str(target_folder).replace(chr(92),'/')}
+                >> cd \"{str(target_folder).replace(chr(92),'/')}\"
                 >> source .venv/Scripts/activate
 
                 {Text.install_end_message_2}
@@ -289,9 +295,11 @@ def create_conda_env(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
+    execute_and_log("conda config --set notify_outdated_conda false")
+    execute_and_log("conda config --append channels conda-forge --json >> out.json")
+    os.remove("out.json")
 
-    execute_and_log("conda config --append channels conda-forge")
-    command = f"conda create --prefix={conda_path} -y"
+    command = f"conda create --prefix=\"{conda_path}\" -y -k"
 
     if python_version and python_version != SYSTEM_DEFAULT:
         command += f" python={python_version}"
@@ -310,7 +318,8 @@ def install_libraries_conda(folder=None):
     requirements_path = target_folder / "requirements.txt"
     conda_path = target_folder / 'envs'
 
-    return_code = execute_and_log(f"conda install --prefix {conda_path} --file {requirements_path} -y")
+    execute_and_log("conda config --set notify_outdated_conda false")
+    return_code = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
 
     if return_code is not None:
         raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
@@ -347,25 +356,49 @@ def install_extra_nbextensions_conda(folder_path):
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
         silent = "START /B"
-        redirect = ">> .output 2>&1"
+        # redirect = ">> .output 2>&1"
+        redirect = ">nul 2>&1"
     else:
         conda_python = conda_path / "bin" / "python"
         silent = "nohup"
         redirect = ""
 
+    execute_and_log("conda config --set notify_outdated_conda false")
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator --prefix={conda_path} --yes')
+                                  f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k')
 
     if return_code is not None:
-        raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
+        raise RuntimeError(f"Failed on conda install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    execute_and_log(f'({silent} {conda_python} -m jupyter nbextensions_configurator enable --user) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m jupyter nbextension enable codefolding/main --user) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m jupyter contrib nbextension install --user) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m jupyter nbextension enable toc2/main --user) {redirect}')
-    execute_and_log(f'({silent} {conda_python} -m '
-                    f'jupyter nbextension enable collapsible_headings/main --user) {redirect}')
+
+    try:
+        return_code = execute_and_log(
+            f'({silent} \"{conda_python}\" -m jupyter nbextensions_configurator enable --user) {redirect}')
+        assert return_code is None
+
+        return_code = execute_and_log(
+            f'({silent} \"{conda_python}\" -m jupyter nbextension enable codefolding/main --user) {redirect}')
+        assert return_code is None
+
+        return_code = execute_and_log(
+            f'({silent} \"{conda_python}\" -m jupyter contrib nbextension install --user) {redirect}')
+        assert return_code is None
+
+        return_code = execute_and_log(
+            f'({silent} \"{conda_python}\" -m jupyter nbextension enable toc2/main --user) {redirect}')
+        assert return_code is None
+
+        return_code = execute_and_log(
+            f'({silent} \"{conda_python}\" -m '
+            f'jupyter nbextension enable collapsible_headings/main --user) {redirect}'
+        )
+        assert return_code is None
+        # os.remove("nohup.out")
+
+    except AssertionError:
+        raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
+
     os.chdir(target_folder.parent)
 
 
@@ -377,10 +410,15 @@ def change_shell_folder_and_activate_conda_env(location):
             {Text.install_end_message_1}
 
             >> cd {target_folder}
-            >> conda activate --prefix={target_folder / "envs"}
+            >> conda activate --prefix=\"{target_folder / "envs"}\"
 
             {Text.install_end_message_2}
         """)
+
+
+def update_conda():
+    if execute_and_log("conda update conda") is not None:
+        raise RuntimeError("Failed to update conda.")
 
 
 # requirements.txt UTILS
@@ -494,22 +532,25 @@ def log_add_library(libraries, logfile=None):
 
     if logfile is None:
         logfile = Path.cwd() / ".gryphon_history"
+    try:
+        with open(logfile, "r+", encoding="utf-8") as f:
+            contents = json.load(f)
 
-    with open(logfile, "r+", encoding="utf-8") as f:
-        contents = json.load(f)
-
-        new_contents = contents.copy()
-        for lib in libraries:
-            new_contents.setdefault("libraries", []).append(
-                dict(
-                    name=lib,
-                    added_at=str(datetime.now())
+            new_contents = contents.copy()
+            for lib in libraries:
+                new_contents.setdefault("libraries", []).append(
+                    dict(
+                        name=lib,
+                        added_at=str(datetime.now())
+                    )
                 )
-            )
 
-        f.seek(0)
-        f.write(json.dumps(new_contents))
-        f.truncate()
+            f.seek(0)
+            f.write(json.dumps(new_contents))
+            f.truncate()
+    except FileNotFoundError:
+        raise RuntimeError("The .gryphon_history file was not found, therefore you are not inside a "
+                           "Gryphon project directory.")
 
 
 def get_current_python_version():

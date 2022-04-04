@@ -1,8 +1,8 @@
 import json
 import shutil
+import os
 from os import path
 
-import pytest
 
 from gryphon.core.generate import (
     generate,
