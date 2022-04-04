@@ -14,7 +14,7 @@ class AskLocationAgain(State):
 
     def on_start(self, context: dict) -> dict:
         n_lines = context["n_lines"]
-        erase_lines(n_lines=n_lines + 1)
+        erase_lines(n_lines=n_lines + 1 + context["n_lines_warning"])
 
         context["location"] = InitQuestions.ask_init_location()
 

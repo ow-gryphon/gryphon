@@ -1,13 +1,16 @@
+import logging
 from pathlib import Path
 from ..functions import erase_lines
 from ..questions import InitQuestions
 from ...fsm import State, Transition
 from ...constants import YES, NO
 
+logger = logging.getLogger('gryphon')
+
 
 def confirmation_success_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
-    erase_lines(n_lines=n_lines + 2)
+    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"])
     return context
 
 
@@ -49,6 +52,12 @@ class Confirmation(State):
         template = context["template"]
         location = context["location"]
         extra_parameters = context["extra_parameters"]
+
+        context["n_lines_warning"] = 0
+        path = Path.cwd() / location
+        if path.is_dir():
+            context["n_lines_warning"] = 1
+            logger.warning("WARNING: The selected folder already exists.")
 
         confirmed, n_lines = InitQuestions.confirm_init(
             template=template,
