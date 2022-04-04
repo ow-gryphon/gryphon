@@ -279,8 +279,10 @@ def create_conda_env(folder=None, python_version=None):
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
     execute_and_log("conda config --set notify_outdated_conda false")
-    execute_and_log("conda config --append channels conda-forge --json >> out.json && rm out.json")
-    command = f"conda create --prefix=\"{conda_path}\" -y"
+    execute_and_log("conda config --append channels conda-forge --json >> out.json")
+    os.remove("out.json")
+
+    command = f"conda create --prefix=\"{conda_path}\" -y -k"
 
     if python_version and python_version != SYSTEM_DEFAULT:
         command += f" python={python_version}"
@@ -300,7 +302,7 @@ def install_libraries_conda(folder=None):
     conda_path = target_folder / 'envs'
 
     execute_and_log("conda config --set notify_outdated_conda false")
-    return_code = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -y")
+    return_code = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
 
     if return_code is not None:
         raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
@@ -346,7 +348,7 @@ def install_extra_nbextensions_conda(folder_path):
 
     execute_and_log("conda config --set notify_outdated_conda false")
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes')
+                                  f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k')
 
     if return_code is not None:
         raise RuntimeError(f"Failed on conda install command. Return code: {return_code}")
@@ -355,19 +357,19 @@ def install_extra_nbextensions_conda(folder_path):
 
     try:
         return_code = execute_and_log(
-            f'({silent} \"{conda_python}\" -m jupyter nbextensions_configurator enable --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter nbextensions_configurator enable --user) {redirect}')
         assert return_code is None
 
         return_code = execute_and_log(
-            f'({silent} \"{conda_python}\" -m jupyter nbextension enable codefolding/main --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter nbextension enable codefolding/main --user) {redirect}')
         assert return_code is None
 
         return_code = execute_and_log(
-            f'({silent} \"{conda_python}\" -m jupyter contrib nbextension install --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter contrib nbextension install --user) {redirect}')
         assert return_code is None
 
         return_code = execute_and_log(
-            f'({silent} \"{conda_python}\" -m jupyter nbextension enable toc2/main --user --yes) {redirect}')
+            f'({silent} \"{conda_python}\" -m jupyter nbextension enable toc2/main --user) {redirect}')
         assert return_code is None
 
         return_code = execute_and_log(
@@ -375,6 +377,7 @@ def install_extra_nbextensions_conda(folder_path):
             f'jupyter nbextension enable collapsible_headings/main --user) {redirect}'
         )
         assert return_code is None
+        # os.remove("nohup.out")
 
     except AssertionError:
         raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
