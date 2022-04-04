@@ -1,4 +1,4 @@
-from ..generate_states import (
+from .generate_states import (
     AskCategory, FilterTemplates, NothingFound,
     AskTemplate, Confirmation, Install, AskKeyword
 )
