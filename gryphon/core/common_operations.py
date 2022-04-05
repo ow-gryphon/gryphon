@@ -389,16 +389,29 @@ def change_shell_folder_and_activate_conda_env(location):
 
     if 'pytest' not in sys.modules:
         target_folder = get_destination_path(location)
-        logger.warning(f"""
-            {Text.install_end_message_1}
+        
+        if platform.system() == "Windows":
+            logger.warning(f"""
+                {Text.install_end_message_1}
 
-            >> cd {target_folder}
-            >> conda activate --prefix=\"{target_folder / "envs"}\"
-
-            {Text.install_end_message_2}
-        """)
+                >> cd {target_folder}
+                >> conda activate \"{target_folder / "envs"}\"
+                [Or once in the folder, simply: >> conda activate .\\envs]
 
 
+                {Text.install_end_message_2}
+            """)
+        else:
+            logger.warning(f"""
+                {Text.install_end_message_1}
+
+                >> cd {target_folder}
+                >> conda activate --prefix=\"{target_folder / "envs"}\"
+
+                {Text.install_end_message_2}
+            """)
+
+            
 def update_conda():
     if execute_and_log("conda update conda -k") is not None:
         raise RuntimeError("Failed to update conda.")
