@@ -400,7 +400,7 @@ def change_shell_folder_and_activate_conda_env(location):
 
 
 def update_conda():
-    if execute_and_log("conda update conda") is not None:
+    if execute_and_log("conda update conda -k") is not None:
         raise RuntimeError("Failed to update conda.")
 
 
