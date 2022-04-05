@@ -99,7 +99,6 @@ def main():
 
         try:
             response = function(DATA_PATH, registry)
-
             if response != BACK:
                 if chosen_command in [GENERATE, ADD]:
                     logger.info("\n\n")
@@ -146,3 +145,15 @@ def did_you_mean_gryphon():
 
 if __name__ == '__main__':
     main()
+
+# DONE: permit only after python 3.7
+# DONE: say that 3.7 is slower than the other ones
+# DONE: finite state machine not return context in some condition function
+# DONE: error when navigating to a category called cyber risk (it does not have any one)
+# DONE: treat notebook extensions error
+# DONE: add option to try another keyword for search
+# DONE: warn the user if the path typed already exists
+    # this should be after the core_init start or before the confirmation
+    # if it is before the confirmation it should make hard to go back to the previous menu
+    # without erasing the wrong number of lines. The only way out is to have a flag on the context.
+# Trying to find .venv when the environment is set to conda (should use envs folder)

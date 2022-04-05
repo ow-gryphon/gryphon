@@ -1,10 +1,10 @@
 import os
 import json
 import glob
-from distutils.version import StrictVersion
 from typing import List, Dict
 from pathlib import Path
 from git import Repo
+from distutils.version import StrictVersion
 from .template import Template
 from ..common_operations import remove_folder
 from ...constants import GRYPHON_HOME
@@ -36,13 +36,16 @@ class RemoteIndex:
             with open(file, "r", encoding="UTF-8") as f:
                 contents = json.load(f)
 
-                list(contents.keys()).sort(key=lambda x: StrictVersion(x[1:]))
-                latest_version = list(contents.keys())[-1]
+                versions = list(contents.keys())
+                versions.sort(key=lambda x: StrictVersion(x[1:]))
+
+                latest_version = versions[-1]
                 latest = contents[latest_version]
 
                 latest["path"] = Path(file).parent
-                assert latest["command"] in ["generate", "init"]
-                metadata_contents[latest["command"]].append(latest)
+                command = latest["command"]
+                assert command in ["generate", "init"]
+                metadata_contents[command].append(latest)
 
         return metadata_contents
 

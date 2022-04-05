@@ -12,6 +12,11 @@ from ..constants import (
 logger = logging.getLogger('gryphon')
 
 
+class BackSignal(Exception):
+    def __init__(self):
+        super().__init__()
+
+
 def erase_lines(n_lines=2):
     for _ in range(n_lines):
         logger.info("\033[A                                                          \033[A")
@@ -80,14 +85,14 @@ def filter_chosen_option(option, tree):
     try:
         return list(filter(lambda x: x[NAME] == option, tree))[0]
     except IndexError:
-        raise RuntimeError("Error in the menu navigation.")
+        raise ValueError("Error in the menu navigation (name search).")
 
 
 def filter_chosen_option_by_value(option, tree):
     try:
         return list(filter(lambda x: x[VALUE] == option, tree))[0]
     except IndexError:
-        raise RuntimeError("Error in the menu navigation.")
+        raise ValueError("Error in the menu navigation (value search).")
 
 
 def get_option_names(tree):
@@ -109,7 +114,7 @@ def list_conda_available_python_versions():
     logger.info("It might take a while ...")
 
     version_file = DATA_PATH / "versions_raw.txt"
-    os.system(f'conda search python >> {version_file}')
+    os.system(f'conda search python -k >> \"{version_file}\"')
     with open(version_file, "r", encoding="UTF-8") as f:
         line = True
         all_versions = []
@@ -137,9 +142,11 @@ def list_conda_available_python_versions():
         key=lambda x: x.split(".")[0]
     )
 
-    # no version lower than 3.6 will be permitted
+    # no version lower than 3.7 will be permitted
+    major = 3
+    minor = 7
     possible_versions = list(filter(
-        lambda x: x.split(".")[0] >= "3" and int(x.split(".")[1]) >= 6,
+        lambda x: x.split(".")[0] >= str(major) and int(x.split(".")[1]) >= minor,
         displayed_versions
     ))
     return possible_versions

@@ -10,7 +10,8 @@ package_files = [
     str(Path('data') / 'library_tree.json'),
     str(Path('data') / 'links_about.json'),
     str(Path('data') / 'category_tree.json'),
-    str(Path('data') / 'settings_tree.json')
+    str(Path('data') / 'settings_tree.json'),
+    str(Path('data') / 'python_versions_observations.json')
 ]
 
 template_files = glob.glob(
