@@ -60,6 +60,10 @@ def _condition_from_perform_action_to_update_conda(context: dict) -> bool:
     return context["history"][0] == "update_conda"
 
 
+def _condition_from_perform_action_to_change_template_version_policy(context: dict) -> bool:
+    return context["history"][0] == "change_template_version_policy"
+
+
 def _callback_from_perform_action_to_change_python_version(context: dict) -> dict:
     return context
 
@@ -105,6 +109,11 @@ class PerformAction(State):
         Transition(
             next_state="update_conda",
             condition=_condition_from_perform_action_to_update_conda
+        ),
+
+        Transition(
+            next_state="change_template_version_policy",
+            condition=_condition_from_perform_action_to_change_template_version_policy
         )
     ]
 

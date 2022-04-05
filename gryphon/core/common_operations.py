@@ -17,7 +17,8 @@ import git
 from .core_text import Text
 from ..constants import (
     SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
-    GENERATE, INIT, SYSTEM_DEFAULT, CONFIG_FILE, DEFAULT_PYTHON_VERSION
+    GENERATE, INIT, SYSTEM_DEFAULT, CONFIG_FILE, DEFAULT_PYTHON_VERSION,
+    USE_LATEST
 )
 
 logger = logging.getLogger('gryphon')
@@ -558,6 +559,14 @@ def get_current_python_version():
         return json.load(f).get(
             "default_python_version",
             DEFAULT_PYTHON_VERSION
+        )
+
+
+def get_current_template_version_policy():
+    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
+        return json.load(f).get(
+            "template_version_policy",
+            USE_LATEST
         )
 
 

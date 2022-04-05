@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 from ..constants import (
     CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH,
-    INIT, CONDA, DEFAULT_ENV, VENV
+    INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK
 )
 from .common_operations import (
     copy_project_template,
@@ -52,6 +52,17 @@ class SettingsManager:
         with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
             contents = json.load(f)
             contents["default_python_version"] = python_version
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
+    def change_template_version_policy(cls, policy):
+        assert policy in [USE_LATEST, ALWAYS_ASK]
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            contents["template_version_policy"] = policy
 
             f.seek(0)
             f.write(json.dumps(contents))

@@ -1,5 +1,5 @@
 {
-    "config_version": 1,
+    "config_version": 2,
     "git_registry": {
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
@@ -16,5 +16,6 @@
     ],
     "environment_management": "venv",
     "ask_python_version_on_init": false,
-    "default_python_version": "system_default"
+    "default_python_version": "system_default",
+    "template_version_policy": "use_latest"
 }

@@ -55,6 +55,7 @@ DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"
 # Python versions
 DEFAULT_PYTHON_VERSION = "3.8"
 ALWAYS_ASK = "always_ask"
+USE_LATEST = "use_latest"
 SYSTEM_DEFAULT = "system_default"
 MIN_MAJOR_VERSION = 3
 MIN_MINOR_VERSION = 7
