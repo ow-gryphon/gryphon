@@ -4,7 +4,8 @@ import glob
 from typing import List, Dict
 from pathlib import Path
 from git import Repo
-from .template import Template, VersionedTemplate
+from .template import Template
+from .versioned_template import VersionedTemplate
 from ..common_operations import remove_folder, sort_versions
 from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX
 
@@ -77,7 +78,7 @@ class RemoteIndex:
         return self.templates[command]
 
 
-class TemplateCollection:
+class RemoteIndexCollection:
     def __init__(self, index_list: List[Dict[str, str]]):
         self.index_list = index_list
 

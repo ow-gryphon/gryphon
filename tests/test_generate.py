@@ -3,7 +3,7 @@ import shutil
 import os
 from os import path
 
-
+from gryphon.core.registry import Template
 from gryphon.core.generate import (
     generate,
     parse_project_template,
@@ -100,7 +100,7 @@ def test_generate_4(setup, teardown):
 
     try:
         parse_project_template(
-            template_path=TEST_FOLDER / "data" / "mlclustering",
+            template_path=TEST_FOLDER / "data" / "mlclustering" / "template",
             mapper={"fileName": parameter}
         )
 
@@ -120,7 +120,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         assert "scipy" not in libraries
 
         generate(
-            template_path=TEST_FOLDER / "data" / "mlclustering",
+            template=Template.template_from_path(TEST_FOLDER / "data" / "mlclustering", type="local"),
             requirements=["scipy"],
             folder=cwd,
             **{"fileName": file_name}
@@ -148,9 +148,12 @@ def test_generate_6(setup, teardown):
     try:
         cwd = setup()
         create_folder_with_venv(cwd)
-
+        template = Template.template_from_path(
+            TEST_FOLDER / "data" / "registry_with_git_folder" / "generate",
+            type="local"
+        )
         generate(
-            template_path=TEST_FOLDER / "data" / "registry_with_git_folder",
+            template=template,
             requirements=[]
         )
 

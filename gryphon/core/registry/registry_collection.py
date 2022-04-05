@@ -5,7 +5,7 @@ from typing import List
 from .template_registry import TemplateRegistry
 from .local_registry import LocalRegistry
 from .git_registry import GitRegistry
-from .remote_index import TemplateCollection
+from .remote_index import RemoteIndexCollection
 
 
 logger = logging.getLogger('gryphon')
@@ -63,7 +63,8 @@ class RegistryCollection:
         #     except git.GitCommandError as er:
         #         if "does not exist" in str(er):
         #             logger.warning(f"Git template registry \"{name}\" at \"{url}\" was not found.")
-        registry = TemplateCollection(
+
+        registry = RemoteIndexCollection(
             index_list=template_indexes
         )
         template_registries.append(registry)
