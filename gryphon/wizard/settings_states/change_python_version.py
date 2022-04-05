@@ -20,7 +20,8 @@ def _condition_from_change_python_version_to_ask_option(context: dict) -> bool:
 
 
 def _callback_from_change_python_version_to_ask_option(context: dict) -> dict:
-    back_to_previous(context["history"], n_lines=2)
+    back_to_previous(context["history"], n_lines=1)
+    back_to_previous(context["history"], n_lines=1)
     return context
 
 
