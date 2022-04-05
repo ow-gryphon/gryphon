@@ -180,7 +180,7 @@ def install_extra_nbextensions_venv(folder_path):
         # On Windows the venv folder structure is different from unix
         pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
         activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
-        silent = "START /B"
+        silent = "START /B \"\""
         # redirect = ">> .output 2>&1"
         redirect = ">nul 2>&1"
     else:
@@ -338,7 +338,7 @@ def install_extra_nbextensions_conda(folder_path):
     if platform.system() == "Windows":
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
-        silent = "START /B"
+        silent = "START /B \"\""
         # redirect = ">> .output 2>&1"
         redirect = ">nul 2>&1"
     else:
@@ -400,7 +400,7 @@ def change_shell_folder_and_activate_conda_env(location):
 
 
 def update_conda():
-    if execute_and_log("conda update conda") is not None:
+    if execute_and_log("conda update conda -k") is not None:
         raise RuntimeError("Failed to update conda.")
 
 
