@@ -114,7 +114,7 @@ def list_conda_available_python_versions():
     logger.info("It might take a while ...")
 
     version_file = DATA_PATH / "versions_raw.txt"
-    os.system(f'conda search python >> {version_file}')
+    os.system(f'conda search python >> {version_file} -k')
     with open(version_file, "r", encoding="UTF-8") as f:
         line = True
         all_versions = []
