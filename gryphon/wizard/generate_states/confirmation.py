@@ -3,7 +3,8 @@ from ..wizard_text import Text
 from ..questions import GenerateQuestions
 from ..functions import display_template_information, erase_lines
 from ...fsm import Transition, State, negate_condition
-from ...constants import NO
+from ...core.registry import Template
+from ...constants import NO, LATEST
 
 logger = logging.getLogger('gryphon')
 
@@ -32,7 +33,11 @@ class Confirmation(State):
     ]
 
     def on_start(self, context: dict) -> dict:
+        # TODO: ASK VERSION
         context["template"] = context["templates"][context["template_name"]]
+        if not isinstance(context["template"], Template):
+            context["template"] = context["template"][LATEST]
+
         context["n_lines"] = display_template_information(context["template"])
 
         context["extra_parameters"] = {}

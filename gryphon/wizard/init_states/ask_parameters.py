@@ -2,7 +2,8 @@ import json
 from ..functions import list_conda_available_python_versions
 from ..questions import InitQuestions
 from ...fsm import State, Transition, negate_condition
-from ...constants import BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE
+from ...core.registry import Template
+from ...constants import BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE, LATEST
 
 
 def _change_from_ask_parameters_to_main_menu(context):
@@ -31,8 +32,13 @@ class AskParameters(State):
     ]
 
     def on_start(self, context: dict) -> dict:
+        # TODO: ASK VERSION
         template_name = context["template_name"]
+
         template = self.templates[template_name]
+        if not isinstance(template, Template):
+            template = template[LATEST]
+
         extra_parameters = InitQuestions.ask_extra_arguments(
             arguments=template.arguments
         )

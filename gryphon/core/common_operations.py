@@ -11,6 +11,7 @@ import errno
 import stat
 import shutil
 import zipfile
+from distutils.version import StrictVersion
 from datetime import datetime
 from pathlib import Path
 import git
@@ -609,3 +610,10 @@ def unify_templates(target_folder: Path) -> Path:
             dst=destination_folder
         )
     return destination_folder
+
+
+# VERSION
+
+def sort_versions(versions: list) -> list:
+    versions.sort(key=lambda x: StrictVersion(x[1:]))
+    return versions

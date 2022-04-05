@@ -4,10 +4,9 @@ import glob
 from typing import List, Dict
 from pathlib import Path
 from git import Repo
-from distutils.version import StrictVersion
-from .template import Template
-from ..common_operations import remove_folder
-from ...constants import GRYPHON_HOME
+from .template import Template, VersionedTemplate
+from ..common_operations import remove_folder, sort_versions
+from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX
 
 
 class RemoteIndex:
@@ -29,41 +28,43 @@ class RemoteIndex:
     def read_index_metadata(self) -> Dict[str, List]:
         metadata_files = glob.glob(str(self.index_local_path / "**" / "metadata.json"), recursive=True)
         metadata_contents = {
-            "generate": [],
-            "init": []
+            GENERATE: [],
+            INIT: []
         }
         for file in metadata_files:
             with open(file, "r", encoding="UTF-8") as f:
                 contents = json.load(f)
-
                 versions = list(contents.keys())
-                versions.sort(key=lambda x: StrictVersion(x[1:]))
 
-                latest_version = versions[-1]
+                latest_version = sort_versions(versions)[-1]
                 latest = contents[latest_version]
 
-                latest["path"] = Path(file).parent
+                contents["path"] = Path(file).parent
+
                 command = latest["command"]
-                assert command in ["generate", "init"]
-                metadata_contents[command].append(latest)
+                assert command in [GENERATE, INIT]
+                metadata_contents[command].append(contents)
 
         return metadata_contents
 
     def generate_templates(self) -> Dict[str, Dict[str, Template]]:
         templates = {
-            "generate": {},
-            "init": {}
+            GENERATE: {},
+            INIT: {}
         }
+
         for command, metadata_list in self.metadata.items():
-            templates[command].update({
-                metadata["path"].parts[-1]: Template(
-                    template_name=metadata["path"].parts[-1],
-                    template_path=self.index_url,
-                    template_metadata=metadata,
-                    registry_type="remote index"
-                )
-                for metadata in metadata_list
-            })
+            for metadata in metadata_list:
+                path = metadata.pop("path")
+                templates[command].update({
+                    path.parts[-1]: VersionedTemplate(
+                        template_name=path.parts[-1],
+                        template_path=self.index_url,
+                        template_metadata=metadata,
+                        registry_type=REMOTE_INDEX
+                    )
+                    for metadata in metadata_list
+                })
 
         return templates
 
@@ -72,7 +73,7 @@ class RemoteIndex:
         if command is None:
             return self.templates
 
-        assert command in ['add', 'generate', 'init']
+        assert command in [GENERATE, INIT]
         return self.templates[command]
 
 
@@ -91,8 +92,8 @@ class TemplateCollection:
 
     def unify_templates(self) -> Dict[str, Dict[str, Template]]:
         templates = {
-            "generate": {},
-            "init": {}
+            GENERATE: {},
+            INIT: {}
         }
         for index in self.indexes:
             for command, temp in index.get_templates().items():
@@ -104,5 +105,5 @@ class TemplateCollection:
         if command is None:
             return self.templates
 
-        assert command in ['add', 'generate', 'init']
+        assert command in [GENERATE, INIT]
         return self.templates[command]

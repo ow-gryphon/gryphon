@@ -6,7 +6,7 @@ import logging
 import shutil
 from pathlib import Path
 from .settings import SettingsManager
-from ..constants import DEFAULT_ENV, INIT, VENV, CONDA
+from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, LOCAL_TEMPLATE, REMOTE_INDEX
 from .common_operations import (
     install_libraries_venv,
     create_venv,
@@ -40,7 +40,7 @@ def init(template, location, python_version, **kwargs):
     logger.info("Creating project scaffolding.")
     logger.info(f"Initializing project at {location}")
 
-    if template.registry_type == "remote index":
+    if template.registry_type == REMOTE_INDEX:
 
         temporary_folder = download_template(template)
         zip_folder = unzip_templates(temporary_folder)
@@ -55,12 +55,14 @@ def init(template, location, python_version, **kwargs):
         shutil.rmtree(temporary_folder)
         shutil.rmtree(template_folder)
 
-    elif template.registry_type == "local":
+    elif template.registry_type == LOCAL_TEMPLATE:
 
         copy_project_template(
             template_destiny=Path(location),
             template_source=Path(template.path)
         )
+    else:
+        raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
     # RC file
     rc_file = get_rc_file(Path.cwd() / location)

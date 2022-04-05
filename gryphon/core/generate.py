@@ -18,7 +18,7 @@ from .common_operations import (
     log_operation, log_new_files, log_add_library,
     download_template, unzip_templates, unify_templates
 )
-from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA
+from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
 
 
 logger = logging.getLogger('gryphon')
@@ -33,7 +33,7 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
         env_type = data.get("environment_management", DEFAULT_ENV)
 
     logger.info("Generating template.")
-    if template.registry_type == "remote index":
+    if template.registry_type == REMOTE_INDEX:
 
         temporary_folder = download_template(template)
         zip_folder = unzip_templates(temporary_folder)
@@ -44,8 +44,10 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
         shutil.rmtree(temporary_folder)
         shutil.rmtree(template_folder)
 
-    elif template.registry_type == "local":
+    elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
+    else:
+        raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
     for r in requirements:
         append_requirement(r)
