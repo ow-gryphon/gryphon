@@ -3,7 +3,7 @@ from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice, logger
 from ..wizard_text import Text
 from ..functions import wrap_text
-from ...constants import (BACK, YES, NO, SYSTEM_DEFAULT)
+from ...constants import (BACK, YES, NO, SYSTEM_DEFAULT, LATEST)
 
 
 class InitQuestions:
@@ -32,8 +32,7 @@ class InitQuestions:
         if template == BACK:
             return BACK, None
 
-        location = questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
-        return template, location
+        return template
 
     @staticmethod
     @base_question
@@ -125,6 +124,36 @@ class InitQuestions:
 
         return questionary.select(
             message=Text.settings_ask_python_version,
+            choices=choices,
+            use_indicator=True
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def ask_template_version(versions):
+
+        choices = [
+            Choice(
+                title="latest",
+                value=LATEST
+            )
+        ]
+        choices.extend([
+            Choice(
+                title=v,
+                value=v
+            )
+            for v in versions
+        ])
+
+        # TODO: Is the back option realy necessary. Maybe yes
+        # choices.extend([
+        #     Separator(),
+        #     get_back_choice()
+        # ])
+
+        return questionary.select(
+            message=Text.settings_ask_template_version,
             choices=choices,
             use_indicator=True
         ).unsafe_ask()

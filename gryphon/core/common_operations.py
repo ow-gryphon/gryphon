@@ -579,7 +579,8 @@ def download_template(template) -> Path:
 
     temp_folder = Path().cwd() / ".temp"
     status_code = execute_and_log(
-        f"pip --disable-pip-version-check download {template.name} "
+        f"pip --disable-pip-version-check download {template.name}"
+        f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
         f"-i {template.template_index} "
         f"-d \"{temp_folder}\" "
         f"--trusted-host ow-gryphon.github.io"  # TODO: Find a definitive solution for this

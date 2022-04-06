@@ -3,7 +3,10 @@ from ..functions import list_conda_available_python_versions
 from ..questions import InitQuestions
 from ...fsm import State, Transition, negate_condition
 from ...core.registry import Template
-from ...constants import BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE, LATEST
+from ...constants import (
+    BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE,
+    LATEST, USE_LATEST
+)
 
 
 def _change_from_ask_parameters_to_main_menu(context):
@@ -31,27 +34,45 @@ class AskParameters(State):
         )
     ]
 
+    # TODO: change the ci/cd to create a json file in the format:
+    """
+        [
+            {"version": "v0.0.1"}, 
+            {"version": "v0.0.2"}
+        ]
+        
+        instead of
+        
+        {
+            "v0.0.1": {},
+            "v0.0.2": {}
+        }
+    """
     def on_start(self, context: dict) -> dict:
-        # TODO: ASK VERSION
-        template_name = context["template_name"]
 
-        template = self.templates[template_name]
-        if not isinstance(template, Template):
-            template = template[LATEST]
+        template = self.templates[context["template_name"]]
+        if self.settings.get("template_version_policy") == USE_LATEST:
+            context["template"] = template[LATEST]
 
-        extra_parameters = InitQuestions.ask_extra_arguments(
-            arguments=template.arguments
+        elif self.settings.get("template_version_policy") == ALWAYS_ASK:
+            chosen_version = InitQuestions.ask_template_version(template.available_versions)
+            context["template"] = template[chosen_version]
+        else:
+            context["template"] = template
+
+        context["location"] = InitQuestions.ask_init_location()
+
+        context["extra_parameters"] = InitQuestions.ask_extra_arguments(
+            arguments=context["template"].arguments
         )
 
         if self.settings.get("default_python_version") == ALWAYS_ASK:
             versions = list_conda_available_python_versions()
-            chosen_version = InitQuestions.ask_python_version(versions)
+            context["chosen_version"] = InitQuestions.ask_python_version(versions)
         else:
-            chosen_version = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
+            context["chosen_version"] = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
 
         context.update(dict(
-            extra_parameters=extra_parameters,
-            chosen_version=chosen_version,
-            template=template
+            template=context["template"]
         ))
         return context

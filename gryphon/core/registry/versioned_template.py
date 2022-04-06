@@ -11,6 +11,7 @@ class VersionedTemplate:
 
         self.versions = {}
         for version, metadata in template_metadata.items():
+            metadata["version"] = version
             self.versions[version] = Template(
                 template_name=template_name,
                 template_path=template_path,

@@ -10,7 +10,7 @@ logger = logging.getLogger('gryphon')
 
 def confirmation_success_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
-    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"])
+    erase_lines(n_lines=n_lines + 3 + context["n_lines_warning"])
     return context
 
 
