@@ -127,33 +127,3 @@ class InitQuestions:
             choices=choices,
             use_indicator=True
         ).unsafe_ask()
-
-    @staticmethod
-    @base_question
-    def ask_template_version(versions):
-
-        choices = [
-            Choice(
-                title="latest",
-                value=LATEST
-            )
-        ]
-        choices.extend([
-            Choice(
-                title=v,
-                value=v
-            )
-            for v in versions
-        ])
-
-        # TODO: Is the back option realy necessary. Maybe yes
-        # choices.extend([
-        #     Separator(),
-        #     get_back_choice()
-        # ])
-
-        return questionary.select(
-            message=Text.settings_ask_template_version,
-            choices=choices,
-            use_indicator=True
-        ).unsafe_ask()

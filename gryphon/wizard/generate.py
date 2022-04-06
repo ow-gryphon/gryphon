@@ -14,7 +14,7 @@ def generate(data_path, registry):
     filter_templates = FilterTemplates()
     nothing_found = NothingFound()
     ask_template = AskTemplate()
-    confirmation = Confirmation()
+    confirmation = Confirmation(registry)
     install = Install()
     ask_keyword = AskKeyword()
 

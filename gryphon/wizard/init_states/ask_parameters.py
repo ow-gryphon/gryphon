@@ -1,8 +1,7 @@
 import json
 from ..functions import list_conda_available_python_versions
-from ..questions import InitQuestions
+from ..questions import InitQuestions, CommonQuestions
 from ...fsm import State, Transition, negate_condition
-from ...core.registry import Template
 from ...constants import (
     BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE,
     LATEST, USE_LATEST
@@ -55,7 +54,7 @@ class AskParameters(State):
             context["template"] = template[LATEST]
 
         elif self.settings.get("template_version_policy") == ALWAYS_ASK:
-            chosen_version = InitQuestions.ask_template_version(template.available_versions)
+            chosen_version = CommonQuestions.ask_template_version(template.available_versions)
             context["template"] = template[chosen_version]
         else:
             context["template"] = template
@@ -72,7 +71,4 @@ class AskParameters(State):
         else:
             context["chosen_version"] = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
 
-        context.update(dict(
-            template=context["template"]
-        ))
         return context
