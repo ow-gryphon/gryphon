@@ -10,7 +10,7 @@ VERSION_PATTERN = re.compile(
 )
 
 
-def index_metadata_path(package_name):
+def get_index_metadata_path(package_name):
     return Path("grypi") / package_name / "metadata.json"
 
 
@@ -30,13 +30,15 @@ def main():
 
     new_metadata_path = f"template/metadata.json"
     new_metadata = read_metadata(new_metadata_path)
+    new_metadata["version"] = tag_name
 
-    metadata_path = index_metadata_path(repo_name)
+    index_metadata_path = get_index_metadata_path(repo_name)
 
-    if not metadata_path.is_file():
-        metadata = {
-            tag_name: new_metadata
-        }
+    try:
+        index_metadata = read_metadata(index_metadata_path)
+
+    except FileNotFoundError:
+        metadata = [new_metadata]
 
         with open(new_metadata_path, "w", encoding="utf-8") as f:
             f.write(json.dumps(metadata))
@@ -44,7 +46,16 @@ def main():
     else:
         with open(new_metadata_path, "r+", encoding="utf-8") as f:
             metadata = json.load(f)
-            metadata[tag_name] = new_metadata
+
+            if type(index_metadata) != list:
+                # if the metadata is not in the list format yet, convert it
+                new_format = []
+                for version, data in index_metadata.items():
+                    data["version"] = version
+                    new_format.append(data)
+                metadata = new_format
+
+            metadata.append(new_metadata)
 
             f.seek(0)
             f.write(json.dumps(metadata))

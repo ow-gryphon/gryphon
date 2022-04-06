@@ -23,49 +23,66 @@ class RemoteIndex:
 
         self.repo = Repo.clone_from(self.index_repo, self.index_local_path)
 
-        self.metadata = self.read_index_metadata()
+        # self.metadata = self.read_index_metadata()
         self.templates = self.generate_templates()
 
-    def read_index_metadata(self) -> Dict[str, List]:
-        metadata_files = glob.glob(str(self.index_local_path / "**" / "metadata.json"), recursive=True)
-        metadata_contents = {
-            GENERATE: [],
-            INIT: []
-        }
-        for file in metadata_files:
-            with open(file, "r", encoding="UTF-8") as f:
-                contents = json.load(f)
-                versions = list(contents.keys())
-
-                latest_version = sort_versions(versions)[-1]
-                latest = contents[latest_version]
-
-                contents["path"] = Path(file).parent
-
-                command = latest["command"]
-                assert command in [GENERATE, INIT]
-                metadata_contents[command].append(contents)
-
-        return metadata_contents
+    # def read_index_metadata(self) -> Dict[str, List]:
+    #     metadata_files = glob.glob(str(self.index_local_path / "**" / "metadata.json"), recursive=True)
+    #     metadata_contents = {
+    #         GENERATE: [],
+    #         INIT: []
+    #     }
+    #     for file in metadata_files:
+    #         with open(file, "r", encoding="UTF-8") as f:
+    #             contents = json.load(f)
+    #             if type(contents) != list:
+    #                 continue
+    #
+    #             versions = list(map(lambda x: x["version"], contents))
+    #
+    #             latest_version = sort_versions(versions)[-1]
+    #             latest = list(filter(lambda x: x["version"] == latest_version, contents))[0]
+    #
+    #             latest["path"] = Path(file).parent
+    #
+    #             command = latest["command"]
+    #             assert command in [GENERATE, INIT]
+    #             metadata_contents[command].append(contents)
+    #
+    #     return metadata_contents
 
     def generate_templates(self) -> Dict[str, Dict[str, Template]]:
+        metadata_files = glob.glob(
+            str(self.index_local_path / "**" / "metadata.json"),
+            recursive=True
+        )
+
+        template_versions = {}
+        for file in metadata_files:
+            # for each template folder inside index
+            with open(file, "r", encoding="UTF-8") as f:
+                metadata = json.load(f)
+
+            if type(metadata) != list:
+                continue
+
+            path = Path(file).parent
+            name = path.parts[-1]
+            template_versions[name] = VersionedTemplate(
+                metadata,
+                template_name=name,
+                template_path=self.index_url,
+                registry_type=REMOTE_INDEX
+            )
+
         templates = {
             GENERATE: {},
             INIT: {}
         }
 
-        for command, metadata_list in self.metadata.items():
-            for metadata in metadata_list:
-                path = metadata.pop("path")
-                templates[command].update({
-                    path.parts[-1]: VersionedTemplate(
-                        template_name=path.parts[-1],
-                        template_path=self.index_url,
-                        template_metadata=metadata,
-                        registry_type=REMOTE_INDEX
-                    )
-                    for metadata in metadata_list
-                })
+        for name, template in template_versions.items():
+            assert template.command in [INIT, GENERATE]
+            templates[template.command][name] = template
 
         return templates
 
@@ -97,6 +114,7 @@ class RemoteIndexCollection:
             INIT: {}
         }
         for index in self.indexes:
+            print(index.get_templates())
             for command, temp in index.get_templates().items():
                 templates[command].update(temp)
         return templates

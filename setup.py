@@ -30,7 +30,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name='gryphon',
-    version='0.0.1',
+    version='0.0.2',
     license='MIT',
     description='OW analytics toolkit cli',
     long_description=long_description,
@@ -47,9 +47,9 @@ setup(
     entry_points='''
         [console_scripts]
         gryphon=gryphon.gryphon_wizard:main
-        gryph=gryphon.gryphon_cli:cli
         griffin=gryphon.gryphon_wizard:did_you_mean_gryphon
     ''',
+    # gryph=gryphon.gryphon_cli: cli
     include_package_data=True,
     package_data={'gryphon': package_files}
 )
