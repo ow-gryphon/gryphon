@@ -6,6 +6,7 @@ from ...constants import (
     BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE,
     LATEST, USE_LATEST
 )
+from ...core.registry.versioned_template import VersionedTemplate
 
 
 def _change_from_ask_parameters_to_main_menu(context):
@@ -39,23 +40,27 @@ class AskParameters(State):
             {"version": "v0.0.1"}, 
             {"version": "v0.0.2"}
         ]
-        
+
         instead of
-        
+
         {
             "v0.0.1": {},
             "v0.0.2": {}
         }
     """
+
     def on_start(self, context: dict) -> dict:
 
         template = self.templates[context["template_name"]]
-        if self.settings.get("template_version_policy") == USE_LATEST:
-            context["template"] = template[LATEST]
 
-        elif self.settings.get("template_version_policy") == ALWAYS_ASK:
-            chosen_version = CommonQuestions.ask_template_version(template.available_versions)
-            context["template"] = template[chosen_version]
+        if isinstance(template, VersionedTemplate):
+            if self.settings.get("template_version_policy") == USE_LATEST:
+                context["template"] = template[LATEST]
+
+            elif self.settings.get("template_version_policy") == ALWAYS_ASK:
+                chosen_version = CommonQuestions.ask_template_version(template.available_versions)
+                context["template"] = template[chosen_version]
+
         else:
             context["template"] = template
 

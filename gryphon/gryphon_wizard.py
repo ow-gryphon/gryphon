@@ -69,6 +69,7 @@ def main():
         handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
         handler.setLevel(logging.DEBUG)
 
+    registry = None
     try:
 
         registry = RegistryCollection.from_config_file(
@@ -119,38 +120,17 @@ def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
 # TODO: On generate, check if there are both a conda and a venv inside folder and use the one that is available
-# TODO: create enums for some constants
 # TODO: Test installation.
-# TODO: Whether to install gryphon inside the .venv created for projects or not
 # TODO: Resizing error on windows (duplicating texts).
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
-
-# DONE: For local templates you don't need to copy it to a temp
-#  folder inside site-packages
-
-# DONE: Prefix files from local templates as local_
-# DONE: show registry names on gryphon menu.
-
 # TODO: Check if the user is really on a gryphon project folder
-
-# DONE: Address the issue of updating missing keys from the
-#  gryphon_settings.json on new installs
 
 
 if __name__ == '__main__':
     main()
 
-# DONE: permit only after python 3.7
-# DONE: say that 3.7 is slower than the other ones
-# DONE: finite state machine not return context in some condition function
-# DONE: error when navigating to a category called cyber risk (it does not have any one)
-# DONE: treat notebook extensions error
-# DONE: add option to try another keyword for search
-# DONE: warn the user if the path typed already exists
-    # this should be after the core_init start or before the confirmation
-    # if it is before the confirmation it should make hard to go back to the previous menu
-    # without erasing the wrong number of lines. The only way out is to have a flag on the context.
-# Trying to find .venv when the environment is set to conda (should use envs folder)
+# TODO: make local templates use the same format as the index
+# TODO: Automatically add

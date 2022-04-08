@@ -29,9 +29,6 @@ class InitQuestions:
             choices=options
         ).unsafe_ask()
 
-        if template == BACK:
-            return BACK, None
-
         return template
 
     @staticmethod

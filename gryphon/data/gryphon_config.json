@@ -1,5 +1,5 @@
 {
-    "config_version": 2,
+    "config_version": 3,
     "git_registry": {
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
@@ -7,6 +7,9 @@
     "local_registry": {
         "local_default": "/home/vittorfp/blue-orange/labskit_registry"
     },
+    "local_templates": [
+        "/home/vittorfp/blue-orange/gryphon-analytics-basic"
+    ],
     "template_indexes": [
         {
             "name": "grypi",

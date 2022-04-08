@@ -1,10 +1,8 @@
 import logging
-import git
 from pathlib import Path
 from typing import List
 from .template_registry import TemplateRegistry
 from .local_registry import LocalRegistry
-from .git_registry import GitRegistry
 from .remote_index import RemoteIndexCollection
 
 
@@ -46,6 +44,8 @@ class RegistryCollection:
 
         local_registry = settings.get("local_registry", {})
         template_indexes = settings.get("template_indexes", {})
+        local_templates = settings.get("local_templates", {})
+
         # git_registry = settings.get("git_registry", {})
 
         template_registries = []
@@ -78,9 +78,15 @@ class RegistryCollection:
 
             reg = LocalRegistry(
                 registry_name=name,
-                registry_origin=path,
-                registry_folder=data_path
+                templates_root=path
             )
             template_registries.append(reg)
+
+        template_registries.append(
+            LocalRegistry(
+                registry_name="individual templates",
+                template_paths=local_templates
+            )
+        )
 
         return cls(template_registries)

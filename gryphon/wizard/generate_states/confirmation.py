@@ -3,6 +3,7 @@ import logging
 from ..wizard_text import Text
 from ..questions import GenerateQuestions, CommonQuestions
 from ..functions import display_template_information, erase_lines
+from ...core.registry.versioned_template import VersionedTemplate
 from ...fsm import Transition, State, negate_condition
 from ...constants import NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE
 
@@ -40,12 +41,15 @@ class Confirmation(State):
 
     def on_start(self, context: dict) -> dict:
         template = context["templates"][context["template_name"]]
+        if isinstance(template, VersionedTemplate):
 
-        if self.settings.get("template_version_policy") == USE_LATEST:
-            context["template"] = template[LATEST]
-        elif self.settings.get("template_version_policy") == ALWAYS_ASK:
-            chosen_version = CommonQuestions.ask_template_version(template.available_versions)
-            context["template"] = template[chosen_version]
+            if self.settings.get("template_version_policy") == USE_LATEST:
+                context["template"] = template[LATEST]
+
+            elif self.settings.get("template_version_policy") == ALWAYS_ASK:
+                chosen_version = CommonQuestions.ask_template_version(template.available_versions)
+                context["template"] = template[chosen_version]
+
         else:
             context["template"] = template
 

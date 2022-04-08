@@ -20,15 +20,6 @@ class VersionedTemplate:
         latest_version = sort_versions(self.available_versions)[-1]
         self.latest = self[latest_version]
 
-        # self.name = template_name
-        # self.registry_type = registry_type
-        # self.command = self.latest.command
-        # self.display_name = self.latest.display_name
-        # self.keywords = self.latest.keywords
-        # self.methodology = self.latest.methodology
-        # self.sector = self.latest.sector
-        # self.topic = self.latest.topic
-
     def __getattr__(self, item):
         """
         If the following syntax occurs:

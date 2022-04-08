@@ -114,7 +114,6 @@ class RemoteIndexCollection:
             INIT: {}
         }
         for index in self.indexes:
-            print(index.get_templates())
             for command, temp in index.get_templates().items():
                 templates[command].update(temp)
         return templates

@@ -26,9 +26,6 @@ class AskTemplate(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-        template_name = InitQuestions.ask_which_template(self.templates)
+        context["template_name"] = InitQuestions.ask_which_template(self.templates)
 
-        context.update(dict(
-            template_name=template_name,
-        ))
         return context

@@ -77,10 +77,11 @@ functions = {
 }
 
 config_file = path.join(DATA_PATH / "gryphon_config.json")
+registry_path = DATA_PATH / "template_registry"
 
 with open(config_file, "r", encoding='utf-8') as f:
     settings = json.load(f)
-    commands = RegistryCollection.from_config_file(settings, DATA_PATH / "template_registry")
+    commands = RegistryCollection.from_config_file(settings, registry_path)
 
 # Extends each of the command docstrings
 for name, function in functions.items():
