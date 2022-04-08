@@ -128,6 +128,18 @@ class SettingsManager:
             f.truncate()
 
     @classmethod
+    def add_local_template(cls, template_path):
+        """Restore only the registries to the default."""
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            contents.setdefault("local_templates", [])
+            contents["local_templates"].append(template_path)
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
     def list_template_registries(cls):
         with open(cls.get_config_path(), "r", encoding="utf-8") as f:
             contents = json.load(f)
@@ -153,13 +165,13 @@ class SettingsManager:
         """
         return CONFIG_FILE
 
-    @staticmethod
-    def render_template_scaffolding(location: Path):
+    @classmethod
+    def render_template_scaffolding(cls, location: Path):
 
         template_path = DATA_PATH / "template_scaffolding"
         python_version = get_current_python_version()
 
-        with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
+        with open(cls.get_config_path(), "r", encoding="UTF-8") as f:
             data = json.load(f)
             env_type = data.get("environment_management", DEFAULT_ENV)
 
@@ -171,6 +183,7 @@ class SettingsManager:
             template_destiny=Path(location),
             template_source=Path(template_path)
         )
+        # TODO: JOIN ALL THE requirements.txt files in one.
 
         # Git
         repo = init_new_git_repo(folder=location)
@@ -186,3 +199,7 @@ class SettingsManager:
         else:
             raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                                f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
+
+        cls.add_local_template(str(Path(location).absolute()))
+        logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
+                    " to the information given on metadata.json file.")
