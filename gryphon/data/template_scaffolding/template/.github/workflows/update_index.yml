@@ -35,13 +35,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # UPDATE METADATA JSON
-      - name: Generates metadata file
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          python template/.github/update_metadata_json.py
-
       # UPDATE INDEX
       - name: Update index files
         env:
@@ -49,6 +42,13 @@ jobs:
         run: |
           pip install beautifulsoup4
           python template/.github/update_index_html.py
+
+      # UPDATE METADATA JSON
+      - name: Generates metadata file
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          python template/.github/update_metadata_json.py
 
       # Coping files
       - name: Pushes ${{github.event.repository.name}}/index.html file
