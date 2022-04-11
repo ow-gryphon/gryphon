@@ -49,10 +49,10 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
-    for r in requirements:
+    for r in template.dependencies:
         append_requirement(r)
 
-    log_add_library(requirements)
+    log_add_library(template.dependencies)
     if env_type == VENV:
         install_libraries_venv()
     elif env_type == CONDA:

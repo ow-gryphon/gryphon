@@ -132,5 +132,11 @@ def did_you_mean_gryphon():
 if __name__ == '__main__':
     main()
 
-# TODO: make local templates use the same format as the index
-# TODO: Automatically add
+# DONE: make local templates use the same format as the index
+# DONE: Automatically add
+
+# DONE: .github nao apareceu em tentativa do dan
+# DONE: fazer o pipeline rodar quando faz o commmit normal e só pushar quando tem tag
+# TODO: Ignorar quando um template local nao for encontrado, só dar o warning
+# DONE: Problema com o FileNotFoundError(requirements.txt file not found.). Please report to the support.
+# TODO: Find an easier way to trigger again a pipeline run

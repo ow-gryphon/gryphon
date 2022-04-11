@@ -41,13 +41,18 @@ class TemplateRegistry:
             folders = glob.glob(str(glob_pattern))
 
         else:
-            raise RuntimeError("One of \"templates_root\", \"template_paths\" arguments must be passed.")
+            raise RuntimeError("One of [\"templates_root\", \"template_paths\"] arguments must be passed.")
 
         if len(folders) == 0:
             return
 
         for path in folders:
-            metadata = self.load_metadata(Path(path))
+            try:
+                metadata = self.load_metadata(Path(path))
+            except FileNotFoundError:
+                logger.warning(f"Could not find template at location: {path}")
+                continue
+
             command = metadata["command"]
             if command not in ['add', 'generate', 'init']:
                 continue
@@ -77,6 +82,9 @@ class TemplateRegistry:
     @staticmethod
     def load_metadata(path: Path):
         """Loads the metadata file inside template folder."""
+        if not path.is_dir():
+            raise FileNotFoundError(f"Template folder does not exist (anymore): {path}")
+
         try:
             filename = path / "metadata.json"
             with open(filename, encoding='UTF-8') as file:

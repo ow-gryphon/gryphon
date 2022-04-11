@@ -6,7 +6,7 @@ import logging
 import shutil
 from pathlib import Path
 from .settings import SettingsManager
-from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, LOCAL_TEMPLATE, REMOTE_INDEX
+from .registry import Template
 from .common_operations import (
     install_libraries_venv,
     create_venv,
@@ -20,14 +20,16 @@ from .common_operations import (
     install_extra_nbextensions_venv,
     install_extra_nbextensions_conda,
     download_template, unzip_templates,
-    unify_templates, copy_project_template
+    unify_templates, copy_project_template,
+    append_requirement, log_add_library
 )
+from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, LOCAL_TEMPLATE, REMOTE_INDEX
 
 
 logger = logging.getLogger('gryphon')
 
 
-def init(template, location, python_version, **kwargs):
+def init(template: Template, location, python_version, **kwargs):
     """
     Init command from the OW Gryphon CLI.
     """
@@ -72,6 +74,12 @@ def init(template, location, python_version, **kwargs):
     # Git
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
+
+    # Requirements
+    for r in template.dependencies:
+        append_requirement(r, location)
+
+    log_add_library(template.dependencies, logfile=rc_file)
 
     # ENV Manager
     if env_type == VENV:

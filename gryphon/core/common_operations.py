@@ -425,22 +425,23 @@ def update_conda():
 
 # requirements.txt UTILS
 
-def append_requirement(library_name):
+def append_requirement(library_name, location=Path.cwd()):
     """Appends a given requirement to the requirements.txt file."""
 
-    current_path = get_destination_path()
+    current_path = get_destination_path(location)
     requirements_path = current_path / REQUIREMENTS
     try:
         with open(requirements_path, "r", encoding='UTF-8') as file:
             requirements = file.read()
 
-        if library_name not in requirements:
-            with open(requirements_path, "a", encoding='UTF-8') as file:
-                file.write(f"\n{library_name}")
-
     except FileNotFoundError:
-        logger.error(f"Could not find requirements file at {requirements_path}, "
-                     f"It is required in order to run this command.")
+        requirements = ""
+        with open(requirements_path, "w", encoding='UTF-8') as file:
+            file.write("")
+
+    if library_name not in requirements:
+        with open(requirements_path, "a", encoding='UTF-8') as file:
+            file.write(f"\n{library_name}")
 
 
 def rollback_append_requirement(library_name):
