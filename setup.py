@@ -15,11 +15,19 @@ package_files = [
 ]
 
 template_files = glob.glob(
-    str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" / "**"),
+    str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" ),
     recursive=True
 )
-template_files = map(lambda x: x[8:], template_files)
+template_files.extend(
+    glob.glob(
+        str(Path('gryphon') / 'data' / 'template_scaffolding' / "template" / ".github" / "**") ,
+        recursive=True
+    )
+)
 
+template_files = set(map(lambda x: x[8:], template_files))
+
+print(template_files)
 package_files.extend(template_files)
 
 with open("README.md", "r", encoding="utf-8") as fh:
