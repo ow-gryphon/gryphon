@@ -3,6 +3,7 @@ import re
 import json
 import copy
 import shutil
+from pathlib import Path
 
 # noinspection PyPackageRequirements
 from bs4 import BeautifulSoup
@@ -89,8 +90,9 @@ def register(args):
     template = template.replace("_author", args["author"])
     template = template.replace("_long_description", args["long description"])
 
-    package_index = os.path.join("grypi", n_package_name)
-    os.mkdir(package_index)
+    package_index = Path(os.path.join("grypi", n_package_name))
+    package_index.mkdir(exist_ok=True)
+
     package_index = os.path.join(package_index, "index.html")
 
     with open(package_index, "w") as f:
