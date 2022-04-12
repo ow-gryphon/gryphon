@@ -35,6 +35,7 @@ NO = "no"
 BACK = "back"
 CHANGE_LOCATION = "change_location"
 TYPE_AGAIN = "type_again"
+SPECIFY_VERSION = "specify_version"
 
 # log
 SUCCESS = 21

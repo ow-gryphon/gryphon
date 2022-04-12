@@ -18,6 +18,7 @@ template_files = glob.glob(
     str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" ),
     recursive=True
 )
+
 template_files.extend(
     glob.glob(
         str(Path('gryphon') / 'data' / 'template_scaffolding' / "template" / ".github" / "**") ,

@@ -552,8 +552,8 @@ def log_add_library(libraries, logfile=None):
             f.write(json.dumps(new_contents))
             f.truncate()
     except FileNotFoundError:
-        raise RuntimeError("The .gryphon_history file was not found, therefore you are not inside a "
-                           "Gryphon project directory.")
+        logger.warning("The .gryphon_history file was not found, therefore you are not inside a "
+                       "Gryphon project directory.")
 
 
 def get_current_python_version():

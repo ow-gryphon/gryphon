@@ -46,6 +46,7 @@ class Text:
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "
     add_prompt_type_library = "Type the name of the python library you want to install:"
+    add_prompt_type_version = "Type the version you want to install:"
 
     about_prompt_links = "Useful links:"
 
