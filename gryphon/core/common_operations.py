@@ -427,9 +427,20 @@ def update_conda():
 
 # requirements.txt UTILS
 
+def get_library_name(library_name):
+    """
+    Utility to split between the library name and version number when needed
+    """
+    name = library_name
+    for sign in ['!=', '==', '>=', '~=']:
+        name = name.split(sign)[0]
+    return name.strip()
+
+
 def append_requirement(library_name, location=Path.cwd()):
     """Appends a given requirement to the requirements.txt file."""
 
+    name = get_library_name(library_name)
     current_path = get_destination_path(location)
     requirements_path = current_path / REQUIREMENTS
     try:
@@ -441,9 +452,21 @@ def append_requirement(library_name, location=Path.cwd()):
         with open(requirements_path, "w", encoding='UTF-8') as file:
             file.write("")
 
-    if library_name not in requirements:
-        with open(requirements_path, "a", encoding='UTF-8') as file:
-            file.write(f"\n{library_name}")
+    lib_list = requirements.split("\n")
+    exclusion_list = []
+    for index, lib in enumerate(lib_list):
+        if name == get_library_name(lib):
+            exclusion_list.append(index)
+
+    for r_index in exclusion_list[::-1]:
+        lib_list.pop(r_index)
+
+    lib_list.append(library_name)
+
+    with open(requirements_path, "r+", encoding='UTF-8') as f:
+        f.seek(0)
+        f.write("\n".join(lib_list))
+        f.truncate()
 
 
 def rollback_append_requirement(library_name):
