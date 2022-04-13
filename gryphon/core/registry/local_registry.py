@@ -11,15 +11,9 @@ class LocalRegistry(TemplateRegistry):
         self.type = "local"
         self.name = registry_name
 
-        # self.registry_folder = registry_folder / registry_name
         self.registry_folder = self.registry_origin = templates_root
-
         assert len(str(self.registry_folder))
 
-        # if self.registry_folder.is_dir():
-        #     shutil.rmtree(self.registry_folder, ignore_errors=False)
-
-        # self._copy_registry()
         super().__init__(
             templates_root=templates_root,
             template_paths=template_paths

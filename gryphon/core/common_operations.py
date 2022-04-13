@@ -22,9 +22,12 @@ from ..constants import (
     USE_LATEST
 )
 
+
 logger = logging.getLogger('gryphon')
 
 REQUIREMENTS = "requirements.txt"
+GRYPHON_HISTORY = ".gryphon_history"
+REQUIREMENTS_NOT_FOUND = "requirements.txt file not found."
 
 
 # PATH UTILS
@@ -65,7 +68,6 @@ def on_error(func, path, exc):
             func(path)
         except PermissionError:
             logger.error(f"Permission error on {path}. Something might go wrong.")
-            pass
     else:
         if func == os.rmdir:
             shutil.rmtree(path)
@@ -129,23 +131,21 @@ def initial_git_commit(repository: git.Repo):
 def create_venv(folder=None, python_version=None):
     """Function to a virtual environment inside a folder."""
     python_path = "python"
-    if python_version and python_version != ALWAYS_ASK:
+    if python_version and python_version not in [ALWAYS_ASK, SYSTEM_DEFAULT]:
 
-        if python_version != SYSTEM_DEFAULT:
+        env_folder = GRYPHON_HOME / f"reserved_env_python_{python_version}"
+        if not env_folder.is_dir():
+            logger.info(f"Installing python version with Conda.")
+            create_conda_env(
+                folder=GRYPHON_HOME / f"reserved_env_python_{python_version}",
+                python_version=python_version
+            )
 
-            env_folder = GRYPHON_HOME / f"reserved_env_python_{python_version}"
-            if not env_folder.is_dir():
-                logger.info(f"Installing python version with Conda.")
-                create_conda_env(
-                    folder=GRYPHON_HOME / f"reserved_env_python_{python_version}",
-                    python_version=python_version
-                )
-
-            if platform.system() == "Windows":
-                # On Windows the venv folder structure is different from unix
-                python_path = env_folder / "envs" / "python.exe"
-            else:
-                python_path = env_folder / "envs" / "bin" / "python"
+        if platform.system() == "Windows":
+            # On Windows the venv folder structure is different from unix
+            python_path = env_folder / "envs" / "python.exe"
+        else:
+            python_path = env_folder / "envs" / "bin" / "python"
 
     target_folder = get_destination_path(folder)
     venv_path = target_folder / VENV_FOLDER
@@ -176,10 +176,11 @@ def install_libraries_venv(folder=None):
     logger.info("Installing requirements. This may take several minutes ...")
 
     if not pip_path.is_file():
-        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
+        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}."
+                           f"\nAre you using venv instead of conda?")
 
     if not requirements_path.is_file():
-        raise FileNotFoundError("requirements.txt file not found.")
+        raise FileNotFoundError(REQUIREMENTS_NOT_FOUND)
 
     return_code = execute_and_log(f'\"{pip_path}\" install -r \"{requirements_path}\" --disable-pip-version-check')
     if return_code is not None:
@@ -200,7 +201,6 @@ def install_extra_nbextensions_venv(folder_path):
         pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
         activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
         silent = "START /B \"\""
-        # redirect = ">> .output 2>&1"
         redirect = ">nul 2>&1"
     else:
         pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
@@ -214,10 +214,11 @@ def install_extra_nbextensions_venv(folder_path):
     logger.info("Installing extra notebook extensions.")
 
     if not pip_path.is_file():
-        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}")
+        raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}"
+                           f"\nAre you using venv instead of conda?")
 
     if not requirements_path.is_file():
-        raise FileNotFoundError("requirements.txt file not found.")
+        raise FileNotFoundError(REQUIREMENTS_NOT_FOUND)
 
     with open(requirements_path, "r", encoding="UTF-8") as f1:
         requirements = f1.read()
@@ -297,7 +298,6 @@ def create_conda_env(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
-    execute_and_log("conda config --set notify_outdated_conda false")
     execute_and_log("conda config --append channels conda-forge --json >> out.json")
     os.remove("out.json")
 
@@ -317,10 +317,13 @@ def install_libraries_conda(folder=None):
     logger.info("Installing requirements. This may take several minutes ...")
     target_folder = get_destination_path(folder)
 
-    requirements_path = target_folder / "requirements.txt"
+    requirements_path = target_folder / REQUIREMENTS
     conda_path = target_folder / 'envs'
 
-    execute_and_log("conda config --set notify_outdated_conda false")
+    if not conda_path.is_dir():
+        raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
+                           f"\nAre you using conda instead of venv?")
+
     return_code = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
 
     if return_code is not None:
@@ -341,10 +344,11 @@ def install_extra_nbextensions_conda(folder_path):
     logger.info("Installing extra notebook extensions.")
 
     if not conda_path.is_dir():
-        raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}")
+        raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
+                           f"\nAre you using conda instead of venv?")
 
     if not requirements_path.is_file():
-        raise FileNotFoundError("requirements.txt file not found.")
+        raise FileNotFoundError(REQUIREMENTS_NOT_FOUND)
 
     with open(requirements_path, "r", encoding="UTF-8") as f1:
         requirements = f1.read()
@@ -358,14 +362,12 @@ def install_extra_nbextensions_conda(folder_path):
         # On Windows the venv folder structure is different from unix
         conda_python = conda_path / "python.exe"
         silent = "START /B \"\""
-        # redirect = ">> .output 2>&1"
         redirect = ">nul 2>&1"
     else:
         conda_python = conda_path / "bin" / "python"
         silent = "nohup"
         redirect = ""
 
-    execute_and_log("conda config --set notify_outdated_conda false")
     return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
                                   f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k')
 
@@ -467,7 +469,7 @@ def get_rc_file(folder=Path.cwd()):
     """
     Updates the needed options inside the .labskitrc file.
     """
-    path = folder / ".gryphon_history"
+    path = folder / GRYPHON_HISTORY
     if path.is_file():
         return path
 
@@ -481,7 +483,7 @@ def log_new_files(template, performed_action: str, logfile=None):
 
     assert performed_action in [INIT, GENERATE]
     if logfile is None:
-        logfile = Path.cwd() / ".gryphon_history"
+        logfile = Path.cwd() / GRYPHON_HISTORY
 
     files_and_folders = glob.glob(str(template.path / "template" / "**"), recursive=True)
     files = list(filter(lambda x: x.is_file(), map(Path, files_and_folders)))
@@ -511,7 +513,7 @@ def log_operation(template, performed_action: str, logfile=None):
     assert performed_action in [INIT, GENERATE]
 
     if logfile is None:
-        logfile = Path.cwd() / ".gryphon_history"
+        logfile = Path.cwd() / GRYPHON_HISTORY
 
     with open(logfile, "r+", encoding="utf-8") as f:
         contents = json.load(f)
@@ -534,7 +536,7 @@ def log_operation(template, performed_action: str, logfile=None):
 def log_add_library(libraries, logfile=None):
 
     if logfile is None:
-        logfile = Path.cwd() / ".gryphon_history"
+        logfile = Path.cwd() / GRYPHON_HISTORY
     try:
         with open(logfile, "r+", encoding="utf-8") as f:
             contents = json.load(f)

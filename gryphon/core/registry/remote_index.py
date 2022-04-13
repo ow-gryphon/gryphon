@@ -23,7 +23,6 @@ class RemoteIndex:
 
         self.repo = Repo.clone_from(self.index_repo, self.index_local_path)
 
-        # self.metadata = self.read_index_metadata()
         self.templates = self.generate_templates()
 
     # def read_index_metadata(self) -> Dict[str, List]:

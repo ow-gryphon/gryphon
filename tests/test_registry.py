@@ -146,23 +146,16 @@ def test_registry_collection_1(setup, teardown):
         }
         registry = RegistryCollection.from_config_file(configurations, cwd)
 
-        git_registry = cwd / "open-source"
         local_registry = cwd / "default_registry"
-        git_registry_init = git_registry / "init"
-        git_registry_generate = git_registry / "generate"
         local_registry_init = local_registry / "init"
         local_registry_generate = local_registry / "generate"
 
-        # assert git_registry.is_dir()
         assert local_registry.is_dir()
-        # assert git_registry_init.is_dir()
-        # assert git_registry_generate.is_dir()
         assert local_registry_init.is_dir()
         assert local_registry_generate.is_dir()
 
         metadata = registry.get_templates()
 
-        # assert "basic_analytics_local" in metadata['init']
         assert "sample_init_local" in metadata['init']
 
     finally:

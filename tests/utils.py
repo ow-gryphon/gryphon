@@ -18,6 +18,7 @@ from gryphon.core.common_operations import (
 TEST_FOLDER = Path("tests").resolve()
 CONFIG_FILE_NAME = "gryphon_config.json"
 MOCK_CONFIG_FILE_PATH = 'gryphon.core.settings.SettingsManager.get_config_path'
+REQUIREMENTS_TXT = "requirements.txt"
 
 
 def on_error(func, path, exc):
@@ -64,7 +65,7 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
 
     shutil.copyfile(
         src=requirements,
-        dst=destination / "requirements.txt"
+        dst=destination / REQUIREMENTS_TXT
     )
 
 
@@ -87,7 +88,7 @@ def create_folder_with_conda_env(folder_name: Path = None, requirements=None, py
 
     shutil.copyfile(
         src=requirements,
-        dst=destination / "requirements.txt"
+        dst=destination / REQUIREMENTS_TXT
     )
 
 
@@ -106,7 +107,7 @@ def get_pip_path(base_folder=Path.cwd()):
 
 
 def get_requirements_path(base_folder: Path):
-    return base_folder / "requirements.txt"
+    return base_folder / REQUIREMENTS_TXT
 
 
 def get_venv_path(base_folder: Path) -> Path:

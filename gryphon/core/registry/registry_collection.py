@@ -46,11 +46,10 @@ class RegistryCollection:
         template_indexes = settings.get("template_indexes", {})
         local_templates = settings.get("local_templates", {})
 
-        # git_registry = settings.get("git_registry", {})
-
         template_registries = []
 
         # git ones
+        # git_registry = settings.get("git_registry", {})
         # for name, url in git_registry.items():
         #     try:
         #         reg = GitRegistry(

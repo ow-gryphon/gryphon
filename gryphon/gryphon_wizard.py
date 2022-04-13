@@ -9,6 +9,7 @@ import platform
 import argparse
 import traceback
 from .core.registry import RegistryCollection
+from .core.common_operations import execute_and_log
 from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
 from .wizard.questions import CommonQuestions
@@ -130,6 +131,7 @@ def did_you_mean_gryphon():
 
 
 if __name__ == '__main__':
+    execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
 # DONE: make local templates use the same format as the index
@@ -137,6 +139,6 @@ if __name__ == '__main__':
 
 # DONE: .github nao apareceu em tentativa do dan
 # DONE: fazer o pipeline rodar quando faz o commmit normal e só pushar quando tem tag
-# TODO: Ignorar quando um template local nao for encontrado, só dar o warning
+# DONE: Ignorar quando um template local nao for encontrado, só dar o warning
 # DONE: Problema com o FileNotFoundError(requirements.txt file not found.). Please report to the support.
 # TODO: Find an easier way to trigger again a pipeline run
