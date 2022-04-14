@@ -642,5 +642,5 @@ def unify_templates(target_folder: Path) -> Path:
 # VERSION
 
 def sort_versions(versions: list) -> list:
-    versions.sort(key=lambda x: StrictVersion(x[1:]))
+    versions.sort(key=lambda x: StrictVersion(x[1:]) if x[0] == 'v' else StrictVersion(x))
     return versions
