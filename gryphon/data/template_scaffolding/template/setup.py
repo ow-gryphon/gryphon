@@ -1,3 +1,4 @@
+import json
 import setuptools
 
 with open("template/README.md", "r") as fh:
@@ -6,20 +7,19 @@ with open("template/README.md", "r") as fh:
 with open('requirements.txt') as fr:
     requirements = fr.read().strip().split('\n')
 
+with open('metadata.json') as fr:
+    metadata = json.load(fr)
+
 setuptools.setup(
-    name="",
-    version="v0.0.1",
-    author="",
-    author_email="",
-    description="",
+    name="",  # Name of the repository
+    version="0.0.1",
+    author=metadata.get("author", ""),
+    author_email=metadata.get("author_email", ""),
+    description=metadata.get("author", ""),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="",
+    url="",  # Repository URL or externally maintained page
     packages=setuptools.find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3.6",
-        "Operating System :: OS Independent",
-    ],
     python_requires='>=3.6',
     install_requires=requirements,
 )
