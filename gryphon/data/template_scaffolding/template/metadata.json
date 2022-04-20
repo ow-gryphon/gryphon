@@ -1,12 +1,13 @@
 {
     "display_name": "",
+    "command": "",
+    "dependencies": [],
+
     "keywords": [],
     "methodology": [],
     "topic": [],
-    "command": "",
 
-    "author": "",
-    "author_email": "",
     "description": "",
-    "dependencies": []
+    "author": "",
+    "author_email": ""
 }
