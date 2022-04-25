@@ -452,6 +452,7 @@ def append_requirement(library_name, location=Path.cwd()):
         with open(requirements_path, "w", encoding='UTF-8') as file:
             file.write("")
 
+    # check if the library was already installed
     lib_list = requirements.split("\n")
     exclusion_list = []
     for index, lib in enumerate(lib_list):
@@ -467,6 +468,34 @@ def append_requirement(library_name, location=Path.cwd()):
         f.seek(0)
         f.write("\n".join(lib_list))
         f.truncate()
+
+
+def backup_requirements():
+
+    current_path = get_destination_path()
+    requirements_path = current_path / REQUIREMENTS
+    backup_path = current_path / "requirements.backup"
+
+    with open(requirements_path, "r", encoding="UTF-8") as f:
+        backup_contents = f.read()
+
+    with open(backup_path, "w", encoding="UTF-8") as f:
+        f.write(backup_contents)
+
+    return backup_path
+
+
+def rollback_requirement(backup_file):
+
+    current_path = get_destination_path()
+    requirements_path = current_path / REQUIREMENTS
+    os.remove(requirements_path)
+
+    with open(backup_file, "r", encoding="UTF-8") as f:
+        backup_contents = f.read()
+
+    with open(requirements_path, "w", encoding="UTF-8") as f:
+        f.write(backup_contents)
 
 
 def rollback_append_requirement(library_name):

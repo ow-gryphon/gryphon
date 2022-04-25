@@ -3,9 +3,11 @@ Module containing the code for the add command in then CLI.
 """
 import json
 import logging
+import os
+
 from .common_operations import (
-    install_libraries_venv, append_requirement,
-    rollback_append_requirement, install_libraries_conda, log_add_library
+    install_libraries_venv, append_requirement, backup_requirements,
+    rollback_requirement, install_libraries_conda, log_add_library
 )
 from .settings import SettingsManager
 from ..constants import VENV, CONDA
@@ -22,6 +24,7 @@ def add(library_name):
     Add command from the OW Gryphon CLI.
     """
     logger.info("Adding required lib.")
+    requirements_backup = backup_requirements()
     append_requirement(library_name)
     try:
         with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
@@ -36,8 +39,10 @@ def add(library_name):
             raise RuntimeError(f"Invalid environment manager on the config file: \"{env_manager}\"."
                                f"Should be one of {env_list}. Restoring the default config file should solve.")
     except RuntimeError as e:
-        rollback_append_requirement(library_name)
+        rollback_requirement(requirements_backup)
         logger.warning("Rolled back the changes from last command.")
         raise e
     else:
         log_add_library(library_name)
+    finally:
+        os.remove(requirements_backup)
