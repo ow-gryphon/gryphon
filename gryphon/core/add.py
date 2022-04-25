@@ -32,8 +32,10 @@ def add(library_name):
 
         if env_manager == VENV:
             install_libraries_venv()
+
         elif env_manager == CONDA:
             install_libraries_conda()
+
         else:
             env_list = [VENV, CONDA]
             raise RuntimeError(f"Invalid environment manager on the config file: \"{env_manager}\"."
@@ -43,6 +45,6 @@ def add(library_name):
         logger.warning("Rolled back the changes from last command.")
         raise e
     else:
-        log_add_library(library_name)
+        log_add_library([library_name])
     finally:
         os.remove(requirements_backup)

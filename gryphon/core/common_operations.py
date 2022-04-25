@@ -1,27 +1,28 @@
 """
 File containing operations that are common to the commands.
 """
-import os
-import sys
-import json
-import glob
-import logging
-import platform
 import errno
-import stat
+import glob
+import json
+import logging
+import os
+import platform
 import shutil
+import stat
+import sys
 import zipfile
-from distutils.version import StrictVersion
 from datetime import datetime
+from distutils.version import StrictVersion
 from pathlib import Path
+
 import git
+
 from .core_text import Text
 from ..constants import (
     SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
     GENERATE, INIT, SYSTEM_DEFAULT, CONFIG_FILE, DEFAULT_PYTHON_VERSION,
     USE_LATEST
 )
-
 
 logger = logging.getLogger('gryphon')
 
@@ -102,7 +103,7 @@ def copy_project_template(template_source: Path, template_destiny: Path):
     )
 
 
-def execute_and_log(command):
+def execute_and_log(command) -> tuple:
     logger.debug(f"command: {command}")
     cmd = os.popen(command)
     output = cmd.read()
@@ -110,7 +111,7 @@ def execute_and_log(command):
         logger.debug(line)
 
     # status code
-    return cmd.close()
+    return cmd.close(), output
 
 
 # GIT
@@ -152,7 +153,7 @@ def create_venv(folder=None, python_version=None):
 
     # Create venv
     logger.info(f"Creating virtual environment in {venv_path}")
-    return_code = execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
+    return_code, _ = execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
     if return_code:
         raise RuntimeError("Failed to create virtual environment.")
 
@@ -182,11 +183,19 @@ def install_libraries_venv(folder=None):
     if not requirements_path.is_file():
         raise FileNotFoundError(REQUIREMENTS_NOT_FOUND)
 
-    return_code = execute_and_log(f'\"{pip_path}\" install -r \"{requirements_path}\" --disable-pip-version-check')
+    return_code, output = execute_and_log(f'\"{pip_path}\" install -r \"{requirements_path}\"'
+                                          f' --disable-pip-version-check')
     if return_code is not None:
-        raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
+        # logger.warning(output)
+        # TODO: Não consegui pegar o real output do erro, está vindo apenas uma parte
+        #   e nessa parte só tem o que deu certo do output e não o erro  (parte vermelha que realmente fala as versoes)
 
-    logger.log(SUCCESS, "Installation successful!")
+        if "Could not find a version that satisfies the requirement" in output:
+            logger.error(output)
+        else:
+            raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
+    else:
+        logger.log(SUCCESS, "Installation successful!")
 
 
 def install_extra_nbextensions_venv(folder_path):
@@ -228,14 +237,16 @@ def install_extra_nbextensions_venv(folder_path):
             with open(requirements_path, "a", encoding="UTF-8") as f2:
                 f2.write(f"\n{lib}")
 
-    return_code = execute_and_log(f'\"{activate_env_command}\" && pip --disable-pip-version-check '
-                                  f'install jupyter_contrib_nbextensions jupyter_nbextensions_configurator')
+    return_code, _ = execute_and_log(
+        f'\"{activate_env_command}\" && pip --disable-pip-version-check install '
+        f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator'
+    )
 
     if return_code is not None:
         raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
     os.chdir(target_folder)
-    return_code = execute_and_log(
+    return_code, _ = execute_and_log(
         f"\"{activate_env_command}\" "
         f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
         f"&& ({silent} jupyter contrib nbextension install --user) {redirect}"
@@ -306,7 +317,7 @@ def create_conda_env(folder=None, python_version=None):
     if python_version and python_version != SYSTEM_DEFAULT:
         command += f" python={python_version}"
 
-    return_code = execute_and_log(command)
+    return_code, _ = execute_and_log(command)
     if return_code is not None:
         raise RuntimeError(f"Failed to create conda environment. Status code: {return_code}")
 
@@ -324,8 +335,27 @@ def install_libraries_conda(folder=None):
         raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
                            f"\nAre you using conda instead of venv?")
 
-    return_code = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
+    return_code, _ = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
+    """
+    TODO:  Mensagem achada quando pedimos uma versão que nao existe usando conda
 
+    PackagesNotFoundError: The following packages are not available from current channels:
+    
+      - matplotlib==1.5.8
+    
+    Current channels:
+    
+      - https://repo.anaconda.com/pkgs/main/linux-64
+      - https://repo.anaconda.com/pkgs/main/noarch
+      - https://repo.anaconda.com/pkgs/r/linux-64
+      - https://repo.anaconda.com/pkgs/r/noarch
+      - https://conda.anaconda.org/conda-forge/linux-64
+      - https://conda.anaconda.org/conda-forge/noarch
+    
+    To search for alternate channels that may provide the conda package you're
+    looking for, navigate to
+    
+    """
     if return_code is not None:
         raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
 
@@ -368,7 +398,7 @@ def install_extra_nbextensions_conda(folder_path):
         silent = "nohup"
         redirect = ""
 
-    return_code = execute_and_log(f'conda install jupyter_contrib_nbextensions '
+    return_code, _ = execute_and_log(f'conda install jupyter_contrib_nbextensions '
                                   f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k')
 
     if return_code is not None:
@@ -377,23 +407,23 @@ def install_extra_nbextensions_conda(folder_path):
     os.chdir(target_folder)
 
     try:
-        return_code = execute_and_log(
+        return_code, _ = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter nbextensions_configurator enable --user) {redirect}')
         assert return_code is None
 
-        return_code = execute_and_log(
+        return_code, _ = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter nbextension enable codefolding/main --user) {redirect}')
         assert return_code is None
 
-        return_code = execute_and_log(
+        return_code, _ = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter contrib nbextension install --user) {redirect}')
         assert return_code is None
 
-        return_code = execute_and_log(
+        return_code, _ = execute_and_log(
             f'({silent} \"{conda_python}\" -m jupyter nbextension enable toc2/main --user) {redirect}')
         assert return_code is None
 
-        return_code = execute_and_log(
+        return_code, _ = execute_and_log(
             f'({silent} \"{conda_python}\" -m '
             f'jupyter nbextension enable collapsible_headings/main --user) {redirect}'
         )
@@ -421,7 +451,7 @@ def change_shell_folder_and_activate_conda_env(location):
 
 
 def update_conda():
-    if execute_and_log("conda update conda -k") is not None:
+    if execute_and_log("conda update conda -k")[0] is not None:
         raise RuntimeError("Failed to update conda.")
 
 
@@ -585,7 +615,7 @@ def log_operation(template, performed_action: str, logfile=None):
         f.truncate()
 
 
-def log_add_library(libraries, logfile=None):
+def log_add_library(libraries: list, logfile=None):
 
     if logfile is None:
         logfile = Path.cwd() / GRYPHON_HISTORY
@@ -633,7 +663,7 @@ def download_template(template) -> Path:
     #  on another from a different index
 
     temp_folder = Path().cwd() / ".temp"
-    status_code = execute_and_log(
+    status_code, _ = execute_and_log(
         f"pip --disable-pip-version-check download {template.name}"
         f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
         f"-i {template.template_index} "

@@ -203,5 +203,5 @@ class SettingsManager:
         cls.add_local_template(str(Path(location).absolute()))
         logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
                     " to the information given on metadata.json file.\n\n In order to find it on gryphon menus you will"
-                    " have to fill the template informations inside metadata.json file (providing at least the display "
+                    " have to fill the template information inside metadata.json file (providing at least the display "
                     "name and the command).")
