@@ -186,14 +186,11 @@ def install_libraries_venv(folder=None):
     return_code, output = execute_and_log(f'\"{pip_path}\" install -r \"{requirements_path}\"'
                                           f' --disable-pip-version-check')
     if return_code is not None:
-        # logger.warning(output)
-        # TODO: Não consegui pegar o real output do erro, está vindo apenas uma parte
-        #   e nessa parte só tem o que deu certo do output e não o erro  (parte vermelha que realmente fala as versoes)
-
+        # TODO: take the error output from stderr
         if "Could not find a version that satisfies the requirement" in output:
             logger.error(output)
         else:
-            raise RuntimeError(f"Failed on pip install command. Status code: {return_code}")
+            logger.error(f"Failed on pip install command. Status code: {return_code}")
     else:
         logger.log(SUCCESS, "Installation successful!")
 
@@ -325,6 +322,24 @@ def create_conda_env(folder=None, python_version=None):
 
 
 def install_libraries_conda(folder=None):
+    """
+        TODO:  Mensagem achada quando pedimos uma versão que nao existe usando conda
+        PackagesNotFoundError: The following packages are not available from current channels:
+
+          - matplotlib==1.5.8
+
+        Current channels:
+
+          - https://repo.anaconda.com/pkgs/main/linux-64
+          - https://repo.anaconda.com/pkgs/main/noarch
+          - https://repo.anaconda.com/pkgs/r/linux-64
+          - https://repo.anaconda.com/pkgs/r/noarch
+          - https://conda.anaconda.org/conda-forge/linux-64
+          - https://conda.anaconda.org/conda-forge/noarch
+
+        To search for alternate channels that may provide the conda package you're
+        looking for, navigate to
+    """
     logger.info("Installing requirements. This may take several minutes ...")
     target_folder = get_destination_path(folder)
 
@@ -335,31 +350,20 @@ def install_libraries_conda(folder=None):
         raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
                            f"\nAre you using conda instead of venv?")
 
-    return_code, _ = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
-    """
-    TODO:  Mensagem achada quando pedimos uma versão que nao existe usando conda
+    return_code, output = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
 
-    PackagesNotFoundError: The following packages are not available from current channels:
-    
-      - matplotlib==1.5.8
-    
-    Current channels:
-    
-      - https://repo.anaconda.com/pkgs/main/linux-64
-      - https://repo.anaconda.com/pkgs/main/noarch
-      - https://repo.anaconda.com/pkgs/r/linux-64
-      - https://repo.anaconda.com/pkgs/r/noarch
-      - https://conda.anaconda.org/conda-forge/linux-64
-      - https://conda.anaconda.org/conda-forge/noarch
-    
-    To search for alternate channels that may provide the conda package you're
-    looking for, navigate to
-    
-    """
     if return_code is not None:
-        raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
+        # TODO: take the error output from stderr
+        if "Could not find a version that satisfies the requirement" in output:
+            logger.error(output)
+        else:
+            logger.error(f"Failed on pip install command. Status code: {return_code}")
+    else:
+        logger.log(SUCCESS, "Installation successful!")
 
-    logger.log(SUCCESS, "Installation successful!")
+    # if return_code is not None:
+    #     raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
+    # logger.log(SUCCESS, "Installation successful!")
 
 
 def install_extra_nbextensions_conda(folder_path):
