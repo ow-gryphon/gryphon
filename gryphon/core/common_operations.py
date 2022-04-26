@@ -453,7 +453,7 @@ def change_shell_folder_and_activate_conda_env(location):
 
 
 def update_conda():
-    if execute_and_log("conda update conda -k")[0] is not None:
+    if execute_and_log("conda update conda -k -y")[0] is not None:
         raise RuntimeError("Failed to update conda.")
 
 
@@ -545,6 +545,14 @@ def rollback_append_requirement(library_name):
     if library_name == last_requirement_added:
         with open(requirements_path, "w", encoding='UTF-8') as file:
             file.write('\n'.join(requirements_list[:-1]))
+
+
+def mark_notebooks_as_readonly(location: Path):
+
+    if platform.system() == "Windows":
+        execute_and_log(f'attrib +r "{location / "*.ipynb"}" /s')
+    else:
+        execute_and_log(f'chmod -R 0444 "{location}"/*.ipynb')
 
 
 # RC FILE
@@ -705,14 +713,3 @@ def unify_templates(target_folder: Path) -> Path:
 def sort_versions(versions: list) -> list:
     versions.sort(key=lambda x: StrictVersion(x[1:]) if x[0] == 'v' else StrictVersion(x))
     return versions
-
-
-def mark_notebooks_as_readonly(location: Path):
-
-    if platform.system() == "Windows":
-        execute_and_log(f'attrib +r "{location}"\*.ipynb /s')
-        # f'Xcopy /I /E "{location}" "Test Project Folder/notebooks"'
-
-    else:
-        execute_and_log(f'chmod -R 0444 "{location}"/*.ipynb')
-        # f'cp -rf -p "{location}/." "Test Project Folder/notebooks"'
