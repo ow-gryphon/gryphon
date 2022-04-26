@@ -398,8 +398,10 @@ def install_extra_nbextensions_conda(folder_path):
         silent = "nohup"
         redirect = ""
 
-    return_code, _ = execute_and_log(f'conda install jupyter_contrib_nbextensions '
-                                  f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k')
+    return_code, _ = execute_and_log(
+        f'conda install jupyter_contrib_nbextensions '
+        f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k'
+    )
 
     if return_code is not None:
         raise RuntimeError(f"Failed on conda install command. Return code: {return_code}")
@@ -703,3 +705,14 @@ def unify_templates(target_folder: Path) -> Path:
 def sort_versions(versions: list) -> list:
     versions.sort(key=lambda x: StrictVersion(x[1:]) if x[0] == 'v' else StrictVersion(x))
     return versions
+
+
+def mark_notebooks_as_readonly(location: Path):
+
+    if platform.system() == "Windows":
+        execute_and_log(f'attrib +r "{location}"\*.ipynb /s')
+        # f'Xcopy /I /E "{location}" "Test Project Folder/notebooks"'
+
+    else:
+        execute_and_log(f'chmod -R 0444 "{location}"/*.ipynb')
+        # f'cp -rf -p "{location}/." "Test Project Folder/notebooks"'

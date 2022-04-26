@@ -21,7 +21,8 @@ from .common_operations import (
     install_extra_nbextensions_conda,
     download_template, unzip_templates,
     unify_templates, copy_project_template,
-    append_requirement, log_add_library
+    append_requirement, log_add_library,
+    mark_notebooks_as_readonly
 )
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, LOCAL_TEMPLATE, REMOTE_INDEX
 
@@ -47,6 +48,7 @@ def init(template: Template, location, python_version, **kwargs):
         temporary_folder = download_template(template)
         zip_folder = unzip_templates(temporary_folder)
         template_folder = unify_templates(zip_folder)
+        mark_notebooks_as_readonly(template_folder / "notebooks")
 
         # Move files to destination
         shutil.copytree(
@@ -54,6 +56,7 @@ def init(template: Template, location, python_version, **kwargs):
             dst=Path(location),
             dirs_exist_ok=True
         )
+
         shutil.rmtree(temporary_folder)
         shutil.rmtree(template_folder)
 

@@ -183,7 +183,8 @@ class SettingsManager:
             template_destiny=Path(location),
             template_source=Path(template_path)
         )
-        # TODO: JOIN ALL THE requirements.txt files in one.
+        # TODO: JOIN ALL THE requirements.txt files in one at the time of project init with more than one zip file
+        #  downloaded.
 
         # Git
         repo = init_new_git_repo(folder=location)

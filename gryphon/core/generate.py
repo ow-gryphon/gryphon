@@ -2,24 +2,25 @@
 Module containing the code for the generate command in then CLI.
 """
 
-import os
+import glob
 import json
+import logging
+import os
 import shutil
 from pathlib import Path
-import glob
-import logging
-from .registry import Template
-from .settings import SettingsManager
+
 from .common_operations import (
     get_destination_path,
     append_requirement,
     install_libraries_venv, install_libraries_conda,
     get_rc_file,
     log_operation, log_new_files, log_add_library,
-    download_template, unzip_templates, unify_templates
+    download_template, unzip_templates, unify_templates,
+    mark_notebooks_as_readonly
 )
+from .registry import Template
+from .settings import SettingsManager
 from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
-
 
 logger = logging.getLogger('gryphon')
 
@@ -100,6 +101,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
 
     temp_path = get_destination_path(f"temp_template")
     definitive_path = get_destination_path(destination_folder)
+    mark_notebooks_as_readonly(temp_path / "notebooks")
 
     # Copy files to a temporary folder
     logger.info(f"Creating files at {definitive_path}")
