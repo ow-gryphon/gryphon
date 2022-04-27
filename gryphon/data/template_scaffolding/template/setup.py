@@ -15,7 +15,7 @@ setuptools.setup(
     version="0.0.1",
     author=metadata.get("author", ""),
     author_email=metadata.get("author_email", ""),
-    description=metadata.get("author", ""),
+    description=metadata.get("description", ""),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",  # Repository URL or externally maintained page
