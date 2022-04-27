@@ -101,7 +101,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
 
     temp_path = get_destination_path(f"temp_template")
     definitive_path = get_destination_path(destination_folder)
-    mark_notebooks_as_readonly(temp_path / "notebooks")
 
     # Copy files to a temporary folder
     logger.info(f"Creating files at {definitive_path}")
@@ -112,6 +111,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         dst=Path(temp_path),
         dirs_exist_ok=True
     )
+    mark_notebooks_as_readonly(temp_path / "notebooks")
 
     # Replace patterns and rename files
     glob_pattern = temp_path / "**"
