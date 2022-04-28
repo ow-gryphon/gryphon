@@ -3,6 +3,7 @@ Module containing the code for the init command in the CLI.
 """
 import json
 import logging
+import platform
 import shutil
 from pathlib import Path
 from .settings import SettingsManager
@@ -22,7 +23,8 @@ from .common_operations import (
     download_template, unzip_templates,
     unify_templates, copy_project_template,
     append_requirement, log_add_library,
-    mark_notebooks_as_readonly
+    mark_notebooks_as_readonly,
+    execute_and_log
 )
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, LOCAL_TEMPLATE, REMOTE_INDEX
 
@@ -58,7 +60,10 @@ def init(template: Template, location, python_version, **kwargs):
         )
 
         shutil.rmtree(temporary_folder)
-        shutil.rmtree(template_folder)
+        if platform.system() == "Windows":
+            execute_and_log(f"rmdir /s /Q {template_folder}")
+        else:
+            shutil.rmtree(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
 
