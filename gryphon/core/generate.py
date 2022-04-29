@@ -42,7 +42,7 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
 
         try:
             parse_project_template(template_folder, kwargs)
-            mark_notebooks_as_readonly(template_folder / "notebooks")
+            mark_notebooks_as_readonly(Path.cwd() / "notebooks")
 
         finally:
             shutil.rmtree(temporary_folder)
