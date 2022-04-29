@@ -350,7 +350,8 @@ def install_libraries_conda(folder=None):
         raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
                            f"\nAre you using conda instead of venv?")
 
-    return_code, output = execute_and_log(f"conda install --prefix \"{conda_path}\" --file \"{requirements_path}\" -k -y")
+    return_code, output = execute_and_log(f"conda install --prefix \"{conda_path}\""
+                                          f" --file \"{requirements_path}\" -k -y")
 
     if return_code is not None:
         # TODO: take the error output from stderr
@@ -692,7 +693,7 @@ def download_template(template) -> Path:
 def unzip_templates(path: Path) -> Path:
     zip_files = glob.glob(str(path / "*.zip"))
     target_folder = path / "unzip"
-    if target_folder.is_dir():
+    if not target_folder.is_dir():
         os.makedirs(target_folder)
 
     for file in zip_files:
@@ -707,7 +708,8 @@ def unify_templates(target_folder: Path) -> Path:
     for folder in expanded_folders:
         shutil.copytree(
             src=Path(folder) / "template",
-            dst=destination_folder
+            dst=destination_folder,
+            dirs_exist_ok=True
         )
     return destination_folder
 

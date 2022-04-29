@@ -40,10 +40,13 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
         zip_folder = unzip_templates(temporary_folder)
         template_folder = unify_templates(zip_folder)
 
-        parse_project_template(template_folder, kwargs)
+        try:
+            parse_project_template(template_folder, kwargs)
+            mark_notebooks_as_readonly(template_folder / "notebooks")
 
-        shutil.rmtree(temporary_folder)
-        shutil.rmtree(template_folder)
+        finally:
+            shutil.rmtree(temporary_folder)
+            shutil.rmtree(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
@@ -82,6 +85,8 @@ def pattern_replacement(input_file, mapper):
         for before, after in mapper.items():
             text = text.replace("{{" + before + "}}", after)
 
+        os.makedirs(Path(output_file).parent, exist_ok=True)
+
         with open(output_file, "w", encoding='UTF-8') as f_out:
             # and write to output file
             f_out.write(text)
@@ -111,23 +116,23 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         dst=Path(temp_path),
         dirs_exist_ok=True
     )
-    mark_notebooks_as_readonly(temp_path / "notebooks")
+    try:
+        # Replace patterns and rename files
+        glob_pattern = temp_path / "**"
+        files = glob.glob(str(glob_pattern), recursive=True)
 
-    # Replace patterns and rename files
-    glob_pattern = temp_path / "**"
-    files = glob.glob(str(glob_pattern), recursive=True)
+        for file in files:
+            is_folder = Path(file).is_dir()
+            if is_folder:
+                continue
+            pattern_replacement(file, mapper)
 
-    for file in files:
-        is_folder = Path(file).is_dir()
-        if is_folder:
-            continue
-        pattern_replacement(file, mapper)
-
-    # Copy the processed files to the repository
-    os.makedirs(definitive_path, exist_ok=True)
-    shutil.copytree(
-        src=temp_path,
-        dst=definitive_path,
-        dirs_exist_ok=True
-    )
-    shutil.rmtree(temp_path)
+        # Copy the processed files to the repository
+        os.makedirs(definitive_path, exist_ok=True)
+        shutil.copytree(
+            src=temp_path,
+            dst=definitive_path,
+            dirs_exist_ok=True
+        )
+    finally:
+        shutil.rmtree(temp_path)
