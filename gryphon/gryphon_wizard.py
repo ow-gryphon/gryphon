@@ -134,11 +134,6 @@ if __name__ == '__main__':
     execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
-# DONE: make local templates use the same format as the index
-# DONE: Automatically add
-
-# DONE: .github nao apareceu em tentativa do dan
-# DONE: fazer o pipeline rodar quando faz o commmit normal e só pushar quando tem tag
-# DONE: Ignorar quando um template local nao for encontrado, só dar o warning
-# DONE: Problema com o FileNotFoundError(requirements.txt file not found.). Please report to the support.
-# TODO: Find an easier way to trigger again a pipeline run
+# TODO: problem with the back and forth options on the generate
+#  option. I saw this when I navigated by sector.
+# TODO: problem when the package has dependencies, it is duplicating the .temp and .target folder

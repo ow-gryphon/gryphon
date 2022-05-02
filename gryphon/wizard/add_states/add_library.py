@@ -9,10 +9,10 @@ class AddLibrary(State):
 
     def on_start(self, context: dict) -> dict:
         lib = context["chosen_option"][NAME]
-        if "lib_version" in context:
-            lib = f"{lib}=={context['lib_version']}"
 
         core_add(
-            library_name=lib
+            library_name=lib,
+            version=context['lib_version'] if 'lib_version' in context else None
+
         )
         return context

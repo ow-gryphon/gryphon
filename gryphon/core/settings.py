@@ -4,7 +4,7 @@ import logging
 import shutil
 from pathlib import Path
 from ..constants import (
-    CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH,
+    CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH, SUCCESS,
     INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK
 )
 from .common_operations import (
@@ -206,3 +206,4 @@ class SettingsManager:
                     " to the information given on metadata.json file.\n\n In order to find it on gryphon menus you will"
                     " have to fill the template information inside metadata.json file (providing at least the display "
                     "name and the command).")
+        logger.log(SUCCESS, "Installation successful!")

@@ -310,8 +310,8 @@ def create_conda_env(folder=None, python_version=None):
     os.remove("out.json")
 
     command = f"conda create --prefix=\"{conda_path}\" -y -k"
-
-    if python_version and python_version != SYSTEM_DEFAULT:
+    # TODO: Verificar essa terceira condição aqui
+    if python_version and python_version != SYSTEM_DEFAULT and python_version != ALWAYS_ASK:
         command += f" python={python_version}"
 
     return_code, _ = execute_and_log(command)

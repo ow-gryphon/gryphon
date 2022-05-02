@@ -19,13 +19,17 @@ logger = logging.getLogger('gryphon')
 # TODO: Have some library list suggestion for each usage category the user has.
 
 
-def add(library_name):
+def add(library_name, version=None):
     """
     Add command from the OW Gryphon CLI.
     """
     logger.info("Adding required lib.")
     requirements_backup = backup_requirements()
-    append_requirement(library_name)
+    lib = library_name
+    if version is not None:
+        lib = f"{library_name}=={version}"
+
+    append_requirement(lib)
     try:
         with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
             env_manager = json.load(f)["environment_management"]

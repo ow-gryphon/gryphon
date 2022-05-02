@@ -1,34 +1,64 @@
-import platform
+import json
+from pathlib import Path
+
+from gryphon.constants import GRYPHON_HOME, CONFIG_FILE, ALWAYS_ASK
 from gryphon.wizard.wizard_text import Text
-from .constants import KEY_DOWN, WELCOME_MESSAGE, CONFIRMATION_MESSAGE, SUCCESS_MESSAGE
+from .basic_actions import (
+    wait_for_output, enter, type_text, quit_process,
+    start_wizard, wait_for_success, confirm_information
+)
+from .main_menu import select_init_on_main_menu
+
+CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
 
 
-if platform.system() != "Windows":
-    import pexpect
-else:
-    # noinspection PyUnresolvedReferences
-    import wexpect as pexpect
+def select_the_first_template_on_init(process):
+    enter(process)
 
 
-def wizard_init(project_folder):
-    child = pexpect.spawn(command='gryphon', encoding='utf-8')
+def type_the_project_folder_name(process, folder_name: str):
+    wait_for_output(process, Text.init_prompt_location_question)
+    type_text(process, folder_name)
+    enter(process)
 
-    child.expect(WELCOME_MESSAGE)
-    #  » Start a new project
-    child.sendcontrol('m')
 
-    child.expect(Text.init_prompt_template_question)
-    # child.send(KEY_DOWN)
-    # » Basic analytics template
-    #   Advanced analytics template
-    child.sendcontrol('m')
+def choose_latest_template_version(process):
 
-    child.expect(Text.init_prompt_location_question)
-    child.send(str(project_folder))
-    child.sendcontrol('m')
+    with open(CONFIG_FILE_PATH, "r", encoding="UTF-8") as f:
+        settings = json.load(f)
 
-    child.expect(CONFIRMATION_MESSAGE)
-    child.sendcontrol('m')
+    if settings["template_version_policy"] == ALWAYS_ASK:
+        wait_for_output(process, Text.settings_ask_template_version)
+        enter(process)
 
-    child.expect(SUCCESS_MESSAGE, timeout=300)
-    child.close()
+
+def choose_latest_python_version(process):
+
+    with open(CONFIG_FILE_PATH, "r", encoding="UTF-8") as f:
+        settings = json.load(f)
+
+    if settings["default_python_version"] == ALWAYS_ASK:
+        wait_for_output(process, Text.settings_ask_python_version, timeout=300)
+        enter(process)
+
+
+def start_new_project(project_name: str, working_directory: Path = Path.cwd()):
+    process = None
+    try:
+        process = start_wizard(working_directory)
+        select_init_on_main_menu(process)
+        select_the_first_template_on_init(process)
+
+        choose_latest_template_version(process)
+        type_the_project_folder_name(process, project_name)
+        choose_latest_python_version(process)
+
+        confirm_information(process)
+        wait_for_success(process)
+        # TODO: I had to comment the code that creates a new session inside the created
+        #  folder in order to make this test to work. It was giving timeout always
+        quit_process(process)
+    except Exception as e:
+        if process:
+            print(process.before)
+        raise e
