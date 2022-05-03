@@ -25,7 +25,7 @@ from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_
 logger = logging.getLogger('gryphon')
 
 
-def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs):
+def generate(template: Template, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
@@ -42,7 +42,7 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
 
         try:
             parse_project_template(template_folder, kwargs)
-            mark_notebooks_as_readonly(Path.cwd() / "notebooks")
+            mark_notebooks_as_readonly(folder / "notebooks")
 
         finally:
             shutil.rmtree(temporary_folder)
@@ -54,7 +54,7 @@ def generate(template: Template, requirements: list, folder=Path.cwd(), **kwargs
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
     for r in template.dependencies:
-        append_requirement(r)
+        append_requirement(r, location=folder)
 
     log_add_library(template.dependencies)
     if env_type == VENV:
@@ -120,7 +120,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         # Replace patterns and rename files
         glob_pattern = temp_path / "**"
         files = glob.glob(str(glob_pattern), recursive=True)
-
+        logger.error(mapper)
         for file in files:
             is_folder = Path(file).is_dir()
             if is_folder:

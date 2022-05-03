@@ -261,40 +261,39 @@ def install_extra_nbextensions_venv(folder_path):
 def change_shell_folder_and_activate_venv(location):
     if 'pytest' not in sys.modules:
         target_folder = get_destination_path(location)
+        logger.warning(f"""
+                        {Text.install_end_message_1}
 
-        if platform.system() == "Windows":
-            # On windows the venv folder structure is different from unix
-            # activate_path = target_folder / VENV / "Scripts" / "activate.bat"
-            # os.system(
-            #     f"""start cmd /k "echo Activating virtual environment & """
-            #     f"""{activate_path} & """
-            #     """echo "Virtual environment activated. Now loading Gryphon" & """
-            #     """gryphon" """
-            # )
+                        ANACONDA PROMPT/COMMAND PROMPT:
 
-            logger.warning(f"""
-                {Text.install_end_message_1}
+                        >> cd \"{target_folder}\"
+                        >> .venv\\Scripts\\activate.bat
 
-                ANACONDA PROMPT/COMMAND PROMPT:
+                        GIT BASH:
 
-                >> cd \"{target_folder}\"
-                >> .venv\\Scripts\\activate.bat
-                
-                GIT BASH:
-                
-                >> cd \"{str(target_folder).replace(chr(92),'/')}\"
-                >> source .venv/Scripts/activate
+                        >> cd \"{str(target_folder).replace(chr(92), '/')}\"
+                        >> source .venv/Scripts/activate
 
-                {Text.install_end_message_2}
-            """)
-        else:
-            logger.info("Opening your new project folder and activating virtual environment.")
+                        {Text.install_end_message_2}
+                    """)
 
-            activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
-            os.chdir(target_folder)
-
-            shell = os.environ.get('SHELL', '/bin/sh')
-            os.execl(shell, shell, "--rcfile", activate_path)
+        # if platform.system() == "Windows":
+        #     On windows the venv folder structure is different from unix
+        #     activate_path = target_folder / VENV / "Scripts" / "activate.bat"
+        #     os.system(
+        #         f"""start cmd /k "echo Activating virtual environment & """
+        #         f"""{activate_path} & """
+        #         """echo "Virtual environment activated. Now loading Gryphon" & """
+        #         """gryphon" """
+        #     )
+        # else:
+        #     logger.info("Opening your new project folder and activating virtual environment.")
+        #
+        #     activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
+        #     os.chdir(target_folder)
+        #
+        #     shell = os.environ.get('SHELL', '/bin/sh')
+        #     os.execl(shell, shell, "--rcfile", activate_path)
 
 
 # CONDA
@@ -307,7 +306,8 @@ def create_conda_env(folder=None, python_version=None):
     # Create venv
     logger.info(f"Creating Conda virtual environment in {conda_path}")
     execute_and_log("conda config --append channels conda-forge --json >> out.json")
-    os.remove("out.json")
+    if Path("out.json").is_file():
+        os.remove("out.json")
 
     command = f"conda create --prefix=\"{conda_path}\" -y -k"
     # TODO: Verificar essa terceira condição aqui
@@ -507,9 +507,9 @@ def append_requirement(library_name, location=Path.cwd()):
         f.truncate()
 
 
-def backup_requirements():
+def backup_requirements(cwd=Path.cwd()):
 
-    current_path = get_destination_path()
+    current_path = get_destination_path(cwd)
     requirements_path = current_path / REQUIREMENTS
     backup_path = current_path / "requirements.backup"
 
@@ -522,9 +522,9 @@ def backup_requirements():
     return backup_path
 
 
-def rollback_requirement(backup_file):
+def rollback_requirement(backup_file, location=Path.cwd()):
 
-    current_path = get_destination_path()
+    current_path = get_destination_path(location)
     requirements_path = current_path / REQUIREMENTS
     os.remove(requirements_path)
 

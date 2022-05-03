@@ -196,6 +196,5 @@ def test_template_functions(
         # assert metadata["command"] in ["init", "generate"]
 
     finally:
+        SettingsManager.test_template_cleanup()
         teardown()
-
-# TODO: break the common_operations file into more files to make it more modular (maybe adding classes for namespacing)

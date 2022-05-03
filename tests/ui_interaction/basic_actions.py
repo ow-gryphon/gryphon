@@ -18,7 +18,7 @@ else:
 def start_wizard(working_directory: Path) -> pexpect.spawn:
     os.chdir(working_directory)
     process = pexpect.spawn(
-        command=f'gryphon',
+        command=f'gryphon --debug',
         encoding='utf-8',
         maxread=4000
     )
@@ -60,7 +60,7 @@ def select_nth_option(process, n: int):
 
 
 def wait_for_success(process):
-    wait_for_output(process, SUCCESS_MESSAGE, timeout=300)
+    wait_for_output(process, SUCCESS_MESSAGE, timeout=60)
 
 
 def navigate_categories(process, categories: List[str]):

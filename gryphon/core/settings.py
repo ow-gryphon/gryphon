@@ -166,6 +166,25 @@ class SettingsManager:
         return CONFIG_FILE
 
     @classmethod
+    def test_template_cleanup(cls):
+        pattern = "/sandbox/test_template"
+
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            exclusion_list = []
+            if "local_templates" in contents:
+                for index, template_path in enumerate(contents["local_templates"]):
+                    if pattern in template_path:
+                        exclusion_list.append(index)
+
+            for n in exclusion_list[::-1]:
+                contents["local_templates"].pop(n)
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
     def render_template_scaffolding(cls, location: Path):
 
         template_path = DATA_PATH / "template_scaffolding"

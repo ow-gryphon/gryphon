@@ -57,7 +57,7 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    create_venv(Path.cwd())
+    create_venv(folder_name)
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
 
@@ -77,7 +77,7 @@ def create_folder_with_conda_env(folder_name: Path = None, requirements=None, py
         create_folder(folder_name)
 
     create_conda_env(
-        folder=Path.cwd(),
+        folder=folder_name,
         python_version=python_version
     )
 

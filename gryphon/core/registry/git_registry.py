@@ -27,7 +27,7 @@ class GitRegistry(TemplateRegistry):
             assert not self.repository.bare
             self.update_registry()
 
-        super().__init__(templates_path=self.registry_folder)
+        super().__init__(templates_root=self.registry_folder)
 
     @staticmethod
     def is_git_repo(path):

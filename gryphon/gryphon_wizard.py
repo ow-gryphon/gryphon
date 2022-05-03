@@ -134,6 +134,8 @@ if __name__ == '__main__':
     execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
-# TODO: problem with the back and forth options on the generate
+# DONE: problem with the back and forth options on the generate
 #  option. I saw this when I navigated by sector.
-# TODO: problem when the package has dependencies, it is duplicating the .temp and .target folder
+# DONE: problem when the package has dependencies, it is duplicating the .temp and .target folder
+# TODO: use pipfile to make requirements different from app and tests
+# TODO: break the common_operations file into more files to make it more modular (maybe adding classes for namespacing)

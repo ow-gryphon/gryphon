@@ -12,5 +12,6 @@
             "required": true,
             "help": "Client name to be replaced on the template notebooks."
         }
-    ]
+    ],
+    "command": "init"
 }

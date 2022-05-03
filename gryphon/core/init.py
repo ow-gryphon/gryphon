@@ -6,8 +6,7 @@ import logging
 import platform
 import shutil
 from pathlib import Path
-from .settings import SettingsManager
-from .registry import Template
+
 from .common_operations import (
     install_libraries_venv,
     create_venv,
@@ -26,8 +25,9 @@ from .common_operations import (
     mark_notebooks_as_readonly,
     execute_and_log
 )
+from .registry import Template
+from .settings import SettingsManager
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, LOCAL_TEMPLATE, REMOTE_INDEX
-
 
 logger = logging.getLogger('gryphon')
 

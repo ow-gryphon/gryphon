@@ -10,7 +10,7 @@ TEST_REPO = "https://github.com/vittorfp/template_registry.git"
 
 def test_template_registry_1():
     registry_path = TEST_FOLDER / "data" / "ok_registry"
-    registry = TemplateRegistry(templates_path=registry_path)
+    registry = TemplateRegistry(templates_root=registry_path)
 
     metadata = registry.get_templates()
     assert "init" in metadata
@@ -22,7 +22,7 @@ def test_template_registry_1():
 def test_template_registry_2(capfd):
     registry_path = TEST_FOLDER / "data" / "no_metadata_registry"
 
-    TemplateRegistry(templates_path=registry_path)
+    TemplateRegistry(templates_root=registry_path)
 
     captured = capfd.readouterr()
     assert "does not contain a metadata.json file." in captured.out
@@ -31,7 +31,7 @@ def test_template_registry_2(capfd):
 def test_template_registry_3(capsys, caplog):
     registry_path = TEST_FOLDER / "data" / "wrong_json_registry"
 
-    TemplateRegistry(templates_path=registry_path)
+    TemplateRegistry(templates_root=registry_path)
 
     captured = capsys.readouterr()
     assert "has a malformed json on metadata.json file" in captured.out
@@ -40,7 +40,7 @@ def test_template_registry_3(capsys, caplog):
 def test_template_registry_4():
     registry_path = TEST_FOLDER / "data" / "ok_registry"
 
-    registry = TemplateRegistry(templates_path=registry_path)
+    registry = TemplateRegistry(templates_root=registry_path)
 
     with pytest.raises(NotImplementedError):
         registry.update_registry()
@@ -52,9 +52,9 @@ def test_local_registry_1(setup, teardown):
     data_folder = TEST_FOLDER / "data" / registry_name
     try:
         registry = LocalRegistry(
-            registry_origin=data_folder,
+            templates_root=data_folder,
             registry_name=registry_name,
-            registry_folder=cwd
+            # registry_folder=cwd
         )
 
         metadata = registry.get_templates()
@@ -66,16 +66,6 @@ def test_local_registry_1(setup, teardown):
         destiny_register = cwd / registry_name
         destiny_init = destiny_register / "init"
         destiny_generate = destiny_register / "generate"
-
-        assert destiny_register.is_dir()
-        assert destiny_init.is_dir()
-        assert destiny_generate.is_dir()
-
-        registry.update_registry()
-
-        assert destiny_register.is_dir()
-        assert destiny_init.is_dir()
-        assert destiny_generate.is_dir()
 
     finally:
         teardown()
@@ -97,25 +87,10 @@ def test_git_registry_1(setup, teardown):
         assert "basic_analytics_git" in metadata["init"]
         assert "explore_data_basic_git" in metadata["generate"]
 
-        destiny_register = cwd / registry_name
-        destiny_init = destiny_register / "init"
-        destiny_generate = destiny_register / "generate"
-
-        assert destiny_register.is_dir()
-        assert destiny_init.is_dir()
-        assert destiny_generate.is_dir()
-
-        registry.update_registry()
-        metadata = registry.get_templates()
-
         assert "init" in metadata
         assert "generate" in metadata
         assert "basic_analytics_git" in metadata["init"]
         assert "explore_data_basic_git" in metadata["generate"]
-
-        assert destiny_register.is_dir()
-        assert destiny_init.is_dir()
-        assert destiny_generate.is_dir()
 
         registry = GitRegistry(
             registry_url=TEST_REPO,
@@ -150,9 +125,9 @@ def test_registry_collection_1(setup, teardown):
         local_registry_init = local_registry / "init"
         local_registry_generate = local_registry / "generate"
 
-        assert local_registry.is_dir()
-        assert local_registry_init.is_dir()
-        assert local_registry_generate.is_dir()
+        # assert local_registry.is_dir()
+        # assert local_registry_init.is_dir()
+        # assert local_registry_generate.is_dir()
 
         metadata = registry.get_templates()
 

@@ -1,4 +1,6 @@
 {
+
+    "command": "init",
     "arguments": [
         {
             "name": "filename",

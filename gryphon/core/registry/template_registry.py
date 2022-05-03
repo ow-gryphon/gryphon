@@ -52,6 +52,8 @@ class TemplateRegistry:
             except FileNotFoundError:
                 logger.warning(f"Could not find template at location: {path}")
                 continue
+            if "command" not in metadata:
+                continue
 
             command = metadata["command"]
             if command not in ['add', 'generate', 'init']:
