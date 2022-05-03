@@ -60,7 +60,7 @@ def select_nth_option(process, n: int):
 
 
 def wait_for_success(process):
-    wait_for_output(process, SUCCESS_MESSAGE, timeout=60)
+    wait_for_output(process, SUCCESS_MESSAGE, timeout=120)
 
 
 def navigate_categories(process, categories: List[str]):
