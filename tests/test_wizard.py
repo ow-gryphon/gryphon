@@ -99,6 +99,7 @@ def test_add_methods(
     # Set up config conditions
     SettingsManager.change_environment_manager(VENV)
     SettingsManager.change_default_python_version(SYSTEM_DEFAULT)
+
     try:
         start_new_project(project_name, working_directory=cwd)
 

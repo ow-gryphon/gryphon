@@ -139,3 +139,7 @@ if __name__ == '__main__':
 # DONE: problem when the package has dependencies, it is duplicating the .temp and .target folder
 # TODO: use pipfile to make requirements different from app and tests
 # TODO: break the common_operations file into more files to make it more modular (maybe adding classes for namespacing)
+# DONE: change the folder in wich the .temp folder where we download
+# DONE: fix overwrite on the notebooks files
+# TODO: table of contents
+

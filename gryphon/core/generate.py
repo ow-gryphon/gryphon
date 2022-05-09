@@ -16,7 +16,8 @@ from .common_operations import (
     get_rc_file,
     log_operation, log_new_files, log_add_library,
     download_template, unzip_templates, unify_templates,
-    mark_notebooks_as_readonly
+    mark_notebooks_as_readonly, enable_files_overwrite,
+    clean_temporary_folders
 )
 from .registry import Template
 from .settings import SettingsManager
@@ -36,17 +37,26 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     logger.info("Generating template.")
     if template.registry_type == REMOTE_INDEX:
 
-        temporary_folder = download_template(template)
-        zip_folder = unzip_templates(temporary_folder)
-        template_folder = unify_templates(zip_folder)
+        download_folder = folder / ".temp"
+        zip_folder = folder / ".unzip"
+        template_folder = folder / ".target"
+
+        clean_temporary_folders(download_folder, zip_folder, template_folder)
+
+        download_template(template, download_folder)
+        unzip_templates(download_folder, zip_folder)
+        unify_templates(zip_folder, template_folder)
 
         try:
+            enable_files_overwrite(
+                source_folder=template_folder / "notebooks",
+                destination_folder=folder / "notebooks"
+            )
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
 
         finally:
-            shutil.rmtree(temporary_folder)
-            shutil.rmtree(template_folder)
+            clean_temporary_folders(download_folder, zip_folder, template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
@@ -120,7 +130,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         # Replace patterns and rename files
         glob_pattern = temp_path / "**"
         files = glob.glob(str(glob_pattern), recursive=True)
-        logger.error(mapper)
+
         for file in files:
             is_folder = Path(file).is_dir()
             if is_folder:

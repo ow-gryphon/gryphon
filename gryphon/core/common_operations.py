@@ -552,6 +552,19 @@ def rollback_append_requirement(library_name):
             file.write('\n'.join(requirements_list[:-1]))
 
 
+def enable_files_overwrite(source_folder: Path, destination_folder: Path):
+    pattern = "*.ipynb"
+
+    # Get all relevant files from source
+    files_to_modify = [s[s.find('notebooks'):][10:] for s in glob.glob(str(source_folder / pattern))]
+
+    # Apply chmod to these files if they exist in the to_folder
+    for target_file in files_to_modify:
+        target_file_path = destination_folder / target_file
+        if target_file_path.is_file():
+            os.chmod(target_file_path, 0o0777)
+
+
 def mark_notebooks_as_readonly(location: Path):
 
     if platform.system() == "Windows":
@@ -673,11 +686,10 @@ def get_current_template_version_policy():
 
 # TEMPLATE DOWNLOAD
 
-def download_template(template) -> Path:
+def download_template(template, temp_folder=Path().cwd() / ".temp"):
     # TODO: This implementation doesn't address cases where one template depends
     #  on another from a different index
 
-    temp_folder = Path().cwd() / ".temp"
     status_code, _ = execute_and_log(
         f"pip --disable-pip-version-check download {template.name}"
         f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
@@ -687,12 +699,11 @@ def download_template(template) -> Path:
     )
     if status_code is not None:
         raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")
-    return temp_folder
 
 
-def unzip_templates(path: Path) -> Path:
-    zip_files = glob.glob(str(path / "*.zip"))
-    target_folder = path / "unzip"
+def unzip_templates(origin_path: Path, target_folder) -> Path:
+    zip_files = glob.glob(str(origin_path / "*.zip"))
+
     if not target_folder.is_dir():
         os.makedirs(target_folder)
 
@@ -702,9 +713,9 @@ def unzip_templates(path: Path) -> Path:
     return target_folder
 
 
-def unify_templates(target_folder: Path) -> Path:
-    expanded_folders = glob.glob(str(target_folder / "*"))
-    destination_folder = Path().cwd() / ".target"
+def unify_templates(origin_folder: Path, destination_folder: Path) -> Path:
+    expanded_folders = glob.glob(str(origin_folder / "*"))
+
     for folder in expanded_folders:
         shutil.copytree(
             src=Path(folder) / "template",
@@ -712,6 +723,15 @@ def unify_templates(target_folder: Path) -> Path:
             dirs_exist_ok=True
         )
     return destination_folder
+
+
+def clean_temporary_folders(download_folder, zip_folder, template_folder):
+    shutil.rmtree(download_folder, ignore_errors=True)
+    shutil.rmtree(zip_folder, ignore_errors=True)
+    if platform.system() == "Windows":
+        execute_and_log(f"rmdir /s /Q {template_folder}")
+    else:
+        shutil.rmtree(template_folder, ignore_errors=True)
 
 
 # VERSION
