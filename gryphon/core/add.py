@@ -6,9 +6,10 @@ import logging
 from pathlib import Path
 import os
 
+from .operations.environment_manager_operations import EnvironmentManagerOperations
 from .common_operations import (
-    install_libraries_venv, append_requirement, backup_requirements,
-    rollback_requirement, install_libraries_conda, log_add_library
+    append_requirement, backup_requirements,
+    rollback_requirement, log_add_library
 )
 from .settings import SettingsManager
 from ..constants import VENV, CONDA
@@ -36,10 +37,10 @@ def add(library_name, version=None, cwd=Path.cwd()):
             env_manager = json.load(f)["environment_management"]
 
         if env_manager == VENV:
-            install_libraries_venv()
+            EnvironmentManagerOperations.install_libraries_venv()
 
         elif env_manager == CONDA:
-            install_libraries_conda()
+            EnvironmentManagerOperations.install_libraries_conda()
 
         else:
             env_list = [VENV, CONDA]

@@ -9,7 +9,7 @@ import platform
 import argparse
 import traceback
 from .core.registry import RegistryCollection
-from .core.common_operations import execute_and_log
+from .core.operations.bash_utils import BashUtils
 from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
 from .wizard.questions import CommonQuestions
@@ -131,15 +131,16 @@ def did_you_mean_gryphon():
 
 
 if __name__ == '__main__':
-    execute_and_log("conda config --set notify_outdated_conda false")
+    BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
 # DONE: problem with the back and forth options on the generate
 #  option. I saw this when I navigated by sector.
-# DONE: problem when the package has dependencies, it is duplicating the .temp and .target folder
 # TODO: use pipfile to make requirements different from app and tests
-# TODO: break the common_operations file into more files to make it more modular (maybe adding classes for namespacing)
+
+# DONE: problem when the package has dependencies, it is duplicating the .temp and .target folder
+# DONE: break the common_operations file into more files to make it more modular (maybe adding classes for namespacing)
 # DONE: change the folder in wich the .temp folder where we download
 # DONE: fix overwrite on the notebooks files
-# TODO: table of contents
+# DONE: table of contents
 

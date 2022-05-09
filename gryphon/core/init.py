@@ -8,23 +8,18 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    install_libraries_venv,
-    create_venv,
     init_new_git_repo,
     initial_git_commit,
     log_operation, log_new_files,
-    change_shell_folder_and_activate_venv,
-    change_shell_folder_and_activate_conda_env,
     get_rc_file,
-    create_conda_env, install_libraries_conda,
-    install_extra_nbextensions_venv,
-    install_extra_nbextensions_conda,
     download_template, unzip_templates,
-    unify_templates, copy_project_template,
+    unify_templates,
     append_requirement, log_add_library,
     mark_notebooks_as_readonly,
     clean_temporary_folders, enable_files_overwrite
 )
+from .operations.bash_utils import BashUtils
+from .operations.environment_manager_operations import EnvironmentManagerOperations
 from .registry import Template
 from .settings import SettingsManager
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
@@ -76,7 +71,7 @@ def init(template: Template, location, python_version, **kwargs):
 
     elif template.registry_type == LOCAL_TEMPLATE:
 
-        copy_project_template(
+        BashUtils.copy_project_template(
             template_destiny=project_home,
             template_source=Path(template.path)
         )
@@ -101,16 +96,16 @@ def init(template: Template, location, python_version, **kwargs):
     # ENV Manager
     if env_type == VENV:
         # VENV
-        create_venv(folder=location, python_version=python_version)
-        install_libraries_venv(folder=project_home)
-        install_extra_nbextensions_venv(folder_path=project_home)
-        change_shell_folder_and_activate_venv(project_home)
+        EnvironmentManagerOperations.create_venv(folder=location, python_version=python_version)
+        EnvironmentManagerOperations.install_libraries_venv(folder=project_home)
+        EnvironmentManagerOperations.install_extra_nbextensions_venv(folder_path=project_home)
+        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
     elif env_type == CONDA:
         # CONDA
-        create_conda_env(project_home, python_version=python_version)
-        install_libraries_conda(project_home)
-        install_extra_nbextensions_conda(project_home)
-        change_shell_folder_and_activate_conda_env(project_home)
+        EnvironmentManagerOperations.create_conda_env(project_home, python_version=python_version)
+        EnvironmentManagerOperations.install_libraries_conda(project_home)
+        EnvironmentManagerOperations.install_extra_nbextensions_conda(project_home)
+        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")

@@ -6,7 +6,7 @@ from pathlib import Path
 from git import Repo
 from .template import Template
 from .versioned_template import VersionedTemplate
-from ..common_operations import remove_folder, sort_versions
+from ..operations.bash_utils import BashUtils
 from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX
 
 
@@ -19,7 +19,7 @@ class RemoteIndex:
         if not self.index_local_path.is_dir():
             os.makedirs(self.index_local_path)
         else:
-            remove_folder(self.index_local_path)
+            BashUtils.remove_folder(self.index_local_path)
 
         self.repo = Repo.clone_from(self.index_repo, self.index_local_path)
 

@@ -1,19 +1,19 @@
-import os
 import json
 import logging
+import os
 import shutil
 from pathlib import Path
+
+from .common_operations import (
+    init_new_git_repo,
+    initial_git_commit,
+    get_current_python_version
+)
+from .operations.bash_utils import BashUtils
+from .operations.environment_manager_operations import EnvironmentManagerOperations
 from ..constants import (
     CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH, SUCCESS,
     INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK
-)
-from .common_operations import (
-    copy_project_template,
-    create_venv,
-    init_new_git_repo,
-    initial_git_commit,
-    create_conda_env,
-    get_current_python_version
 )
 
 logger = logging.getLogger('gryphon')
@@ -198,7 +198,7 @@ class SettingsManager:
         logger.info(f"Initializing project at {location}")
 
         # Files
-        copy_project_template(
+        BashUtils.copy_project_template(
             template_destiny=Path(location),
             template_source=Path(template_path)
         )
@@ -211,10 +211,10 @@ class SettingsManager:
 
         # ENV Manager
         if env_type == VENV:            # VENV
-            create_venv(folder=location, python_version=python_version)
+            EnvironmentManagerOperations.create_venv(folder=location, python_version=python_version)
         elif env_type == CONDA:
             # CONDA
-            create_conda_env(location, python_version=python_version)
+            EnvironmentManagerOperations.create_conda_env(location, python_version=python_version)
             # install_extra_nbextensions_conda(location)
         else:
             raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."

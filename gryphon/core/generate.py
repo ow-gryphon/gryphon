@@ -10,15 +10,15 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    get_destination_path,
     append_requirement,
-    install_libraries_venv, install_libraries_conda,
     get_rc_file,
     log_operation, log_new_files, log_add_library,
     download_template, unzip_templates, unify_templates,
     mark_notebooks_as_readonly, enable_files_overwrite,
     clean_temporary_folders
 )
+from .operations.environment_manager_operations import EnvironmentManagerOperations
+from .operations.path_utils import PathUtils
 from .registry import Template
 from .settings import SettingsManager
 from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
@@ -68,9 +68,9 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
 
     log_add_library(template.dependencies)
     if env_type == VENV:
-        install_libraries_venv()
+        EnvironmentManagerOperations.install_libraries_venv()
     elif env_type == CONDA:
-        install_libraries_conda()
+        EnvironmentManagerOperations.install_libraries_conda()
 
     # RC file
     rc_file = get_rc_file(folder)
@@ -114,8 +114,8 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     and replaces patterns.
     """
 
-    temp_path = get_destination_path(f"temp_template")
-    definitive_path = get_destination_path(destination_folder)
+    temp_path = PathUtils.get_destination_path(f"temp_template")
+    definitive_path = PathUtils.get_destination_path(destination_folder)
 
     # Copy files to a temporary folder
     logger.info(f"Creating files at {definitive_path}")
