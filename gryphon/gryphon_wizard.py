@@ -128,19 +128,10 @@ def did_you_mean_gryphon():
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
 # TODO: Check if the user is really on a gryphon project folder
+# TODO: use pipfile to make requirements different from app and tests
 
 
 if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
-
-# DONE: problem with the back and forth options on the generate
-#  option. I saw this when I navigated by sector.
-# TODO: use pipfile to make requirements different from app and tests
-
-# DONE: problem when the package has dependencies, it is duplicating the .temp and .target folder
-# DONE: break the common_operations file into more files to make it more modular (maybe adding classes for namespacing)
-# DONE: change the folder in wich the .temp folder where we download
-# DONE: fix overwrite on the notebooks files
-# DONE: table of contents
 
