@@ -8,7 +8,11 @@ class AddLibrary(State):
     transitions = []
 
     def on_start(self, context: dict) -> dict:
+        lib = context["chosen_option"][NAME]
+
         core_add(
-            library_name=context["chosen_option"][NAME]
+            library_name=lib,
+            version=context['lib_version'] if 'lib_version' in context else None
+
         )
         return context

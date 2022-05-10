@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (INIT, ADD, ABOUT, GENERATE, QUIT, SETTINGS, VALUE)
+from ...constants import (INIT, ADD, ABOUT, GENERATE, QUIT, SETTINGS, VALUE, LATEST)
 
 
 class CommonQuestions:
@@ -66,4 +66,34 @@ class CommonQuestions:
         return questionary.select(
             message=Text.about_prompt_links,
             choices=choices
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def ask_template_version(versions):
+
+        choices = [
+            Choice(
+                title="latest",
+                value=LATEST
+            )
+        ]
+        choices.extend([
+            Choice(
+                title=v,
+                value=v
+            )
+            for v in versions
+        ])
+
+        # TODO: Is the back option realy necessary. Maybe yes
+        # choices.extend([
+        #     Separator(),
+        #     get_back_choice()
+        # ])
+
+        return questionary.select(
+            message=Text.settings_ask_template_version,
+            choices=choices,
+            use_indicator=True
         ).unsafe_ask()

@@ -4,8 +4,7 @@ from ...constants import INIT, BACK
 
 
 def _change_from_ask_template_to_main_menu(context):
-    template_name = context["template_name"]
-    return template_name == BACK
+    return context["template_name"] == BACK
 
 
 class AskTemplate(State):
@@ -27,9 +26,6 @@ class AskTemplate(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-        template_name, location = InitQuestions.ask_which_template(self.templates)
-        context.update(dict(
-            template_name=template_name,
-            location=location
-        ))
+        context["template_name"] = InitQuestions.ask_which_template(self.templates)
+
         return context

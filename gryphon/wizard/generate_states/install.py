@@ -8,8 +8,7 @@ class Install(State):
 
     def on_start(self, context: dict) -> dict:
         core_generate(
-            template_path=context["template"].path,
-            requirements=context["template"].dependencies,
+            template=context["template"],
             **context["extra_parameters"]
         )
 

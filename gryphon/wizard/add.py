@@ -1,12 +1,12 @@
 import logging
-from .functions import BackSignal
-from ..constants import BACK
+
 from .add_states import (
     AskOption, LibraryChosen, Confirmation, AddLibrary,
     TypeLibraryName
 )
+from .functions import BackSignal
+from ..constants import BACK
 from ..fsm import Machine, HaltSignal
-
 
 logger = logging.getLogger('gryphon')
 

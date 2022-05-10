@@ -23,7 +23,13 @@ def _callback_ask_keyword(context: dict) -> dict:
 
 
 def _callback_ask_category(context: dict) -> dict:
-    erase_lines(n_lines=3)
+    erase_lines(n_lines=2)
+
+    if len(context["history"]) >= 1:
+        context["history"].pop()
+    else:
+        raise BackSignal()
+
     return context
 
 

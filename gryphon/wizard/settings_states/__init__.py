@@ -9,3 +9,4 @@ from .add_remote_registry import AddRemoteRegistry
 from .add_local_registry import AddLocalRegistry
 from .remove_registry import RemoveRegistry
 from .update_conda import UpdateConda
+from .change_template_version_policy import ChangeTemplateVersionPolicy

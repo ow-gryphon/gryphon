@@ -51,5 +51,9 @@
 	{
 		"name": "Update conda",
 		"value": "update_conda"
+	},
+	{
+		"name": "Template version policy",
+		"value": "change_template_version_policy"
 	}
 ]

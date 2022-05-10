@@ -6,7 +6,7 @@ from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
 from ...constants import (
     YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT, CHANGE_LOCATION,
-    DATA_PATH
+    DATA_PATH, USE_LATEST
 )
 
 
@@ -192,5 +192,25 @@ class SettingsQuestions:
                     title="Change project location",
                     value=CHANGE_LOCATION
                 )
+            ]
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def ask_template_version_policy(current_policy):
+
+        return questionary.select(
+            message="Chose the template version policy you want to use:",
+            choices=[
+                Choice(
+                    title="Always ask" + (" (current)" if current_policy == ALWAYS_ASK else ""),
+                    value=ALWAYS_ASK
+                ),
+                Choice(
+                    title="Use latest version" + (" (current)" if current_policy == USE_LATEST else ""),
+                    value=USE_LATEST
+                ),
+                Separator(),
+                get_back_choice()
             ]
         ).unsafe_ask()

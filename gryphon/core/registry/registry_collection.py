@@ -1,10 +1,10 @@
 import logging
-import git
 from pathlib import Path
 from typing import List
 from .template_registry import TemplateRegistry
 from .local_registry import LocalRegistry
-from .git_registry import GitRegistry
+from .remote_index import RemoteIndexCollection
+
 
 logger = logging.getLogger('gryphon')
 
@@ -43,23 +43,30 @@ class RegistryCollection:
     def from_config_file(cls, settings, data_path: Path):
 
         local_registry = settings.get("local_registry", {})
-        git_registry = settings.get("git_registry", {})
+        template_indexes = settings.get("template_indexes", {})
+        local_templates = settings.get("local_templates", {})
 
         template_registries = []
 
         # git ones
-        for name, url in git_registry.items():
-            try:
-                reg = GitRegistry(
-                    registry_name=name,
-                    registry_url=url,
-                    registry_folder=data_path
-                )
-                template_registries.append(reg)
+        # git_registry = settings.get("git_registry", {})
+        # for name, url in git_registry.items():
+        #     try:
+        #         reg = GitRegistry(
+        #             registry_name=name,
+        #             registry_url=url,
+        #             registry_folder=data_path
+        #         )
+        #         template_registries.append(reg)
+        #
+        #     except git.GitCommandError as er:
+        #         if "does not exist" in str(er):
+        #             logger.warning(f"Git template registry \"{name}\" at \"{url}\" was not found.")
 
-            except git.GitCommandError as er:
-                if "does not exist" in str(er):
-                    logger.warning(f"Git template registry \"{name}\" at \"{url}\" was not found.")
+        registry = RemoteIndexCollection(
+            index_list=template_indexes
+        )
+        template_registries.append(registry)
 
         # local ones
         for name, path in local_registry.items():
@@ -70,9 +77,15 @@ class RegistryCollection:
 
             reg = LocalRegistry(
                 registry_name=name,
-                registry_origin=path,
-                registry_folder=data_path
+                templates_root=path
             )
             template_registries.append(reg)
+
+        template_registries.append(
+            LocalRegistry(
+                registry_name="individual templates",
+                template_paths=local_templates
+            )
+        )
 
         return cls(template_registries)

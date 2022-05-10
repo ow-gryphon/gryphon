@@ -2,7 +2,7 @@ import os
 import platform
 from ..functions import erase_lines
 from ..questions import AddQuestions
-from ...constants import YES, NO
+from ...constants import YES, NO, SPECIFY_VERSION
 from ...fsm import State, Transition
 
 
@@ -17,7 +17,7 @@ def _callback_confirmation_to_back(context: dict) -> dict:
 
 
 def _condition_confirmation_to_open_website(context: dict) -> bool:
-    return context["confirmation_response"] not in [YES, NO]
+    return context["confirmation_response"] not in [YES, NO, SPECIFY_VERSION]
 
 
 def _callback_confirmation_open_website(context: dict) -> dict:
@@ -36,7 +36,7 @@ def _callback_confirmation_open_website(context: dict) -> dict:
 
 
 def _condition_confirmation_to_add_library(context: dict) -> bool:
-    return context["confirmation_response"] == YES
+    return context["confirmation_response"] in [YES, SPECIFY_VERSION]
 
 
 class Confirmation(State):
@@ -61,4 +61,8 @@ class Confirmation(State):
     def on_start(self, context: dict) -> dict:
 
         context["confirmation_response"], context["n_lines"] = AddQuestions.confirm_add(context["chosen_option"])
+
+        if context["confirmation_response"] == SPECIFY_VERSION:
+            context["lib_version"] = AddQuestions.get_lib_version_via_keyboard()
+
         return context

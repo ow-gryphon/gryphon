@@ -11,15 +11,10 @@ def init(_, registry):
     """Creates a starter repository for analytics projects."""
 
     ask_template = AskTemplate(registry)
-    ask_parameters = AskParameters(registry)
-    confirmation = Confirmation()
-    install = Install()
-    main_menu = MainMenu()
-    ask_location_again = AskLocationAgain()
 
     possible_states = [
-        main_menu, ask_template, confirmation, ask_parameters, install,
-        ask_location_again
+        ask_template, Confirmation(), AskParameters(registry),
+        Install(), MainMenu(), AskLocationAgain()
     ]
 
     machine = Machine(

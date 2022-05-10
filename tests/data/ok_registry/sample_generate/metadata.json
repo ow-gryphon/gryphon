@@ -1,0 +1,5 @@
+{
+    "arguments": [],
+    "dependencies": ["scipy"],
+    "command": "generate"
+}

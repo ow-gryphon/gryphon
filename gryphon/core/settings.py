@@ -1,19 +1,19 @@
-import os
 import json
 import logging
+import os
 import shutil
 from pathlib import Path
-from ..constants import (
-    CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH,
-    INIT, CONDA, DEFAULT_ENV, VENV
-)
+
 from .common_operations import (
-    copy_project_template,
-    create_venv,
     init_new_git_repo,
     initial_git_commit,
-    create_conda_env,
     get_current_python_version
+)
+from .operations.bash_utils import BashUtils
+from .operations.environment_manager_operations import EnvironmentManagerOperations
+from ..constants import (
+    CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH, SUCCESS,
+    INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK
 )
 
 logger = logging.getLogger('gryphon')
@@ -52,6 +52,17 @@ class SettingsManager:
         with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
             contents = json.load(f)
             contents["default_python_version"] = python_version
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
+    def change_template_version_policy(cls, policy):
+        assert policy in [USE_LATEST, ALWAYS_ASK]
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            contents["template_version_policy"] = policy
 
             f.seek(0)
             f.write(json.dumps(contents))
@@ -117,6 +128,18 @@ class SettingsManager:
             f.truncate()
 
     @classmethod
+    def add_local_template(cls, template_path):
+        """Restore only the registries to the default."""
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            contents.setdefault("local_templates", [])
+            contents["local_templates"].append(template_path)
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
     def list_template_registries(cls):
         with open(cls.get_config_path(), "r", encoding="utf-8") as f:
             contents = json.load(f)
@@ -142,13 +165,32 @@ class SettingsManager:
         """
         return CONFIG_FILE
 
-    @staticmethod
-    def render_template_scaffolding(location: Path):
+    @classmethod
+    def test_template_cleanup(cls):
+        pattern = "/sandbox/test_template"
+
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            exclusion_list = []
+            if "local_templates" in contents:
+                for index, template_path in enumerate(contents["local_templates"]):
+                    if pattern in template_path:
+                        exclusion_list.append(index)
+
+            for n in exclusion_list[::-1]:
+                contents["local_templates"].pop(n)
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
+    def render_template_scaffolding(cls, location: Path):
 
         template_path = DATA_PATH / "template_scaffolding"
         python_version = get_current_python_version()
 
-        with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
+        with open(cls.get_config_path(), "r", encoding="UTF-8") as f:
             data = json.load(f)
             env_type = data.get("environment_management", DEFAULT_ENV)
 
@@ -156,10 +198,12 @@ class SettingsManager:
         logger.info(f"Initializing project at {location}")
 
         # Files
-        copy_project_template(
+        BashUtils.copy_project_template(
             template_destiny=Path(location),
             template_source=Path(template_path)
         )
+        # TODO: JOIN ALL THE requirements.txt files in one at the time of project init with more than one zip file
+        #  downloaded.
 
         # Git
         repo = init_new_git_repo(folder=location)
@@ -167,11 +211,18 @@ class SettingsManager:
 
         # ENV Manager
         if env_type == VENV:            # VENV
-            create_venv(folder=location, python_version=python_version)
+            EnvironmentManagerOperations.create_venv(folder=location, python_version=python_version)
         elif env_type == CONDA:
             # CONDA
-            create_conda_env(location, python_version=python_version)
+            EnvironmentManagerOperations.create_conda_env(location, python_version=python_version)
             # install_extra_nbextensions_conda(location)
         else:
             raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                                f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
+
+        cls.add_local_template(str(Path(location).absolute()))
+        logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
+                    " to the information given on metadata.json file.\n\n In order to find it on gryphon menus you will"
+                    " have to fill the template information inside metadata.json file (providing at least the display "
+                    "name and the command).")
+        logger.log(SUCCESS, "Installation successful!")

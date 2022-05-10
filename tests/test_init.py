@@ -14,13 +14,13 @@ def test_init_1(setup, teardown, mocker):
     )
 
     with mocker.patch(
-            target=MOCK_CONFIG_FILE_PATH,
-            return_value=file
+        target=MOCK_CONFIG_FILE_PATH,
+        return_value=file
     ):
 
         try:
 
-            template = Template.template_from_path(TEST_FOLDER / "data" / "analytics")
+            template = Template.template_from_path(TEST_FOLDER / "data" / "analytics", type="local")
             init(
                 template=template,
                 location=project,

@@ -2,29 +2,31 @@
 Module containing the code for the generate command in then CLI.
 """
 
-import os
+import glob
 import json
+import logging
+import os
 import shutil
 from pathlib import Path
-import glob
-import logging
+
+from .common_operations import (
+    append_requirement,
+    get_rc_file,
+    log_operation, log_new_files, log_add_library,
+    download_template, unzip_templates, unify_templates,
+    mark_notebooks_as_readonly, enable_files_overwrite,
+    clean_temporary_folders
+)
+from .operations.environment_manager_operations import EnvironmentManagerOperations
+from .operations.path_utils import PathUtils
 from .registry import Template
 from .settings import SettingsManager
-from .common_operations import (
-    get_destination_path,
-    copy_project_template,
-    append_requirement,
-    install_libraries_venv, install_libraries_conda,
-    get_rc_file,
-    log_operation, log_new_files, log_add_library
-)
-from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA
-
+from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
 
 logger = logging.getLogger('gryphon')
 
 
-def generate(template_path: Path, requirements: list, folder=Path.cwd(), **kwargs):
+def generate(template: Template, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
@@ -33,18 +35,42 @@ def generate(template_path: Path, requirements: list, folder=Path.cwd(), **kwarg
         env_type = data.get("environment_management", DEFAULT_ENV)
 
     logger.info("Generating template.")
-    parse_project_template(template_path, kwargs)
+    if template.registry_type == REMOTE_INDEX:
 
-    for r in requirements:
-        append_requirement(r)
+        download_folder = folder / ".temp"
+        zip_folder = folder / ".unzip"
+        template_folder = folder / ".target"
 
-    log_add_library(requirements)
+        clean_temporary_folders(download_folder, zip_folder, template_folder)
+
+        download_template(template, download_folder)
+        unzip_templates(download_folder, zip_folder)
+        unify_templates(zip_folder, template_folder)
+
+        try:
+            enable_files_overwrite(
+                source_folder=template_folder / "notebooks",
+                destination_folder=folder / "notebooks"
+            )
+            parse_project_template(template_folder, kwargs)
+            mark_notebooks_as_readonly(folder / "notebooks")
+
+        finally:
+            clean_temporary_folders(download_folder, zip_folder, template_folder)
+
+    elif template.registry_type == LOCAL_TEMPLATE:
+        parse_project_template(template.path, kwargs)
+    else:
+        raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
+
+    for r in template.dependencies:
+        append_requirement(r, location=folder)
+
+    log_add_library(template.dependencies)
     if env_type == VENV:
-        install_libraries_venv()
+        EnvironmentManagerOperations.install_libraries_venv()
     elif env_type == CONDA:
-        install_libraries_conda()
-
-    template = Template.template_from_path(template_path)
+        EnvironmentManagerOperations.install_libraries_conda()
 
     # RC file
     rc_file = get_rc_file(folder)
@@ -69,6 +95,8 @@ def pattern_replacement(input_file, mapper):
         for before, after in mapper.items():
             text = text.replace("{{" + before + "}}", after)
 
+        os.makedirs(Path(output_file).parent, exist_ok=True)
+
         with open(output_file, "w", encoding='UTF-8') as f_out:
             # and write to output file
             f_out.write(text)
@@ -86,32 +114,35 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     and replaces patterns.
     """
 
-    temp_path = get_destination_path(f"temp_template")
-    definitive_path = get_destination_path(destination_folder)
+    temp_path = PathUtils.get_destination_path(f"temp_template")
+    definitive_path = PathUtils.get_destination_path(destination_folder)
 
     # Copy files to a temporary folder
     logger.info(f"Creating files at {definitive_path}")
 
-    copy_project_template(
-        template_destiny=temp_path,
-        template_source=template_path
-    )
-
-    # Replace patterns and rename files
-    glob_pattern = temp_path / "**"
-    files = glob.glob(str(glob_pattern), recursive=True)
-
-    for file in files:
-        is_folder = Path(file).is_dir()
-        if is_folder:
-            continue
-        pattern_replacement(file, mapper)
-
-    # Copy the processed files to the repository
-    os.makedirs(definitive_path, exist_ok=True)
+    # Move files to destination
     shutil.copytree(
-        src=temp_path,
-        dst=definitive_path,
+        src=Path(template_path),
+        dst=Path(temp_path),
         dirs_exist_ok=True
     )
-    shutil.rmtree(temp_path)
+    try:
+        # Replace patterns and rename files
+        glob_pattern = temp_path / "**"
+        files = glob.glob(str(glob_pattern), recursive=True)
+
+        for file in files:
+            is_folder = Path(file).is_dir()
+            if is_folder:
+                continue
+            pattern_replacement(file, mapper)
+
+        # Copy the processed files to the repository
+        os.makedirs(definitive_path, exist_ok=True)
+        shutil.copytree(
+            src=temp_path,
+            dst=definitive_path,
+            dirs_exist_ok=True
+        )
+    finally:
+        shutil.rmtree(temp_path)

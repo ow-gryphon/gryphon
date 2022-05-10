@@ -15,11 +15,20 @@ package_files = [
 ]
 
 template_files = glob.glob(
-    str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" / "**"),
+    str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" ),
     recursive=True
 )
-template_files = map(lambda x: x[8:], template_files)
 
+template_files.extend(
+    glob.glob(
+        str(Path('gryphon') / 'data' / 'template_scaffolding' / "template" / ".github" / "**") ,
+        recursive=True
+    )
+)
+
+template_files = set(map(lambda x: x[8:], template_files))
+
+print(template_files)
 package_files.extend(template_files)
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -30,7 +39,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name='gryphon',
-    version='0.0.1',
+    version='0.0.2',
     license='MIT',
     description='OW analytics toolkit cli',
     long_description=long_description,
@@ -47,9 +56,9 @@ setup(
     entry_points='''
         [console_scripts]
         gryphon=gryphon.gryphon_wizard:main
-        gryph=gryphon.gryphon_cli:cli
         griffin=gryphon.gryphon_wizard:did_you_mean_gryphon
     ''',
+    # gryph=gryphon.gryphon_cli: cli
     include_package_data=True,
     package_data={'gryphon': package_files}
 )

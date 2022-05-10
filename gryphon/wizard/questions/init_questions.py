@@ -3,7 +3,7 @@ from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice, logger
 from ..wizard_text import Text
 from ..functions import wrap_text
-from ...constants import (BACK, YES, NO, SYSTEM_DEFAULT)
+from ...constants import (BACK, YES, NO, SYSTEM_DEFAULT, LATEST)
 
 
 class InitQuestions:
@@ -13,7 +13,7 @@ class InitQuestions:
     def ask_which_template(metadata):
         options = [
             Choice(
-                title=template.display_name,
+                title=f"{template.display_name} ({template.registry_type})",
                 value=name
             )
             for name, template in metadata.items()
@@ -29,11 +29,7 @@ class InitQuestions:
             choices=options
         ).unsafe_ask()
 
-        if template == BACK:
-            return BACK, None
-
-        location = questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
-        return template, location
+        return template
 
     @staticmethod
     @base_question

@@ -1,10 +1,24 @@
 {
+    "config_version": 3,
     "git_registry": {
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
     },
-    "local_registry": {},
+    "local_registry": {
+        "local_default": "/home/vittorfp/blue-orange/labskit_registry"
+    },
+    "local_templates": [
+        "/home/vittorfp/blue-orange/gryphon-analytics-basic"
+    ],
+    "template_indexes": [
+        {
+            "name": "grypi",
+            "url": "https://ow-gryphon.github.io/grypi/",
+            "repo": "https://github.com/ow-gryphon/grypi.git"
+        }
+    ],
     "environment_management": "venv",
     "ask_python_version_on_init": false,
-    "default_python_version": "system_default"
+    "default_python_version": "system_default",
+    "template_version_policy": "use_latest"
 }

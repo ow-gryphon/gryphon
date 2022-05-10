@@ -1,16 +1,17 @@
 import json
 import logging
-from .functions import erase_lines, BackSignal
 from .settings_states import (
     AskOption, PerformAction, ChangePythonVersion,
     NewTemplate, ChangeEnvManager, RestoreDefaults,
     RestoreDefaultRegistry, AddRemoteRegistry,
-    AddLocalRegistry, RemoveRegistry, UpdateConda
+    AddLocalRegistry, RemoveRegistry, UpdateConda,
+    ChangeTemplateVersionPolicy
 )
+from .functions import erase_lines, BackSignal
+from ..fsm import Machine, HaltSignal
 from ..constants import (
     CONFIG_FILE, DEFAULT_ENV, NAME, VALUE, BACK
 )
-from ..fsm import Machine, HaltSignal
 
 
 logger = logging.getLogger('gryphon')
@@ -46,7 +47,8 @@ def settings(data_path, _):
         ask_option, PerformAction(), ChangePythonVersion(),
         NewTemplate(), ChangeEnvManager(), RestoreDefaults(),
         RestoreDefaultRegistry(), AddRemoteRegistry(),
-        AddLocalRegistry(), RemoveRegistry(), UpdateConda()
+        AddLocalRegistry(), RemoveRegistry(), UpdateConda(),
+        ChangeTemplateVersionPolicy()
     ]
 
     machine = Machine(

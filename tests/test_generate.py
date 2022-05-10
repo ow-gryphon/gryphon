@@ -3,7 +3,9 @@ import shutil
 import os
 from os import path
 
-
+from gryphon.core.registry import Template
+from gryphon.core.settings import SettingsManager
+from gryphon.constants import VENV
 from gryphon.core.generate import (
     generate,
     parse_project_template,
@@ -100,7 +102,7 @@ def test_generate_4(setup, teardown):
 
     try:
         parse_project_template(
-            template_path=TEST_FOLDER / "data" / "mlclustering",
+            template_path=TEST_FOLDER / "data" / "mlclustering" / "template",
             mapper={"fileName": parameter}
         )
 
@@ -113,23 +115,23 @@ def test_generate_4(setup, teardown):
 
 def test_generate_5(setup, teardown, get_pip_libraries):
     try:
+        SettingsManager.change_environment_manager(VENV)
         file_name = "test"
         cwd = setup()
         create_folder_with_venv(cwd)
         libraries = get_pip_libraries(cwd)
-        assert "scipy" not in libraries
+        assert "seaborn" not in libraries
 
         generate(
-            template_path=TEST_FOLDER / "data" / "mlclustering",
-            requirements=["scipy"],
+            template=Template.template_from_path(TEST_FOLDER / "data" / "mlclustering", type="local"),
             folder=cwd,
             **{"fileName": file_name}
         )
 
         libraries = get_pip_libraries(cwd)
-        assert "scipy" in libraries
-        assert (cwd / "readme_mlclustering.md").is_file()
-        assert (cwd / "src" / f"clustering_{file_name}.py").is_file()
+        assert "seaborn" in libraries
+        assert (cwd / "template" / "readme_mlclustering.md").is_file()
+        assert (cwd / "template" / "src" / f"clustering_{file_name}.py").is_file()
 
         log_file = cwd / ".gryphon_history"
 
@@ -148,11 +150,11 @@ def test_generate_6(setup, teardown):
     try:
         cwd = setup()
         create_folder_with_venv(cwd)
-
-        generate(
-            template_path=TEST_FOLDER / "data" / "registry_with_git_folder",
-            requirements=[]
+        template = Template.template_from_path(
+            TEST_FOLDER / "data" / "registry_with_git_folder" / "generate" / "sample_generate",
+            type="local"
         )
+        generate(template=template)
 
         assert not os.path.isdir(cwd / ".git")
         assert not os.path.isfile(cwd / ".git" / "test.txt")

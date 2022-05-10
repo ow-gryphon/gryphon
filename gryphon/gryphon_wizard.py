@@ -9,6 +9,7 @@ import platform
 import argparse
 import traceback
 from .core.registry import RegistryCollection
+from .core.operations.bash_utils import BashUtils
 from .wizard import init, generate, add, about, exit_program, settings
 from .wizard.wizard_text import Text
 from .wizard.questions import CommonQuestions
@@ -37,6 +38,16 @@ try:
     with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
 
+    with open(DEFAULT_CONFIG_FILE, "r", encoding="UTF-8") as f:
+        default_settings_file = json.load(f)
+
+    try:
+        if settings_file["config_version"] < default_settings_file["config_version"]:
+            os.remove(CONFIG_FILE)
+            raise FileNotFoundError()
+    except KeyError:
+        raise FileNotFoundError()
+
 except FileNotFoundError:
     if not GRYPHON_HOME.is_dir():
         os.makedirs(GRYPHON_HOME)
@@ -48,17 +59,6 @@ except FileNotFoundError:
     with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
 
-try:
-    # loads registry of templates to memory
-    registry = RegistryCollection.from_config_file(
-        settings=settings_file,
-        data_path=DATA_PATH / "template_registry"
-    )
-except Exception as e:
-    logger.error(f'Registry loading error.')
-    output_error(e)
-    exit(1)
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -69,6 +69,18 @@ def main():
 
         handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
         handler.setLevel(logging.DEBUG)
+
+    registry = None
+    try:
+
+        registry = RegistryCollection.from_config_file(
+            settings=settings_file,
+            data_path=GRYPHON_HOME / "registry"
+        )
+    except Exception as e:
+        logger.error(f'Registry loading error.')
+        output_error(e)
+        exit(1)
 
     logger.info(Text.welcome)
 
@@ -109,27 +121,17 @@ def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
 # TODO: On generate, check if there are both a conda and a venv inside folder and use the one that is available
-# TODO: create enums for some constants
 # TODO: Test installation.
-# TODO: Whether to install gryphon inside the .venv created for projects or not
 # TODO: Resizing error on windows (duplicating texts).
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
+# TODO: Check if the user is really on a gryphon project folder
+# TODO: use pipfile to make requirements different from app and tests
 
 
 if __name__ == '__main__':
+    BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
-# DONE: permit only after python 3.7
-# DONE: say that 3.7 is slower than the other ones
-# DONE: finite state machine not return context in some condition function
-# DONE: error when navigating to a category called cyber risk (it does not have any one)
-# DONE: treat notebook extensions error
-# DONE: add option to try another keyword for search
-# DONE: warn the user if the path typed already exists
-    # this should be after the core_init start or before the confirmation
-    # if it is before the confirmation it should make hard to go back to the previous menu
-    # without erasing the wrong number of lines. The only way out is to have a flag on the context.
-# Trying to find .venv when the environment is set to conda (should use envs folder)

@@ -5,9 +5,6 @@ class State(ABC):
     name = None
     transitions = []
 
-    def __init__(self):
-        pass
-
     @abstractmethod
     def on_start(self, context: dict) -> dict:
         pass

@@ -46,6 +46,7 @@ class Text:
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "
     add_prompt_type_library = "Type the name of the python library you want to install:"
+    add_prompt_type_version = "Type the version you want to install:"
 
     about_prompt_links = "Useful links:"
 
@@ -75,6 +76,7 @@ class Text:
     settings_ask_which_registry_delete = "Choose which registry to remove?"
     settings_python_use_system_default = "Use system default"
     settings_ask_python_version = "Choose the python version you want to use"
+    settings_ask_template_version = "Choose the template version you want to use"
     settings_confirm_restore_defaults = "Confirm that you want to restore EVERY gryphon settings to the default?"
     settings_confirm_restorer_registry_defaults = "Confirm that you want to restore gryphon registry to the default?"
 

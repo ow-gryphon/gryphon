@@ -9,15 +9,14 @@ import platform
 import shutil
 import subprocess
 from gryphon.constants import VENV_FOLDER
-from gryphon.core.common_operations import (
-    create_venv, create_conda_env,
-    get_destination_path
-)
+from gryphon.core.operations.environment_manager_operations import EnvironmentManagerOperations
+from gryphon.core.operations.path_utils import PathUtils
 
 
 TEST_FOLDER = Path("tests").resolve()
 CONFIG_FILE_NAME = "gryphon_config.json"
 MOCK_CONFIG_FILE_PATH = 'gryphon.core.settings.SettingsManager.get_config_path'
+REQUIREMENTS_TXT = "requirements.txt"
 
 
 def on_error(func, path, exc):
@@ -56,15 +55,15 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    create_venv(Path.cwd())
+    EnvironmentManagerOperations.create_venv(folder_name)
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
 
-    destination = get_destination_path(folder_name)
+    destination = PathUtils.get_destination_path(folder_name)
 
     shutil.copyfile(
         src=requirements,
-        dst=destination / "requirements.txt"
+        dst=destination / REQUIREMENTS_TXT
     )
 
 
@@ -75,19 +74,19 @@ def create_folder_with_conda_env(folder_name: Path = None, requirements=None, py
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    create_conda_env(
-        folder=Path.cwd(),
+    EnvironmentManagerOperations.create_conda_env(
+        folder=folder_name,
         python_version=python_version
     )
 
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
 
-    destination = get_destination_path(folder_name)
+    destination = PathUtils.get_destination_path(folder_name)
 
     shutil.copyfile(
         src=requirements,
-        dst=destination / "requirements.txt"
+        dst=destination / REQUIREMENTS_TXT
     )
 
 
@@ -106,7 +105,7 @@ def get_pip_path(base_folder=Path.cwd()):
 
 
 def get_requirements_path(base_folder: Path):
-    return base_folder / "requirements.txt"
+    return base_folder / REQUIREMENTS_TXT
 
 
 def get_venv_path(base_folder: Path) -> Path:
@@ -121,7 +120,7 @@ def activate_venv(folder=None):
     """
     Function to activate virtual environment.
     """
-    target_folder = get_destination_path(folder)
+    target_folder = PathUtils.get_destination_path(folder)
     try:
         if platform.system() == "Windows":
             # On windows the venv folder structure is different from unix

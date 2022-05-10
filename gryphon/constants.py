@@ -35,6 +35,7 @@ NO = "no"
 BACK = "back"
 CHANGE_LOCATION = "change_location"
 TYPE_AGAIN = "type_again"
+SPECIFY_VERSION = "specify_version"
 
 # log
 SUCCESS = 21
@@ -55,6 +56,12 @@ DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"
 # Python versions
 DEFAULT_PYTHON_VERSION = "3.8"
 ALWAYS_ASK = "always_ask"
+USE_LATEST = "use_latest"
+LATEST = "LATEST"
 SYSTEM_DEFAULT = "system_default"
 MIN_MAJOR_VERSION = 3
 MIN_MINOR_VERSION = 7
+
+
+REMOTE_INDEX = "remote_index"
+LOCAL_TEMPLATE = "local"

@@ -4,41 +4,71 @@ the templates metadata into memory.
 """
 
 import os
-import logging
 import sys
-from pathlib import Path
 import json
+import logging
 import glob
+from pathlib import Path
+from typing import List
 from .template import Template
+from ...constants import INIT, GENERATE
 
 
 logger = logging.getLogger('gryphon')
 
 
+def insert_index_name(metadata, index_type):
+    metadata["display_name"] = f'{metadata["display_name"]} ({index_type})'
+    return metadata
+
+
 class TemplateRegistry:
     """Class that loads commands and metadata from the ./data folder."""
+    type = ""
 
-    def __init__(self, templates_path: Path):
-        self.path = templates_path
+    def __init__(self, templates_root: Path = None, template_paths: List[Path] = None):
+        self.template_data = {
+            INIT: {},
+            GENERATE: {}
+        }
 
-        self.template_data = {}
+        if template_paths is not None:
+            folders = template_paths
 
-        for command_name in ['add', 'generate', 'init']:
-            glob_pattern = self.path / command_name / "*"
+        elif templates_root is not None:
+            self.path = templates_root
+            glob_pattern = self.path / "*"
             folders = glob.glob(str(glob_pattern))
 
-            if len(folders) == 0:
-                self.template_data[command_name] = {}
+        else:
+            raise RuntimeError("One of [\"templates_root\", \"template_paths\"] arguments must be passed.")
+
+        if len(folders) == 0:
+            return
+
+        for path in folders:
+            try:
+                metadata = self.load_metadata(Path(path))
+            except FileNotFoundError:
+                logger.warning(f"Could not find template at location: {path}")
+                continue
+            if "command" not in metadata:
                 continue
 
-            self.template_data[command_name] = {
-                os.path.basename(path): Template(
-                    template_name=os.path.basename(path),
+            command = metadata["command"]
+            if command not in ['add', 'generate', 'init']:
+                continue
+
+            name = os.path.basename(path)
+
+            self.template_data[command].update({
+                f"{name}_{self.type}": Template(
+                    template_name=name,
                     template_path=Path(path),
-                    template_metadata=self.load_metadata(Path(path))
+                    template_metadata=metadata,
+                    registry_type=self.type
                 )
-                for path in folders
-            }
+            })
 
     def get_templates(self, command=None):
         """Returns the template metadata."""
@@ -54,6 +84,9 @@ class TemplateRegistry:
     @staticmethod
     def load_metadata(path: Path):
         """Loads the metadata file inside template folder."""
+        if not path.is_dir():
+            raise FileNotFoundError(f"Template folder does not exist (anymore): {path}")
+
         try:
             filename = path / "metadata.json"
             with open(filename, encoding='UTF-8') as file:

@@ -1,6 +1,6 @@
 import logging
 from ...fsm import State, Transition
-from ...core.common_operations import update_conda
+from ...core.operations.environment_manager_operations import EnvironmentManagerOperations
 from ...constants import YES, SUCCESS
 
 
@@ -37,5 +37,5 @@ class UpdateConda(State):
 
     def on_start(self, context: dict) -> dict:
         logger.info("Updating conda. This may take several minutes...")
-        update_conda()
+        EnvironmentManagerOperations.update_conda()
         return context
