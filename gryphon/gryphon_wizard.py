@@ -10,13 +10,13 @@ import shutil
 import traceback
 
 from .constants import (
-    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS,
+    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH
 )
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
-from .wizard import init, generate, add, about, exit_program, settings
+from .wizard import init, generate, add, about, exit_program, settings, init_from_existing
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
 
@@ -90,6 +90,7 @@ def main():
         
         function = {
             INIT: init,
+            INIT_FROM_EXISTING: init_from_existing,
             GENERATE: generate,
             ADD: add,
             ABOUT: about,
@@ -126,7 +127,6 @@ def did_you_mean_gryphon():
 # TODO: Resizing error on windows (duplicating texts).
 
 # TODO: Have a single readme file with all the readmes from other templates
-# TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
 # TODO: Check if the user is really on a gryphon project folder
 # TODO: use pipfile to make requirements different from app and tests

@@ -5,6 +5,7 @@ from pathlib import Path
 QUIT = "quit"
 GENERATE = "generate"
 INIT = "init"
+INIT_FROM_EXISTING = "init_from_existing"
 ADD = "add"
 ABOUT = "about"
 SETTINGS = "settings"

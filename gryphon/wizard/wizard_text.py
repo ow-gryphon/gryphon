@@ -27,6 +27,7 @@ class Text:
     first_prompt_question = "What would you like to do?"
 
     init_display_option = "Start a new Gryphon project"
+    init_from_existing_display_option = "Start a Gryphon project from existing folder"
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
     about_display_option = "About OW Gryphon"
