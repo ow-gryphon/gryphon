@@ -10,15 +10,11 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    append_requirement,
-    get_rc_file,
-    log_operation, log_new_files, log_add_library,
-    download_template, unzip_templates, unify_templates,
+    fetch_template,
     mark_notebooks_as_readonly, enable_files_overwrite,
-    clean_temporary_folders
+    clean_readonly_folder, append_requirement
 )
-from .operations.environment_manager_operations import EnvironmentManagerOperations
-from .operations.path_utils import PathUtils
+from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
 from .settings import SettingsManager
 from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
@@ -37,15 +33,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     logger.info("Generating template.")
     if template.registry_type == REMOTE_INDEX:
 
-        download_folder = folder / ".temp"
-        zip_folder = folder / ".unzip"
-        template_folder = folder / ".target"
-
-        clean_temporary_folders(download_folder, zip_folder, template_folder)
-
-        download_template(template, download_folder)
-        unzip_templates(download_folder, zip_folder)
-        unify_templates(zip_folder, template_folder)
+        template_folder = fetch_template(template, folder)
 
         try:
             enable_files_overwrite(
@@ -56,7 +44,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             mark_notebooks_as_readonly(folder / "notebooks")
 
         finally:
-            clean_temporary_folders(download_folder, zip_folder, template_folder)
+            clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
@@ -66,16 +54,16 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     for r in template.dependencies:
         append_requirement(r, location=folder)
 
-    log_add_library(template.dependencies)
+    RCManager.log_add_library(template.dependencies)
     if env_type == VENV:
         EnvironmentManagerOperations.install_libraries_venv()
     elif env_type == CONDA:
         EnvironmentManagerOperations.install_libraries_conda()
 
     # RC file
-    rc_file = get_rc_file(folder)
-    log_operation(template, performed_action=GENERATE, logfile=rc_file)
-    log_new_files(template, performed_action=GENERATE, logfile=rc_file)
+    rc_file = RCManager.get_rc_file(folder)
+    RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)
+    RCManager.log_new_files(template, performed_action=GENERATE, logfile=rc_file)
 
 
 def pattern_replacement(input_file, mapper):

@@ -86,12 +86,6 @@ class CommonQuestions:
             for v in versions
         ])
 
-        # TODO: Is the back option realy necessary. Maybe yes
-        # choices.extend([
-        #     Separator(),
-        #     get_back_choice()
-        # ])
-
         return questionary.select(
             message=Text.settings_ask_template_version,
             choices=choices,

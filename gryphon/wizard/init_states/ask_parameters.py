@@ -34,21 +34,6 @@ class AskParameters(State):
         )
     ]
 
-    # TODO: change the ci/cd to create a json file in the format:
-    """
-        [
-            {"version": "v0.0.1"}, 
-            {"version": "v0.0.2"}
-        ]
-
-        instead of
-
-        {
-            "v0.0.1": {},
-            "v0.0.2": {}
-        }
-    """
-
     def on_start(self, context: dict) -> dict:
 
         template = self.templates[context["template_name"]]

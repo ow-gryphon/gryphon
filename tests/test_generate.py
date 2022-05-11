@@ -154,7 +154,7 @@ def test_generate_6(setup, teardown):
             TEST_FOLDER / "data" / "registry_with_git_folder" / "generate" / "sample_generate",
             type="local"
         )
-        generate(template=template)
+        generate(template=template, folder=cwd)
 
         assert not os.path.isdir(cwd / ".git")
         assert not os.path.isfile(cwd / ".git" / "test.txt")

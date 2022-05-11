@@ -2,24 +2,17 @@
 File containing operations that are common to the commands.
 """
 import glob
-import json
 import logging
 import os
 import platform
 import shutil
 import zipfile
-from datetime import datetime
 from distutils.version import StrictVersion
 from pathlib import Path
 
 import git
 
-from .operations.bash_utils import BashUtils
-from .operations.path_utils import PathUtils
-from ..constants import (
-    GENERATE, INIT, CONFIG_FILE, DEFAULT_PYTHON_VERSION,
-    USE_LATEST
-)
+from .operations import BashUtils, PathUtils
 
 logger = logging.getLogger('gryphon')
 
@@ -53,7 +46,11 @@ def get_library_name(library_name):
 
 
 def append_requirement(library_name, location=Path.cwd()):
-    """Appends a given requirement to the requirements.txt file."""
+    """
+    Appends a given requirement to the requirements.txt file.
+    It checks if the library is already present in the requirements.txt folder
+    before adding it or updating version number.
+    """
 
     name = get_library_name(library_name)
     current_path = PathUtils.get_destination_path(location)
@@ -86,7 +83,10 @@ def append_requirement(library_name, location=Path.cwd()):
 
 
 def backup_requirements(cwd=Path.cwd()):
-
+    """
+    Creates a copy of the requirements.txt to prevent
+    losses if something goes wrong in the process.
+    """
     current_path = PathUtils.get_destination_path(cwd)
     requirements_path = current_path / REQUIREMENTS
     backup_path = current_path / "requirements.backup"
@@ -101,7 +101,9 @@ def backup_requirements(cwd=Path.cwd()):
 
 
 def rollback_requirement(backup_file, location=Path.cwd()):
-
+    """
+    Restores the requirement.txt file.
+    """
     current_path = PathUtils.get_destination_path(location)
     requirements_path = current_path / REQUIREMENTS
     os.remove(requirements_path)
@@ -113,137 +115,12 @@ def rollback_requirement(backup_file, location=Path.cwd()):
         f.write(backup_contents)
 
 
-def rollback_append_requirement(library_name):
-    current_path = PathUtils.get_destination_path()
-    requirements_path = current_path / REQUIREMENTS
-
-    assert requirements_path.is_file()
-
-    with open(requirements_path, "r", encoding='UTF-8') as file:
-        requirements = file.read()
-
-    requirements_list = requirements.split('\n')
-    last_requirement_added = requirements_list[-1]
-
-    if library_name == last_requirement_added:
-        with open(requirements_path, "w", encoding='UTF-8') as file:
-            file.write('\n'.join(requirements_list[:-1]))
-
-
-# RC FILE
-
-def get_rc_file(folder=Path.cwd()):
-    """
-    Updates the needed options inside the .labskitrc file.
-    """
-    path = folder / GRYPHON_HISTORY
-    if path.is_file():
-        return path
-
-    with open(path, "w", encoding="utf-8") as f:
-        f.write("{}")
-
-    return path
-
-
-def log_new_files(template, performed_action: str, logfile=None):
-
-    assert performed_action in [INIT, GENERATE]
-    if logfile is None:
-        logfile = Path.cwd() / GRYPHON_HISTORY
-
-    files_and_folders = glob.glob(str(template.path / "template" / "**"), recursive=True)
-    files = list(filter(lambda x: x.is_file(), map(Path, files_and_folders)))
-
-    with open(logfile, "r+", encoding="utf-8") as f:
-        contents = json.load(f)
-
-        new_contents = contents.copy()
-        for file in files:
-            new_contents.setdefault("files", []).append(
-                dict(
-                    path=str(file.relative_to(template.path / "template")),
-                    template_name=template.name,
-                    version=template.version,
-                    action=performed_action,
-                    created_at=str(datetime.now())
-                )
-            )
-
-        f.seek(0)
-        f.write(json.dumps(new_contents))
-        f.truncate()
-
-
-def log_operation(template, performed_action: str, logfile=None):
-
-    assert performed_action in [INIT, GENERATE]
-
-    if logfile is None:
-        logfile = Path.cwd() / GRYPHON_HISTORY
-
-    with open(logfile, "r+", encoding="utf-8") as f:
-        contents = json.load(f)
-
-        new_contents = contents.copy()
-        new_contents.setdefault("operations", []).append(
-            dict(
-                template_name=template.name,
-                version=template.version,
-                action=performed_action,
-                created_at=str(datetime.now())
-            )
-        )
-
-        f.seek(0)
-        f.write(json.dumps(new_contents))
-        f.truncate()
-
-
-def log_add_library(libraries: list, logfile=None):
-
-    if logfile is None:
-        logfile = Path.cwd() / GRYPHON_HISTORY
-    try:
-        with open(logfile, "r+", encoding="utf-8") as f:
-            contents = json.load(f)
-
-            new_contents = contents.copy()
-            for lib in libraries:
-                new_contents.setdefault("libraries", []).append(
-                    dict(
-                        name=lib,
-                        added_at=str(datetime.now())
-                    )
-                )
-
-            f.seek(0)
-            f.write(json.dumps(new_contents))
-            f.truncate()
-    except FileNotFoundError:
-        logger.warning("The .gryphon_history file was not found, therefore you are not inside a "
-                       "Gryphon project directory.")
-
-
-def get_current_python_version():
-    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
-        return json.load(f).get(
-            "default_python_version",
-            DEFAULT_PYTHON_VERSION
-        )
-
-
-def get_current_template_version_policy():
-    with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
-        return json.load(f).get(
-            "template_version_policy",
-            USE_LATEST
-        )
-
-
 # TEMPLATE DOWNLOAD
 
-def download_template(template, temp_folder=Path().cwd() / ".temp"):
+def _download_template(template, temp_folder=Path().cwd() / ".temp"):
+    """
+    Downloads a template and its dependencies in the zip format to a temporary folder.
+    """
     # TODO: This implementation doesn't address cases where one template depends
     #  on another from a different index
 
@@ -258,7 +135,10 @@ def download_template(template, temp_folder=Path().cwd() / ".temp"):
         raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")
 
 
-def unzip_templates(origin_path: Path, target_folder) -> Path:
+def _unzip_templates(origin_path: Path, target_folder) -> Path:
+    """
+    Unzips zip files contained in a given folder.
+    """
     zip_files = glob.glob(str(origin_path / "*.zip"))
 
     if not target_folder.is_dir():
@@ -270,7 +150,10 @@ def unzip_templates(origin_path: Path, target_folder) -> Path:
     return target_folder
 
 
-def unify_templates(origin_folder: Path, destination_folder: Path) -> Path:
+def _unify_templates(origin_folder: Path, destination_folder: Path) -> Path:
+    """
+    Copies the template and its dependencies to a single folder.
+    """
     expanded_folders = glob.glob(str(origin_folder / "*"))
 
     for folder in expanded_folders:
@@ -282,16 +165,36 @@ def unify_templates(origin_folder: Path, destination_folder: Path) -> Path:
     return destination_folder
 
 
-def clean_temporary_folders(download_folder, zip_folder, template_folder):
-    shutil.rmtree(download_folder, ignore_errors=True)
-    shutil.rmtree(zip_folder, ignore_errors=True)
+def fetch_template(template, project_folder):
+    download_folder = project_folder / ".temp"
+    zip_folder = project_folder / ".unzip"
+    template_folder = project_folder / ".target"
+
+    try:
+        _download_template(template, download_folder)
+        _unzip_templates(download_folder, zip_folder)
+        _unify_templates(zip_folder, template_folder)
+    finally:
+        shutil.rmtree(download_folder, ignore_errors=True)
+        shutil.rmtree(zip_folder, ignore_errors=True)
+
+    return template_folder
+
+
+def clean_readonly_folder(folder):
+    """
+    Logic to remove folders with readonly files.
+    """
     if platform.system() == "Windows":
-        BashUtils.execute_and_log(f"rmdir /s /Q {template_folder}")
+        BashUtils.execute_and_log(f"rmdir /s /Q {folder}")
     else:
-        shutil.rmtree(template_folder, ignore_errors=True)
+        shutil.rmtree(folder, ignore_errors=True)
 
 
 def enable_files_overwrite(source_folder: Path, destination_folder: Path):
+    """
+    Changes permissions from read only files in order to make then overridable.
+    """
     pattern = "*.ipynb"
 
     # Get all relevant files from source
@@ -305,7 +208,9 @@ def enable_files_overwrite(source_folder: Path, destination_folder: Path):
 
 
 def mark_notebooks_as_readonly(location: Path):
-
+    """
+    Changes permissions from the notebooks folder in order to make it's ipython notebooks read-only.
+    """
     if platform.system() == "Windows":
         BashUtils.execute_and_log(f'attrib +r "{location / "*.ipynb"}" /s')
     else:
@@ -315,5 +220,8 @@ def mark_notebooks_as_readonly(location: Path):
 # VERSION
 
 def sort_versions(versions: list) -> list:
+    """
+    Sorts a list of versions according to the semantic versioning scheme.
+    """
     versions.sort(key=lambda x: StrictVersion(x[1:]) if x[0] == 'v' else StrictVersion(x))
     return versions

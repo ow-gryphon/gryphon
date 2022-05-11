@@ -1,7 +1,9 @@
-import os
 import logging
+import os
 from logging.handlers import RotatingFileHandler
+
 from colorlog import ColoredFormatter
+
 from .constants import GRYPHON_HOME
 
 """

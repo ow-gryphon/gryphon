@@ -6,10 +6,10 @@ import logging
 from pathlib import Path
 import os
 
-from .operations.environment_manager_operations import EnvironmentManagerOperations
+from .operations import EnvironmentManagerOperations, RCManager
 from .common_operations import (
     append_requirement, backup_requirements,
-    rollback_requirement, log_add_library
+    rollback_requirement
 )
 from .settings import SettingsManager
 from ..constants import VENV, CONDA
@@ -51,6 +51,6 @@ def add(library_name, version=None, cwd=Path.cwd()):
         logger.warning("Rolled back the changes from last command.")
         raise e
     else:
-        log_add_library([library_name])
+        RCManager.log_add_library([library_name])
     finally:
         os.remove(requirements_backup)

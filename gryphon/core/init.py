@@ -8,18 +8,12 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    init_new_git_repo,
-    initial_git_commit,
-    log_operation, log_new_files,
-    get_rc_file,
-    download_template, unzip_templates,
-    unify_templates,
-    append_requirement, log_add_library,
+    init_new_git_repo, initial_git_commit,
+    fetch_template, append_requirement,
     mark_notebooks_as_readonly,
-    clean_temporary_folders, enable_files_overwrite
+    clean_readonly_folder, enable_files_overwrite
 )
-from .operations.bash_utils import BashUtils
-from .operations.environment_manager_operations import EnvironmentManagerOperations
+from .operations import BashUtils, EnvironmentManagerOperations, RCManager
 from .registry import Template
 from .settings import SettingsManager
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
@@ -44,30 +38,23 @@ def init(template: Template, location, python_version, **kwargs):
 
     if template.registry_type == REMOTE_INDEX:
 
-        download_folder = project_home / ".temp"
-        zip_folder = project_home / ".unzip"
-        template_folder = project_home / ".target"
+        template_folder = fetch_template(template, project_home)
 
-        clean_temporary_folders(download_folder, zip_folder, template_folder)
+        try:
+            enable_files_overwrite(
+                source_folder=template_folder / "notebooks",
+                destination_folder=project_home / "notebooks"
+            )
+            mark_notebooks_as_readonly(template_folder / "notebooks")
 
-        download_template(template, download_folder)
-        unzip_templates(download_folder, zip_folder)
-        unify_templates(zip_folder, template_folder)
-
-        enable_files_overwrite(
-            source_folder=template_folder / "notebooks",
-            destination_folder=project_home / "notebooks"
-        )
-        mark_notebooks_as_readonly(template_folder / "notebooks")
-
-        # Move files to destination
-        shutil.copytree(
-            src=Path(template_folder),
-            dst=project_home,
-            dirs_exist_ok=True
-        )
-
-        clean_temporary_folders(download_folder, zip_folder, template_folder)
+            # Move files to destination
+            shutil.copytree(
+                src=Path(template_folder),
+                dst=project_home,
+                dirs_exist_ok=True
+            )
+        finally:
+            clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
 
@@ -79,9 +66,9 @@ def init(template: Template, location, python_version, **kwargs):
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
     # RC file
-    rc_file = get_rc_file(Path.cwd() / location)
-    log_operation(template, performed_action=INIT, logfile=rc_file)
-    log_new_files(template, performed_action=INIT, logfile=rc_file)
+    rc_file = RCManager.get_rc_file(Path.cwd() / location)
+    RCManager.log_operation(template, performed_action=INIT, logfile=rc_file)
+    RCManager.log_new_files(template, performed_action=INIT, logfile=rc_file)
 
     # Git
     repo = init_new_git_repo(folder=project_home)
@@ -91,7 +78,7 @@ def init(template: Template, location, python_version, **kwargs):
     for r in template.dependencies:
         append_requirement(r, location)
 
-    log_add_library(template.dependencies, logfile=rc_file)
+    RCManager.log_add_library(template.dependencies, logfile=rc_file)
 
     # ENV Manager
     if env_type == VENV:

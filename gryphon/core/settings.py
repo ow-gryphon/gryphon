@@ -5,12 +5,10 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    init_new_git_repo,
-    initial_git_commit,
-    get_current_python_version
+    init_new_git_repo, initial_git_commit,
 )
+from .operations import EnvironmentManagerOperations, RCManager
 from .operations.bash_utils import BashUtils
-from .operations.environment_manager_operations import EnvironmentManagerOperations
 from ..constants import (
     CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH, SUCCESS,
     INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK
@@ -188,7 +186,7 @@ class SettingsManager:
     def render_template_scaffolding(cls, location: Path):
 
         template_path = DATA_PATH / "template_scaffolding"
-        python_version = get_current_python_version()
+        python_version = RCManager.get_current_python_version()
 
         with open(cls.get_config_path(), "r", encoding="UTF-8") as f:
             data = json.load(f)

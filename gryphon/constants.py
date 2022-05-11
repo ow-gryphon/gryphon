@@ -65,3 +65,4 @@ MIN_MINOR_VERSION = 7
 
 REMOTE_INDEX = "remote_index"
 LOCAL_TEMPLATE = "local"
+GRYPHON_HISTORY = ".gryphon_history"

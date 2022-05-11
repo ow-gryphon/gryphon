@@ -134,3 +134,4 @@ token.txt
 /.scannerwork/
 gryphon/data/template_registry/**
 .ipynb_checkpoints/
+gryphon/data/versions_raw.txt

@@ -1,23 +1,24 @@
 """
 Gryphon interactive wizard.
 """
-import os
-import json
-import shutil
-import logging
-import platform
 import argparse
+import json
+import logging
+import os
+import platform
+import shutil
 import traceback
-from .core.registry import RegistryCollection
-from .core.operations.bash_utils import BashUtils
-from .wizard import init, generate, add, about, exit_program, settings
-from .wizard.wizard_text import Text
-from .wizard.questions import CommonQuestions
+
 from .constants import (
     INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH
 )
+from .core.operations import BashUtils
+from .core.registry import RegistryCollection
 from .logger import logger
+from .wizard import init, generate, add, about, exit_program, settings
+from .wizard.questions import CommonQuestions
+from .wizard.wizard_text import Text
 
 
 def output_error(er: Exception):

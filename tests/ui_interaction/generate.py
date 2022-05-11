@@ -40,7 +40,7 @@ def generate_template(working_directory):
 
         confirm_information(process)
         wait_for_success(process)
-        # TODO: I had to comment the code that creates a new session inside the created
+        # I had to comment the code that creates a new session inside the created
         #  folder in order to make this test to work. It was giving timeout always
         quit_process(process)
     except Exception as e:

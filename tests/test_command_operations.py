@@ -3,26 +3,21 @@ Module containing tests about the functions in the file common_operations.py
 """
 import json
 import os
-from pathlib import Path
-from os import path
 import shutil
 import subprocess
+from os import path
+from pathlib import Path
+
 import pytest
+
+from gryphon.core.common_operations import (init_new_git_repo, initial_git_commit)
+from gryphon.core.operations import EnvironmentManagerOperations, BashUtils, RCManager
+from gryphon.core.registry import Template
 from .utils import (
     create_folder_with_venv, create_folder_with_conda_env,
     get_venv_path, get_conda_path,
     TEST_FOLDER
 )
-from gryphon.core.registry import Template
-from gryphon.core.operations.environment_manager_operations import EnvironmentManagerOperations
-from gryphon.core.operations.bash_utils import BashUtils
-
-from gryphon.core.common_operations import (
-    init_new_git_repo,
-    initial_git_commit,
-    log_new_files
-)
-
 
 CWD = os.path.abspath("")
 
@@ -246,7 +241,7 @@ def test_log_new_files(setup, teardown):
         template_path = TEST_FOLDER / "data" / "trivial"
         template = Template.template_from_path(template_path)
 
-        log_new_files(
+        RCManager.log_new_files(
             template=template,
             performed_action="init",
             logfile=log_file
