@@ -43,6 +43,7 @@ SUCCESS = 21
 
 # environment
 VENV_FOLDER = ".venv"
+CONDA_FOLDER = "envs"
 DEFAULT_ENV = "venv"
 VENV = "venv"
 CONDA = "conda"
@@ -53,6 +54,7 @@ PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "data"
 CONFIG_FILE = GRYPHON_HOME / "gryphon_config.json"
 DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"
+REQUIREMENTS = "requirements.txt"
 
 # Python versions
 DEFAULT_PYTHON_VERSION = "3.8"

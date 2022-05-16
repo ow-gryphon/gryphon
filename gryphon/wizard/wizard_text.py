@@ -44,6 +44,14 @@ class Text:
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
 
+    init_from_existing_prompt_location_question = "Select the target folder:"
+    init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
+                                                " do you want o use it as the project environment?"
+    init_from_existing_confirm_venv_question = "An existing venv environment was found inside the project folder," \
+                                               " do you want o use it as the project environment?"
+    init_from_existing_point_to_external_env = "Do you want to point to an external environment?"
+    init_from_existing_ask_external_env_path = "Type the external environment path"
+
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "
     add_prompt_type_library = "Type the name of the python library you want to install:"

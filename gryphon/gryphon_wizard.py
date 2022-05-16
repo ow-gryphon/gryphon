@@ -101,7 +101,7 @@ def main():
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD]:
+                if chosen_command in [GENERATE, ADD, INIT_FROM_EXISTING]:
                     logger.info("\n\n")
                     continue
                 break
@@ -136,3 +136,4 @@ if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
+# TODO: rename environments when we already have one on the folder (no_ignore)

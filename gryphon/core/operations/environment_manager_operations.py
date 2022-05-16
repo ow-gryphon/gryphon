@@ -53,19 +53,26 @@ class EnvironmentManagerOperations:
 
         logger.log(SUCCESS, "Done creating virtual environment.")
 
+        return venv_path
+
     @staticmethod
-    def install_libraries_venv(folder=None):
+    def install_libraries_venv(folder=None, external_environment_path=None):
         """
         Function to install the libraries from a 'requirements.txt' file
         """
         target_folder = PathUtils.get_destination_path(folder)
         requirements_path = target_folder / REQUIREMENTS
 
+        if external_environment_path is None:
+            venv_folder = target_folder / VENV_FOLDER
+        else:
+            venv_folder = external_environment_path
+
         if platform.system() == "Windows":
             # On Windows the venv folder structure is different from unix
-            pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
+            pip_path = venv_folder / "Scripts" / "pip.exe"
         else:
-            pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
+            pip_path = venv_folder / "bin" / "pip"
 
         # Install requirements
         logger.info("Installing requirements. This may take several minutes ...")
@@ -215,9 +222,10 @@ class EnvironmentManagerOperations:
             raise RuntimeError(f"Failed to create conda environment. Status code: {return_code}")
 
         logger.log(SUCCESS, "Done creating virtual environment.")
+        return conda_path
 
     @staticmethod
-    def install_libraries_conda(folder=None):
+    def install_libraries_conda(folder=None, external_environment_path=None):
         """
             TODO:  Mensagem achada quando pedimos uma versão que nao existe usando conda
             PackagesNotFoundError: The following packages are not available from current channels:
@@ -238,9 +246,12 @@ class EnvironmentManagerOperations:
         """
         logger.info("Installing requirements. This may take several minutes ...")
         target_folder = PathUtils.get_destination_path(folder)
-
         requirements_path = target_folder / REQUIREMENTS
-        conda_path = target_folder / 'envs'
+
+        if external_environment_path is None:
+            conda_path = target_folder / 'envs'
+        else:
+            conda_path = external_environment_path
 
         if not conda_path.is_dir():
             raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
@@ -259,10 +270,6 @@ class EnvironmentManagerOperations:
                 logger.error(f"Failed on pip install command. Status code: {return_code}")
         else:
             logger.log(SUCCESS, "Installation successful!")
-
-        # if return_code is not None:
-        #     raise RuntimeError(f"Failed to install requirements on conda environment. Status code: {return_code}")
-        # logger.log(SUCCESS, "Installation successful!")
 
     @staticmethod
     def install_extra_nbextensions_conda(folder_path):
