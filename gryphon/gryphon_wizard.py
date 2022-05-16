@@ -101,7 +101,7 @@ def main():
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD, INIT_FROM_EXISTING]:
+                if chosen_command in [GENERATE, ADD, INIT, INIT_FROM_EXISTING]:
                     logger.info("\n\n")
                     continue
                 break

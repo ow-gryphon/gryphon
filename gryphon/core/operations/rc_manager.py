@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ...constants import (
     GENERATE, INIT, CONFIG_FILE, DEFAULT_PYTHON_VERSION,
-    USE_LATEST, GRYPHON_HISTORY
+    USE_LATEST, GRYPHON_RC, CONDA, VENV
 )
 
 logger = logging.getLogger('gryphon')
@@ -20,7 +20,7 @@ class RCManager:
         """
         Updates the needed options inside the .labskitrc file.
         """
-        path = folder / GRYPHON_HISTORY
+        path = folder / GRYPHON_RC
         if path.is_file():
             return path
 
@@ -36,7 +36,7 @@ class RCManager:
         """
         assert performed_action in [INIT, GENERATE]
         if logfile is None:
-            logfile = Path.cwd() / GRYPHON_HISTORY
+            logfile = Path.cwd() / GRYPHON_RC
 
         files_and_folders = glob.glob(str(template.path / "template" / "**"), recursive=True)
         files = list(filter(lambda x: x.is_file(), map(Path, files_and_folders)))
@@ -60,6 +60,67 @@ class RCManager:
             f.write(json.dumps(new_contents))
             f.truncate()
 
+    @classmethod
+    def set_environment_manager(cls, environment_manager: str, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        assert environment_manager in [CONDA, VENV]
+        cls._set_key(key="environment_manager", value=environment_manager, logfile=logfile)
+
+    @classmethod
+    def set_environment_manager_path(cls, path: Path, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        cls._set_key(key="environment_manager_path", value=str(path), logfile=logfile)
+
+    @staticmethod
+    def _set_key(key, value, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+
+        if logfile is None:
+            logfile = Path.cwd() / GRYPHON_RC
+
+        with open(logfile, "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+
+            new_contents = contents.copy()
+            new_contents[key] = value
+
+            f.seek(0)
+            f.write(json.dumps(new_contents))
+            f.truncate()
+
+    @classmethod
+    def get_environment_manager_path(cls, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        return Path(cls._get_key("environment_manager_path", logfile))
+
+    @classmethod
+    def get_environment_manager(cls, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        return cls._get_key("environment_manager", logfile)
+
+    @staticmethod
+    def _get_key(key, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        if logfile is None:
+            logfile = Path.cwd() / GRYPHON_RC
+
+        with open(logfile, "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+
+        return contents[key]
+
     @staticmethod
     def log_operation(template, performed_action: str, logfile=None):
         """
@@ -69,7 +130,7 @@ class RCManager:
         assert performed_action in [INIT, GENERATE]
 
         if logfile is None:
-            logfile = Path.cwd() / GRYPHON_HISTORY
+            logfile = Path.cwd() / GRYPHON_RC
 
         with open(logfile, "r+", encoding="utf-8") as f:
             contents = json.load(f)
@@ -94,7 +155,7 @@ class RCManager:
         Add information about installed inside the project into the rc file.
         """
         if logfile is None:
-            logfile = Path.cwd() / GRYPHON_HISTORY
+            logfile = Path.cwd() / GRYPHON_RC
         try:
             with open(logfile, "r+", encoding="utf-8") as f:
                 contents = json.load(f)

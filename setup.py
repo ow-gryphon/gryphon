@@ -39,7 +39,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name='gryphon',
-    version='0.0.2',
+    version='0.1.0',
     license='MIT',
     description='OW analytics toolkit cli',
     long_description=long_description,

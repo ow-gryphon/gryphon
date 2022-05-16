@@ -5,7 +5,7 @@ from os import path
 
 from gryphon.core.registry import Template
 from gryphon.core.settings import SettingsManager
-from gryphon.constants import VENV
+from gryphon.constants import VENV, GRYPHON_RC
 from gryphon.core.generate import (
     generate,
     parse_project_template,
@@ -133,7 +133,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         assert (cwd / "template" / "readme_mlclustering.md").is_file()
         assert (cwd / "template" / "src" / f"clustering_{file_name}.py").is_file()
 
-        log_file = cwd / ".gryphon_history"
+        log_file = cwd / GRYPHON_RC
 
         assert log_file.is_file()
         with open(log_file, "r", encoding="utf-8") as f:

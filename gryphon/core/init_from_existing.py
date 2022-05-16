@@ -4,13 +4,13 @@ import shutil
 from pathlib import Path
 
 from ..constants import CONDA, VENV, REQUIREMENTS
-from ..constants import VENV_FOLDER, CONDA_FOLDER, GRYPHON_HISTORY, YES, NO
+from ..constants import VENV_FOLDER, CONDA_FOLDER, GRYPHON_RC, YES, NO
 from ..core.operations import EnvironmentManagerOperations, RCManager
 from ..core.settings import SettingsManager
 
 
 def check_for_history(folder: Path):
-    expected_history = folder / GRYPHON_HISTORY
+    expected_history = folder / GRYPHON_RC
 
     return expected_history.is_dir()
 

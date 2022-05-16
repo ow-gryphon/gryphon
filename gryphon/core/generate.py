@@ -3,7 +3,6 @@ Module containing the code for the generate command in then CLI.
 """
 
 import glob
-import json
 import logging
 import os
 import shutil
@@ -16,8 +15,7 @@ from .common_operations import (
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
-from .settings import SettingsManager
-from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
+from ..constants import GENERATE, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
 
 logger = logging.getLogger('gryphon')
 
@@ -26,9 +24,9 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
-    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
-        data = json.load(f)
-        env_type = data.get("environment_management", DEFAULT_ENV)
+    rc_file = RCManager.get_rc_file(folder)
+    env_path = RCManager.get_environment_manager_path(logfile=rc_file)
+    env_type = RCManager.get_environment_manager(logfile=rc_file)
 
     logger.info("Generating template.")
     if template.registry_type == REMOTE_INDEX:
@@ -56,12 +54,11 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
 
     RCManager.log_add_library(template.dependencies)
     if env_type == VENV:
-        EnvironmentManagerOperations.install_libraries_venv()
+        EnvironmentManagerOperations.install_libraries_venv(external_environment_path=env_path)
     elif env_type == CONDA:
-        EnvironmentManagerOperations.install_libraries_conda()
+        EnvironmentManagerOperations.install_libraries_conda(external_environment_path=env_path)
 
     # RC file
-    rc_file = RCManager.get_rc_file(folder)
     RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)
     RCManager.log_new_files(template, performed_action=GENERATE, logfile=rc_file)
 
