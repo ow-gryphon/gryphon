@@ -15,7 +15,7 @@ from .common_operations import (
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
-from ..constants import GENERATE, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
+from ..constants import GENERATE, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -24,6 +24,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
+    current_path = PathUtils.get_destination_path(folder)
     rc_file = RCManager.get_rc_file(folder)
     env_path = RCManager.get_environment_manager_path(logfile=rc_file)
     env_type = RCManager.get_environment_manager(logfile=rc_file)
@@ -54,9 +55,15 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
 
     RCManager.log_add_library(template.dependencies)
     if env_type == VENV:
-        EnvironmentManagerOperations.install_libraries_venv(external_environment_path=env_path)
+        EnvironmentManagerOperations.install_libraries_venv(
+            environment_path=env_path,
+            requirements_path=current_path / REQUIREMENTS
+        )
     elif env_type == CONDA:
-        EnvironmentManagerOperations.install_libraries_conda(external_environment_path=env_path)
+        EnvironmentManagerOperations.install_libraries_conda(
+            environment_path=env_path,
+            requirements_path=current_path / REQUIREMENTS
+        )
 
     # RC file
     RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)

@@ -31,7 +31,7 @@ def check_for_environment(folder: Path):
 def check_for_requirements(folder: Path):
     expected_requirements = folder / REQUIREMENTS
 
-    return expected_requirements.is_dir()
+    return expected_requirements.is_file()
 
 
 def process_requirements(location, env, env_path):
@@ -40,9 +40,16 @@ def process_requirements(location, env, env_path):
 
         # TODO: change this to use the environment present in the
         if env == CONDA:
-            EnvironmentManagerOperations.install_libraries_conda(external_environment_path=env_path)
+            EnvironmentManagerOperations.install_libraries_conda(
+                environment_path=env_path,
+                requirements_path=location / REQUIREMENTS
+            )
+
         elif env == VENV:
-            EnvironmentManagerOperations.install_libraries_venv(external_environment_path=env_path)
+            EnvironmentManagerOperations.install_libraries_venv(
+                environment_path=env_path,
+                requirements_path=location / REQUIREMENTS
+            )
     else:
         with open(location / REQUIREMENTS, "w", encoding="UTF-8") as f:
             f.write("")
@@ -58,9 +65,9 @@ def create_environment(path: Path, env_manager=None):
         env_manager = get_environment_manager()
 
     if env_manager == CONDA:
-        return EnvironmentManagerOperations.create_conda_env(path)
+        return EnvironmentManagerOperations.create_conda_env(path / CONDA_FOLDER)
     elif env_manager == VENV:
-        return EnvironmentManagerOperations.create_venv(path)
+        return EnvironmentManagerOperations.create_venv(path / VENV_FOLDER)
 
 
 def rename_dir(path):
@@ -79,7 +86,7 @@ def rename_dir(path):
     return path
 
 
-def process_environment_core(location, env_manager, use_existing_environment, env_path, history_file):
+def process_environment_core(location, env_manager, use_existing_environment, env_path):
 
     if use_existing_environment == "no_delete":
         shutil.rmtree(env_path)
@@ -96,9 +103,12 @@ def process_environment_core(location, env_manager, use_existing_environment, en
             env_path = create_environment(location, env_manager=env_manager)
             logger.warning(f"Renaming existing environment {env_path} to {new_path}")
 
-    # TODO: put information about the env manager and env into the rc file
-    # RCManager.set_environment_manager(env_manager)
-    # RCManager.set_environment_manager_path(env_path)
+    # DONE: put information about the env manager and env into the rc file
+    # TODO: do not rename the existing one, create the new with the new name _x
+    # TODO: create a <back> option to
+    logfile = RCManager.get_rc_file(location)
+    RCManager.set_environment_manager(env_manager, logfile)
+    RCManager.set_environment_manager_path(env_path, logfile)
 
 
 def init_from_existing(location, env_manager, use_existing_environment, env_path):
@@ -108,7 +118,7 @@ def init_from_existing(location, env_manager, use_existing_environment, env_path
     # TODO: rename environments when we already have one on the folder (no_ignore)
 
     # ENVIRONMENT
-    process_environment_core(location, env_manager, use_existing_environment, env_path, history_file)
+    process_environment_core(location, env_manager, use_existing_environment, env_path)
 
     # REQUIREMENTS
     process_requirements(location, env_manager, env_path)

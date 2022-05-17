@@ -7,6 +7,7 @@ import os
 import platform
 import shutil
 import zipfile
+from ..constants import REQUIREMENTS, GRYPHON_RC
 from distutils.version import StrictVersion
 from pathlib import Path
 
@@ -15,9 +16,6 @@ import git
 from .operations import BashUtils, PathUtils
 
 logger = logging.getLogger('gryphon')
-
-REQUIREMENTS = "requirements.txt"
-GRYPHON_HISTORY = ".gryphon_history"
 
 
 # GIT

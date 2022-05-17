@@ -12,6 +12,7 @@ import pytest
 
 from gryphon.core.common_operations import (init_new_git_repo, initial_git_commit)
 from gryphon.core.operations import EnvironmentManagerOperations, BashUtils, RCManager
+from gryphon.constants import VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 from gryphon.core.registry import Template
 from .utils import (
     create_folder_with_venv, create_folder_with_conda_env,
@@ -29,7 +30,7 @@ def test_create_venv_1(setup, teardown):
     """
     cwd = setup()
     try:
-        EnvironmentManagerOperations.create_venv(cwd)
+        EnvironmentManagerOperations.create_venv(cwd / VENV_FOLDER)
 
         venv_path = get_venv_path(base_folder=cwd)
 
@@ -46,7 +47,7 @@ def test_create_venv_2(setup, teardown):
     """
     cwd = setup()
     try:
-        EnvironmentManagerOperations.create_venv(cwd)
+        EnvironmentManagerOperations.create_venv(cwd / VENV_FOLDER)
 
         venv_path = get_venv_path(cwd)
         assert path.isdir(venv_path)
@@ -63,7 +64,7 @@ def test_create_conda_env_1(setup, teardown):
     try:
         conda_path = get_conda_path(cwd)
         venv_path = get_venv_path(cwd)
-        EnvironmentManagerOperations.create_conda_env(cwd)
+        EnvironmentManagerOperations.create_conda_env(conda_path)
 
         assert path.isdir(conda_path)
         assert not path.isdir(venv_path)
@@ -80,7 +81,7 @@ def test_create_conda_env_2(setup, teardown):
     try:
         conda_path = get_conda_path(cwd)
         venv_path = get_venv_path(cwd)
-        EnvironmentManagerOperations.create_venv(cwd)
+        EnvironmentManagerOperations.create_venv(cwd / VENV_FOLDER)
 
         assert not path.isdir(conda_path)
         assert path.isdir(venv_path)
@@ -101,7 +102,10 @@ def test_install_libraries_1(setup, teardown, get_pip_libraries):
         libs = get_pip_libraries(cwd)
         assert "numpy" not in libs
 
-        EnvironmentManagerOperations.install_libraries_venv(cwd)
+        EnvironmentManagerOperations.install_libraries_venv(
+            environment_path=cwd / VENV_FOLDER,
+            requirements_path=cwd / REQUIREMENTS
+        )
         venv_path = get_venv_path(cwd)
         assert venv_path.is_dir()
 
@@ -122,7 +126,10 @@ def test_install_libraries_2(setup, teardown):
 
     try:
         with pytest.raises(RuntimeError):
-            EnvironmentManagerOperations.install_libraries_venv(folder_path)
+            EnvironmentManagerOperations.install_libraries_venv(
+                environment_path=folder_path,
+                requirements_path=folder_path / REQUIREMENTS
+            )
 
     finally:
         teardown()
@@ -142,8 +149,10 @@ def test_install_libraries_conda_1(setup, teardown, get_conda_libraries):
         assert "numpy" not in libs
         assert "pandas" not in libs
 
-        EnvironmentManagerOperations.install_libraries_conda(cwd)
-        conda_path = get_conda_path(cwd)
+        EnvironmentManagerOperations.install_libraries_conda(
+            environment_path=cwd / CONDA_FOLDER
+        )
+        conda_path = cwd / CONDA_FOLDER
         assert conda_path.is_dir()
 
         libs = get_conda_libraries(cwd)

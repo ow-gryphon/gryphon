@@ -10,7 +10,7 @@ from .common_operations import (
     rollback_requirement
 )
 from .operations import EnvironmentManagerOperations, RCManager
-from ..constants import VENV, CONDA
+from ..constants import VENV, CONDA, REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -38,10 +38,16 @@ def add(library_name, version=None, cwd=Path.cwd()):
         append_requirement(lib, location=cwd)
 
         if env_manager == VENV:
-            EnvironmentManagerOperations.install_libraries_venv(external_environment_path=env_path)
+            EnvironmentManagerOperations.install_libraries_venv(
+                environment_path=env_path,
+                requirements_path=cwd / REQUIREMENTS
+            )
 
         elif env_manager == CONDA:
-            EnvironmentManagerOperations.install_libraries_conda(external_environment_path=env_path)
+            EnvironmentManagerOperations.install_libraries_conda(
+                environment_path=env_path,
+                requirements_path=cwd / REQUIREMENTS
+            )
 
         else:
             env_list = [VENV, CONDA]

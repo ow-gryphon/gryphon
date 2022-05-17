@@ -81,7 +81,8 @@ def test_project_functions(
         assert n_files_notebooks_after > n_files_notebooks_before
 
     finally:
-        teardown()
+        pass
+        # teardown()
 
 
 @pytest.mark.parametrize('lib_install', lib_install_method)

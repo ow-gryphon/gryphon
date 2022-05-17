@@ -11,7 +11,8 @@ from .operations import EnvironmentManagerOperations, RCManager
 from .operations.bash_utils import BashUtils
 from ..constants import (
     CONFIG_FILE, DEFAULT_CONFIG_FILE, DATA_PATH, SUCCESS,
-    INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK
+    INIT, CONDA, DEFAULT_ENV, VENV, USE_LATEST, ALWAYS_ASK,
+    VENV_FOLDER
 )
 
 logger = logging.getLogger('gryphon')
@@ -186,6 +187,7 @@ class SettingsManager:
     def render_template_scaffolding(cls, location: Path):
 
         template_path = DATA_PATH / "template_scaffolding"
+        location = Path(location)
         python_version = RCManager.get_current_python_version()
 
         with open(cls.get_config_path(), "r", encoding="UTF-8") as f:
@@ -197,7 +199,7 @@ class SettingsManager:
 
         # Files
         BashUtils.copy_project_template(
-            template_destiny=Path(location),
+            template_destiny=location,
             template_source=Path(template_path)
         )
         # TODO: JOIN ALL THE requirements.txt files in one at the time of project init with more than one zip file
@@ -209,7 +211,7 @@ class SettingsManager:
 
         # ENV Manager
         if env_type == VENV:            # VENV
-            EnvironmentManagerOperations.create_venv(folder=location, python_version=python_version)
+            EnvironmentManagerOperations.create_venv(folder=location / VENV_FOLDER, python_version=python_version)
         elif env_type == CONDA:
             # CONDA
             EnvironmentManagerOperations.create_conda_env(location, python_version=python_version)

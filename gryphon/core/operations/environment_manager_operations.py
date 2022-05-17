@@ -8,7 +8,7 @@ from .bash_utils import BashUtils
 from .path_utils import PathUtils
 from ..core_text import Text
 from ...constants import (
-    SUCCESS, VENV_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
+    SUCCESS, VENV_FOLDER, CONDA_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
     SYSTEM_DEFAULT
 )
 
@@ -38,12 +38,12 @@ class EnvironmentManagerOperations:
 
             if platform.system() == "Windows":
                 # On Windows the venv folder structure is different from unix
-                python_path = env_folder / "envs" / "python.exe"
+                python_path = env_folder / CONDA_FOLDER / "python.exe"
             else:
-                python_path = env_folder / "envs" / "bin" / "python"
+                python_path = env_folder / CONDA_FOLDER / "bin" / "python"
 
-        target_folder = PathUtils.get_destination_path(folder)
-        venv_path = target_folder / VENV_FOLDER
+        venv_path = target_folder = PathUtils.get_destination_path(folder)
+        # venv_path = target_folder / VENV_FOLDER
 
         # Create venv
         logger.info(f"Creating virtual environment in {venv_path}")
@@ -56,17 +56,20 @@ class EnvironmentManagerOperations:
         return venv_path
 
     @staticmethod
-    def install_libraries_venv(folder=None, external_environment_path=None):
+    def install_libraries_venv(requirements_path=None, environment_path=None):
         """
         Function to install the libraries from a 'requirements.txt' file
         """
-        target_folder = PathUtils.get_destination_path(folder)
-        requirements_path = target_folder / REQUIREMENTS
 
-        if external_environment_path is None:
+        target_folder = Path.cwd()
+
+        if environment_path is None:
             venv_folder = target_folder / VENV_FOLDER
         else:
-            venv_folder = external_environment_path
+            venv_folder = environment_path
+
+        if requirements_path is None:
+            requirements_path = target_folder / REQUIREMENTS
 
         if platform.system() == "Windows":
             # On Windows the venv folder structure is different from unix
@@ -99,22 +102,29 @@ class EnvironmentManagerOperations:
             logger.log(SUCCESS, "Installation successful!")
 
     @staticmethod
-    def install_extra_nbextensions_venv(folder_path):
+    def install_extra_nbextensions_venv(requirements_path=None, environment_path=None):
         """
         Function to install the libraries from a 'requirements.txt' file
         """
-        target_folder = PathUtils.get_destination_path(folder_path)
-        requirements_path = target_folder / REQUIREMENTS
+        target_folder = Path.cwd()
+
+        if environment_path is None:
+            venv_folder = target_folder / VENV_FOLDER
+        else:
+            venv_folder = environment_path
+
+        if requirements_path is None:
+            requirements_path = target_folder / REQUIREMENTS
 
         if platform.system() == "Windows":
             # On Windows the venv folder structure is different from unix
-            pip_path = target_folder / VENV_FOLDER / "Scripts" / "pip.exe"
-            activate_env_command = target_folder / VENV_FOLDER / "Scripts" / "activate.bat"
+            pip_path = venv_folder / "Scripts" / "pip.exe"
+            activate_env_command = venv_folder / "Scripts" / "activate.bat"
             silent = "START /B \"\""
             redirect = ">nul 2>&1"
         else:
-            pip_path = target_folder / VENV_FOLDER / "bin" / "pip"
-            activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
+            pip_path = venv_folder / "bin" / "pip"
+            activate_path = venv_folder / "bin" / "activate"
             activate_env_command = str(activate_path)
             os.system(f"chmod 777 \"{activate_path}\"")
             silent = "nohup"
@@ -146,7 +156,7 @@ class EnvironmentManagerOperations:
         if return_code is not None:
             raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
 
-        os.chdir(target_folder)
+        # os.chdir(target_folder)
         return_code, _ = BashUtils.execute_and_log(
             f"\"{activate_env_command}\" "
             f"&& ({silent} jupyter nbextensions_configurator enable --user) {redirect}"
@@ -159,7 +169,7 @@ class EnvironmentManagerOperations:
         if return_code is not None:
             raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
 
-        os.chdir(target_folder.parent)
+        # os.chdir(target_folder.parent)
 
     @staticmethod
     def change_shell_folder_and_activate_venv(location):
@@ -203,8 +213,8 @@ class EnvironmentManagerOperations:
     @staticmethod
     def create_conda_env(folder=None, python_version=None):
         """Function to a virtual environment inside a folder."""
-        target_folder = PathUtils.get_destination_path(folder)
-        conda_path = target_folder / 'envs'
+        conda_path = target_folder = PathUtils.get_destination_path(folder)
+        # conda_path = target_folder / CONDA_FOLDER
 
         # Create venv
         logger.info(f"Creating Conda virtual environment in {conda_path}")
@@ -213,7 +223,7 @@ class EnvironmentManagerOperations:
             os.remove("out.json")
 
         command = f"conda create --prefix=\"{conda_path}\" -y -k"
-        # TODO: Verificar essa terceira condição aqui
+
         if python_version and python_version != SYSTEM_DEFAULT and python_version != ALWAYS_ASK:
             command += f" python={python_version}"
 
@@ -225,7 +235,7 @@ class EnvironmentManagerOperations:
         return conda_path
 
     @staticmethod
-    def install_libraries_conda(folder=None, external_environment_path=None):
+    def install_libraries_conda(environment_path=None, requirements_path=None):
         """
             TODO:  Mensagem achada quando pedimos uma versão que nao existe usando conda
             PackagesNotFoundError: The following packages are not available from current channels:
@@ -245,13 +255,16 @@ class EnvironmentManagerOperations:
             looking for, navigate to
         """
         logger.info("Installing requirements. This may take several minutes ...")
-        target_folder = PathUtils.get_destination_path(folder)
-        requirements_path = target_folder / REQUIREMENTS
 
-        if external_environment_path is None:
-            conda_path = target_folder / 'envs'
+        target_folder = Path.cwd()
+
+        if environment_path is None:
+            conda_path = target_folder / VENV_FOLDER
         else:
-            conda_path = external_environment_path
+            conda_path = environment_path
+
+        if requirements_path is None:
+            requirements_path = target_folder / REQUIREMENTS
 
         if not conda_path.is_dir():
             raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
@@ -272,19 +285,16 @@ class EnvironmentManagerOperations:
             logger.log(SUCCESS, "Installation successful!")
 
     @staticmethod
-    def install_extra_nbextensions_conda(folder_path):
+    def install_extra_nbextensions_conda(environment_path=None, requirements_path=None):
         """
         Function to install the libraries from a 'requirements.txt' file
         """
-        target_folder = PathUtils.get_destination_path(folder_path)
-        conda_path = target_folder / 'envs'
-        requirements_path = target_folder / REQUIREMENTS
 
         # Install requirements
         logger.info("Installing extra notebook extensions.")
 
-        if not conda_path.is_dir():
-            raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
+        if not environment_path.is_dir():
+            raise RuntimeError(f"Conda environment not found inside folder. Should be at {environment_path}"
                                f"\nAre you using conda instead of venv?")
 
         if not requirements_path.is_file():
@@ -300,23 +310,23 @@ class EnvironmentManagerOperations:
 
         if platform.system() == "Windows":
             # On Windows the venv folder structure is different from unix
-            conda_python = conda_path / "python.exe"
+            conda_python = environment_path / "python.exe"
             silent = "START /B \"\""
             redirect = ">nul 2>&1"
         else:
-            conda_python = conda_path / "bin" / "python"
+            conda_python = environment_path / "bin" / "python"
             silent = "nohup"
             redirect = ""
 
         return_code, _ = BashUtils.execute_and_log(
             f'conda install jupyter_contrib_nbextensions '
-            f'jupyter_nbextensions_configurator --prefix=\"{conda_path}\" --yes -k'
+            f'jupyter_nbextensions_configurator --prefix=\"{environment_path}\" --yes -k'
         )
 
         if return_code is not None:
             raise RuntimeError(f"Failed on conda install command. Return code: {return_code}")
 
-        os.chdir(target_folder)
+        # os.chdir(target_folder)
 
         try:
             return_code, _ = BashUtils.execute_and_log(
@@ -345,7 +355,7 @@ class EnvironmentManagerOperations:
         except AssertionError:
             raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
 
-        os.chdir(target_folder.parent)
+        # os.chdir(target_folder.parent)
 
     @staticmethod
     def change_shell_folder_and_activate_conda_env(location):

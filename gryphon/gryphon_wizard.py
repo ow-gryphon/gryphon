@@ -136,4 +136,4 @@ if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
-# TODO: rename environments when we already have one on the folder (no_ignore)
+# DONE: rename environments when we already have one on the folder (no_ignore)

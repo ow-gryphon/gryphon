@@ -119,7 +119,11 @@ class RCManager:
         with open(logfile, "r+", encoding="utf-8") as f:
             contents = json.load(f)
 
-        return contents[key]
+        try:
+            return contents[key]
+        except KeyError:
+            raise KeyError(f"Could not find the key \"{key}\" in the contents \"{contents}\" read from the"
+                           f" gryphon_rc file at {logfile}.")
 
     @staticmethod
     def log_operation(template, performed_action: str, logfile=None):
@@ -136,7 +140,10 @@ class RCManager:
             contents = json.load(f)
 
             new_contents = contents.copy()
-            new_contents.setdefault("operations", []).append(
+            if "operations" not in new_contents:
+                new_contents["operations"] = []
+
+            new_contents["operations"].append(
                 dict(
                     template_name=template.name,
                     version=template.version,
@@ -161,8 +168,11 @@ class RCManager:
                 contents = json.load(f)
 
                 new_contents = contents.copy()
+                if "libraries" not in new_contents:
+                    new_contents["libraries"] = []
+
                 for lib in libraries:
-                    new_contents.setdefault("libraries", []).append(
+                    new_contents["libraries"].append(
                         dict(
                             name=lib,
                             added_at=str(datetime.now())
@@ -173,7 +183,7 @@ class RCManager:
                 f.write(json.dumps(new_contents))
                 f.truncate()
         except FileNotFoundError:
-            logger.warning("The .gryphon_history file was not found, therefore you are not inside a "
+            logger.warning(f"The {GRYPHON_RC} file was not found, therefore you are not inside a "
                            "Gryphon project directory.")
 
     @staticmethod

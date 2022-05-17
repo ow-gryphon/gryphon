@@ -16,7 +16,8 @@ from .common_operations import (
 from .operations import BashUtils, EnvironmentManagerOperations, RCManager
 from .registry import Template
 from .settings import SettingsManager
-from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
+from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, \
+    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -83,23 +84,44 @@ def init(template: Template, location, python_version, **kwargs):
     # ENV Manager
     if env_type == VENV:
         # VENV
-        venv_path = EnvironmentManagerOperations.create_venv(folder=location, python_version=python_version)
-        EnvironmentManagerOperations.install_libraries_venv(folder=project_home)
-        EnvironmentManagerOperations.install_extra_nbextensions_venv(folder_path=project_home)
-        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
+        venv_path = EnvironmentManagerOperations.create_venv(
+            folder=project_home / VENV_FOLDER,
+            python_version=python_version
+        )
 
         RCManager.set_environment_manager(VENV, logfile=rc_file)
         RCManager.set_environment_manager_path(venv_path, logfile=rc_file)
 
+        EnvironmentManagerOperations.install_libraries_venv(
+            environment_path=project_home / VENV_FOLDER,
+            requirements_path=project_home / REQUIREMENTS
+        )
+        EnvironmentManagerOperations.install_extra_nbextensions_venv(
+            environment_path=project_home / VENV_FOLDER,
+            requirements_path=project_home / REQUIREMENTS
+        )
+        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
+
     elif env_type == CONDA:
         # CONDA
-        conda_path = EnvironmentManagerOperations.create_conda_env(project_home, python_version=python_version)
-        EnvironmentManagerOperations.install_libraries_conda(project_home)
-        EnvironmentManagerOperations.install_extra_nbextensions_conda(project_home)
-        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
+
+        conda_path = EnvironmentManagerOperations.create_conda_env(
+            project_home / CONDA_FOLDER,
+            python_version=python_version
+        )
 
         RCManager.set_environment_manager(CONDA, logfile=rc_file)
         RCManager.set_environment_manager_path(conda_path, logfile=rc_file)
+
+        EnvironmentManagerOperations.install_libraries_conda(
+            environment_path=project_home / CONDA_FOLDER,
+            requirements_path=project_home / REQUIREMENTS
+        )
+        EnvironmentManagerOperations.install_extra_nbextensions_conda(
+            environment_path=project_home / CONDA_FOLDER,
+            requirements_path=project_home / REQUIREMENTS
+        )
+        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")

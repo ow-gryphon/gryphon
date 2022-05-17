@@ -8,7 +8,7 @@ from .init_from_existing_states import (
     AskExternalEnvPath, AskUseExisting, Install
 )
 from .questions import InitFromExistingQuestions
-from ..constants import CONDA, VENV, YES, BACK
+from ..constants import CONDA, VENV, YES, BACK, VENV_FOLDER, CONDA_FOLDER
 from ..core.init_from_existing import check_for_environment
 from ..core.init_from_existing import init_from_existing as init_from_existing_core, get_environment_manager
 from ..core.operations import EnvironmentManagerOperations
@@ -33,7 +33,7 @@ def create_environment(path: Path, env_manager=None):
     if env_manager == CONDA:
         return EnvironmentManagerOperations.create_conda_env(path)
     elif env_manager == VENV:
-        return EnvironmentManagerOperations.create_venv(path)
+        return EnvironmentManagerOperations.create_venv(path / VENV_FOLDER)
 
 
 def process_environment_wizard(location):
