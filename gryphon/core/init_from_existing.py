@@ -113,9 +113,6 @@ def process_environment(location, env_manager, use_existing_environment,
     else:
         env_path = PathUtils.get_destination_path(existing_env_path)
 
-    # DONE: put information about the env manager and env into the rc file
-    # DONE: do not rename the existing one, create the new with the new name _x
-    # TODO: create a <back> option to
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)
     RCManager.set_environment_manager_path(env_path, logfile)
@@ -178,23 +175,27 @@ def init_from_existing(template, location, env_manager, use_existing_environment
                        delete_existing, external_env_path):
 
     os.makedirs(location, exist_ok=True)
-    # DONE: rename environments when we already have one on the folder (no_ignore)
 
     # TEMPLATE
     handle_template(template, project_home=location)
 
     # ENVIRONMENT
-    env_path = process_environment(location, env_manager, use_existing_environment, existing_env_path, delete_existing, external_env_path)
+    env_path = process_environment(location, env_manager, use_existing_environment,
+                                   existing_env_path, delete_existing, external_env_path)
 
     # REQUIREMENTS
     for r in template.dependencies:
         append_requirement(r, location)
     process_requirements(location, env_manager, env_path)
 
-    # DONE: Ask template before the other prompts?
-    # DONE: What will be the existing files policy? Overwrite or ignore?
-    # DONE: BACK options are needed in every menu
-
     # Git
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
+
+    if env_manager == VENV:
+        # VENV
+        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(location, alternative_env=env_path)
+
+    elif env_manager == CONDA:
+        # CONDA
+        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(location, alternative_env=env_path)

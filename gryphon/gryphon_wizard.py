@@ -101,7 +101,7 @@ def main():
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD, INIT, INIT_FROM_EXISTING]:
+                if chosen_command in [GENERATE, ADD]:
                     logger.info("\n\n")
                     continue
                 break
@@ -122,14 +122,11 @@ def main():
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
-# TODO: On generate, check if there are both a conda and a venv inside folder and use the one that is available
 # TODO: Test installation.
 # TODO: Resizing error on windows (duplicating texts).
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Implement gitflow guidelines
-# TODO: Check if the user is really on a gryphon project folder
-# TODO: use pipfile to make requirements different from app and tests
 
 
 if __name__ == '__main__':
@@ -137,3 +134,5 @@ if __name__ == '__main__':
     main()
 
 # DONE: rename environments when we already have one on the folder (no_ignore)
+# TODO: MESSAGE giving instructions about commands to use for opening a folder and to activate VENV
+# TODO: create a <back> option on text inputs

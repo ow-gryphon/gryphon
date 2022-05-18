@@ -32,6 +32,12 @@ def _condition_install(context):
     return context["point_to_external_env"] == NO
 
 
+def _callback_delete(context):
+    if not "delete" in context:
+        context["delete"] = False
+    return context
+
+
 class AskPointExternal(State):
 
     name = "ask_point_external"
@@ -48,11 +54,13 @@ class AskPointExternal(State):
         ),
         Transition(
             next_state="ask_external_env_path",
-            condition=_condition_ask_point_external
+            condition=_condition_ask_point_external,
+            callback=_callback_delete
         ),
         Transition(
             next_state="install",
-            condition=_condition_install
+            condition=_condition_install,
+            callback=_callback_delete
         )
     ]
 

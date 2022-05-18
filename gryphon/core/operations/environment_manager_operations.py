@@ -172,42 +172,39 @@ class EnvironmentManagerOperations:
         # os.chdir(target_folder.parent)
 
     @staticmethod
-    def change_shell_folder_and_activate_venv(location):
-        if 'pytest' not in sys.modules:
-            target_folder = PathUtils.get_destination_path(location)
+    def change_shell_folder_and_activate_venv(location, alternative_env=None):
+
+        target_folder = PathUtils.get_destination_path(location)
+        if alternative_env:
+            env_folder = alternative_env
+        else:
+            env_folder = target_folder / VENV_FOLDER
+
+        if platform == "windows":
             logger.warning(f"""
-                            {Text.install_end_message_1}
+                {Text.install_end_message_1}
+    
+                ANACONDA PROMPT/COMMAND PROMPT:
+    
+                >> cd \"{target_folder}\"
+                >> {env_folder / "Scripts" / "activate.bat"}
+    
+                GIT BASH:
+    
+                >> cd \"{str(target_folder).replace(chr(92), '/')}\"
+                >> source {env_folder / "Scripts" / "activate"}
+    
+                {Text.install_end_message_2}
+            """)
+        else:
+            logger.warning(f"""
+                {Text.install_end_message_1}
 
-                            ANACONDA PROMPT/COMMAND PROMPT:
+                >> cd \"{str(target_folder).replace(chr(92), '/')}\"
+                >> source {env_folder / "scripts" / "activate"}
 
-                            >> cd \"{target_folder}\"
-                            >> .venv\\Scripts\\activate.bat
-
-                            GIT BASH:
-
-                            >> cd \"{str(target_folder).replace(chr(92), '/')}\"
-                            >> source .venv/Scripts/activate
-
-                            {Text.install_end_message_2}
-                        """)
-
-            # if platform.system() == "Windows":
-            #     On windows the venv folder structure is different from unix
-            #     activate_path = target_folder / VENV / "Scripts" / "activate.bat"
-            #     os.system(
-            #         f"""start cmd /k "echo Activating virtual environment & """
-            #         f"""{activate_path} & """
-            #         """echo "Virtual environment activated. Now loading Gryphon" & """
-            #         """gryphon" """
-            #     )
-            # else:
-            #     logger.info("Opening your new project folder and activating virtual environment.")
-            #
-            #     activate_path = target_folder / VENV_FOLDER / "bin" / "activate"
-            #     os.chdir(target_folder)
-            #
-            #     shell = os.environ.get('SHELL', '/bin/sh')
-            #     os.execl(shell, shell, "--rcfile", activate_path)
+                {Text.install_end_message_2}
+            """)
 
     # CONDA
     @staticmethod
@@ -358,18 +355,22 @@ class EnvironmentManagerOperations:
         # os.chdir(target_folder.parent)
 
     @staticmethod
-    def change_shell_folder_and_activate_conda_env(location):
+    def change_shell_folder_and_activate_conda_env(location, alternative_env=None):
+        target_folder = PathUtils.get_destination_path(location)
 
-        if 'pytest' not in sys.modules:
-            target_folder = PathUtils.get_destination_path(location)
-            logger.warning(f"""
-                {Text.install_end_message_1}
+        if alternative_env:
+            env_folder = alternative_env
+        else:
+            env_folder = target_folder / CONDA_FOLDER
 
-                >> cd {target_folder}
-                >> conda activate --prefix=\"{target_folder / "envs"}\"
+        logger.warning(f"""
+            {Text.install_end_message_1}
 
-                {Text.install_end_message_2}
-            """)
+            >> cd {target_folder}
+            >> conda activate --prefix=\"{env_folder}\"
+
+            {Text.install_end_message_2}
+        """)
 
     @staticmethod
     def update_conda():
