@@ -226,3 +226,12 @@ class SettingsManager:
                     " have to fill the template information inside metadata.json file (providing at least the display "
                     "name and the command).")
         logger.log(SUCCESS, "Installation successful!")
+
+    @classmethod
+    def _get_key(cls, key):
+        with open(cls.get_config_path(), "r", encoding="UTF-8") as f:
+            return json.load(f)[key]
+
+    @classmethod
+    def get_environment_manager(cls):
+        return cls._get_key("environment_management")

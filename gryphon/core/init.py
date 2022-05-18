@@ -22,20 +22,7 @@ from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, \
 logger = logging.getLogger('gryphon')
 
 
-def init(template: Template, location, python_version, **kwargs):
-    """
-    Init command from the OW Gryphon CLI.
-    """
-    kwargs.copy()
-    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
-        data = json.load(f)
-        env_type = data.get("environment_management", DEFAULT_ENV)
-
-    logger.info("Creating project scaffolding.")
-    logger.info(f"Initializing project at {location}")
-
-    project_home = Path.cwd() / location
-    os.makedirs(project_home, exist_ok=True)
+def handle_template(template, project_home):
 
     if template.registry_type == REMOTE_INDEX:
 
@@ -65,6 +52,23 @@ def init(template: Template, location, python_version, **kwargs):
         )
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
+
+
+def init(template: Template, location, python_version, **kwargs):
+    """
+    Init command from the OW Gryphon CLI.
+    """
+    kwargs.copy()
+    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
+        data = json.load(f)
+        env_type = data.get("environment_management", DEFAULT_ENV)
+
+    logger.info("Creating project scaffolding.")
+    logger.info(f"Initializing project at {location}")
+
+    project_home = Path.cwd() / location
+    os.makedirs(project_home, exist_ok=True)
+    handle_template(template, project_home)
 
     # RC file
     rc_file = RCManager.get_rc_file(Path.cwd() / location)

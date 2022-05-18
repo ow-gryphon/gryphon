@@ -31,5 +31,5 @@ class AskLocation(State):
         context["found_conda"], context["found_venv"] = found_conda, found_venv
         context["conda_path"], context["venv_path"] = conda_path, venv_path
         context["is_there_any_existing_environment"] = found_conda or found_venv
-
+        context["use_existing"] = False
         return context

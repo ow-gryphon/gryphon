@@ -50,7 +50,7 @@ class Text:
     init_from_existing_confirm_venv_question = "An existing venv environment was found inside the project folder," \
                                                " do you want o use it as the project environment?"
     init_from_existing_point_to_external_env = "Do you want to point to an external environment?"
-    init_from_existing_ask_external_env_path = "Type the external environment path"
+    init_from_existing_ask_external_env_path = "Type the external environment path:"
 
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "

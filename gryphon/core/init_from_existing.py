@@ -1,15 +1,33 @@
-import json
 import logging
 import os
 import shutil
+from glob import glob
 from pathlib import Path
 
-from ..constants import CONDA, VENV, REQUIREMENTS
-from ..constants import VENV_FOLDER, CONDA_FOLDER, GRYPHON_RC, YES
-from ..core.operations import EnvironmentManagerOperations, RCManager
-from ..core.settings import SettingsManager
+from .common_operations import (
+    init_new_git_repo, initial_git_commit,
+    fetch_template, append_requirement,
+    mark_notebooks_as_readonly,
+    clean_readonly_folder
+)
+from .operations import EnvironmentManagerOperations, RCManager, PathUtils
+from .settings import SettingsManager
+from ..constants import (
+    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX,
+    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+)
 
 logger = logging.getLogger('gryphon')
+
+
+def rename_dir(path):
+    i = 0
+    new_path = path
+    while new_path.is_dir():
+        i += 1
+        new_path = Path(f"{path}_{i}")
+
+    return new_path
 
 
 def check_for_history(folder: Path):
@@ -18,27 +36,12 @@ def check_for_history(folder: Path):
     return expected_history.is_dir()
 
 
-def check_for_environment(folder: Path):
-    expected_conda = folder / CONDA_FOLDER
-    expected_venv = folder / VENV_FOLDER
-
-    found_conda = expected_conda.is_dir()
-    found_venv = expected_venv.is_dir()
-
-    return found_conda, found_venv, expected_conda, expected_venv
-
-
-def check_for_requirements(folder: Path):
-    expected_requirements = folder / REQUIREMENTS
-
-    return expected_requirements.is_file()
-
-
 def process_requirements(location, env, env_path):
-    found_requirements = check_for_requirements(location)
-    if found_requirements:
 
-        # TODO: change this to use the environment present in the
+    expected_requirements = location / REQUIREMENTS
+    if expected_requirements.is_file():
+
+        # DONE: change this to use the environment present in the gryphon_rc
         if env == CONDA:
             EnvironmentManagerOperations.install_libraries_conda(
                 environment_path=env_path,
@@ -51,81 +54,147 @@ def process_requirements(location, env, env_path):
                 requirements_path=location / REQUIREMENTS
             )
     else:
-        with open(location / REQUIREMENTS, "w", encoding="UTF-8") as f:
+        with open(expected_requirements, "w", encoding="UTF-8") as f:
             f.write("")
 
 
-def get_environment_manager():
-    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
-        return json.load(f)["environment_management"]
+# ENVIRONMENT
+def check_for_environment(folder: Path):
+    expected_conda = folder / CONDA_FOLDER
+    expected_venv = folder / VENV_FOLDER
+
+    found_conda = expected_conda.is_dir()
+    found_venv = expected_venv.is_dir()
+
+    return found_conda, found_venv, expected_conda, expected_venv
 
 
 def create_environment(path: Path, env_manager=None):
     if env_manager is None:
-        env_manager = get_environment_manager()
+        env_manager = SettingsManager.get_environment_manager()
 
     if env_manager == CONDA:
-        return EnvironmentManagerOperations.create_conda_env(path / CONDA_FOLDER)
+        return EnvironmentManagerOperations.create_conda_env(path)
     elif env_manager == VENV:
-        return EnvironmentManagerOperations.create_venv(path / VENV_FOLDER)
+        return EnvironmentManagerOperations.create_venv(path)
 
 
-def rename_dir(path):
-    i = 0
-    root_path = path
-    while path.is_dir():
-        i += 1
-        path = f"{root_path}_{i}"
+def process_environment(location, env_manager, use_existing_environment,
+                        existing_env_path, delete_existing, external_env_path):
 
-    shutil.copytree(
-        src=root_path,
-        dst=path
-    )
-    shutil.rmtree(root_path)
+    print(use_existing_environment, existing_env_path, delete_existing, external_env_path)
 
-    return path
+    if not use_existing_environment and external_env_path is None:
+        if delete_existing:
+            shutil.rmtree(existing_env_path)
 
+        path = location / VENV_FOLDER
+        if env_manager == CONDA:
+            path = location / CONDA_FOLDER
+            if path.is_dir():
+                path = rename_dir(path)
 
-def process_environment_core(location, env_manager, use_existing_environment, env_path):
+        elif env_manager == VENV:
+            path = location / VENV_FOLDER
+            if path.is_dir():
+                path = rename_dir(path)
 
-    if use_existing_environment == "no_delete":
-        shutil.rmtree(env_path)
+        env_path = create_environment(path, env_manager=env_manager)
 
-    if use_existing_environment != YES:
+        if delete_existing:
+            shutil.rmtree(existing_env_path)
 
-        if env_manager == CONDA and (location / "envs").is_dir():
-            new_path = rename_dir(location / CONDA_FOLDER)
-            env_path = create_environment(location, env_manager=env_manager)
-            logger.warning(f"Renaming existing environment {env_path} to {new_path}")
+    elif external_env_path is not None:
+        env_path = PathUtils.get_destination_path(external_env_path)
 
-        elif env_manager == VENV and (location / VENV_FOLDER).is_dir():
-            new_path = rename_dir(location / VENV_FOLDER)
-            env_path = create_environment(location, env_manager=env_manager)
-            logger.warning(f"Renaming existing environment {env_path} to {new_path}")
+        if delete_existing:
+            shutil.rmtree(existing_env_path)
+
+    else:
+        env_path = PathUtils.get_destination_path(existing_env_path)
 
     # DONE: put information about the env manager and env into the rc file
-    # TODO: do not rename the existing one, create the new with the new name _x
+    # DONE: do not rename the existing one, create the new with the new name _x
     # TODO: create a <back> option to
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)
     RCManager.set_environment_manager_path(env_path, logfile)
 
+    return env_path
 
-def init_from_existing(location, env_manager, use_existing_environment, env_path):
 
-    # HISTORY
-    history_file = RCManager.get_rc_file(location)
-    # TODO: rename environments when we already have one on the folder (no_ignore)
+# TEMPLATE
+def list_files(path):
+    base_path = str(path)
+    pattern = str(path / '**')
+
+    return [
+        f.split(base_path)[1][1:]
+        for f in glob(pattern, recursive=True)
+        if Path(f).is_file()
+    ]
+
+
+def handle_template(template, project_home):
+
+    if template.registry_type == REMOTE_INDEX:
+
+        template_folder = fetch_template(template, project_home)
+
+        try:
+            mark_notebooks_as_readonly(template_folder / "notebooks")
+        finally:
+            clean_readonly_folder(template_folder)
+
+    elif template.registry_type == LOCAL_TEMPLATE:
+        template_folder = Path(template.path) / "template"
+
+    else:
+        raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
+
+    new_files = list_files(template_folder)
+    existing_files = list_files(project_home)
+
+    not_collided = [
+        file
+        for file in new_files
+        if file not in existing_files
+    ]
+
+    for file in not_collided:
+
+        origin = template_folder / file
+        destination = project_home / file
+
+        os.makedirs(destination.parent, exist_ok=True)
+        shutil.copy2(
+            src=origin,
+            dst=destination
+        )
+
+
+# CORE
+def init_from_existing(template, location, env_manager, use_existing_environment, existing_env_path,
+                       delete_existing, external_env_path):
+
+    os.makedirs(location, exist_ok=True)
+    # DONE: rename environments when we already have one on the folder (no_ignore)
+
+    # TEMPLATE
+    handle_template(template, project_home=location)
 
     # ENVIRONMENT
-    process_environment_core(location, env_manager, use_existing_environment, env_path)
+    env_path = process_environment(location, env_manager, use_existing_environment, existing_env_path, delete_existing, external_env_path)
 
     # REQUIREMENTS
+    for r in template.dependencies:
+        append_requirement(r, location)
     process_requirements(location, env_manager, env_path)
 
-    os.makedirs(location / "notebooks", exist_ok=True)
-    os.makedirs(location / "data", exist_ok=True)
+    # DONE: Ask template before the other prompts?
+    # DONE: What will be the existing files policy? Overwrite or ignore?
+    # DONE: BACK options are needed in every menu
 
-    # TODO: Ask template before the other prompts?
-    # TODO: What will be the existing files policy? Overwrite or ignore?
-    # TODO: BACK options are needed in every menu
+    # Git
+    repo = init_new_git_repo(folder=location)
+    initial_git_commit(repo)

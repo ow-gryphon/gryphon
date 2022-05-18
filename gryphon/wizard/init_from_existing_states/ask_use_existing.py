@@ -26,6 +26,7 @@ def _condition_install(context):
 
 
 def _install_using_existing(context):
+    context["delete"] = False
     context["use_existing"] = True
     return context
 
@@ -74,5 +75,6 @@ class AskUseExisting(State):
 
         elif context["found_venv"]:
             context["use_existing"] = InitFromExistingQuestions.confirm_use_existing_environment(VENV)
-
+        else:
+            context["use_existing"] = False
         return context
