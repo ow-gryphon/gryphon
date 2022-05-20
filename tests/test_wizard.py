@@ -1,14 +1,18 @@
 import glob
 import json
+import os
 
 import pytest
 
-from gryphon.constants import CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK, USE_LATEST
+from gryphon.constants import CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK, USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES
+from gryphon.core.operations import RCManager
 from gryphon.core.settings import SettingsManager
 from .ui_interaction.add import add_library_from_menu, add_library_typing, add_library_selecting_version
 from .ui_interaction.advanced_options import create_template_scaffold
 from .ui_interaction.generate import generate_template
 from .ui_interaction.init import start_new_project
+from .ui_interaction.init_from_existing import start_project_from_existing
+from .utils import create_folder_with_conda_env, create_folder_with_venv
 
 python_versions = [SYSTEM_DEFAULT, ALWAYS_ASK]
 environment_managers = [CONDA, VENV]
@@ -20,8 +24,8 @@ lib_install_method = ["type", "select", "version"]
 @pytest.mark.parametrize('environment_manager', environment_managers)
 @pytest.mark.parametrize('template_version', template_version_politics)
 def test_project_functions(
-        setup, teardown, get_pip_libraries, get_conda_libraries,
-        python_version, environment_manager, template_version
+    setup, teardown, get_pip_libraries, get_conda_libraries,
+    python_version, environment_manager, template_version
 ):
 
     cwd = setup()
@@ -81,14 +85,97 @@ def test_project_functions(
         assert n_files_notebooks_after > n_files_notebooks_before
 
     finally:
-        pass
-        # teardown()
+        teardown()
+
+
+@pytest.mark.parametrize('environment_manager', environment_managers)
+@pytest.mark.parametrize('has_existing_env', [True, False])
+@pytest.mark.parametrize('uses_existing_env', [YES, "no_ignore", "no_delete"])
+@pytest.mark.parametrize('point_external_env', [True, False])
+def test_init_from_existing(
+    setup, teardown, get_pip_libraries, get_conda_libraries,
+    environment_manager, uses_existing_env,
+    point_external_env, has_existing_env
+):
+    if point_external_env and uses_existing_env == YES:
+        return
+
+    if uses_existing_env == YES and not has_existing_env:
+        return
+
+    cwd = setup()
+    project_name = "test_project"
+    project_folder = cwd / project_name
+    external_env_path = None
+
+    # Set up config conditions
+    SettingsManager.change_environment_manager(environment_manager)
+
+    try:
+        external_env_path = None
+        if point_external_env:
+            if environment_manager == CONDA:
+                external_env_path = create_folder_with_conda_env(folder_name=cwd)
+
+            elif environment_manager == VENV:
+                external_env_path = create_folder_with_venv(folder_name=cwd)
+
+        previous_env_path = None
+        if has_existing_env:
+            if environment_manager == CONDA:
+                previous_env_path = create_folder_with_conda_env(folder_name=project_folder)
+
+            elif environment_manager == VENV:
+                previous_env_path = create_folder_with_venv(folder_name=project_folder)
+
+            os.remove(project_folder / GRYPHON_RC)
+
+        start_project_from_existing(
+            working_directory=cwd,
+            project_name=project_name,
+
+            uses_existing_env=uses_existing_env,
+            has_existing_env=has_existing_env,
+
+            point_external_env=point_external_env,
+            external_env=external_env_path
+        )
+
+        # CHECKS
+        # CHECK IF THE ENV IS CORRECTLY SET ON GRYPHON_RC
+        logfile = project_folder / GRYPHON_RC
+        assert logfile.is_file()
+
+        # CHECK IF THE ENV SET ON GRYPHON_RC exists is folder
+        assert logfile.is_file()
+
+        # CHECK IF THE ENVIRONMENT MANAGER WAS PROPERLY SET ACCORDING TO WHAT WE WANTED
+        used_env_manager = RCManager.get_environment_manager_path(logfile=logfile)
+        if uses_existing_env == YES and has_existing_env:
+            assert previous_env_path == used_env_manager
+
+        if point_external_env:
+            assert external_env_path == used_env_manager
+
+        # CHECK IF EXISTING ENVIRONMENT WAS SUCCESSFULLY DELETED
+        if has_existing_env and uses_existing_env == "no_delete" and point_external_env:
+            assert not previous_env_path.is_dir()
+
+        # CHECK IF THERE IS REQUIREMENTS
+        assert (project_folder / REQUIREMENTS).is_file()
+
+        # CHECK BASIC FOLDER STRUCTURE
+        assert (project_folder / "notebooks").is_dir()
+        assert (project_folder / "utilities").is_dir()
+
+    finally:
+        teardown()
 
 
 @pytest.mark.parametrize('lib_install', lib_install_method)
 def test_add_methods(
-        setup, teardown, get_pip_libraries, get_conda_libraries,
-        lib_install
+    setup, teardown, get_pip_libraries, get_conda_libraries,
+    lib_install
 ):
 
     cwd = setup()
@@ -144,8 +231,8 @@ def test_add_methods(
 @pytest.mark.parametrize('environment_manager', environment_managers)
 @pytest.mark.parametrize('template_version', template_version_politics)
 def test_template_functions(
-        setup, teardown, get_pip_libraries, get_conda_libraries,
-        python_version, environment_manager, template_version
+    setup, teardown, get_pip_libraries, get_conda_libraries,
+    python_version, environment_manager, template_version
 ):
 
     cwd = setup()

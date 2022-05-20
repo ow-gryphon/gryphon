@@ -13,7 +13,7 @@ from .common_operations import (
 from .operations import EnvironmentManagerOperations, RCManager, PathUtils
 from .settings import SettingsManager
 from ..constants import (
-    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX,
+    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, SUCCESS,
     LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 )
 
@@ -82,36 +82,58 @@ def create_environment(path: Path, env_manager=None):
 def process_environment(location, env_manager, use_existing_environment,
                         existing_env_path, delete_existing, external_env_path):
 
-    print(use_existing_environment, existing_env_path, delete_existing, external_env_path)
-
-    if not use_existing_environment and external_env_path is None:
-        if delete_existing:
-            shutil.rmtree(existing_env_path)
-
-        path = location / VENV_FOLDER
-        if env_manager == CONDA:
-            path = location / CONDA_FOLDER
-            if path.is_dir():
-                path = rename_dir(path)
-
-        elif env_manager == VENV:
-            path = location / VENV_FOLDER
-            if path.is_dir():
-                path = rename_dir(path)
-
-        env_path = create_environment(path, env_manager=env_manager)
-
-        if delete_existing:
-            shutil.rmtree(existing_env_path)
-
-    elif external_env_path is not None:
-        env_path = PathUtils.get_destination_path(external_env_path)
-
-        if delete_existing:
-            shutil.rmtree(existing_env_path)
-
+    if use_existing_environment:
+        if external_env_path is None:
+            path = existing_env_path
+        else:
+            path = PathUtils.get_destination_path(external_env_path)
     else:
-        env_path = PathUtils.get_destination_path(existing_env_path)
+        if delete_existing:
+            shutil.rmtree(existing_env_path)
+
+        if external_env_path is None:
+            path = location / VENV_FOLDER
+
+            if env_manager == CONDA:
+                path = location / CONDA_FOLDER
+                if path.is_dir():
+                    path = rename_dir(path)
+
+            elif env_manager == VENV:
+                path = location / VENV_FOLDER
+                if path.is_dir():
+                    path = rename_dir(path)
+        else:
+            path = PathUtils.get_destination_path(external_env_path)
+
+    env_path = create_environment(path, env_manager=env_manager)
+
+    # if delete_existing:
+    #     shutil.rmtree(existing_env_path)
+    #
+    # if not use_existing_environment and external_env_path is None:
+    #
+    #     path = location / VENV_FOLDER
+    #     if env_manager == CONDA:
+    #         path = location / CONDA_FOLDER
+    #         if path.is_dir():
+    #             path = rename_dir(path)
+    #
+    #     elif env_manager == VENV:
+    #         path = location / VENV_FOLDER
+    #         if path.is_dir():
+    #             path = rename_dir(path)
+    #
+    #     env_path = create_environment(path, env_manager=env_manager)
+
+    # elif external_env_path is not None:
+    #     env_path = PathUtils.get_destination_path(external_env_path)
+    #
+    #     if delete_existing:
+    #         shutil.rmtree(existing_env_path)
+    #
+    # else:
+    #     env_path = PathUtils.get_destination_path(existing_env_path)
 
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)
@@ -137,11 +159,7 @@ def handle_template(template, project_home):
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, project_home)
-
-        try:
-            mark_notebooks_as_readonly(template_folder / "notebooks")
-        finally:
-            clean_readonly_folder(template_folder)
+        mark_notebooks_as_readonly(template_folder / "notebooks")
 
     elif template.registry_type == LOCAL_TEMPLATE:
         template_folder = Path(template.path) / "template"
@@ -169,6 +187,9 @@ def handle_template(template, project_home):
             dst=destination
         )
 
+    if template.registry_type == REMOTE_INDEX:
+        clean_readonly_folder(template_folder)
+
 
 # CORE
 def init_from_existing(template, location, env_manager, use_existing_environment, existing_env_path,
@@ -195,7 +216,8 @@ def init_from_existing(template, location, env_manager, use_existing_environment
     if env_manager == VENV:
         # VENV
         EnvironmentManagerOperations.change_shell_folder_and_activate_venv(location, alternative_env=env_path)
-
     elif env_manager == CONDA:
         # CONDA
         EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(location, alternative_env=env_path)
+
+    logger.log(SUCCESS, "Installation successful!")

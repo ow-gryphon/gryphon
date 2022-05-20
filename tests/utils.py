@@ -58,7 +58,7 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    EnvironmentManagerOperations.create_venv(folder_name / VENV_FOLDER)
+    path = EnvironmentManagerOperations.create_venv(folder_name / VENV_FOLDER)
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
 
@@ -76,6 +76,8 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
         dst=destination / GRYPHON_RC
     )
 
+    return path
+
 
 def create_folder_with_conda_env(folder_name: Path = None, requirements=None, python_version="3.7"):
     """
@@ -84,7 +86,7 @@ def create_folder_with_conda_env(folder_name: Path = None, requirements=None, py
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    EnvironmentManagerOperations.create_conda_env(
+    path = EnvironmentManagerOperations.create_conda_env(
         folder=folder_name / CONDA_FOLDER,
         python_version=python_version
     )
@@ -104,6 +106,8 @@ def create_folder_with_conda_env(folder_name: Path = None, requirements=None, py
         src=sample_gryphon_rc,
         dst=destination / GRYPHON_RC
     )
+
+    return path
 
 
 def get_data_folder() -> Path:

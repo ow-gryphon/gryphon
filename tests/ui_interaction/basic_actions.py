@@ -18,7 +18,7 @@ else:
 def start_wizard(working_directory: Path) -> pexpect.spawn:
     os.chdir(working_directory)
     process = pexpect.spawn(
-        command=f'gryphon --debug',
+        command=f'gryphon',
         encoding='utf-8',
         maxread=4000
     )

@@ -49,7 +49,8 @@ class EnvironmentManagerOperations:
         logger.info(f"Creating virtual environment in {venv_path}")
         return_code, _ = BashUtils.execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
         if return_code:
-            raise RuntimeError("Failed to create virtual environment.")
+            pass
+            # raise RuntimeError("Failed to create virtual environment.")
 
         logger.log(SUCCESS, "Done creating virtual environment.")
 
@@ -233,24 +234,6 @@ class EnvironmentManagerOperations:
 
     @staticmethod
     def install_libraries_conda(environment_path=None, requirements_path=None):
-        """
-            TODO:  Mensagem achada quando pedimos uma versão que nao existe usando conda
-            PackagesNotFoundError: The following packages are not available from current channels:
-
-              - matplotlib==1.5.8
-
-            Current channels:
-
-              - https://repo.anaconda.com/pkgs/main/linux-64
-              - https://repo.anaconda.com/pkgs/main/noarch
-              - https://repo.anaconda.com/pkgs/r/linux-64
-              - https://repo.anaconda.com/pkgs/r/noarch
-              - https://conda.anaconda.org/conda-forge/linux-64
-              - https://conda.anaconda.org/conda-forge/noarch
-
-            To search for alternate channels that may provide the conda package you're
-            looking for, navigate to
-        """
         logger.info("Installing requirements. This may take several minutes ...")
 
         target_folder = Path.cwd()

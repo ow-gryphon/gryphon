@@ -14,7 +14,7 @@ def select_init_on_main_menu(process):
 
 def select_init_from_existing_on_main_menu(process):
     select_nth_option(process, n=2)
-    wait_for_output(process, Text.add_prompt_categories_question)
+    wait_for_output(process, Text.init_prompt_template_question)
 
 
 def select_generate_on_main_menu(process):
