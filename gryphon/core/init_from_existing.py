@@ -85,8 +85,8 @@ def process_environment(location, env_manager, use_existing_environment,
     if use_existing_environment:
         if external_env_path is None:
             path = existing_env_path
-        else:
-            path = PathUtils.get_destination_path(external_env_path)
+        # else:
+        #     path = PathUtils.get_destination_path(external_env_path)
     else:
         if delete_existing:
             shutil.rmtree(existing_env_path)
@@ -96,44 +96,16 @@ def process_environment(location, env_manager, use_existing_environment,
 
             if env_manager == CONDA:
                 path = location / CONDA_FOLDER
-                if path.is_dir():
-                    path = rename_dir(path)
 
             elif env_manager == VENV:
                 path = location / VENV_FOLDER
-                if path.is_dir():
-                    path = rename_dir(path)
+
+            if path.is_dir():
+                path = rename_dir(path)
         else:
             path = PathUtils.get_destination_path(external_env_path)
 
     env_path = create_environment(path, env_manager=env_manager)
-
-    # if delete_existing:
-    #     shutil.rmtree(existing_env_path)
-    #
-    # if not use_existing_environment and external_env_path is None:
-    #
-    #     path = location / VENV_FOLDER
-    #     if env_manager == CONDA:
-    #         path = location / CONDA_FOLDER
-    #         if path.is_dir():
-    #             path = rename_dir(path)
-    #
-    #     elif env_manager == VENV:
-    #         path = location / VENV_FOLDER
-    #         if path.is_dir():
-    #             path = rename_dir(path)
-    #
-    #     env_path = create_environment(path, env_manager=env_manager)
-
-    # elif external_env_path is not None:
-    #     env_path = PathUtils.get_destination_path(external_env_path)
-    #
-    #     if delete_existing:
-    #         shutil.rmtree(existing_env_path)
-    #
-    # else:
-    #     env_path = PathUtils.get_destination_path(existing_env_path)
 
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)

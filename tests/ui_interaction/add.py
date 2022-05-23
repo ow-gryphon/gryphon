@@ -11,12 +11,6 @@ from .basic_actions import (
 from .constants import CONFIRMATION_MESSAGE
 from .main_menu import select_add_on_main_menu
 
-if platform.system() != "Windows":
-    pass
-else:
-    # noinspection PyUnresolvedReferences
-    import wexpect as pexpect
-
 
 CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
 

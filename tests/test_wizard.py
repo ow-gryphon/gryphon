@@ -18,6 +18,8 @@ python_versions = [SYSTEM_DEFAULT, ALWAYS_ASK]
 environment_managers = [CONDA, VENV]
 template_version_politics = [ALWAYS_ASK, USE_LATEST]
 lib_install_method = ["type", "select", "version"]
+dataviz = "Data Visualization"
+seaborn = "seaborn"
 
 
 @pytest.mark.parametrize('python_version', python_versions)
@@ -61,7 +63,7 @@ def test_project_functions(
 
         add_library_selecting_version(
             working_directory=project_folder,
-            menu_way=["Data Visualization", "seaborn"],
+            menu_way=[dataviz, "seaborn"],
             version="0.11.0"
         )
 
@@ -88,6 +90,15 @@ def test_project_functions(
         teardown()
 
 
+def create_environment(path, environment_manager):
+
+    if environment_manager == CONDA:
+        return create_folder_with_conda_env(folder_name=path)
+
+    elif environment_manager == VENV:
+        return create_folder_with_venv(folder_name=path)
+
+
 @pytest.mark.parametrize('environment_manager', environment_managers)
 @pytest.mark.parametrize('has_existing_env', [True, False])
 @pytest.mark.parametrize('uses_existing_env', [YES, "no_ignore", "no_delete"])
@@ -106,28 +117,17 @@ def test_init_from_existing(
     cwd = setup()
     project_name = "test_project"
     project_folder = cwd / project_name
-    external_env_path = None
 
     # Set up config conditions
     SettingsManager.change_environment_manager(environment_manager)
-
     try:
         external_env_path = None
         if point_external_env:
-            if environment_manager == CONDA:
-                external_env_path = create_folder_with_conda_env(folder_name=cwd)
-
-            elif environment_manager == VENV:
-                external_env_path = create_folder_with_venv(folder_name=cwd)
+            external_env_path = create_environment(cwd, environment_manager)
 
         previous_env_path = None
         if has_existing_env:
-            if environment_manager == CONDA:
-                previous_env_path = create_folder_with_conda_env(folder_name=project_folder)
-
-            elif environment_manager == VENV:
-                previous_env_path = create_folder_with_venv(folder_name=project_folder)
-
+            previous_env_path = create_environment(project_folder, environment_manager)
             os.remove(project_folder / GRYPHON_RC)
 
         start_project_from_existing(
@@ -144,13 +144,16 @@ def test_init_from_existing(
         # CHECKS
         # CHECK IF THE ENV IS CORRECTLY SET ON GRYPHON_RC
         logfile = project_folder / GRYPHON_RC
-        assert logfile.is_file()
 
         # CHECK IF THE ENV SET ON GRYPHON_RC exists is folder
         assert logfile.is_file()
 
         # CHECK IF THE ENVIRONMENT MANAGER WAS PROPERLY SET ACCORDING TO WHAT WE WANTED
         used_env_manager = RCManager.get_environment_manager_path(logfile=logfile)
+        used_env_manager_type = RCManager.get_environment_manager(logfile=logfile)
+
+        assert environment_manager == used_env_manager_type
+
         if uses_existing_env == YES and has_existing_env:
             assert previous_env_path == used_env_manager
 
@@ -209,13 +212,13 @@ def test_add_methods(
         elif lib_install == "select":
             add_library_from_menu(
                 working_directory=project_folder,
-                tree_way=["Data Visualization", "seaborn"]
+                tree_way=[dataviz, "seaborn"]
             )
 
         elif lib_install == "version":
             add_library_selecting_version(
                 working_directory=project_folder,
-                menu_way=["Data Visualization", "seaborn"],
+                menu_way=[dataviz, "seaborn"],
                 version="0.11.0"
             )
         libraries_after = get_pip_libraries(project_folder)

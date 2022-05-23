@@ -48,7 +48,6 @@ def start_project_from_existing(project_name: str, has_existing_env: bool,
             wait_for_output(process, Text.init_from_existing_confirm_conda_question[:10])
             time.sleep(1)
 
-            # raise KeyError(uses_existing_env)
             if uses_existing_env == YES:
                 select_nth_option(process, n=1)
             else:

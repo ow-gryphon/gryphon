@@ -42,15 +42,14 @@ class EnvironmentManagerOperations:
             else:
                 python_path = env_folder / CONDA_FOLDER / "bin" / "python"
 
-        venv_path = target_folder = PathUtils.get_destination_path(folder)
-        # venv_path = target_folder / VENV_FOLDER
+        venv_path = PathUtils.get_destination_path(folder)
 
         # Create venv
         logger.info(f"Creating virtual environment in {venv_path}")
         return_code, _ = BashUtils.execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
         if return_code:
-            pass
-            # raise RuntimeError("Failed to create virtual environment.")
+            raise RuntimeError("Failed to create virtual environment.")
+            # TODO: Check whats happened
 
         logger.log(SUCCESS, "Done creating virtual environment.")
 
@@ -211,8 +210,7 @@ class EnvironmentManagerOperations:
     @staticmethod
     def create_conda_env(folder=None, python_version=None):
         """Function to a virtual environment inside a folder."""
-        conda_path = target_folder = PathUtils.get_destination_path(folder)
-        # conda_path = target_folder / CONDA_FOLDER
+        conda_path = PathUtils.get_destination_path(folder)
 
         # Create venv
         logger.info(f"Creating Conda virtual environment in {conda_path}")

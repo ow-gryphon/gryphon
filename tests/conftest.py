@@ -20,7 +20,6 @@ from .utils import (
     activate_venv
 )
 
-# logger = logging.getLogger('gryphon')
 INIT_PATH = Path.cwd()
 SANDBOX_PATH = Path("sandbox")
 

@@ -10,12 +10,6 @@ from .basic_actions import (
 )
 from .main_menu import select_advanced_on_main_menu
 
-if platform.system() != "Windows":
-    pass
-else:
-    # noinspection PyUnresolvedReferences
-    import wexpect as pexpect
-
 
 CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
 
