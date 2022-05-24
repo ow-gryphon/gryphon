@@ -30,6 +30,7 @@ class Text:
     init_from_existing_display_option = "Set up Gryphon with existing folder"
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
+    handover_display_option = "Handover project"
     about_display_option = "About OW Gryphon"
     settings_display_option = "Advanced options"
     quit_display_option = "Exit"

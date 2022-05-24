@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (INIT, INIT_FROM_EXISTING, ADD, ABOUT, GENERATE, QUIT, SETTINGS, VALUE, LATEST)
+from ...constants import (INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, VALUE, LATEST)
 
 
 class CommonQuestions:
@@ -26,6 +26,10 @@ class CommonQuestions:
             Choice(
                 title=Text.add_display_option,
                 value=ADD
+            ),
+            Choice(
+                title=Text.handover_display_option,
+                value=HANDOVER
             ),
             Separator(Text.menu_separator),
             Choice(

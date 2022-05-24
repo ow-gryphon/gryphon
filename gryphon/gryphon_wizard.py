@@ -11,12 +11,12 @@ import traceback
 
 from .constants import (
     INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
-    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH
+    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER
 )
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
-from .wizard import init, generate, add, about, exit_program, settings, init_from_existing
+from .wizard import init, generate, add, about, exit_program, settings, init_from_existing, handover
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
 
@@ -93,6 +93,7 @@ def main():
             INIT_FROM_EXISTING: init_from_existing,
             GENERATE: generate,
             ADD: add,
+            HANDOVER: handover,
             ABOUT: about,
             SETTINGS: settings,
             QUIT: exit_program

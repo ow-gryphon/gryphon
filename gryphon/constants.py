@@ -7,6 +7,7 @@ GENERATE = "generate"
 INIT = "init"
 INIT_FROM_EXISTING = "init_from_existing"
 ADD = "add"
+HANDOVER = "handover"
 ABOUT = "about"
 SETTINGS = "settings"
 
