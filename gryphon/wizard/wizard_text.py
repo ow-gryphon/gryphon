@@ -58,6 +58,8 @@ class Text:
     add_prompt_type_library = "Type the name of the python library you want to install:"
     add_prompt_type_version = "Type the version you want to install:"
 
+    handover_prompt_folder_question = "Type the project folder (blank if current folder):"
+
     about_prompt_links = "Useful links:"
 
     base_confirmation = "Confirm to proceed with the actions from above?"
