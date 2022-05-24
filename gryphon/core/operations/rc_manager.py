@@ -207,3 +207,14 @@ class RCManager:
                 "template_version_policy",
                 USE_LATEST
             )
+
+    @staticmethod
+    def get_current_environment_manager():
+        """
+        Recovers the current template version policy from the config file.
+        """
+        with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
+            return json.load(f).get(
+                "environment_manager",
+                VENV
+            )

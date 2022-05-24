@@ -33,7 +33,7 @@ def _condition_install(context):
 
 
 def _callback_delete(context):
-    if not "delete" in context:
+    if "delete" not in context:
         context["delete"] = False
     return context
 

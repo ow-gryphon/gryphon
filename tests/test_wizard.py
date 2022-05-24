@@ -124,6 +124,7 @@ def test_init_from_existing(
         external_env_path = None
         if point_external_env:
             external_env_path = create_environment(cwd, environment_manager)
+            os.remove(cwd / GRYPHON_RC)
 
         previous_env_path = None
         if has_existing_env:
@@ -173,6 +174,7 @@ def test_init_from_existing(
 
     finally:
         teardown()
+        # pass
 
 
 @pytest.mark.parametrize('lib_install', lib_install_method)

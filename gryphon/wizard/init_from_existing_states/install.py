@@ -3,11 +3,13 @@ import json
 from ..questions import CommonQuestions
 from ...constants import CONDA, VENV
 from ...constants import (
-    INIT, ALWAYS_ASK, CONFIG_FILE,
-    LATEST, USE_LATEST
+    INIT, ALWAYS_ASK, CONDA_FOLDER, VENV_FOLDER,
+    LATEST, USE_LATEST, YES
 )
 from ...core.init_from_existing import init_from_existing
+from ...core.operations import EnvironmentManagerOperations
 from ...core.registry.versioned_template import VersionedTemplate
+from ...core.settings import SettingsManager
 from ...fsm import State
 
 
@@ -18,7 +20,7 @@ class Install(State):
     def __init__(self, registry):
         self.templates = registry.get_templates(INIT)
 
-        with open(CONFIG_FILE, "r+", encoding="utf-8") as f:
+        with open(SettingsManager.get_config_path(), "r+", encoding="utf-8") as f:
             self.settings = json.load(f)
         super().__init__()
 
@@ -46,16 +48,38 @@ class Install(State):
         env = VENV
         path = None
         external_path = None
-        if context["found_conda"]:
-            env = CONDA
-            path = context["conda_path"]
+        if context["use_existing"]:
 
-        elif context["found_venv"]:
-            env = VENV
-            path = context["venv_path"]
+            if context["found_conda"]:
+                env = CONDA
+                path = context["conda_path"]
 
-        if "external_env_path" in context:
+            elif context["found_venv"]:
+                env = VENV
+                path = context["venv_path"]
+
+        elif "external_env_path" in context and context["point_to_external_env"] == YES:
+
             external_path = context["external_env_path"]
+            if (external_path / "conda-meta").is_dir():
+                env = CONDA
+            else:
+                env = VENV
+
+            if context["found_conda"]:
+                path = context["conda_path"]
+
+            elif context["found_venv"]:
+                path = context["venv_path"]
+
+        else:
+            env = SettingsManager.get_environment_manager()
+
+            if env == CONDA:
+                path = EnvironmentManagerOperations.create_conda_env(folder=context["location"] / CONDA_FOLDER)
+
+            elif env == VENV:
+                path = EnvironmentManagerOperations.create_venv(folder=context["location"] / VENV_FOLDER)
 
         init_from_existing(
             template=self._get_template(context["template_name"]),

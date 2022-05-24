@@ -19,7 +19,7 @@ class BackSignal(Exception):
 
 def erase_lines(n_lines=2):
     for _ in range(n_lines):
-        logger.info("\033[A                                                          \033[A")
+        logger.info("\033[A                                                                                     \033[A")
 
 
 def wrap_text(text) -> Tuple[str, int]:

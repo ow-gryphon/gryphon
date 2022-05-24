@@ -27,7 +27,7 @@ class Text:
     first_prompt_question = "What would you like to do?"
 
     init_display_option = "Start a new Gryphon project"
-    init_from_existing_display_option = "Start a Gryphon project from existing folder"
+    init_from_existing_display_option = "Set up Gryphon with existing folder"
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
     about_display_option = "About OW Gryphon"
@@ -44,7 +44,7 @@ class Text:
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
 
-    init_from_existing_prompt_location_question = "Select the target folder:"
+    init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
     init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
                                                 " do you want o use it as the project environment?"
     init_from_existing_confirm_venv_question = "An existing venv environment was found inside the project folder," \

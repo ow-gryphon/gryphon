@@ -1,12 +1,11 @@
-import json
 import time
 from pathlib import Path
 
-from gryphon.constants import GRYPHON_HOME, CONFIG_FILE, ALWAYS_ASK, YES
+from gryphon.constants import GRYPHON_HOME, CONFIG_FILE, YES
 from gryphon.wizard.wizard_text import Text
 from .basic_actions import (
     wait_for_output, enter, type_text, quit_process,
-    start_wizard, wait_for_success, confirm_information, select_nth_option
+    start_wizard, wait_for_success, select_nth_option
 )
 from .main_menu import select_init_from_existing_on_main_menu
 
@@ -18,7 +17,7 @@ def select_the_first_template_on_init(process):
 
 
 def type_the_project_folder_name(process, folder_name: str):
-    wait_for_output(process, Text.init_from_existing_prompt_location_question)
+    wait_for_output(process, Text.init_from_existing_prompt_location_question[:20])
     type_text(process, folder_name)
     enter(process)
 

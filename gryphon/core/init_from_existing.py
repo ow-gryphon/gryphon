@@ -122,7 +122,7 @@ def list_files(path):
     return [
         f.split(base_path)[1][1:]
         for f in glob(pattern, recursive=True)
-        if Path(f).is_file()
+        if Path(f).is_file() and ".git" not in f and "__pycache__" not in f
     ]
 
 
