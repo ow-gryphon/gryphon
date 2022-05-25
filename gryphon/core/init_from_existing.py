@@ -8,7 +8,7 @@ from .common_operations import (
     init_new_git_repo, initial_git_commit,
     fetch_template, append_requirement,
     mark_notebooks_as_readonly,
-    clean_readonly_folder
+    clean_readonly_folder, list_files
 )
 from .operations import EnvironmentManagerOperations, RCManager, PathUtils
 from .settings import SettingsManager
@@ -115,22 +115,6 @@ def process_environment(location, env_manager, use_existing_environment,
 
 
 # TEMPLATE
-def list_files(path):
-    base_path = str(path)
-    pattern = str(path / '**')
-
-    return [
-        f.split(base_path)[1][1:]
-        for f in glob(pattern, recursive=True)
-        if Path(f).is_file() and
-        ".git" not in f and
-        "__pycache__" not in f and
-        ".github" not in f and
-        ".venv" not in f and
-        "envs/" not in f and
-        ".ipynb_checkpoints" not in f
-    ]
-
 
 def handle_template(template, project_home):
 

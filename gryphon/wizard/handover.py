@@ -1,5 +1,5 @@
-from .handover_states import *
 from .functions import BackSignal
+from .handover_states import AskFolder, CheckLargeFiles, ChangeSizeLimits
 from ..constants import BACK
 from ..fsm import Machine, HaltSignal
 
@@ -10,7 +10,7 @@ def handover(_, registry):
     ask_folder = AskFolder()
 
     possible_states = [
-        ask_folder, CheckLargeFiles()
+        ask_folder, CheckLargeFiles(), ChangeSizeLimits()
     ]
 
     machine = Machine(

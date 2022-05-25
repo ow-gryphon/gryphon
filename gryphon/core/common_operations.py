@@ -7,13 +7,13 @@ import os
 import platform
 import shutil
 import zipfile
-from ..constants import REQUIREMENTS, GRYPHON_RC
 from distutils.version import StrictVersion
 from pathlib import Path
 
 import git
 
 from .operations import BashUtils, PathUtils
+from ..constants import REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -223,3 +223,20 @@ def sort_versions(versions: list) -> list:
     """
     versions.sort(key=lambda x: StrictVersion(x[1:]) if x[0] == 'v' else StrictVersion(x))
     return versions
+
+
+def list_files(path):
+    base_path = str(path)
+    pattern = str(path / '**')
+
+    return [
+        f.split(base_path)[1][1:]
+        for f in glob.glob(pattern, recursive=True)
+        if Path(f).is_file() and
+        ".git" not in f and
+        "__pycache__" not in f and
+        ".github" not in f and
+        ".venv" not in f and
+        "envs/" not in f and
+        ".ipynb_checkpoints" not in f
+    ]

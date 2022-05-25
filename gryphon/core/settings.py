@@ -46,6 +46,16 @@ class SettingsManager:
             f.truncate()
 
     @classmethod
+    def change_handover_file_size_limit(cls, limit: float):
+        with open(cls.get_config_path(), "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+            contents["handover_file_size_limit"] = limit
+
+            f.seek(0)
+            f.write(json.dumps(contents))
+            f.truncate()
+
+    @classmethod
     def change_default_python_version(cls, python_version):
 
         with open(cls.get_config_path(), "r+", encoding="utf-8") as f:

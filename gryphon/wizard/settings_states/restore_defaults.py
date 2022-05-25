@@ -21,8 +21,7 @@ def _condition_from_change_env_manager_to_end(context: dict) -> bool:
 
 
 def _callback_from_change_env_manager_to_end(context: dict) -> dict:
-    manager = SettingsManager()
-    manager.restore_default_config_file()
+    SettingsManager.restore_default_config_file()
     logger.log(SUCCESS, "Factory settings restored successfully")
 
     context["history"] = []

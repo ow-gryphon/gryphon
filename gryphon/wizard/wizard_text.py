@@ -59,6 +59,8 @@ class Text:
     add_prompt_type_version = "Type the version you want to install:"
 
     handover_prompt_folder_question = "Type the project folder (blank if current folder):"
+    handover_prompt_new_size_limit_question = "Type the new size limit you want to use in MBs, current {limit} MB " \
+                                              "(type a negative number to go back to previous):"
     handover_prompt_include_large_files_question = "Some large files were found. Do you want to include them in " \
                                                    "the package:"
 

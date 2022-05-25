@@ -7,6 +7,17 @@ from ..wizard_text import Text
 from ...constants import YES, NO, CHANGE_LIMIT
 
 
+class NumberValidator(questionary.Validator):
+    def validate(self, document):
+        try:
+            float(document.text)
+        except ValueError:
+            raise questionary.ValidationError(
+                message="Not a valid number.",
+                cursor_position=len(document.text)
+            )
+
+
 class HandoverQuestions:
 
     @staticmethod
@@ -16,8 +27,15 @@ class HandoverQuestions:
 
     @staticmethod
     @base_question
-    def ask_large_files():
-        limit = 10
+    def ask_new_size_limit(limit):
+        return float(questionary.text(
+            message=Text.handover_prompt_new_size_limit_question.replace("{limit}", str(limit)),
+            validate=NumberValidator
+        ).unsafe_ask())
+
+    @staticmethod
+    @base_question
+    def ask_large_files(limit):
         return questionary.select(
             message=Text.handover_prompt_include_large_files_question,
             choices=[
