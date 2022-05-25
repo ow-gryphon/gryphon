@@ -235,3 +235,7 @@ class SettingsManager:
     @classmethod
     def get_environment_manager(cls):
         return cls._get_key("environment_management")
+
+    @classmethod
+    def get_handover_file_size_limit(cls):
+        return cls._get_key("handover_file_size_limit")

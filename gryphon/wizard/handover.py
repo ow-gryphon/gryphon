@@ -10,7 +10,7 @@ def handover(_, registry):
     ask_folder = AskFolder()
 
     possible_states = [
-        ask_folder
+        ask_folder, CheckLargeFiles()
     ]
 
     machine = Machine(

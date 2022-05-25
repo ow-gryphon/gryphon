@@ -20,5 +20,6 @@
     "environment_management": "venv",
     "ask_python_version_on_init": false,
     "default_python_version": "system_default",
-    "template_version_policy": "use_latest"
+    "template_version_policy": "use_latest",
+    "handover_file_size_limit": 10
 }

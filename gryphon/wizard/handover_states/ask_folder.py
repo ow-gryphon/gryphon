@@ -43,7 +43,6 @@ class AskFolder(State):
         Transition(
             next_state="check_large_files",
             condition=_condition_ask_folder_ask_again_check_large_files,
-            callback=0
         )
     ]
 
