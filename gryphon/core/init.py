@@ -39,7 +39,8 @@ def handle_template(template, project_home):
             shutil.copytree(
                 src=Path(template_folder),
                 dst=project_home,
-                dirs_exist_ok=True
+                dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns(".git/**", ".github/**", "__pycache__/**", "envs/**", ".venv/**")
             )
         finally:
             clean_readonly_folder(template_folder)
