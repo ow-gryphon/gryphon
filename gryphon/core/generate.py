@@ -117,7 +117,14 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         src=Path(template_path),
         dst=Path(temp_path),
         dirs_exist_ok=True,
-        ignore=shutil.ignore_patterns(".git/**", ".github/**", "__pycache__/**", "envs/**", ".venv/**")
+        ignore=shutil.ignore_patterns(
+            ".git/**",
+            ".github/**",
+            "__pycache__/**",
+            "envs/**",
+            ".venv/**",
+            ".ipynb_checkpoints/**"
+        )
     )
     try:
         # Replace patterns and rename files
