@@ -47,9 +47,9 @@ class Text:
 
     init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
     init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
-                                                " do you want o use it as the project environment?"
+                                                " do you want to use it as the project environment?"
     init_from_existing_confirm_venv_question = "An existing venv environment was found inside the project folder," \
-                                               " do you want o use it as the project environment?"
+                                               " do you want to use it as the project environment?"
     init_from_existing_point_to_external_env = "Do you want to point to an external environment?"
     init_from_existing_ask_external_env_path = "Type the external environment path:"
 

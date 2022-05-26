@@ -1,7 +1,6 @@
 import logging
 import os
 import shutil
-from glob import glob
 from pathlib import Path
 
 from .common_operations import (
@@ -10,7 +9,7 @@ from .common_operations import (
     mark_notebooks_as_readonly,
     clean_readonly_folder, list_files
 )
-from .operations import EnvironmentManagerOperations, RCManager, PathUtils
+from .operations import EnvironmentManagerOperations, RCManager, PathUtils, BashUtils
 from .settings import SettingsManager
 from ..constants import (
     GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, SUCCESS,
@@ -81,12 +80,13 @@ def create_environment(path: Path, env_manager=None):
 
 def process_environment(location, env_manager, use_existing_environment,
                         existing_env_path, delete_existing, external_env_path):
+    print(use_existing_environment, existing_env_path, delete_existing, external_env_path)
 
     if use_existing_environment:
         if external_env_path is None:
             path = existing_env_path
-        # else:
-        #     path = PathUtils.get_destination_path(external_env_path)
+        else:
+            raise RuntimeError("Unexpected condition. Logic failure.")
     else:
         if delete_existing:
             shutil.rmtree(existing_env_path)
@@ -100,18 +100,19 @@ def process_environment(location, env_manager, use_existing_environment,
             elif env_manager == VENV:
                 path = location / VENV_FOLDER
 
-            if path.is_dir():
+            if not use_existing_environment and path.is_dir():
                 path = rename_dir(path)
+
+            path = create_environment(path, env_manager=env_manager)
+
         else:
             path = PathUtils.get_destination_path(external_env_path)
 
-    env_path = create_environment(path, env_manager=env_manager)
-
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)
-    RCManager.set_environment_manager_path(env_path, logfile)
+    RCManager.set_environment_manager_path(path, logfile)
 
-    return env_path
+    return path
 
 
 # TEMPLATE

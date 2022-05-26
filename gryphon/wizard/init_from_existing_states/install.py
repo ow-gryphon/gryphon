@@ -57,6 +57,8 @@ class Install(State):
             elif context["found_venv"]:
                 env = VENV
                 path = context["venv_path"]
+            else:
+                raise RuntimeError("Flag 'use_existing' was set without setting 'found_venv' neither 'found_conda'")
 
         elif "external_env_path" in context and context["point_to_external_env"] == YES:
 
@@ -66,20 +68,22 @@ class Install(State):
             else:
                 env = VENV
 
-            if context["found_conda"]:
-                path = context["conda_path"]
+            if context["delete"]:
+                if context["found_conda"]:
+                    path = context["conda_path"]
 
-            elif context["found_venv"]:
-                path = context["venv_path"]
+                elif context["found_venv"]:
+                    path = context["venv_path"]
 
         else:
             env = SettingsManager.get_environment_manager()
 
-            if env == CONDA:
-                path = EnvironmentManagerOperations.create_conda_env(folder=context["location"] / CONDA_FOLDER)
+            if context["delete"]:
+                if context["found_conda"]:
+                    path = context["conda_path"]
 
-            elif env == VENV:
-                path = EnvironmentManagerOperations.create_venv(folder=context["location"] / VENV_FOLDER)
+                elif context["found_venv"]:
+                    path = context["venv_path"]
 
         init_from_existing(
             template=self._get_template(context["template_name"]),

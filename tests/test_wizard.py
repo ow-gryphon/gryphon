@@ -156,10 +156,10 @@ def test_init_from_existing(
         assert environment_manager == used_env_manager_type
 
         if uses_existing_env == YES and has_existing_env:
-            assert previous_env_path == used_env_manager
+            assert previous_env_path == cwd / used_env_manager
 
         if point_external_env:
-            assert external_env_path == used_env_manager
+            assert external_env_path == cwd / used_env_manager
 
         # CHECK IF EXISTING ENVIRONMENT WAS SUCCESSFULLY DELETED
         if has_existing_env and uses_existing_env == "no_delete" and point_external_env:

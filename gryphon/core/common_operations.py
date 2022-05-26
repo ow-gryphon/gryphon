@@ -237,6 +237,6 @@ def list_files(path):
         "__pycache__" not in f and
         ".github" not in f and
         ".venv" not in f and
-        "envs/" not in f and
+        "envs" not in f and
         ".ipynb_checkpoints" not in f
     ]
