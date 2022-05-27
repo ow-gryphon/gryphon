@@ -3,6 +3,7 @@ from ...constants import BACK, CHANGE_LIMIT, YES, NO
 from ...core.common_operations import list_files
 from ...core.settings import SettingsManager
 from ...fsm import State, Transition
+from ...logger import logger
 from ...wizard.functions import erase_lines
 
 
@@ -60,7 +61,7 @@ class CheckLargeFiles(State):
             condition=_condition_check_files_to_change_limits,
         ),
         Transition(
-            next_state="do_stuff",
+            next_state="create_handover_package",
             condition=_condition_check_files_to_do_stuff
         )
     ]
@@ -70,10 +71,22 @@ class CheckLargeFiles(State):
         context.pop("response", None)
         file_sizes = get_file_sizes(context["location"])
         large_file_list = filter_large_files(file_sizes)
-        has_large_files = len(large_file_list) > 0
 
+        context["file_list"] = list(file_sizes.keys())
+        context["excluded_files"] = []
+
+        has_large_files = len(large_file_list) > 0
         if has_large_files:
             limit = SettingsManager.get_handover_file_size_limit()
+
+            logger.warning("")
+            logger.warning("Files that exceeded the size limit:")
+            for file, size in large_file_list.items():
+                logger.warning(f"   - {file[:40].ljust(40)}\t{size:.2f} MB")
+
+            logger.warning("")
+            context["extra_lines"] = len(large_file_list) + 3
+
             context["response"] = HandoverQuestions.ask_large_files(limit)
             if context["response"] != CHANGE_LIMIT:
 
@@ -85,5 +98,8 @@ class CheckLargeFiles(State):
 
             else:
                 context["file_sizes"] = file_sizes
+        else:
+            logger.warning("No large files that exceeded the size limit were found.")
+            context["extra_lines"] = 1
 
         return context

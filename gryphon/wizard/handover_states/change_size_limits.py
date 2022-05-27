@@ -1,15 +1,8 @@
-from pathlib import Path
-
 from ..questions import HandoverQuestions
-from ...constants import BACK, CHANGE_LIMIT, YES, NO
-from ...core.common_operations import list_files
+from ...constants import BACK
 from ...core.settings import SettingsManager
 from ...fsm import State, Transition, negate_condition
 from ...wizard.functions import erase_lines
-
-
-def _condition_check_files_to_ask_folder(context):
-    return context["response"] == BACK
 
 
 def _condition_check_files_to_check_large_files(context):
@@ -18,6 +11,7 @@ def _condition_check_files_to_check_large_files(context):
 
 def _callback_check_files(context):
     erase_lines(n_lines=2)
+    erase_lines(n_lines=context["extra_lines"])
     return context
 
 
@@ -26,7 +20,7 @@ class ChangeSizeLimits(State):
     transitions = [
         Transition(
             next_state="check_large_files",
-            condition=negate_condition(_condition_check_files_to_ask_folder),
+            condition=negate_condition(_condition_check_files_to_check_large_files),
         ),
         Transition(
             next_state="check_large_files",

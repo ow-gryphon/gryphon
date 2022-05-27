@@ -1,16 +1,16 @@
 from .functions import BackSignal
-from .handover_states import AskFolder, CheckLargeFiles, ChangeSizeLimits
+from .handover_states import AskFolder, CheckLargeFiles, ChangeSizeLimits, CreateHandoverPackage
 from ..constants import BACK
 from ..fsm import Machine, HaltSignal
 
 
-def handover(_, registry):
+def handover(_, __):
     """Creates a starter repository for analytics projects."""
 
     ask_folder = AskFolder()
 
     possible_states = [
-        ask_folder, CheckLargeFiles(), ChangeSizeLimits()
+        ask_folder, CheckLargeFiles(), ChangeSizeLimits(), CreateHandoverPackage()
     ]
 
     machine = Machine(

@@ -48,18 +48,18 @@ class AskFolder(State):
 
     @staticmethod
     def handle_invalid_path(context):
-        erase_lines(n_lines=1)
+        erase_lines(n_lines=2)
         erase_lines(n_lines=context["extra_lines"])
         logger.warning(f'Provided folder does not exists \"{context["location"]}\". Try again.\n')
-        erase_lines(n_lines=1)
+        # erase_lines(n_lines=1)
         context["extra_lines"] = 1
 
     @staticmethod
     def handle_invalid_gryphon_path(context):
-        erase_lines(n_lines=1)
+        erase_lines(n_lines=2)
         erase_lines(n_lines=context["extra_lines"])
         logger.warning(f'Provided folder is not a valid Gryphon project \"{context["location"]}\". Try again.\n')
-        erase_lines(n_lines=1)
+        # erase_lines(n_lines=1)
         context["extra_lines"] = 1
 
     def on_start(self, context: dict) -> dict:

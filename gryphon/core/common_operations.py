@@ -225,13 +225,24 @@ def sort_versions(versions: list) -> list:
     return versions
 
 
+def multiple_file_types(*patterns):
+    files = []
+    for pattern in patterns:
+        files.extend(glob.glob(pattern, recursive=True))
+
+    return files
+
+
 def list_files(path):
     base_path = str(path)
     pattern = str(path / '**')
+    pattern2 = str(path / '.**')
+
+    all_files = multiple_file_types(pattern, pattern2)
 
     return [
         f.split(base_path)[1][1:]
-        for f in glob.glob(pattern, recursive=True)
+        for f in all_files
         if Path(f).is_file() and
         ".git" not in f and
         "__pycache__" not in f and

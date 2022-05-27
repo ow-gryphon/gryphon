@@ -158,6 +158,9 @@ def test_init_from_existing(
         if uses_existing_env == YES and has_existing_env:
             assert previous_env_path == cwd / used_env_manager
 
+        if uses_existing_env == "no_ignore" and has_existing_env:
+            assert cwd / used_env_manager != previous_env_path
+
         if point_external_env:
             assert external_env_path == cwd / used_env_manager
 
