@@ -4,7 +4,7 @@ from ..questions import SettingsQuestions
 from ...fsm import State, Transition
 from ...constants import NO
 from ...constants import (YES, SUCCESS)
-from ...core.settings import SettingsManager
+from ...core.operations import SettingsManager
 
 
 logger = logging.getLogger('gryphon')

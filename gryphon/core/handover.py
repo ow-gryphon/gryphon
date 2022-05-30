@@ -27,3 +27,4 @@ def handover(path: Path, exclusion_list: List[str], file_list: List[str]):
 # TODO: have a file limit on .gryphon_rc
 # TODO: Ask the user if he wants to keep gryphon generated files on the zip (template ones)
 # DONE: Keep list of files created by gryphon on .gryphon_rc
+# TODO: Think about freeze feature (at time of handover)

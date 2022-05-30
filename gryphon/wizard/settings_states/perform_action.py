@@ -1,4 +1,5 @@
 import logging
+
 from ..functions import erase_lines
 from ...fsm import State, Transition
 

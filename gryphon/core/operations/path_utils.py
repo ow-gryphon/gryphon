@@ -21,11 +21,3 @@ class PathUtils:
             return path_obj.resolve()
 
         return path_obj
-
-    @staticmethod
-    def quote_windows_path(folder_path):
-        return '"' + folder_path + '"'
-
-    @staticmethod
-    def escape_windows_path(folder_path):
-        return fr'{folder_path}'

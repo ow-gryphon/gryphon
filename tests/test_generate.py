@@ -1,16 +1,16 @@
 import json
-import shutil
 import os
+import shutil
 from os import path
 
-from gryphon.core.registry import Template
-from gryphon.core.settings import SettingsManager
 from gryphon.constants import VENV, GRYPHON_RC
 from gryphon.core.generate import (
     generate,
     parse_project_template,
     pattern_replacement
 )
+from gryphon.core.operations import SettingsManager
+from gryphon.core.registry import Template
 from .utils import create_folder_with_venv, TEST_FOLDER
 
 

@@ -1,10 +1,10 @@
-from ..functions import erase_lines
 from ..questions import HandoverQuestions
 from ...constants import BACK, CHANGE_LIMIT, YES, NO
 from ...core.common_operations import list_files
-from ...core.operations import SettingsManager
+from core.operations.settings import SettingsManager
 from ...fsm import State, Transition
 from ...logger import logger
+from ...wizard.functions import erase_lines
 
 
 def _condition_check_files_to_ask_folder(context):
@@ -48,6 +48,15 @@ def filter_large_files(file_sizes):
     return large_file_list
 
 
+def print_large_file_list(large_file_list):
+    logger.warning("")
+    logger.warning("Files that exceeded the size limit:")
+    for file, size in large_file_list.items():
+        logger.warning(f"   - {file[:40].ljust(40)}\t{size:.2f} MB")
+
+    logger.warning("")
+
+
 class CheckLargeFiles(State):
     name = "check_large_files"
     transitions = [
@@ -79,12 +88,7 @@ class CheckLargeFiles(State):
         if has_large_files:
             limit = SettingsManager.get_handover_file_size_limit()
 
-            logger.warning("")
-            logger.warning("Files that exceeded the size limit:")
-            for file, size in large_file_list.items():
-                logger.warning(f"   - {file[:40].ljust(40)}\t{size:.2f} MB")
-
-            logger.warning("")
+            print_large_file_list(large_file_list)
             context["extra_lines"] = len(large_file_list) + 3
 
             context["response"] = HandoverQuestions.ask_large_files(limit)

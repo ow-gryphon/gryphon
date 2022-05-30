@@ -1,8 +1,7 @@
 from ..questions import HandoverQuestions
-from ...constants import BACK
-from ...core.settings import SettingsManager
+from ...core.operations import SettingsManager
 from ...fsm import State, Transition, negate_condition
-from ...wizard.functions import erase_lines
+from ..functions import erase_lines
 
 
 def _condition_check_files_to_check_large_files(context):

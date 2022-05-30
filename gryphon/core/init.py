@@ -14,8 +14,8 @@ from .common_operations import (
     clean_readonly_folder, enable_files_overwrite
 )
 from .operations import BashUtils, EnvironmentManagerOperations, RCManager
+from .operations.settings import SettingsManager
 from .registry import Template
-from .settings import SettingsManager
 from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, \
     LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 

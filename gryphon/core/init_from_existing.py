@@ -9,8 +9,7 @@ from .common_operations import (
     mark_notebooks_as_readonly,
     clean_readonly_folder, list_files
 )
-from .operations import EnvironmentManagerOperations, RCManager, PathUtils, BashUtils
-from .settings import SettingsManager
+from .operations import EnvironmentManagerOperations, RCManager, PathUtils, SettingsManager
 from ..constants import (
     GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, SUCCESS,
     LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS

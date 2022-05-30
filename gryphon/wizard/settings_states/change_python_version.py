@@ -1,11 +1,11 @@
 import logging
+
 from ..functions import erase_lines, list_conda_available_python_versions
 from ..questions import SettingsQuestions
-from ...fsm import State, Transition, negate_condition
-from ...core.operations import RCManager
 from ...constants import BACK, SUCCESS, ALWAYS_ASK
-from ...core.settings import SettingsManager
-
+from ...core.operations import RCManager
+from ...core.operations import SettingsManager
+from ...fsm import State, Transition, negate_condition
 
 logger = logging.getLogger('gryphon')
 

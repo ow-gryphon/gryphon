@@ -3,13 +3,11 @@ import json
 from ..questions import CommonQuestions
 from ...constants import CONDA, VENV
 from ...constants import (
-    INIT, ALWAYS_ASK, CONDA_FOLDER, VENV_FOLDER,
-    LATEST, USE_LATEST, YES
+    INIT, ALWAYS_ASK, LATEST, USE_LATEST, YES
 )
 from ...core.init_from_existing import init_from_existing
-from ...core.operations import EnvironmentManagerOperations
+from ...core.operations import SettingsManager
 from ...core.registry.versioned_template import VersionedTemplate
-from ...core.settings import SettingsManager
 from ...fsm import State
 
 

@@ -15,7 +15,7 @@ from gryphon.core.operations.path_utils import PathUtils
 
 TEST_FOLDER = Path("tests").resolve()
 CONFIG_FILE_NAME = "gryphon_config.json"
-MOCK_CONFIG_FILE_PATH = 'gryphon.core.settings.SettingsManager.get_config_path'
+MOCK_CONFIG_FILE_PATH = 'gryphon.core.operations.settings.SettingsManager.get_config_path'
 REQUIREMENTS_TXT = "requirements.txt"
 
 

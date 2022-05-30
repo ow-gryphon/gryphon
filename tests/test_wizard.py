@@ -5,8 +5,7 @@ import os
 import pytest
 
 from gryphon.constants import CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK, USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES
-from gryphon.core.operations import RCManager
-from gryphon.core.settings import SettingsManager
+from gryphon.core.operations import RCManager, SettingsManager
 from .ui_interaction.add import add_library_from_menu, add_library_typing, add_library_selecting_version
 from .ui_interaction.advanced_options import create_template_scaffold
 from .ui_interaction.generate import generate_template

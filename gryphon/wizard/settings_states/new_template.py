@@ -1,11 +1,10 @@
 import logging
-from ...fsm import State, Transition
-from ...constants import NO
+
 from ..functions import erase_lines
 from ..questions import SettingsQuestions, InitQuestions
-from ...constants import YES, CHANGE_LOCATION
-from ...core.settings import SettingsManager
-
+from ...constants import NO, YES, CHANGE_LOCATION
+from ...core.operations.settings import SettingsManager
+from ...fsm import State, Transition
 
 logger = logging.getLogger('gryphon')
 
