@@ -3,7 +3,7 @@ import logging
 from ..functions import erase_lines
 from ..questions import SettingsQuestions, InitQuestions
 from ...constants import NO, YES, CHANGE_LOCATION
-from ...core.operations.settings import SettingsManager
+from ...core.template_scaffolding import template_scaffolding
 from ...fsm import State, Transition
 
 logger = logging.getLogger('gryphon')
@@ -20,8 +20,7 @@ def _condition_from_new_template_to_end(context: dict) -> bool:
 
 
 def _callback_from_new_template_to_end(context: dict) -> dict:
-    manager = SettingsManager()
-    manager.render_template_scaffolding(context["location"])
+    template_scaffolding(context["location"])
 
     context["history"] = []
     print("\n")
