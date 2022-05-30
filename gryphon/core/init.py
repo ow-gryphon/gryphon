@@ -22,7 +22,7 @@ from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, \
 logger = logging.getLogger('gryphon')
 
 
-def handle_template(template, project_home):
+def handle_template(template, project_home, rc_file):
 
     if template.registry_type == REMOTE_INDEX:
 
@@ -50,6 +50,7 @@ def handle_template(template, project_home):
                 )
             )
         finally:
+            RCManager.log_new_files(template, template_folder, performed_action=INIT, logfile=rc_file)
             clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
@@ -58,6 +59,8 @@ def handle_template(template, project_home):
             template_destiny=project_home,
             template_source=Path(template.path)
         )
+        RCManager.log_new_files(template, Path(template.path) / "template", performed_action=INIT, logfile=rc_file)
+
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
@@ -76,12 +79,13 @@ def init(template: Template, location, python_version, **kwargs):
 
     project_home = Path.cwd() / location
     os.makedirs(project_home, exist_ok=True)
-    handle_template(template, project_home)
 
     # RC file
     rc_file = RCManager.get_rc_file(Path.cwd() / location)
     RCManager.log_operation(template, performed_action=INIT, logfile=rc_file)
-    RCManager.log_new_files(template, performed_action=INIT, logfile=rc_file)
+
+    # TEMPLATE
+    handle_template(template, project_home, rc_file)
 
     # Git
     repo = init_new_git_repo(folder=project_home)

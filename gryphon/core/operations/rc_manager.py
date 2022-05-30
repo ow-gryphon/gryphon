@@ -30,7 +30,7 @@ class RCManager:
         return path
 
     @staticmethod
-    def log_new_files(template, performed_action: str, logfile=None):
+    def log_new_files(template, folder: Path, performed_action: str, logfile=None):
         """
         Add information about each and every file added to the project into the rc file.
         """
@@ -38,17 +38,21 @@ class RCManager:
         if logfile is None:
             logfile = Path.cwd() / GRYPHON_RC
 
-        files_and_folders = glob.glob(str(template.path / "template" / "**"), recursive=True)
+        files_and_folders = glob.glob(str(folder / "**"), recursive=True)
+
         files = list(filter(lambda x: x.is_file(), map(Path, files_and_folders)))
 
         with open(logfile, "r+", encoding="utf-8") as f:
             contents = json.load(f)
 
             new_contents = contents.copy()
+            if "files" not in new_contents:
+                new_contents["files"] = []
+
             for file in files:
-                new_contents.setdefault("files", []).append(
+                new_contents["files"].append(
                     dict(
-                        path=str(file.relative_to(template.path / "template")),
+                        path=str(file.relative_to(folder)),
                         template_name=template.name,
                         version=template.version,
                         action=performed_action,

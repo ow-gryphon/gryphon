@@ -252,6 +252,7 @@ def test_log_new_files(setup, teardown):
 
         RCManager.log_new_files(
             template=template,
+            folder=template_path / "template",
             performed_action="init",
             logfile=log_file
         )

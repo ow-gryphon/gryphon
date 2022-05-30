@@ -41,12 +41,15 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             )
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
+            RCManager.log_new_files(template, template_folder,
+                                    performed_action=GENERATE, logfile=rc_file)
 
         finally:
             clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
+        RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
@@ -67,7 +70,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
 
     # RC file
     RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)
-    RCManager.log_new_files(template, performed_action=GENERATE, logfile=rc_file)
+    # RCManager.log_new_files(template, performed_action=GENERATE, logfile=rc_file)
 
 
 def pattern_replacement(input_file, mapper):
@@ -144,5 +147,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             dst=definitive_path,
             dirs_exist_ok=True
         )
+
     finally:
         shutil.rmtree(temp_path)
