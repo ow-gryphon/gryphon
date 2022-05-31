@@ -41,7 +41,7 @@ class AskFolder(State):
             callback=_callback_ask_folder_ask_again_invalid_gryphon
         ),
         Transition(
-            next_state="check_large_files",
+            next_state="confirm_settings",
             condition=_condition_ask_folder_ask_again_check_large_files,
         )
     ]

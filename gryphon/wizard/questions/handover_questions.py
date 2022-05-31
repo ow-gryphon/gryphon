@@ -55,3 +55,22 @@ class HandoverQuestions:
                 get_back_choice()
             ]
         ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def confirm_to_proceed():
+        return questionary.select(
+            message=Text.handover_prompt_confirm_configurations,
+            choices=[
+                Choice(
+                    title="Yes",
+                    value=YES
+                ),
+                Choice(
+                    title="No, change configurations",
+                    value=NO
+                ),
+                Separator(),
+                get_back_choice()
+            ]
+        ).unsafe_ask()

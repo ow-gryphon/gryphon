@@ -93,6 +93,13 @@ class RCManager:
         """
         return cls._get_key_rc("environment_manager", logfile)
 
+    @classmethod
+    def get_gryphon_files(cls, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        return cls._get_key_rc("files", logfile)
+
     # RC LOGS
     @staticmethod
     def log_operation(template, performed_action: str, logfile=None):

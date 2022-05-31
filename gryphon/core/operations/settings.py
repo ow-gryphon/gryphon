@@ -45,9 +45,9 @@ class SettingsManager:
 
         try:
             return contents[key]
-        except KeyError as e:
+        except KeyError:
             if default is None:
-                raise e
+                raise KeyError(f"Could not find the given key (\"{key}\") in the current config file.")
             else:
                 return default
 
@@ -147,6 +147,14 @@ class SettingsManager:
     @classmethod
     def get_handover_file_size_limit(cls):
         return cls._get_key("handover_file_size_limit")
+
+    @classmethod
+    def get_handover_include_large_files(cls) -> bool:
+        return cls._get_key("handover_include_large_files")
+
+    @classmethod
+    def get_handover_include_gryphon_generated_files(cls):
+        return cls._get_key("handover_include_gryphon_generated_files")
 
     @classmethod
     def test_template_cleanup(cls):

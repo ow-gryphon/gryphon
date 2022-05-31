@@ -63,6 +63,7 @@ class Text:
                                               "(type a negative number to go back to previous):"
     handover_prompt_include_large_files_question = "Some large files were found. Do you want to include them in " \
                                                    "the package:"
+    handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above:"
 
     about_prompt_links = "Useful links:"
 
