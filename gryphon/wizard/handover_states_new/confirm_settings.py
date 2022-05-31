@@ -149,3 +149,6 @@ class ConfirmSettings(State):
         context["response"] = HandoverQuestions.confirm_to_proceed()
 
         return context
+
+# TODO: get the settings from the gryphon_rc file if there is if not get from the
+# TODO: put text wrapping on the wider lines

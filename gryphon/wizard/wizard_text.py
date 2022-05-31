@@ -64,6 +64,7 @@ class Text:
     handover_prompt_include_large_files_question = "Some large files were found. Do you want to include them in " \
                                                    "the package:"
     handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above:"
+    handover_prompt_change_settings = "Select the setting you want to change:"
 
     about_prompt_links = "Useful links:"
 

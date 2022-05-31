@@ -74,3 +74,26 @@ class HandoverQuestions:
                 get_back_choice()
             ]
         ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def choose_setting_to_change():
+        return questionary.select(
+            message=Text.handover_prompt_change_settings,
+            choices=[
+                Choice(
+                    title="Change file size limit",
+                    value="change_size_limits"
+                ),
+                Choice(
+                    title="Change whether to include Gryphon generated files",
+                    value="change_gryphon_files_policy"
+                ),
+                Choice(
+                    title="Change whether to include large files in the package",
+                    value="change_large_files_policy"
+                ),
+                Separator(),
+                get_back_choice()
+            ]
+        ).unsafe_ask()
