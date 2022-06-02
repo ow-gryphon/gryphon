@@ -65,6 +65,8 @@ class Text:
                                                    "the package:"
     handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above:"
     handover_prompt_change_settings = "Select the setting you want to change:"
+    handover_prompt_gryphon_files_policy = "Select what to do with Gryphon generated files:"
+    handover_prompt_large_files_policy = "Select what to do with large files:"
 
     about_prompt_links = "Useful links:"
 

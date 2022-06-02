@@ -1,6 +1,7 @@
 from .functions import BackSignal
 from .handover_states_new import (
-    AskFolder, ConfirmSettings, ChangeSettings, CreateHandoverPackage, ChangeSizeLimits
+    AskFolder, ConfirmSettings, ChangeSettings, CreateHandoverPackage, ChangeSizeLimits,
+    ChangeGryphonFilesPolicy, ChangeLargeFilesPolicy
 )
 from ..constants import BACK
 from ..fsm import Machine, HaltSignal
@@ -12,7 +13,8 @@ def handover(_, __):
     ask_folder = AskFolder()
 
     possible_states = [
-        ask_folder, ConfirmSettings(), ChangeSettings(), CreateHandoverPackage(), ChangeSizeLimits()
+        ask_folder, ConfirmSettings(), ChangeSettings(), CreateHandoverPackage(), ChangeSizeLimits(),
+        ChangeGryphonFilesPolicy(), ChangeLargeFilesPolicy()
     ]
 
     machine = Machine(

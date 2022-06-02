@@ -97,3 +97,37 @@ class HandoverQuestions:
                 get_back_choice()
             ]
         ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def choose_gryphon_files_policy():
+        return questionary.select(
+            message=Text.handover_prompt_gryphon_files_policy,
+            choices=[
+                Choice(
+                    title="DO include in the handover package",
+                    value=YES
+                ),
+                Choice(
+                    title="DO NOT include in the handover package",
+                    value=NO
+                )
+            ]
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def choose_large_files_policy():
+        return questionary.select(
+            message=Text.handover_prompt_large_files_policy,
+            choices=[
+                Choice(
+                    title="DO include in the handover package",
+                    value=YES
+                ),
+                Choice(
+                    title="DO NOT include in the handover package",
+                    value=NO
+                )
+            ]
+        ).unsafe_ask()

@@ -13,6 +13,7 @@ logger = logging.getLogger('gryphon')
 
 class RCManager:
 
+    # RC FILE
     @staticmethod
     def _get_key_rc(key, logfile=None):
         """
@@ -49,7 +50,6 @@ class RCManager:
             f.write(json.dumps(new_contents))
             f.truncate()
 
-    # RC FILE
     @staticmethod
     def get_rc_file(folder=Path.cwd()):
         """
@@ -64,6 +64,7 @@ class RCManager:
 
         return path
 
+    # SET
     @classmethod
     def set_environment_manager(cls, environment_manager: str, logfile=None):
         """
@@ -79,6 +80,21 @@ class RCManager:
         """
         cls._set_key_rc(key="environment_manager_path", value=str(path), logfile=logfile)
 
+    @classmethod
+    def set_handover_include_gryphon_generated_files(cls, state: bool, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        cls._set_key_rc(key="handover_include_gryphon_generated_files", value=state, logfile=logfile)
+
+    @classmethod
+    def set_handover_include_large_files(cls, state: bool, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        cls._set_key_rc(key="handover_include_large_files", value=state, logfile=logfile)
+
+    # GET
     @classmethod
     def get_environment_manager_path(cls, logfile=None):
         """
@@ -99,6 +115,20 @@ class RCManager:
         Add information about each and every file added to the project into the rc file.
         """
         return cls._get_key_rc("files", logfile)
+
+    @classmethod
+    def get_handover_include_gryphon_generated_files(cls, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        return cls._get_key_rc("handover_include_gryphon_generated_files", logfile)
+
+    @classmethod
+    def get_handover_include_large_files(cls, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        return cls._get_key_rc("handover_include_large_files", logfile)
 
     # RC LOGS
     @staticmethod
