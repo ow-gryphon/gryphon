@@ -89,10 +89,6 @@ class HandoverQuestions:
                     title="Change whether to include Gryphon generated files",
                     value="change_gryphon_files_policy"
                 ),
-                Choice(
-                    title="Change whether to include large files in the package",
-                    value="change_large_files_policy"
-                ),
                 Separator(),
                 get_back_choice()
             ]

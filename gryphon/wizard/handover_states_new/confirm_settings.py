@@ -77,12 +77,10 @@ class ConfirmSettings(State):
     @classmethod
     def handle_file_sizes(cls, context):
         limit = SettingsManager.get_handover_file_size_limit()
+        include_large_files = limit == float(0)
 
-        try:
-            logfile = RCManager.get_rc_file(context["location"])
-            include_large_files = RCManager.get_handover_include_large_files(logfile)
-        except KeyError:
-            include_large_files = SettingsManager.get_handover_include_large_files()
+        logfile = RCManager.get_rc_file(context["location"])
+        RCManager.set_handover_include_large_files(include_large_files, logfile=logfile)
 
         file_sizes = cls.get_file_sizes(context["location"])
         large_file_list = cls.filter_large_files(file_sizes, limit)
@@ -92,36 +90,43 @@ class ConfirmSettings(State):
         context["excluded_files"] = []
 
         if has_large_files:
-            cls.print_large_file_list(large_file_list, limit)
-            context["extra_lines"] = len(large_file_list) + 4
 
             if include_large_files:
-                logger.warning(
-                    "Despite being larger than the limit set this files will be included on the zip package.")
+                logger.warning("No files will be excluded from the zip file for being large.")
+                context["extra_lines"] = 1
             else:
+                cls.print_large_file_list(large_file_list, limit)
+                context["extra_lines"] = len(large_file_list) + 3
                 context["excluded_files"] = list(large_file_list.keys())
+
                 for line in wrap(f"The listed files will not be included in the zip package because they exceeded "
                                  f"the size limit of {limit} MB.", width=100):
                     logger.warning(line)
                     context["extra_lines"] += 1
 
             logger.warning("")
+            context["extra_lines"] += 1
+
         else:
-            logger.warning(f"No large files that exceeded the size limit were found ({limit} MB).")
-            context["extra_lines"] = 1
+
+            if not include_large_files:
+                logger.warning("No files will be excluded from the zip file for being large.")
+                context["extra_lines"] += 1
+            else:
+                logger.warning(f"No large files that exceeded the size limit were found ({limit} MB).")
+                context["extra_lines"] = 1
 
     @staticmethod
     def handle_gryphon_files(context):
+        rc_file = RCManager.get_rc_file(context["location"])
         try:
-            logfile = RCManager.get_rc_file(context["location"])
-            include_gryphon_files = RCManager.get_handover_include_gryphon_generated_files(logfile)
+            include_gryphon_files = RCManager.get_handover_include_gryphon_generated_files(rc_file)
         except KeyError:
             include_gryphon_files = SettingsManager.get_handover_include_gryphon_generated_files()
 
-        rc_file = RCManager.get_rc_file(context["location"])
         files = RCManager.get_gryphon_files(logfile=rc_file)
 
-        file_names = list(map(lambda x: x["path"], files))
+        file_names = list(map(lambda x: x["path"], filter(lambda x: "notebooks" in x["path"], files)))
 
         if not include_gryphon_files:
             # append
@@ -132,11 +137,12 @@ class ConfirmSettings(State):
 
             if len(file_names):
                 # there are gryphon generated files
-                logger.warning("The template files created by Gryphon WILL NOT be included on the zip:")
-                for f in file_names:
-                    logger.warning(f"   - {f[:60].ljust(40)}")
+                logger.warning("Some template files created by Gryphon WILL NOT be included on the zip:")
+                logger.warning(f" - {len(file_names)} files inside the \"{context['location'] / 'notebooks'}\" folder.")
+                # for f in file_names:
+                #     logger.warning(f"   - {f[:60].ljust(40)}")
 
-                context["extra_lines"] += (1 + len(file_names))
+                context["extra_lines"] += 2
 
             else:
                 logger.warning("There aren't any Gryphon generated files on the current project.")
@@ -144,12 +150,9 @@ class ConfirmSettings(State):
 
         else:
             if len(file_names):
-                logger.warning("The template files created by Gryphon WILL be included on the zip:")
-
-                for f in file_names:
-                    logger.warning(f"   - {f[:60].ljust(40)}")
-
-            context["extra_lines"] += (1 + len(file_names))
+                logger.warning("Some template files created by Gryphon WILL be included on the zip:")
+                logger.warning(f" - {len(file_names)} files inside the \"{context['location'] / 'notebooks'}\" folder.")
+                context["extra_lines"] += 2
 
     def on_start(self, context: dict) -> dict:
 
@@ -165,13 +168,15 @@ class ConfirmSettings(State):
 # DONE: get the settings from the gryphon_rc file if there is if not get from the
 # DONE: put text wrapping on the wider lines
 
-# TODO: space separated values on add functionality
-# TODO: Just consider to exclude gryphon files that are inside the notebooks
+# DONE: format timestamp on the zip name
+# DONE: Create the file on the parent folder
+# DONE: space separated values on add functionality
+
+# DONE: Just consider to exclude gryphon files that are inside the notebooks
 #  folder. Just display the amount of files inside the folder (not to print every
 #  name as it could get very long)
+
+# DONE: if user types 0 on the file limit don't consider the file size
 # TODO: Have a logfile specifying how the zip was generated (configs and choices) placed outside
 # TODO: show confirmation of file path
-# TODO: Create the file on the parent number
-# TODO: format timestamp on the zip name
-# TODO: if user types 0 on the file limit don't consider the file size
-# TODO:
+# TODO: CTRL + C as back on text fields

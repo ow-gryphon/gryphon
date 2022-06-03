@@ -1,6 +1,6 @@
-from ...fsm import State
-from ...core.add import add as core_add
 from ...constants import NAME
+from ...core.add import add as core_add
+from ...fsm import State
 
 
 class AddLibrary(State):
@@ -8,11 +8,12 @@ class AddLibrary(State):
     transitions = []
 
     def on_start(self, context: dict) -> dict:
-        lib = context["chosen_option"][NAME]
+        for option in context["chosen_option"]:
+            lib = option[NAME]
 
-        core_add(
-            library_name=lib,
-            version=context['lib_version'] if 'lib_version' in context else None
+            core_add(
+                library_name=lib,
+                version=context['lib_version'] if 'lib_version' in context else None
 
-        )
+            )
         return context

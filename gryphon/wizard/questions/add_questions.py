@@ -1,5 +1,6 @@
 import questionary
 from questionary import Choice, Separator
+
 from .common_functions import base_question, get_back_choice, logger
 from ..functions import wrap_text
 from ..wizard_text import Text
@@ -86,7 +87,19 @@ class AddQuestions:
                 )
             )
 
-        return questionary.select(
-            message=Text.add_confirm.replace("{library_name}", library[NAME]),
-            choices=choices
-        ).unsafe_ask(), n_lines
+        if len(library) == 1:
+
+            return questionary.select(
+                message=Text.add_confirm.replace("{library_name}", library[0][NAME]),
+                choices=choices
+            ).unsafe_ask(), n_lines
+        else:
+            wrapped, n_lines_2 = wrap_text(", ".join(map(lambda x: f"\"{x[NAME]}\"", library)))
+
+            return questionary.select(
+                message=Text.add_confirm_multiple.replace(
+                    "{libraries}",
+                    wrapped
+                ),
+                choices=choices
+            ).unsafe_ask(), n_lines + n_lines_2

@@ -55,7 +55,7 @@ class Text:
 
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "
-    add_prompt_type_library = "Type the name of the python library you want to install:"
+    add_prompt_type_library = "Type the names of the python libraries you want to install (separated by spaces):"
     add_prompt_type_version = "Type the version you want to install:"
 
     handover_prompt_folder_question = "Type the project folder (blank if current folder):"
@@ -79,6 +79,8 @@ class Text:
 
     # {library_name} is going to be replaced with the library name
     add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."
+    add_confirm_multiple = "Confirm that you want to install the following libraries to the current project: " \
+                           "{libraries}"
 
     # {location} is going to be replaced with the destination path
     # {template_name} is going to be replaced with the template name

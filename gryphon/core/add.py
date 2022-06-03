@@ -25,8 +25,16 @@ def add(library_name, version=None, cwd=Path.cwd()):
     logger.info("Adding required lib.")
 
     rc_file = RCManager.get_rc_file(cwd)
-    env_path = RCManager.get_environment_manager_path(logfile=rc_file)
-    env_manager = RCManager.get_environment_manager(logfile=rc_file)
+    env_manager = VENV
+    env_path = "pip"
+
+    try:
+        env_path = RCManager.get_environment_manager_path(logfile=rc_file)
+        env_manager = RCManager.get_environment_manager(logfile=rc_file)
+        in_gryphon_project = True
+    except KeyError:
+        in_gryphon_project = False
+        logger.warning("It seems that we are not inside a Gryphon project folder. Installing libraries globally.")
 
     requirements_backup = backup_requirements(cwd)
     lib = library_name
@@ -34,7 +42,8 @@ def add(library_name, version=None, cwd=Path.cwd()):
         lib = f"{library_name}=={version}"
 
     try:
-        append_requirement(lib, location=cwd)
+        if in_gryphon_project:
+            append_requirement(lib, location=cwd)
 
         if env_manager == VENV:
             EnvironmentManagerOperations.install_libraries_venv(
@@ -54,10 +63,12 @@ def add(library_name, version=None, cwd=Path.cwd()):
                                f"Should be one of {env_list}. Restoring the default config file should solve.")
 
     except RuntimeError as e:
-        rollback_requirement(requirements_backup, location=cwd)
-        logger.warning("Rolled back the changes from last command.")
+        if in_gryphon_project:
+            rollback_requirement(requirements_backup, location=cwd)
+            logger.warning("Rolled back the changes from last command.")
         raise e
     else:
-        RCManager.log_add_library([library_name])
+        if in_gryphon_project:
+            RCManager.log_add_library([library_name])
     finally:
         os.remove(requirements_backup)

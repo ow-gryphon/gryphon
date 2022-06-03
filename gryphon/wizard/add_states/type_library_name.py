@@ -13,5 +13,9 @@ class TypeLibraryName(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-        context["chosen_option"] = {NAME: AddQuestions.get_lib_via_keyboard()}
+        context["chosen_option"] = [
+            {NAME: lib}
+            for lib in AddQuestions.get_lib_via_keyboard().split(" ")
+            if len(lib)
+        ]
         return context
