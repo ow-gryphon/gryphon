@@ -1,16 +1,15 @@
 from ..questions import HandoverQuestions
-from ...core.operations import SettingsManager
+from ...core.operations.settings import SettingsManager
 from ...fsm import State, Transition, negate_condition
-from ..functions import erase_lines
+from ...wizard.functions import erase_lines
 
 
-def _condition_check_files_to_check_large_files(context):
-    return context["new_limit"] < 0
+def _condition_check_files_to_check_large_files(_):
+    return True
 
 
 def _callback_check_files(context):
     erase_lines(n_lines=2)
-    erase_lines(n_lines=context["extra_lines"])
     return context
 
 
@@ -18,11 +17,7 @@ class ChangeSizeLimits(State):
     name = "change_size_limits"
     transitions = [
         Transition(
-            next_state="check_large_files",
-            condition=negate_condition(_condition_check_files_to_check_large_files),
-        ),
-        Transition(
-            next_state="check_large_files",
+            next_state="change_settings",
             condition=_condition_check_files_to_check_large_files,
             callback=_callback_check_files
         )

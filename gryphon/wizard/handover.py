@@ -1,5 +1,5 @@
 from .functions import BackSignal
-from .handover_states_new import (
+from .handover_states import (
     AskFolder, ConfirmSettings, ChangeSettings, CreateHandoverPackage, ChangeSizeLimits,
     ChangeGryphonFilesPolicy, ChangeLargeFilesPolicy
 )
