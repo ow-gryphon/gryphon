@@ -10,6 +10,7 @@ class CreateHandoverPackage(State):
         # check for large files
         handover(
             path=context["location"],
+            output_path=context["output_file"],
             exclusion_list=context["excluded_files"],
             file_list=context["file_list"]
         )

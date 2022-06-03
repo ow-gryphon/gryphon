@@ -1,11 +1,13 @@
+from textwrap import wrap
+
 from ..questions.handover_questions import HandoverQuestions
 from ...constants import BACK, NO, YES
 from ...core.common_operations import list_files
+from ...core.handover import get_output_file_name
 from ...core.operations import SettingsManager, RCManager
 from ...fsm import State, Transition
 from ...logger import logger
 from ...wizard.functions import erase_lines
-from textwrap import wrap
 
 
 def _condition_check_files_to_ask_folder(context):
@@ -161,7 +163,9 @@ class ConfirmSettings(State):
         self.handle_file_sizes(context)
         self.handle_gryphon_files(context)
 
-        context["response"] = HandoverQuestions.confirm_to_proceed()
+        context["output_file"] = get_output_file_name(context["location"])
+        context["response"], n_lines = HandoverQuestions.confirm_to_proceed(context["output_file"])
+        context["extra_lines"] += n_lines - 1
 
         return context
 
@@ -178,5 +182,5 @@ class ConfirmSettings(State):
 
 # DONE: if user types 0 on the file limit don't consider the file size
 # TODO: Have a logfile specifying how the zip was generated (configs and choices) placed outside
-# TODO: show confirmation of file path
+# DONE: show confirmation of file path
 # TODO: CTRL + C as back on text fields

@@ -1,4 +1,6 @@
 from pathlib import Path
+from textwrap import fill
+
 import questionary
 from questionary import Choice, Separator
 
@@ -58,9 +60,11 @@ class HandoverQuestions:
 
     @staticmethod
     @base_question
-    def confirm_to_proceed():
+    def confirm_to_proceed(output_file: Path):
+        text = fill(Text.handover_prompt_confirm_configurations + str(output_file), width=100)
+        n_lines = len(text.split('\n'))
         return questionary.select(
-            message=Text.handover_prompt_confirm_configurations,
+            message=text,
             choices=[
                 Choice(
                     title="Yes",
@@ -73,7 +77,7 @@ class HandoverQuestions:
                 Separator(),
                 get_back_choice()
             ]
-        ).unsafe_ask()
+        ).unsafe_ask(), n_lines
 
     @staticmethod
     @base_question

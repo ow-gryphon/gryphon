@@ -63,7 +63,8 @@ class Text:
                                               "(type a negative number to go back to previous):"
     handover_prompt_include_large_files_question = "Some large files were found. Do you want to include them in " \
                                                    "the package:"
-    handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above:"
+    handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above." \
+                                             "The following file will be created: "
     handover_prompt_change_settings = "Select the setting you want to change:"
     handover_prompt_gryphon_files_policy = "Select what to do with Gryphon generated files:"
     handover_prompt_large_files_policy = "Select what to do with large files:"
