@@ -4,9 +4,7 @@
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
     },
-    "local_registry": {
-        "local_default": "/home/vittorfp/blue-orange/labskit_registry"
-    },
+    "local_registry": {},
     "local_templates": [
         "/home/vittorfp/blue-orange/gryphon-analytics-basic"
     ],
