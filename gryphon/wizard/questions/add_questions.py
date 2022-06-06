@@ -1,7 +1,7 @@
 import questionary
 from questionary import Choice, Separator
 
-from .common_functions import base_question, get_back_choice, logger
+from .common_functions import base_question, base_text_prompt, get_back_choice, logger
 from ..functions import wrap_text
 from ..wizard_text import Text
 from ...constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, YES, NO, SPECIFY_VERSION)
@@ -10,12 +10,12 @@ from ...constants import (TYPING, SHORT_DESC, LONG_DESC, NAME, REFERENCE_LINK, Y
 class AddQuestions:
 
     @staticmethod
-    @base_question
+    @base_text_prompt
     def get_lib_via_keyboard():
         return questionary.text(message=Text.add_prompt_type_library).unsafe_ask()
 
     @staticmethod
-    @base_question
+    @base_text_prompt
     def get_lib_version_via_keyboard():
         return questionary.text(message=Text.add_prompt_type_version).unsafe_ask()
 

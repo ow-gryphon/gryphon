@@ -1,6 +1,6 @@
-from ..functions import erase_lines
+from ..functions import erase_lines, BackSignal
 from ..questions import HandoverQuestions
-from ...constants import GRYPHON_RC
+from ...constants import GRYPHON_RC, BACK
 from ...fsm import State, Transition
 from ...logger import logger
 
@@ -51,7 +51,6 @@ class AskFolder(State):
         erase_lines(n_lines=2)
         erase_lines(n_lines=context["extra_lines"])
         logger.warning(f'Provided folder does not exists \"{context["location"]}\". Try again.\n')
-        # erase_lines(n_lines=1)
         context["extra_lines"] = 1
 
     @staticmethod
@@ -59,7 +58,6 @@ class AskFolder(State):
         erase_lines(n_lines=2)
         erase_lines(n_lines=context["extra_lines"])
         logger.warning(f'Provided folder is not a valid Gryphon project \"{context["location"]}\". Try again.\n')
-        # erase_lines(n_lines=1)
         context["extra_lines"] = 1
 
     def on_start(self, context: dict) -> dict:
@@ -67,4 +65,8 @@ class AskFolder(State):
             context["extra_lines"] = 0
 
         context["location"] = HandoverQuestions.ask_project_folder()
+        if context["location"] == BACK:
+            erase_lines(n_lines=2)
+            raise BackSignal()
+
         return context

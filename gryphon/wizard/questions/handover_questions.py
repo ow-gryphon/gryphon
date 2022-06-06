@@ -4,7 +4,7 @@ from textwrap import fill
 import questionary
 from questionary import Choice, Separator
 
-from .common_functions import base_question, get_back_choice
+from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
 from ...constants import YES, NO, CHANGE_LIMIT
 
@@ -23,7 +23,7 @@ class NumberValidator(questionary.Validator):
 class HandoverQuestions:
 
     @staticmethod
-    @base_question
+    @base_text_prompt
     def ask_project_folder():
         return Path(questionary.path(message=Text.handover_prompt_folder_question).unsafe_ask())
 

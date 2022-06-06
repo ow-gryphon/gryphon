@@ -89,7 +89,7 @@ class ConfirmSettings(State):
         has_large_files = len(large_file_list) > 0
 
         context["file_list"] = list(file_sizes.keys())
-        context["excluded_files"] = []
+        context["excluded_files_size"] = []
 
         if has_large_files:
 
@@ -99,7 +99,7 @@ class ConfirmSettings(State):
             else:
                 cls.print_large_file_list(large_file_list, limit)
                 context["extra_lines"] = len(large_file_list) + 3
-                context["excluded_files"] = list(large_file_list.keys())
+                context["excluded_files_size"] = list(large_file_list.keys())
 
                 for line in wrap(f"The listed files will not be included in the zip package because they exceeded "
                                  f"the size limit of {limit} MB.", width=100):
@@ -129,21 +129,15 @@ class ConfirmSettings(State):
         files = RCManager.get_gryphon_files(logfile=rc_file)
 
         file_names = list(map(lambda x: x["path"], filter(lambda x: "notebooks" in x["path"], files)))
+        context["excluded_files_gryphon"] = []
 
         if not include_gryphon_files:
-            # append
-            context["excluded_files"].extend(file_names)
-
-            # deduplicate
-            context["excluded_files"] = list(set(context["excluded_files"]))
+            context["excluded_files_gryphon"] = file_names
 
             if len(file_names):
                 # there are gryphon generated files
                 logger.warning("Some template files created by Gryphon WILL NOT be included on the zip:")
                 logger.warning(f" - {len(file_names)} files inside the \"{context['location'] / 'notebooks'}\" folder.")
-                # for f in file_names:
-                #     logger.warning(f"   - {f[:60].ljust(40)}")
-
                 context["extra_lines"] += 2
 
             else:
@@ -181,6 +175,6 @@ class ConfirmSettings(State):
 #  name as it could get very long)
 
 # DONE: if user types 0 on the file limit don't consider the file size
-# TODO: Have a logfile specifying how the zip was generated (configs and choices) placed outside
+# TODO: Have a logfile specifying how the zip was generated (configs and choices) placed on the parent folder
 # DONE: show confirmation of file path
-# TODO: CTRL + C as back on text fields
+# DONE: CTRL + C as back on text fields

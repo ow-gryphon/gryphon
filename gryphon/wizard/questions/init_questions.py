@@ -1,7 +1,7 @@
 import questionary
 from questionary import Choice, Separator
 
-from .common_functions import base_question, get_back_choice, logger
+from .common_functions import base_question, base_text_prompt, get_back_choice, logger
 from ..functions import wrap_text
 from ..wizard_text import Text
 from ...constants import (YES, NO, SYSTEM_DEFAULT)
@@ -33,7 +33,7 @@ class InitQuestions:
         return template
 
     @staticmethod
-    @base_question
+    @base_text_prompt
     def ask_init_location():
         return questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
 

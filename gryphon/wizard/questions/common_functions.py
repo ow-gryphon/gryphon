@@ -17,6 +17,16 @@ def base_question(function):
     return _f
 
 
+def base_text_prompt(function):
+    def _f(*args, **kwargs):
+        try:
+            return function(*args, **kwargs)
+        except KeyboardInterrupt:
+            return BACK
+
+    return _f
+
+
 def get_back_choice():
     return Choice(
         title=Text.back_to_previous_menu_option,
