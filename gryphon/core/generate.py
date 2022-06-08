@@ -151,6 +151,3 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
 
     finally:
         shutil.rmtree(temp_path)
-
-# TODO: Check if we are copying the .git files to the temporary folder on generate
-#  folder we had some problems when deleting this files on windows.

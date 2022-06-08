@@ -3,3 +3,4 @@ virtualenv
 questionary
 GitPython
 colorlog
+PyYAML

@@ -29,7 +29,7 @@ def select_add_on_main_menu(process):
 
 def select_handover_on_main_menu(process):
     select_nth_option(process, n=5)
-    wait_for_output(process, NEXT_MENU)
+    wait_for_output(process, "project folder")
 
 
 def select_advanced_on_main_menu(process):

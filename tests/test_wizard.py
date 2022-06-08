@@ -1,14 +1,18 @@
 import glob
 import json
 import os
+import zipfile
+from pathlib import Path
 
 import pytest
+import yaml
 
 from gryphon.constants import CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK, USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES
 from gryphon.core.operations import RCManager, SettingsManager
 from .ui_interaction.add import add_library_from_menu, add_library_typing, add_library_selecting_version
 from .ui_interaction.advanced_options import create_template_scaffold
 from .ui_interaction.generate import generate_template
+from .ui_interaction.handover import generate_handover_package
 from .ui_interaction.init import start_new_project
 from .ui_interaction.init_from_existing import start_project_from_existing
 from .utils import create_folder_with_conda_env, create_folder_with_venv
@@ -39,6 +43,7 @@ def test_project_functions(
     SettingsManager.change_template_version_policy(template_version)
     SettingsManager.change_environment_manager(environment_manager)
     SettingsManager.change_default_python_version(python_version)
+    SettingsManager.change_handover_file_size_limit(10.0)
 
     try:
         start_new_project(project_name, working_directory=cwd)
@@ -85,7 +90,134 @@ def test_project_functions(
         n_files_notebooks_after = len(glob.glob(notebook_pattern, recursive=True))
         assert n_files_notebooks_after > n_files_notebooks_before
 
+        for change_settings in [None]:  # "change_size_limit", "change_gryphon_politics"]:
+            generate_handover_package(
+                working_directory=cwd,
+                handover_folder=project_folder,
+                change_configs=change_settings
+            )
+
+            zip_path = glob.glob(str(cwd / "**.zip"))[0]
+            logfile = zip_path[:-4] + "_log.txt"
+
+            assert Path(zip_path).is_file()
+            assert Path(logfile).is_file()
+
+            with zipfile.ZipFile(zip_path, "r") as z:
+                z.extractall()
+
+            with open(logfile, "r") as f:
+                data = yaml.load(
+                    stream=f,
+                    Loader=yaml.FullLoader
+                )
+
+                assert "excluded_large_files" in data
+                assert "excluded_gryphon_files" in data
+
+                assert "file_size_limit" in data
+                assert "keep_gryphon_files" in data
+
+                for file in data["excluded_large_files"]:
+                    assert Path(project_folder / file).is_file()
+                    assert not Path(cwd / file).is_file()
+
+                for file in data["excluded_gryphon_files"]:
+                    assert Path(project_folder / file).is_file()
+                    assert not Path(cwd / file).is_file()
+
     finally:
+        # pass
+        teardown()
+
+
+@pytest.mark.parametrize('environment_manager', environment_managers)
+@pytest.mark.parametrize('file_size_limit', [0, 0.25, 10])
+@pytest.mark.parametrize('include_gryphon_files', [True, False])
+@pytest.mark.parametrize('change_settings', [None, "change_size_limit", "change_gryphon_politics"])
+def test_handover(setup, teardown, environment_manager, file_size_limit, include_gryphon_files, change_settings):
+
+    cwd = setup()
+    project_name = "test_project"
+    project_folder = cwd / project_name
+
+    notebook_pattern = str(project_folder / "notebooks" / "**")
+
+    # Set up config conditions
+    SettingsManager.change_template_version_policy(USE_LATEST)
+    SettingsManager.change_default_python_version(SYSTEM_DEFAULT)
+    SettingsManager.change_environment_manager(environment_manager)
+    SettingsManager.change_handover_file_size_limit(10)
+    SettingsManager.change_handover_include_gryphon_generated_files(not include_gryphon_files)
+
+    try:
+        start_new_project(project_name, working_directory=cwd)
+
+        assert (project_folder / "notebooks").is_dir()
+        assert (project_folder / "data").is_dir()
+
+        n_files_notebooks_before = len(glob.glob(notebook_pattern, recursive=True))
+
+        # assert folders are not empty
+        assert n_files_notebooks_before > 0
+
+        # assert venv/conda folder
+        if environment_manager == VENV:
+            assert (project_folder / ".venv").is_dir()
+        elif environment_manager == CONDA:
+            assert (project_folder / "envs").is_dir()
+
+        generate_template(working_directory=project_folder)
+
+        # assert the number of files changed after rendering the template
+        n_files_notebooks_after = len(glob.glob(notebook_pattern, recursive=True))
+        assert n_files_notebooks_after > n_files_notebooks_before
+
+        generate_handover_package(
+            working_directory=cwd,
+            handover_folder=project_folder,
+            change_configs=change_settings,
+            file_size_limit=file_size_limit,
+            include_gryphon_files=include_gryphon_files
+        )
+
+        zip_path = glob.glob(str(cwd / "**.zip"))[0]
+        logfile = zip_path[:-4] + "_log.txt"
+
+        assert Path(zip_path).is_file()
+        assert Path(logfile).is_file()
+
+        with zipfile.ZipFile(zip_path, "r") as z:
+            z.extractall()
+
+        with open(logfile, "r") as f:
+            data = yaml.load(
+                stream=f,
+                Loader=yaml.FullLoader
+            )
+
+        assert "excluded_large_files" in data
+        assert "excluded_gryphon_files" in data
+
+        assert "file_size_limit" in data
+        assert "keep_gryphon_files" in data
+
+        for file in data["excluded_large_files"]:
+            assert Path(project_folder / file).is_file()
+            assert not Path(cwd / file).is_file()
+
+        for file in data["excluded_gryphon_files"]:
+            assert Path(project_folder / file).is_file()
+            assert not Path(cwd / file).is_file()
+
+        if not include_gryphon_files:
+            pass
+            # TODO: check if some gryphon expected files does not exists on
+
+        # TODO: Create some extra files that are not "gryphon generated files" inside the project folder and test it
+
+    finally:
+        # pass
         teardown()
 
 

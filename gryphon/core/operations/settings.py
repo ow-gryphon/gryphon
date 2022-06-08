@@ -68,6 +68,10 @@ class SettingsManager:
         cls._set_key("handover_file_size_limit", limit)
 
     @classmethod
+    def change_handover_include_gryphon_generated_files(cls, state: bool):
+        cls._set_key("handover_include_gryphon_generated_files", state)
+
+    @classmethod
     def change_default_python_version(cls, python_version):
         cls._set_key("default_python_version", python_version)
 

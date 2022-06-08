@@ -5,9 +5,7 @@
         "ow-private": ""
     },
     "local_registry": {},
-    "local_templates": [
-        "/home/vittorfp/blue-orange/gryphon-analytics-basic"
-    ],
+    "local_templates": [],
     "template_indexes": [
         {
             "name": "grypi",

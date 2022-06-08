@@ -3,3 +3,5 @@ class Text:
                 environment you can use the following commands:"""
 
     install_end_message_2 = "Once doing this you will be able to add libraries and templates."
+
+    handover_end_message = "Handover package successfully generated:"
