@@ -116,17 +116,18 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     logger.info(f"Creating files at {definitive_path}")
 
     # Move files to destination
+    origin = Path(template_path)
     shutil.copytree(
-        src=Path(template_path),
+        src=origin,
         dst=Path(temp_path),
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
-            ".git/**",
-            ".github/**",
-            "__pycache__/**",
-            "envs/**",
-            ".venv/**",
-            ".ipynb_checkpoints/**"
+            origin / ".git/**",
+            origin / ".github/**",
+            origin / "__pycache__/**",
+            origin / "envs/**",
+            origin / ".venv/**",
+            origin / ".ipynb_checkpoints/**"
         )
     )
     try:
@@ -150,3 +151,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
 
     finally:
         shutil.rmtree(temp_path)
+
+# TODO: Check if we are copying the .git files to the temporary folder on generate
+#  folder we had some problems when deleting this files on windows.
