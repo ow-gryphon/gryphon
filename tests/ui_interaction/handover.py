@@ -22,7 +22,6 @@ CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
 def type_folder_path(process, path):
     type_text(process, text=str(path))
     enter(process)
-    enter(process)
     wait_for_output(process, CONFIRMATION_MESSAGE[2:])
 
 
@@ -43,15 +42,18 @@ def generate_handover_package(working_directory, handover_folder, file_size_limi
         if change_configs is None:
             # YES
             select_nth_option(process, n=1)
+
         elif change_configs == "change_size_limit":
             select_nth_option(process, n=2)
             wait_for_output(process, "setting you want")
             select_nth_option(process, n=1)
-            wait_for_output(process, Text.handover_prompt_new_size_limit_question[5:-2])
+            wait_for_output(process, "new size limit you want")
             type_text(process, str(file_size_limit))
+            enter(process)
 
             get_back_from_change_configuration(process)
             select_nth_option(process, n=1)
+
         elif change_configs == "change_gryphon_politics":
             select_nth_option(process, n=2)
             wait_for_output(process, "setting you want")

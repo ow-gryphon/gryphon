@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import shutil
 import zipfile
 from pathlib import Path
 
@@ -90,44 +91,7 @@ def test_project_functions(
         n_files_notebooks_after = len(glob.glob(notebook_pattern, recursive=True))
         assert n_files_notebooks_after > n_files_notebooks_before
 
-        for change_settings in [None]:  # "change_size_limit", "change_gryphon_politics"]:
-            generate_handover_package(
-                working_directory=cwd,
-                handover_folder=project_folder,
-                change_configs=change_settings
-            )
-
-            zip_path = glob.glob(str(cwd / "**.zip"))[0]
-            logfile = zip_path[:-4] + "_log.txt"
-
-            assert Path(zip_path).is_file()
-            assert Path(logfile).is_file()
-
-            with zipfile.ZipFile(zip_path, "r") as z:
-                z.extractall()
-
-            with open(logfile, "r") as f:
-                data = yaml.load(
-                    stream=f,
-                    Loader=yaml.FullLoader
-                )
-
-                assert "excluded_large_files" in data
-                assert "excluded_gryphon_files" in data
-
-                assert "file_size_limit" in data
-                assert "keep_gryphon_files" in data
-
-                for file in data["excluded_large_files"]:
-                    assert Path(project_folder / file).is_file()
-                    assert not Path(cwd / file).is_file()
-
-                for file in data["excluded_gryphon_files"]:
-                    assert Path(project_folder / file).is_file()
-                    assert not Path(cwd / file).is_file()
-
     finally:
-        # pass
         teardown()
 
 
@@ -135,7 +99,8 @@ def test_project_functions(
 @pytest.mark.parametrize('file_size_limit', [0, 0.25, 10])
 @pytest.mark.parametrize('include_gryphon_files', [True, False])
 @pytest.mark.parametrize('change_settings', [None, "change_size_limit", "change_gryphon_politics"])
-def test_handover(setup, teardown, environment_manager, file_size_limit, include_gryphon_files, change_settings):
+def test_handover(setup, teardown, data_folder, environment_manager, file_size_limit,
+                  include_gryphon_files, change_settings):
 
     cwd = setup()
     project_name = "test_project"
@@ -147,8 +112,8 @@ def test_handover(setup, teardown, environment_manager, file_size_limit, include
     SettingsManager.change_template_version_policy(USE_LATEST)
     SettingsManager.change_default_python_version(SYSTEM_DEFAULT)
     SettingsManager.change_environment_manager(environment_manager)
-    SettingsManager.change_handover_file_size_limit(10)
-    SettingsManager.change_handover_include_gryphon_generated_files(not include_gryphon_files)
+    SettingsManager.change_handover_file_size_limit(10.0)
+    SettingsManager.change_handover_include_gryphon_generated_files(True)
 
     try:
         start_new_project(project_name, working_directory=cwd)
@@ -173,6 +138,8 @@ def test_handover(setup, teardown, environment_manager, file_size_limit, include
         n_files_notebooks_after = len(glob.glob(notebook_pattern, recursive=True))
         assert n_files_notebooks_after > n_files_notebooks_before
 
+        shutil.copy(data_folder / "sample_requirements.txt", project_folder / "sample_requirements.txt")
+
         generate_handover_package(
             working_directory=cwd,
             handover_folder=project_folder,
@@ -188,7 +155,9 @@ def test_handover(setup, teardown, environment_manager, file_size_limit, include
         assert Path(logfile).is_file()
 
         with zipfile.ZipFile(zip_path, "r") as z:
-            z.extractall()
+            z.extractall("unziped")
+
+        unzip_folder = cwd / "unziped" / project_name
 
         with open(logfile, "r") as f:
             data = yaml.load(
@@ -203,18 +172,21 @@ def test_handover(setup, teardown, environment_manager, file_size_limit, include
         assert "keep_gryphon_files" in data
 
         for file in data["excluded_large_files"]:
-            assert Path(project_folder / file).is_file()
-            assert not Path(cwd / file).is_file()
+            assert not Path(unzip_folder / file).is_file()
 
         for file in data["excluded_gryphon_files"]:
-            assert Path(project_folder / file).is_file()
-            assert not Path(cwd / file).is_file()
+            assert not Path(unzip_folder / file).is_file()
 
-        if not include_gryphon_files:
-            pass
-            # TODO: check if some gryphon expected files does not exists on
+        if include_gryphon_files or (change_settings != "change_gryphon_politics" and include_gryphon_files):
+            if change_settings == "change_size_limit" and file_size_limit == 0.25:
+                assert not (unzip_folder / "notebooks" / "data_exploration.ipynb").is_file()
+            else:
+                assert (unzip_folder / "notebooks" / "data_exploration.ipynb").is_file()
 
-        # TODO: Create some extra files that are not "gryphon generated files" inside the project folder and test it
+        else:
+            assert not (unzip_folder / "notebooks" / "data_exploration.ipynb").is_file()
+
+        assert (unzip_folder / "sample_requirements.txt").is_file()
 
     finally:
         # pass

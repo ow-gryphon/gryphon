@@ -38,10 +38,11 @@ def handover(
 ):
     logger.info("Creating zip package.")
 
+    relative_path = path.absolute().relative_to(Path.cwd())
     with zipfile.ZipFile(output_path, mode="w") as zip_file:
         for f in file_list:
             if f not in gryphon_exclusion_list and f not in large_files_exclusion_list:
-                zip_file.write(filename=path / f)
+                zip_file.write(filename=relative_path / f)
 
     logfile = RCManager.get_rc_file(path)
     RCManager.get_environment_manager_path(logfile)
