@@ -41,12 +41,12 @@ def handle_template(template, project_home, rc_file):
                 dst=project_home,
                 dirs_exist_ok=True,
                 ignore=shutil.ignore_patterns(
-                    ".git/**",
-                    ".github/**",
-                    "__pycache__/**",
-                    "envs/**",
-                    ".venv/**",
-                    ".ipynb_checkpoints/**"
+                    ".git",
+                    ".github",
+                    "__pycache__",
+                    "envs",
+                    ".venv",
+                    ".ipynb_checkpoints"
                 )
             )
         finally:
