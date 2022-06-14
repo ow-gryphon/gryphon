@@ -178,18 +178,6 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
             assert not Path(unzip_folder / file).is_file()
 
         unzipped_notebook = (unzip_folder / "notebooks" / "data_exploration.ipynb")
-        # if include_gryphon_files or change_settings is None:
-        #     #
-        #     if change_settings == "change_size_limit" and file_size_limit == 0.25:
-        #         assert not unzipped_notebook.is_file()
-        #     else:
-        #         assert unzipped_notebook.is_file()
-        #
-        # else:
-        #     if change_settings != "change_gryphon_politics" and include_gryphon_files:
-        #         assert unzipped_notebook.is_file()
-        #     else:
-        #         assert not unzipped_notebook.is_file()
 
         if change_settings is None:
             assert unzipped_notebook.is_file()
@@ -208,7 +196,6 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
         assert (unzip_folder / "sample_requirements.txt").is_file()
 
     finally:
-        # pass
         teardown()
 
 

@@ -3,7 +3,6 @@ import logging
 from ..functions import erase_lines, list_conda_available_python_versions
 from ..questions import SettingsQuestions
 from ...constants import BACK, SUCCESS, ALWAYS_ASK
-from ...core.operations import RCManager
 from ...core.operations import SettingsManager
 from ...fsm import State, Transition, negate_condition
 
@@ -55,6 +54,9 @@ class ChangePythonVersion(State):
 
     def on_start(self, context: dict) -> dict:
         versions = list_conda_available_python_versions()
-        context["selected_option"] = SettingsQuestions.ask_python_version(versions, RCManager.get_current_python_version())
+        context["selected_option"] = SettingsQuestions.ask_python_version(
+            versions,
+            SettingsManager.get_current_python_version()
+        )
 
         return context
