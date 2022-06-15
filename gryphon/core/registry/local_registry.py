@@ -30,5 +30,12 @@ class LocalRegistry(TemplateRegistry):
             dst=self.registry_folder,
             dirs_exist_ok=True,
             copy_function=shutil.copy,
-            ignore=shutil.ignore_patterns(".git/**", ".github/**", "__pycache__/**")
+            ignore=shutil.ignore_patterns(
+                ".git",
+                ".github",
+                "__pycache__",
+                "envs",
+                ".venv",
+                ".ipynb_checkpoints"
+            )
         )

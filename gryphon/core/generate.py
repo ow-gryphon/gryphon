@@ -9,9 +9,9 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    fetch_template,
-    mark_notebooks_as_readonly, enable_files_overwrite,
-    clean_readonly_folder, append_requirement
+    fetch_template,    mark_notebooks_as_readonly,
+    enable_files_overwrite, clean_readonly_folder,
+    append_requirement
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
@@ -122,12 +122,12 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
         dst=Path(temp_path),
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(
-            origin / ".git/**",
-            origin / ".github/**",
-            origin / "__pycache__/**",
-            origin / "envs/**",
-            origin / ".venv/**",
-            origin / ".ipynb_checkpoints/**"
+            ".git",
+            ".github",
+            "__pycache__",
+            "envs",
+            ".venv",
+            ".ipynb_checkpoints"
         )
     )
     try:
