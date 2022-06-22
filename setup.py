@@ -57,6 +57,8 @@ setup(
         [console_scripts]
         gryphon=gryphon.gryphon_wizard:main
         griffin=gryphon.gryphon_wizard:did_you_mean_gryphon
+        grifon=gryphon.gryphon_wizard:did_you_mean_gryphon
+        gryfon=gryphon.gryphon_wizard:did_you_mean_gryphon
     ''',
     # gryph=gryphon.gryphon_cli: cli
     include_package_data=True,
