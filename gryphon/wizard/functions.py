@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Tuple
 from textwrap import fill
 from ..constants import (
-    CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH
+    CHILDREN, NAME, VENV_FOLDER, VALUE, DATA_PATH, ERASE_LINE
 )
 
 
@@ -19,7 +19,7 @@ class BackSignal(Exception):
 
 def erase_lines(n_lines=2):
     for _ in range(n_lines):
-        logger.info("\033[A                                                          \033[A")
+        logger.info(ERASE_LINE)
 
 
 def wrap_text(text) -> Tuple[str, int]:

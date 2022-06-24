@@ -5,7 +5,9 @@ from pathlib import Path
 QUIT = "quit"
 GENERATE = "generate"
 INIT = "init"
+INIT_FROM_EXISTING = "init_from_existing"
 ADD = "add"
+HANDOVER = "handover"
 ABOUT = "about"
 SETTINGS = "settings"
 
@@ -42,6 +44,7 @@ SUCCESS = 21
 
 # environment
 VENV_FOLDER = ".venv"
+CONDA_FOLDER = "envs"
 DEFAULT_ENV = "venv"
 VENV = "venv"
 CONDA = "conda"
@@ -52,6 +55,7 @@ PACKAGE_PATH = Path(__file__).parent
 DATA_PATH = PACKAGE_PATH / "data"
 CONFIG_FILE = GRYPHON_HOME / "gryphon_config.json"
 DEFAULT_CONFIG_FILE = DATA_PATH / "gryphon_config.json"
+REQUIREMENTS = "requirements.txt"
 
 # Python versions
 DEFAULT_PYTHON_VERSION = "3.8"
@@ -65,3 +69,7 @@ MIN_MINOR_VERSION = 7
 
 REMOTE_INDEX = "remote_index"
 LOCAL_TEMPLATE = "local"
+GRYPHON_RC = ".gryphon_rc"
+CHANGE_LIMIT = "CHANGE_LIMIT"
+
+ERASE_LINE = "\033[A                                                                                             \033[A"

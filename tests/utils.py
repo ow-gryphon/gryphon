@@ -8,14 +8,14 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
-from gryphon.constants import VENV_FOLDER
+from gryphon.constants import VENV_FOLDER, CONDA_FOLDER, GRYPHON_RC
 from gryphon.core.operations.environment_manager_operations import EnvironmentManagerOperations
 from gryphon.core.operations.path_utils import PathUtils
 
 
 TEST_FOLDER = Path("tests").resolve()
 CONFIG_FILE_NAME = "gryphon_config.json"
-MOCK_CONFIG_FILE_PATH = 'gryphon.core.settings.SettingsManager.get_config_path'
+MOCK_CONFIG_FILE_PATH = 'gryphon.core.operations.settings.SettingsManager.get_config_path'
 REQUIREMENTS_TXT = "requirements.txt"
 
 
@@ -52,12 +52,17 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
     """
     Creates a folder, creates a venv inside it and copies a sample requirements.txt file.
     """
+    if folder_name is None:
+        folder_name = Path.cwd()
+
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    EnvironmentManagerOperations.create_venv(folder_name)
+    path = EnvironmentManagerOperations.create_venv(folder_name / VENV_FOLDER)
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
+
+    sample_gryphon_rc = get_data_folder() / "sample_gryphon_rc"
 
     destination = PathUtils.get_destination_path(folder_name)
 
@@ -65,6 +70,13 @@ def create_folder_with_venv(folder_name: Path = None, requirements=None):
         src=requirements,
         dst=destination / REQUIREMENTS_TXT
     )
+
+    shutil.copyfile(
+        src=sample_gryphon_rc,
+        dst=destination / GRYPHON_RC
+    )
+
+    return path
 
 
 def create_folder_with_conda_env(folder_name: Path = None, requirements=None, python_version="3.7"):
@@ -74,20 +86,28 @@ def create_folder_with_conda_env(folder_name: Path = None, requirements=None, py
     if folder_name is not None and not folder_name.is_dir():
         create_folder(folder_name)
 
-    EnvironmentManagerOperations.create_conda_env(
-        folder=folder_name,
+    path = EnvironmentManagerOperations.create_conda_env(
+        folder=folder_name / CONDA_FOLDER,
         python_version=python_version
     )
 
     if requirements is None:
         requirements = get_data_folder() / "sample_requirements.txt"
 
+    sample_gryphon_rc = get_data_folder() / "sample_gryphon_rc"
     destination = PathUtils.get_destination_path(folder_name)
 
     shutil.copyfile(
         src=requirements,
         dst=destination / REQUIREMENTS_TXT
     )
+
+    shutil.copyfile(
+        src=sample_gryphon_rc,
+        dst=destination / GRYPHON_RC
+    )
+
+    return path
 
 
 def get_data_folder() -> Path:

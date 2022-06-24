@@ -1,10 +1,15 @@
+import glob
+import logging
 import os
 import platform
-from pathlib import Path
 from os import path
-import glob
-import pytest
+from pathlib import Path
 from typing import List
+
+import pytest
+
+from gryphon.logger import logger
+from gryphon.constants import GRYPHON_RC
 from .utils import (
     remove_folder,
     create_folder,
@@ -23,11 +28,14 @@ SANDBOX_PATH = Path("sandbox")
 def setup() -> callable:
 
     def _setup() -> Path:
+        handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
+        handler.setLevel(logging.DEBUG)
+
         if SANDBOX_PATH.is_dir():
             remove_folder(SANDBOX_PATH)
         create_folder(SANDBOX_PATH)
         os.chdir(SANDBOX_PATH)
-        with open(".gryphon_history", "w") as f:
+        with open(GRYPHON_RC, "w") as f:
             f.write("{}")
 
         return Path.cwd()

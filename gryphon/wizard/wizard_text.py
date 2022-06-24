@@ -27,8 +27,10 @@ class Text:
     first_prompt_question = "What would you like to do?"
 
     init_display_option = "Start a new Gryphon project"
+    init_from_existing_display_option = "Set up Gryphon with existing folder"
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
+    handover_display_option = "Handover project"
     about_display_option = "About OW Gryphon"
     settings_display_option = "Advanced options"
     quit_display_option = "Exit"
@@ -43,10 +45,29 @@ class Text:
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
 
+    init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
+    init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
+                                                " do you want to use it as the project environment?"
+    init_from_existing_confirm_venv_question = "An existing venv environment was found inside the project folder," \
+                                               " do you want to use it as the project environment?"
+    init_from_existing_point_to_external_env = "Do you want to point to an external environment?"
+    init_from_existing_ask_external_env_path = "Type the external environment path:"
+
     add_prompt_categories_question = "Navigate the categories:"
     add_prompt_instruction = " "
-    add_prompt_type_library = "Type the name of the python library you want to install:"
+    add_prompt_type_library = "Type the names of the python libraries you want to install (separated by spaces):"
     add_prompt_type_version = "Type the version you want to install:"
+
+    handover_prompt_folder_question = "Type the project folder (blank if current folder):"
+    handover_prompt_new_size_limit_question = "Type the new size limit you want to use in MBs, current {limit} MB " \
+                                              "(type a negative number to go back to previous):"
+    handover_prompt_include_large_files_question = "Some large files were found. Do you want to include them in " \
+                                                   "the package:"
+    handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above. " \
+                                             "The following file will be created: "
+    handover_prompt_change_settings = "Select the setting you want to change:"
+    handover_prompt_gryphon_files_policy = "Select what to do with Gryphon generated files:"
+    handover_prompt_large_files_policy = "Select what to do with large files:"
 
     about_prompt_links = "Useful links:"
 
@@ -59,6 +80,8 @@ class Text:
 
     # {library_name} is going to be replaced with the library name
     add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."
+    add_confirm_multiple = "Confirm that you want to install the following libraries to the current project: " \
+                           "{libraries}"
 
     # {location} is going to be replaced with the destination path
     # {template_name} is going to be replaced with the template name

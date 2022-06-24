@@ -3,25 +3,19 @@ Module containing the code for the generate command in then CLI.
 """
 
 import glob
-import json
 import logging
 import os
 import shutil
 from pathlib import Path
 
 from .common_operations import (
-    append_requirement,
-    get_rc_file,
-    log_operation, log_new_files, log_add_library,
-    download_template, unzip_templates, unify_templates,
-    mark_notebooks_as_readonly, enable_files_overwrite,
-    clean_temporary_folders
+    fetch_template,    mark_notebooks_as_readonly,
+    enable_files_overwrite, clean_readonly_folder,
+    append_requirement
 )
-from .operations.environment_manager_operations import EnvironmentManagerOperations
-from .operations.path_utils import PathUtils
+from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
-from .settings import SettingsManager
-from ..constants import GENERATE, DEFAULT_ENV, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE
+from ..constants import GENERATE, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -30,22 +24,15 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
-    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
-        data = json.load(f)
-        env_type = data.get("environment_management", DEFAULT_ENV)
+    current_path = PathUtils.get_destination_path(folder)
+    rc_file = RCManager.get_rc_file(folder)
+    env_path = RCManager.get_environment_manager_path(logfile=rc_file)
+    env_type = RCManager.get_environment_manager(logfile=rc_file)
 
     logger.info("Generating template.")
     if template.registry_type == REMOTE_INDEX:
 
-        download_folder = folder / ".temp"
-        zip_folder = folder / ".unzip"
-        template_folder = folder / ".target"
-
-        clean_temporary_folders(download_folder, zip_folder, template_folder)
-
-        download_template(template, download_folder)
-        unzip_templates(download_folder, zip_folder)
-        unify_templates(zip_folder, template_folder)
+        template_folder = fetch_template(template, folder)
 
         try:
             enable_files_overwrite(
@@ -54,28 +41,36 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             )
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
+            RCManager.log_new_files(template, template_folder,
+                                    performed_action=GENERATE, logfile=rc_file)
 
         finally:
-            clean_temporary_folders(download_folder, zip_folder, template_folder)
+            clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
+        RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
     for r in template.dependencies:
         append_requirement(r, location=folder)
 
-    log_add_library(template.dependencies)
+    RCManager.log_add_library(template.dependencies)
     if env_type == VENV:
-        EnvironmentManagerOperations.install_libraries_venv()
+        EnvironmentManagerOperations.install_libraries_venv(
+            environment_path=env_path,
+            requirements_path=current_path / REQUIREMENTS
+        )
     elif env_type == CONDA:
-        EnvironmentManagerOperations.install_libraries_conda()
+        EnvironmentManagerOperations.install_libraries_conda(
+            environment_path=env_path,
+            requirements_path=current_path / REQUIREMENTS
+        )
 
     # RC file
-    rc_file = get_rc_file(folder)
-    log_operation(template, performed_action=GENERATE, logfile=rc_file)
-    log_new_files(template, performed_action=GENERATE, logfile=rc_file)
+    RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)
+    # RCManager.log_new_files(template, performed_action=GENERATE, logfile=rc_file)
 
 
 def pattern_replacement(input_file, mapper):
@@ -121,10 +116,19 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     logger.info(f"Creating files at {definitive_path}")
 
     # Move files to destination
+    origin = Path(template_path)
     shutil.copytree(
-        src=Path(template_path),
+        src=origin,
         dst=Path(temp_path),
-        dirs_exist_ok=True
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(
+            ".git",
+            ".github",
+            "__pycache__",
+            "envs",
+            ".venv",
+            ".ipynb_checkpoints"
+        )
     )
     try:
         # Replace patterns and rename files
@@ -144,5 +148,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             dst=definitive_path,
             dirs_exist_ok=True
         )
+
     finally:
         shutil.rmtree(temp_path)

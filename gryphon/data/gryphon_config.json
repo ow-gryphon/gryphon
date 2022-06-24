@@ -1,5 +1,5 @@
 {
-    "config_version": 3,
+    "config_version": 5,
     "git_registry": {
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
@@ -16,5 +16,8 @@
     "environment_management": "venv",
     "ask_python_version_on_init": false,
     "default_python_version": "system_default",
-    "template_version_policy": "use_latest"
+    "template_version_policy": "use_latest",
+    "handover_file_size_limit": 10.0,
+    "handover_include_large_files": false,
+    "handover_include_gryphon_generated_files": true
 }

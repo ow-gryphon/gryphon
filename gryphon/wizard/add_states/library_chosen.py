@@ -13,7 +13,7 @@ def _callback_library_chosen_to_ask_option(context: dict) -> dict:
 
 
 def _callback_library_chosen_to_confirmation(context: dict) -> dict:
-    context["chosen_option"] = context["node"]
+    context["chosen_option"] = [context["node"]]
     return context
 
 

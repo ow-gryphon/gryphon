@@ -1,16 +1,16 @@
 import json
-import shutil
 import os
+import shutil
 from os import path
 
-from gryphon.core.registry import Template
-from gryphon.core.settings import SettingsManager
-from gryphon.constants import VENV
+from gryphon.constants import VENV, GRYPHON_RC
 from gryphon.core.generate import (
     generate,
     parse_project_template,
     pattern_replacement
 )
+from gryphon.core.operations import SettingsManager
+from gryphon.core.registry import Template
 from .utils import create_folder_with_venv, TEST_FOLDER
 
 
@@ -133,7 +133,7 @@ def test_generate_5(setup, teardown, get_pip_libraries):
         assert (cwd / "template" / "readme_mlclustering.md").is_file()
         assert (cwd / "template" / "src" / f"clustering_{file_name}.py").is_file()
 
-        log_file = cwd / ".gryphon_history"
+        log_file = cwd / GRYPHON_RC
 
         assert log_file.is_file()
         with open(log_file, "r", encoding="utf-8") as f:
@@ -154,7 +154,7 @@ def test_generate_6(setup, teardown):
             TEST_FOLDER / "data" / "registry_with_git_folder" / "generate" / "sample_generate",
             type="local"
         )
-        generate(template=template)
+        generate(template=template, folder=cwd)
 
         assert not os.path.isdir(cwd / ".git")
         assert not os.path.isfile(cwd / ".git" / "test.txt")

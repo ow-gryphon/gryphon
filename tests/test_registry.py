@@ -47,14 +47,13 @@ def test_template_registry_4():
 
 
 def test_local_registry_1(setup, teardown):
-    cwd = setup()
+    _ = setup()
     registry_name = "ok_registry"
     data_folder = TEST_FOLDER / "data" / registry_name
     try:
         registry = LocalRegistry(
             templates_root=data_folder,
             registry_name=registry_name,
-            # registry_folder=cwd
         )
 
         metadata = registry.get_templates()
@@ -62,10 +61,6 @@ def test_local_registry_1(setup, teardown):
         assert "generate" in metadata
         assert "sample_init_local" in metadata["init"]
         assert "sample_generate_local" in metadata["generate"]
-
-        destiny_register = cwd / registry_name
-        destiny_init = destiny_register / "init"
-        destiny_generate = destiny_register / "generate"
 
     finally:
         teardown()
@@ -120,14 +115,6 @@ def test_registry_collection_1(setup, teardown):
             }
         }
         registry = RegistryCollection.from_config_file(configurations, cwd)
-
-        local_registry = cwd / "default_registry"
-        local_registry_init = local_registry / "init"
-        local_registry_generate = local_registry / "generate"
-
-        # assert local_registry.is_dir()
-        # assert local_registry_init.is_dir()
-        # assert local_registry_generate.is_dir()
 
         metadata = registry.get_templates()
 

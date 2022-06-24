@@ -12,26 +12,35 @@ def select_init_on_main_menu(process):
     wait_for_output(process, Text.init_prompt_template_question)
 
 
-def select_generate_on_main_menu(process):
+def select_init_from_existing_on_main_menu(process):
     select_nth_option(process, n=2)
+    wait_for_output(process, Text.init_prompt_template_question)
+
+
+def select_generate_on_main_menu(process):
+    select_nth_option(process, n=3)
     wait_for_output(process, Text.add_prompt_categories_question)
-    print("selected generate")
 
 
 def select_add_on_main_menu(process):
-    select_nth_option(process, n=3)
-    wait_for_output(process, NEXT_MENU)
-
-
-def select_advanced_on_main_menu(process):
     select_nth_option(process, n=4)
     wait_for_output(process, NEXT_MENU)
 
 
-def select_about_on_main_menu(process):
+def select_handover_on_main_menu(process):
     select_nth_option(process, n=5)
+    wait_for_output(process, "project folder")
+
+
+def select_advanced_on_main_menu(process):
+    select_nth_option(process, n=6)
+    wait_for_output(process, NEXT_MENU)
+
+
+def select_about_on_main_menu(process):
+    select_nth_option(process, n=7)
     wait_for_output(process, USEFUL_LINKS)
 
 
 def select_exit_on_main_menu(process):
-    select_nth_option(process, n=6)
+    select_nth_option(process, n=8)

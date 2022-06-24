@@ -1,6 +1,6 @@
 import questionary
 from questionary import Choice, Separator
-from .common_functions import base_question, get_back_choice
+from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
 from ...constants import (QUIT, YES, NO, TYPE_AGAIN)
 
@@ -83,7 +83,7 @@ class GenerateQuestions:
         ).unsafe_ask()
 
     @staticmethod
-    @base_question
+    @base_text_prompt
     def generate_keyword_question():
         return questionary.text(message=Text.generate_keyword_argument).unsafe_ask()
 

@@ -1,11 +1,11 @@
 import logging
-from ...fsm import State, Transition
-from ...constants import NO
+
 from ..functions import erase_lines
 from ..questions import SettingsQuestions
+from ...constants import NO
 from ...constants import YES, SUCCESS
-from ...core.settings import SettingsManager
-
+from ...core.operations.settings import SettingsManager
+from ...fsm import State, Transition
 
 logger = logging.getLogger('gryphon')
 
@@ -21,8 +21,7 @@ def _condition_from_change_env_manager_to_end(context: dict) -> bool:
 
 
 def _callback_from_change_env_manager_to_end(context: dict) -> dict:
-    manager = SettingsManager()
-    manager.restore_default_config_file()
+    SettingsManager.restore_default_config_file()
     logger.log(SUCCESS, "Factory settings restored successfully")
 
     context["history"] = []

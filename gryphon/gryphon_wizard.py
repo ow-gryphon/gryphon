@@ -1,23 +1,24 @@
 """
 Gryphon interactive wizard.
 """
-import os
-import json
-import shutil
-import logging
-import platform
 import argparse
+import json
+import logging
+import os
+import platform
+import shutil
 import traceback
-from .core.registry import RegistryCollection
-from .core.operations.bash_utils import BashUtils
-from .wizard import init, generate, add, about, exit_program, settings
-from .wizard.wizard_text import Text
-from .wizard.questions import CommonQuestions
+
 from .constants import (
-    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS,
-    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH
+    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
+    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER
 )
+from .core.operations import BashUtils
+from .core.registry import RegistryCollection
 from .logger import logger
+from .wizard import init, generate, add, about, exit_program, settings, init_from_existing, handover
+from .wizard.questions import CommonQuestions
+from .wizard.wizard_text import Text
 
 
 def output_error(er: Exception):
@@ -89,8 +90,10 @@ def main():
         
         function = {
             INIT: init,
+            INIT_FROM_EXISTING: init_from_existing,
             GENERATE: generate,
             ADD: add,
+            HANDOVER: handover,
             ABOUT: about,
             SETTINGS: settings,
             QUIT: exit_program
@@ -120,18 +123,20 @@ def main():
 def did_you_mean_gryphon():
     logger.info("Did you mean \"gryphon\"?")
 
-# TODO: On generate, check if there are both a conda and a venv inside folder and use the one that is available
 # TODO: Test installation.
 # TODO: Resizing error on windows (duplicating texts).
 
 # TODO: Have a single readme file with all the readmes from other templates
-# TODO: Find a way to install wexpect for windows and pexpect for linux
 # TODO: Implement gitflow guidelines
-# TODO: Check if the user is really on a gryphon project folder
-# TODO: use pipfile to make requirements different from app and tests
 
 
 if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
+# DONE: rename environments when we already have one on the folder (no_ignore)
+# DONE: MESSAGE giving instructions about commands to use for opening a folder and to activate VENV
+# TODO: create a <back> option on text inputs
+# DONE: check if the external venv really exists before pip downloading a
+#  template an ask again if not
+# DONE: Exclude certain patterns when copying templates to the destination folder (i.e. .git)

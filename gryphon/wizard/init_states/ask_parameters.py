@@ -1,17 +1,35 @@
 import json
-from ..functions import list_conda_available_python_versions
+
+from ..functions import list_conda_available_python_versions, erase_lines
 from ..questions import InitQuestions, CommonQuestions
-from ...fsm import State, Transition, negate_condition
 from ...constants import (
     BACK, INIT, ALWAYS_ASK, DEFAULT_PYTHON_VERSION, CONFIG_FILE,
     LATEST, USE_LATEST
 )
 from ...core.registry.versioned_template import VersionedTemplate
+from ...fsm import State, Transition
 
 
-def _change_from_ask_parameters_to_main_menu(context):
-    chosen_version = context["chosen_version"]
-    return chosen_version == BACK
+def _change_from_ask_parameters_to_ask_template(context):
+    return context["location"] == BACK
+
+
+def _callback_from_ask_parameters_to_ask_template(context):
+    erase_lines()
+    return context
+
+
+def _callback_from_ask_parameters_to_self(context):
+    erase_lines(n_lines=2)
+    return context
+
+
+def _condition_return_to_self(context):
+    return context["chosen_version"] == BACK and context["location"] != BACK
+
+
+def _condition_confirmation(context):
+    return context["chosen_version"] != BACK and context["location"] != BACK
 
 
 class AskParameters(State):
@@ -25,29 +43,20 @@ class AskParameters(State):
     name = "ask_parameters"
     transitions = [
         Transition(
-            next_state="main_menu",
-            condition=_change_from_ask_parameters_to_main_menu
+            next_state="ask_template",
+            condition=_change_from_ask_parameters_to_ask_template,
+            callback=_callback_from_ask_parameters_to_ask_template
         ),
         Transition(
             next_state="confirmation",
-            condition=negate_condition(_change_from_ask_parameters_to_main_menu),
+            condition=_condition_confirmation,
+        ),
+        Transition(
+            next_state="ask_parameters",
+            condition=_condition_return_to_self,
+            callback=_callback_from_ask_parameters_to_self
         )
     ]
-
-    # TODO: change the ci/cd to create a json file in the format:
-    """
-        [
-            {"version": "v0.0.1"}, 
-            {"version": "v0.0.2"}
-        ]
-
-        instead of
-
-        {
-            "v0.0.1": {},
-            "v0.0.2": {}
-        }
-    """
 
     def on_start(self, context: dict) -> dict:
 
@@ -64,7 +73,11 @@ class AskParameters(State):
         else:
             context["template"] = template
 
+        context["chosen_version"] = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
         context["location"] = InitQuestions.ask_init_location()
+
+        if context["location"] == BACK:
+            return context
 
         context["extra_parameters"] = InitQuestions.ask_extra_arguments(
             arguments=context["template"].arguments
@@ -73,7 +86,5 @@ class AskParameters(State):
         if self.settings.get("default_python_version") == ALWAYS_ASK:
             versions = list_conda_available_python_versions()
             context["chosen_version"] = InitQuestions.ask_python_version(versions)
-        else:
-            context["chosen_version"] = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
 
         return context

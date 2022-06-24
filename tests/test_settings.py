@@ -1,7 +1,7 @@
 import json
 import shutil
 
-from gryphon.core.settings import SettingsManager
+from gryphon.core.operations import SettingsManager
 from .utils import TEST_FOLDER, CONFIG_FILE_NAME, MOCK_CONFIG_FILE_PATH
 
 

@@ -1,0 +1,5 @@
+pytest
+pexpect
+pytest-cov
+pytest-mock
+transitions

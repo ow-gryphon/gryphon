@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (INIT, ADD, ABOUT, GENERATE, QUIT, SETTINGS, VALUE, LATEST)
+from ...constants import (INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, VALUE, LATEST)
 
 
 class CommonQuestions:
@@ -16,12 +16,20 @@ class CommonQuestions:
                 value=INIT
             ),
             Choice(
+                title=Text.init_from_existing_display_option,
+                value=INIT_FROM_EXISTING
+            ),
+            Choice(
                 title=Text.generate_display_option,
                 value=GENERATE
             ),
             Choice(
                 title=Text.add_display_option,
                 value=ADD
+            ),
+            Choice(
+                title=Text.handover_display_option,
+                value=HANDOVER
             ),
             Separator(Text.menu_separator),
             Choice(
@@ -85,12 +93,6 @@ class CommonQuestions:
             )
             for v in versions
         ])
-
-        # TODO: Is the back option realy necessary. Maybe yes
-        # choices.extend([
-        #     Separator(),
-        #     get_back_choice()
-        # ])
 
         return questionary.select(
             message=Text.settings_ask_template_version,

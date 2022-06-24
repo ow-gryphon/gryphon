@@ -1,5 +1,5 @@
 import json
-from ...fsm import State, Transition
+
 from ..functions import (
     erase_lines, get_current_tree_state_by_value,
     filter_chosen_option_by_value, BackSignal
@@ -9,6 +9,7 @@ from ...constants import (
     BACK, CHILDREN, CONFIG_FILE, DEFAULT_ENV,
     NAME, VALUE
 )
+from ...fsm import State, Transition
 
 
 def handle_current_env_manager(tree_level):

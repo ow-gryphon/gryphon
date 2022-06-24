@@ -1,8 +1,8 @@
 import logging
-from ...fsm import State, Transition
-from ...core.operations.environment_manager_operations import EnvironmentManagerOperations
-from ...constants import YES, SUCCESS
 
+from ...constants import YES, SUCCESS
+from ...core.operations import EnvironmentManagerOperations
+from ...fsm import State, Transition
 
 logger = logging.getLogger('gryphon')
 

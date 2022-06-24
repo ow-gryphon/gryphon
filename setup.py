@@ -5,31 +5,31 @@ import glob
 from pathlib import Path
 from setuptools import setup, find_packages
 
-package_files = [
-    str(Path('data') / 'gryphon_config.json'),
-    str(Path('data') / 'library_tree.json'),
-    str(Path('data') / 'links_about.json'),
-    str(Path('data') / 'category_tree.json'),
-    str(Path('data') / 'settings_tree.json'),
-    str(Path('data') / 'python_versions_observations.json')
-]
 
-template_files = glob.glob(
-    str(Path('gryphon') / 'data' / 'template_scaffolding' / "**" ),
-    recursive=True
-)
+def glob_hidden(*args, **kwargs):
+    """A glob.glob that include dot files and hidden files"""
+    old_is_hidden = glob._ishidden
+    glob._ishidden = lambda x: False
 
-template_files.extend(
-    glob.glob(
-        str(Path('gryphon') / 'data' / 'template_scaffolding' / "template" / ".github" / "**") ,
-        recursive=True
-    )
-)
+    try:
+        result = glob.glob(*args, **kwargs)
+    finally:
+        glob._ishidden = old_is_hidden
 
-template_files = set(map(lambda x: x[8:], template_files))
+    return result
 
-print(template_files)
-package_files.extend(template_files)
+
+json_pattern = str(Path('gryphon') / 'data' / '*.json')
+project_scaffolding_pattern = str(Path('gryphon') / 'data' / 'template_scaffolding' / "**")
+
+config_files = glob_hidden(json_pattern, recursive=True)
+scaffolding_files = glob_hidden(project_scaffolding_pattern, recursive=True)
+
+package_files = []
+package_files.extend(config_files)
+package_files.extend(scaffolding_files)
+
+package_files = list(set(map(lambda x: x[8:], package_files)))
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -39,7 +39,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name='gryphon',
-    version='0.0.2',
+    version='0.1.0',
     license='MIT',
     description='OW analytics toolkit cli',
     long_description=long_description,
@@ -57,6 +57,8 @@ setup(
         [console_scripts]
         gryphon=gryphon.gryphon_wizard:main
         griffin=gryphon.gryphon_wizard:did_you_mean_gryphon
+        grifon=gryphon.gryphon_wizard:did_you_mean_gryphon
+        gryfon=gryphon.gryphon_wizard:did_you_mean_gryphon
     ''',
     # gryph=gryphon.gryphon_cli: cli
     include_package_data=True,

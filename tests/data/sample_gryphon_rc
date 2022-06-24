@@ -1,0 +1,4 @@
+{
+    "environment_manager": "venv",
+    "environment_manager_path": ".venv"
+}

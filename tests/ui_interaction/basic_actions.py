@@ -18,7 +18,7 @@ else:
 def start_wizard(working_directory: Path) -> pexpect.spawn:
     os.chdir(working_directory)
     process = pexpect.spawn(
-        command=f'gryphon --debug',
+        command=f'gryphon',
         encoding='utf-8',
         maxread=4000
     )
@@ -48,7 +48,7 @@ def type_text(process, text: str):
     process.send(text)
 
 
-def wait_for_output(process, text: str, timeout=5):
+def wait_for_output(process, text: str, timeout=10):
     process.expect(text, timeout=timeout)
     print(f"Found \"{text}\" on the outputs.")
 
