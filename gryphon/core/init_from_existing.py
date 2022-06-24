@@ -11,8 +11,7 @@ from .common_operations import (
 )
 from .operations import EnvironmentManagerOperations, RCManager, PathUtils, SettingsManager
 from ..constants import (
-    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, SUCCESS,
-    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 )
 
 logger = logging.getLogger('gryphon')
@@ -181,5 +180,3 @@ def init_from_existing(template, location, env_manager, use_existing_environment
     elif env_manager == CONDA:
         # CONDA
         EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(location, alternative_env=env_path)
-
-    logger.log(SUCCESS, "Installation successful!")
