@@ -134,9 +134,9 @@ if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
-# DONE: rename environments when we already have one on the folder (no_ignore)
-# DONE: MESSAGE giving instructions about commands to use for opening a folder and to activate VENV
-# TODO: create a <back> option on text inputs
-# DONE: check if the external venv really exists before pip downloading a
-#  template an ask again if not
-# DONE: Exclude certain patterns when copying templates to the destination folder (i.e. .git)
+# TODO: create a <back> option on all text inputs
+# OK: add note saying that the gryphon_rc is handed over and the user should be deleted manually if don't want it
+# OK: Warn the user if the gryphon_rc was found in
+# TODO: Criar repo para os templates de clustering
+# TODO: resolver back com linhas a menos no caso do handover quando usa ctrl+c
+# TODO: Nao usar hooks on scaffolding por enquanto (so no init)5
