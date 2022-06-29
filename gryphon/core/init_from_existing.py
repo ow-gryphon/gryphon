@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 from pathlib import Path
+from textwrap import wrap
 
 from .common_operations import (
     init_new_git_repo, initial_git_commit,
@@ -153,10 +154,28 @@ def handle_template(template, project_home):
 
 
 # CORE
-def init_from_existing(template, location, env_manager, use_existing_environment, existing_env_path,
+def init_from_existing(template, location: Path, env_manager, use_existing_environment, existing_env_path,
                        delete_existing, external_env_path):
 
     os.makedirs(location, exist_ok=True)
+    rc_path = location / GRYPHON_RC
+
+    if rc_path.is_file():
+        gryphon_files_included = RCManager.get_handover_include_gryphon_generated_files(rc_path)
+        if gryphon_files_included:
+            logger.warning("Every Gryphon file used in this project are present in the current directory.")
+        else:
+            operations = RCManager.get_gryphon_operations(rc_path)
+
+            template_string_list = '\n\t- '.join(map(lambda x: f'{x["template_name"]} ({x["action"]})', operations))
+
+            message = "There were some Gryphon files originally used in this project that were suppressed on the " \
+                      "handover process. Please install the following templates if you want the complete set of files:"
+
+            for line in wrap(message, width=100):
+                logger.warning(line)
+
+            logger.warning(f"\n\t- {template_string_list}\n")
 
     # TEMPLATE
     handle_template(template, project_home=location)

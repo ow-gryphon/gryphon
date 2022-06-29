@@ -4,3 +4,8 @@ repos:
     hooks:
       - id: check-added-large-files
         args: ['--maxkb={{file_size_limit_kb}}']
+
+  - repo: https://github.com/ow-gryphon/gryphon-pre-commit-hooks
+    rev: v0.1.0
+    hooks:
+      - id: ignore-files

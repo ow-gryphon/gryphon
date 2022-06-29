@@ -117,6 +117,13 @@ class RCManager:
         return cls._get_key_rc("files", logfile)
 
     @classmethod
+    def get_gryphon_operations(cls, logfile=None):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        return cls._get_key_rc("operations", logfile)
+
+    @classmethod
     def get_handover_include_gryphon_generated_files(cls, logfile=None):
         """
         Add information about each and every file added to the project into the rc file.

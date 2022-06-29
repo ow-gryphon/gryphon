@@ -8,7 +8,7 @@ import yaml
 
 from .core_text import Text
 from .operations import RCManager
-from ..constants import SUCCESS
+from ..constants import SUCCESS, GRYPHON_RC
 from ..logger import logger
 
 
@@ -39,11 +39,18 @@ def handover(
     logger.info("Creating zip package.")
 
     relative_path = path.absolute().relative_to(Path.cwd())
+
+    rc_present = False
     with zipfile.ZipFile(output_path, mode="w") as zip_file:
         for f in file_list:
             if f not in gryphon_exclusion_list and f not in large_files_exclusion_list:
                 zip_file.write(filename=relative_path / f)
+                if GRYPHON_RC in f:
+                    rc_present = True
 
+    if rc_present:
+        logger.warning(f"WARNING: The {GRYPHON_RC} file was handed over inside the .zip package generated. "
+                       f"If you don't want it you should remove it manually.")
     logfile = RCManager.get_rc_file(path)
     RCManager.get_environment_manager_path(logfile)
     # TODO: call pip freeze and log the installed libs
