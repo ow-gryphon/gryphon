@@ -133,10 +133,3 @@ def did_you_mean_gryphon():
 if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
-
-# TODO: create a <back> option on all text inputs
-# OK: add note saying that the gryphon_rc is handed over and the user should be deleted manually if don't want it
-# OK: Warn the user if the gryphon_rc was found in
-# TODO: Criar repo para os templates de clustering
-# TODO: resolver back com linhas a menos no caso do handover quando usa ctrl+c
-# TODO: Nao usar hooks on scaffolding por enquanto (so no init)5
