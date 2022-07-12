@@ -133,3 +133,6 @@ def did_you_mean_gryphon():
 if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
+
+# TODO: add an option to open an URL that points to a doc for the
+#  template. If there is not an URL inside metadata just don't show the option "read more"
