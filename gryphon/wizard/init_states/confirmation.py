@@ -1,18 +1,36 @@
 import logging
+import os
+import platform
 from pathlib import Path
+
 from ..functions import erase_lines
 from ..questions import InitQuestions
+from ...constants import YES, NO, READ_MORE, CHANGE_LOCATION
 from ...fsm import State, Transition
-from ...constants import YES, NO
 
 logger = logging.getLogger('gryphon')
 
 
 def confirmation_success_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
-    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context["n_lines_ask_again"] else 0
+    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
 
-    erase_lines(n_lines=n_lines + 3 + context["n_lines_warning"] + ask_again)
+    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"] + ask_again)
+    return context
+
+
+def read_more_callback(context: dict) -> dict:
+    n_lines = context["n_lines"]
+    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
+
+    if platform.system() == "Windows":
+        os.system(f'start {context["read_more_link"]}')
+    else:
+        os.system(f"""nohup xdg-open "{context["read_more_link"]}" """)
+        os.system(f"""rm nohup.out""")
+        erase_lines(n_lines=1)
+
+    erase_lines(n_lines=n_lines + context["n_lines_warning"] + ask_again)
     return context
 
 
@@ -26,9 +44,14 @@ def _change_from_confirmation_to_ask_template(context: dict) -> bool:
     return confirmed == NO
 
 
+def _change_from_confirmation_to_confirm(context: dict) -> bool:
+    confirmed = context["confirmed"]
+    return confirmed == READ_MORE
+
+
 def _change_from_confirmation_to_ask_location_again(context: dict) -> bool:
     confirmed = context["confirmed"]
-    return confirmed == "change_location"
+    return confirmed == CHANGE_LOCATION
 
 
 class Confirmation(State):
@@ -47,6 +70,11 @@ class Confirmation(State):
         Transition(
             next_state="ask_location_again",
             condition=_change_from_confirmation_to_ask_location_again
+        ),
+        Transition(
+            next_state="confirmation",
+            condition=_change_from_confirmation_to_confirm,
+            callback=read_more_callback
         )
     ]
 
@@ -61,9 +89,12 @@ class Confirmation(State):
             context["n_lines_warning"] = 1
             logger.warning("WARNING: The selected folder already exists.")
 
+        context["read_more_link"] = context["template"].read_more_link
+
         confirmed, n_lines = InitQuestions.confirm_init(
             template=template,
             location=Path(location).resolve(),
+            read_more_option=context["read_more_link"] is not None,
             **extra_parameters
         )
 

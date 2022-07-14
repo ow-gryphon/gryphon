@@ -4,7 +4,7 @@ from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice, logger
 from ..functions import wrap_text
 from ..wizard_text import Text
-from ...constants import (YES, NO, SYSTEM_DEFAULT)
+from ...constants import (YES, NO, SYSTEM_DEFAULT, READ_MORE, CHANGE_LOCATION)
 
 
 class InitQuestions:
@@ -52,7 +52,7 @@ class InitQuestions:
 
     @staticmethod
     @base_question
-    def confirm_init(template, location, **kwargs):
+    def confirm_init(template, location, read_more_option=False, **kwargs):
 
         n_lines = 0
         if template.description:
@@ -70,22 +70,33 @@ class InitQuestions:
 
         n_lines += len(message.split('\n'))
 
+        options = [
+            Choice(
+                title="Yes",
+                value=YES
+            ),
+            Choice(
+                title="No",
+                value=NO
+            )
+        ]
+        if read_more_option:
+            options.append(
+                Choice(
+                    title="Read more",
+                    value=READ_MORE
+                )
+            )
+
+        options.append(
+            Choice(
+                title="Change project location",
+                value=CHANGE_LOCATION
+            )
+        )
         return questionary.select(
             message=message,
-            choices=[
-                Choice(
-                    title="Yes",
-                    value=YES
-                ),
-                Choice(
-                    title="No",
-                    value=NO
-                ),
-                Choice(
-                    title="Change project location",
-                    value="change_location"
-                )
-            ]
+            choices=options
         ).unsafe_ask(), n_lines
 
     @staticmethod
