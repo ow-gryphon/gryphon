@@ -34,3 +34,9 @@ class PreCommitManager:
             logger.warning("Pre-commit config file '.pre-commit-config.yaml' not found in current folder.")
 
         # methods that doesn't change the .yaml can be kept outside the try clause
+
+# TODO: Make pre-commit one library that is installed through direct code, avoiding the necessity to have it as a
+#  dependency (in every requirements.txt) on every template
+
+# TODO: Make '.pre-commit-config.yaml' file to be copied by default to all templates, avoiding the necessity to have it
+#  in the template scaffolding and in every template

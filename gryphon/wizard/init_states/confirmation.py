@@ -19,6 +19,14 @@ def confirmation_success_callback(context: dict) -> dict:
     return context
 
 
+def ask_location_again_callback(context: dict) -> dict:
+    n_lines = context["n_lines"]
+    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
+
+    erase_lines(n_lines=n_lines + 1 + context["n_lines_warning"] + ask_again)
+    return context
+
+
 def read_more_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
     ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
@@ -69,7 +77,8 @@ class Confirmation(State):
         ),
         Transition(
             next_state="ask_location_again",
-            condition=_change_from_confirmation_to_ask_location_again
+            condition=_change_from_confirmation_to_ask_location_again,
+            callback=ask_location_again_callback
         ),
         Transition(
             next_state="confirmation",
