@@ -4,14 +4,8 @@ from pathlib import Path
 from .common_operations import (
     init_new_git_repo, initial_git_commit,
 )
-from .operations import (
-    EnvironmentManagerOperations, BashUtils,
-    SettingsManager, PreCommitManager
-)
-from ..constants import (
-    DATA_PATH, SUCCESS, REQUIREMENTS,
-    INIT, CONDA, VENV, VENV_FOLDER, CONDA_FOLDER
-)
+from .operations import (BashUtils, SettingsManager, PreCommitManager)
+from ..constants import (DATA_PATH, SUCCESS)
 
 logger = logging.getLogger('gryphon')
 
@@ -21,8 +15,8 @@ def template_scaffolding(location: Path):
     template_path = DATA_PATH / "template_scaffolding"
     location = Path(location)
 
-    python_version = SettingsManager.get_current_python_version()
-    env_type = SettingsManager.get_environment_manager()
+    # python_version = SettingsManager.get_current_python_version()
+    # env_type = SettingsManager.get_environment_manager()
 
     logger.info("Creating project scaffolding.")
     logger.info(f"Initializing project at {location}")
@@ -41,28 +35,6 @@ def template_scaffolding(location: Path):
     # Git
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
-
-    # ENV Manager
-    if env_type == VENV:            # VENV
-        env_folder = location / VENV_FOLDER
-        env_folder = EnvironmentManagerOperations.create_venv(env_folder, python_version=python_version)
-        EnvironmentManagerOperations.install_libraries_venv(
-            environment_path=env_folder,
-            requirements_path=location / REQUIREMENTS
-        )
-
-    elif env_type == CONDA:
-        # CONDA
-        env_folder = location / CONDA_FOLDER
-        env_folder = EnvironmentManagerOperations.create_conda_env(env_folder, python_version=python_version)
-        EnvironmentManagerOperations.install_libraries_conda(
-            environment_path=env_folder,
-            requirements_path=location / REQUIREMENTS
-        )
-
-    else:
-        raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
-                           f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
 
     # install pre-commit hooks
     PreCommitManager.final_setup(location)
