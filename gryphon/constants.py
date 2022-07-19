@@ -71,6 +71,7 @@ MIN_MINOR_VERSION = 7
 REMOTE_INDEX = "remote_index"
 LOCAL_TEMPLATE = "local"
 GRYPHON_RC = ".gryphon_rc"
+PRE_COMMIT_YML = '.pre-commit-config.yaml'
 CHANGE_LIMIT = "CHANGE_LIMIT"
 
 ERASE_LINE = "\033[A                                                                                             " \

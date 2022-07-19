@@ -90,7 +90,7 @@ def init(template: Template, location, python_version, **kwargs):
 
     # TEMPLATE
     handle_template(template, project_home, rc_file)
-    PreCommitManager.fill_configurations(project_home)
+    PreCommitManager.initial_setup(project_home)
 
     # Git
     repo = init_new_git_repo(folder=project_home)
@@ -147,4 +147,4 @@ def init(template: Template, location, python_version, **kwargs):
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
 
-    PreCommitManager.install_pre_commit(env_path, project_home)
+    PreCommitManager.final_setup(project_home)

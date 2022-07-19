@@ -33,7 +33,7 @@ def template_scaffolding(location: Path):
         template_source=Path(template_path)
     )
 
-    PreCommitManager.fill_configurations(location)
+    PreCommitManager.initial_setup(location)
 
     # TODO: JOIN ALL THE requirements.txt files in one at the time of project
     #  init with more than one zip file downloaded.
@@ -65,7 +65,7 @@ def template_scaffolding(location: Path):
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
 
     # install pre-commit hooks
-    PreCommitManager.install_pre_commit(env_folder, location)
+    PreCommitManager.final_setup(location)
 
     SettingsManager.add_local_template(str(Path(location).absolute()))
     logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
