@@ -8,7 +8,11 @@ from pathlib import Path
 import pytest
 import yaml
 
-from gryphon.constants import CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK, USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES
+from gryphon.constants import (
+    CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK,
+    USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES,
+    VENV_FOLDER, CONDA_FOLDER
+)
 from gryphon.core.operations import RCManager, SettingsManager
 from .ui_interaction.add import add_library_from_menu, add_library_typing, add_library_selecting_version
 from .ui_interaction.advanced_options import create_template_scaffold
@@ -403,4 +407,65 @@ def test_template_functions(
 
     finally:
         SettingsManager.test_template_cleanup()
+        teardown()
+
+
+def execute_and_log(command) -> tuple:
+    from subprocess import PIPE, Popen
+
+    p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p.communicate()
+    return stderr.decode(), stdout.decode()
+
+
+@pytest.mark.parametrize('environment_manager', environment_managers)
+@pytest.mark.parametrize('large_file', [True, False])
+def test_pre_commit_hooks(
+    setup, teardown, get_pip_libraries, get_conda_libraries,
+    environment_manager, large_file, data_folder
+):
+
+    str_passed_large_files = "check for added large files..............................................Passed"
+    str_ignore_files = "Ignore undesirable files.................................................Passed"
+    str_failed_large_files = "check for added large files..............................................Failed"
+
+    cwd = setup()
+    project_name = "test_project"
+    project_folder = cwd / project_name
+
+    # Set up config conditions
+    SettingsManager.change_environment_manager(environment_manager)
+    SettingsManager.change_template_version_policy(USE_LATEST)
+    SettingsManager.change_default_python_version(SYSTEM_DEFAULT)
+    SettingsManager.change_pre_commit_file_size_limit(10)
+
+    try:
+        start_new_project(project_name, working_directory=cwd)
+
+        if large_file:
+            shutil.copy(
+                src=data_folder / "large_file.test",
+                dst=cwd / project_name
+            )
+
+        if environment_manager == VENV:
+            assert (cwd / project_name / VENV_FOLDER / "bin" / "pre-commit").is_file()
+
+        if environment_manager == CONDA:
+            assert (cwd / project_name / CONDA_FOLDER / "bin" / "pre-commit").is_file()
+
+        stderr, stdout = execute_and_log(
+            f"cd \"{project_folder}\" && "
+            f"git add . && "
+            f"git commit -m 'test commit'"
+        )
+
+        if large_file:
+            assert str_failed_large_files in stderr
+        else:
+            assert str_passed_large_files in stderr
+
+        assert str_ignore_files in stderr
+
+    finally:
         teardown()

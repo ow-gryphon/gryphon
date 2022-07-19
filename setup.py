@@ -20,13 +20,16 @@ def glob_hidden(*args, **kwargs):
 
 
 json_pattern = str(Path('gryphon') / 'data' / '*.json')
+yml_pattern = str(Path('gryphon') / 'data' / '*.yaml')
 project_scaffolding_pattern = str(Path('gryphon') / 'data' / 'template_scaffolding' / "**")
 
 config_files = glob_hidden(json_pattern, recursive=True)
+yaml_config_files = glob_hidden(yml_pattern, recursive=True)
 scaffolding_files = glob_hidden(project_scaffolding_pattern, recursive=True)
 
 package_files = []
 package_files.extend(config_files)
+package_files.extend(yaml_config_files)
 package_files.extend(scaffolding_files)
 
 package_files = list(set(map(lambda x: x[8:], package_files)))

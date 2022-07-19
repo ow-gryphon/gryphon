@@ -136,3 +136,5 @@ if __name__ == '__main__':
 
 # OK: add an option to open an URL that points to a doc for the
 #  template. If there is not an URL inside metadata just don't show the option "read more"
+
+# OK: não instalar .venv quando ta criando o template scaffold

@@ -68,6 +68,10 @@ class SettingsManager:
         cls._set_key("handover_file_size_limit", limit)
 
     @classmethod
+    def change_pre_commit_file_size_limit(cls, limit: float):
+        cls._set_key("pre_commit_file_size_limit", limit)
+
+    @classmethod
     def change_handover_include_gryphon_generated_files(cls, state: bool):
         cls._set_key("handover_include_gryphon_generated_files", state)
 

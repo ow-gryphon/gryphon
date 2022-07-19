@@ -35,8 +35,8 @@ class PreCommitManager:
         # methods that doesn't change the .yaml can be kept outside the try clause
 
     @staticmethod
-    def _activate_hooks(environment_path):
-        BashUtils.execute_and_log(f"\"{environment_path / 'bin' / 'pre-commit'}\" install")
+    def _activate_hooks(environment_path, git_repo_root):
+        BashUtils.execute_and_log(f"cd \"{git_repo_root}\" && \"{environment_path / 'bin' / 'pre-commit'}\" install")
 
     @staticmethod
     def _install_pre_commit(env_manager, environment_path):
@@ -47,10 +47,9 @@ class PreCommitManager:
         elif env_manager == VENV:
 
             if platform.system() == "Windows":
-                BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
-
-            else:
                 BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit')
+            else:
+                BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
 
     @classmethod
     def initial_setup(cls, location):
@@ -68,4 +67,4 @@ class PreCommitManager:
         environment_path = RCManager.get_environment_manager_path(logfile=log)
 
         cls._install_pre_commit(env_manager, environment_path)
-        cls._activate_hooks(environment_path)
+        cls._activate_hooks(environment_path, location)

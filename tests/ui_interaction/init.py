@@ -57,6 +57,8 @@ def start_new_project(project_name: str, working_directory: Path = Path.cwd()):
         wait_for_success(process)
         # I had to comment the code that creates a new session inside the created
         #  folder in order to make this test to work. It was giving timeout always
+        wait_for_output(process, text="pre-commit installed", timeout=600)
+
         quit_process(process)
     except Exception as e:
         if process:
