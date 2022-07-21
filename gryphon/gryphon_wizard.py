@@ -138,3 +138,11 @@ if __name__ == '__main__':
 #  template. If there is not an URL inside metadata just don't show the option "read more"
 
 # OK: não instalar .venv quando ta criando o template scaffold
+# OK: problema pra installar o pre-commit quando ta genrando scaffolding
+# OK: problema pra instalar notebook extensions, bloqueio nos nbextensions
+
+# OK: tem algo curioso acontecendo. Quando se cria um conda env ele fica vazio até que
+# se instale algo nele (nao da pra inclusive achar o pip dentro da pasta). So depois
+# que instala que aparece o pip la dentro, mas ai quando vai na opçao add da pau. pois
+# tem coisas do conda forge la, ai fica rodando infinito. Talvez fosse o caso de instalar
+# antes com o conda e so no add usar o pip

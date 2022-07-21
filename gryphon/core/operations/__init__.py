@@ -4,3 +4,4 @@ from .path_utils import PathUtils
 from .pre_commit_manager import PreCommitManager
 from .rc_manager import RCManager
 from .settings import SettingsManager
+from .nbextesions_manager import NBExtensionsManager

@@ -97,6 +97,7 @@ def test_project_functions(
 
     finally:
         teardown()
+        # pass
 
 
 @pytest.mark.parametrize('environment_manager', environment_managers)
@@ -468,4 +469,5 @@ def test_pre_commit_hooks(
         assert str_ignore_files in stderr
 
     finally:
-        teardown()
+        # teardown()
+        pass

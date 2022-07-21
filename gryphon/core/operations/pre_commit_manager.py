@@ -4,8 +4,8 @@ import shutil
 from .bash_utils import BashUtils
 from .rc_manager import RCManager
 from .settings import SettingsManager
+from ...constants import DATA_PATH, PRE_COMMIT_YML, GRYPHON_RC
 from ...logger import logger
-from ...constants import DATA_PATH, PRE_COMMIT_YML, CONDA, VENV, GRYPHON_RC
 
 
 class PreCommitManager:
@@ -39,17 +39,12 @@ class PreCommitManager:
         BashUtils.execute_and_log(f"cd \"{git_repo_root}\" && \"{environment_path / 'bin' / 'pre-commit'}\" install")
 
     @staticmethod
-    def _install_pre_commit(env_manager, environment_path):
+    def _install_pre_commit(environment_path):
 
-        if env_manager == CONDA:
-            BashUtils.execute_and_log(f'conda install pre-commit --prefix \"{environment_path}\"')
-
-        elif env_manager == VENV:
-
-            if platform.system() == "Windows":
-                BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit')
-            else:
-                BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
+        if platform.system() == "Windows":
+            BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit')
+        else:
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
 
     @classmethod
     def initial_setup(cls, location):
@@ -63,8 +58,7 @@ class PreCommitManager:
     def final_setup(cls, location):
 
         log = location / GRYPHON_RC
-        env_manager = RCManager.get_environment_manager(logfile=log)
         environment_path = RCManager.get_environment_manager_path(logfile=log)
 
-        cls._install_pre_commit(env_manager, environment_path)
+        cls._install_pre_commit(environment_path)
         cls._activate_hooks(environment_path, location)

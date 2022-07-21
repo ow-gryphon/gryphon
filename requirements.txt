@@ -4,3 +4,4 @@ questionary
 GitPython
 colorlog
 PyYAML
+pre-commit

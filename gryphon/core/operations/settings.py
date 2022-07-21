@@ -35,7 +35,7 @@ class SettingsManager:
             contents[key] = value
 
             f.seek(0)
-            f.write(json.dumps(contents))
+            f.write(json.dumps(contents, sort_keys=True, indent=4))
             f.truncate()
 
     @classmethod

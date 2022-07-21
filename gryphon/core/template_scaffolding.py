@@ -4,7 +4,7 @@ from pathlib import Path
 from .common_operations import (
     init_new_git_repo, initial_git_commit,
 )
-from .operations import (BashUtils, SettingsManager, PreCommitManager)
+from .operations import (BashUtils, SettingsManager)
 from ..constants import (DATA_PATH, SUCCESS)
 
 logger = logging.getLogger('gryphon')
@@ -27,7 +27,7 @@ def template_scaffolding(location: Path):
         template_source=Path(template_path)
     )
 
-    PreCommitManager.initial_setup(location)
+    # PreCommitManager.initial_setup(location)
 
     # TODO: JOIN ALL THE requirements.txt files in one at the time of project
     #  init with more than one zip file downloaded.
@@ -37,7 +37,7 @@ def template_scaffolding(location: Path):
     initial_git_commit(repo)
 
     # install pre-commit hooks
-    PreCommitManager.final_setup(location)
+    # PreCommitManager.final_setup(location)
 
     SettingsManager.add_local_template(str(Path(location).absolute()))
     logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
@@ -46,7 +46,5 @@ def template_scaffolding(location: Path):
                 "name and the command).")
     logger.log(SUCCESS, "Installation successful!")
 
-# DONE: install pre-commit hooks on init
-# TODO: add .pre-commit-config.yaml on the template folders
 # TODO: prompt whether the template scaffolding is for init or generate]
 # TODO: way to choose which pre-commit hooks ones want to add

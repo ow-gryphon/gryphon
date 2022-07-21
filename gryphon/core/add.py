@@ -3,14 +3,15 @@ Module containing the code for the add command in then CLI.
 """
 import logging
 import os
+import platform
 from pathlib import Path
 
 from .common_operations import (
     append_requirement, backup_requirements,
     rollback_requirement
 )
-from .operations import EnvironmentManagerOperations, RCManager
-from ..constants import VENV, CONDA, REQUIREMENTS
+from .operations import RCManager, BashUtils
+from ..constants import SUCCESS
 
 logger = logging.getLogger('gryphon')
 
@@ -25,12 +26,12 @@ def add(library_name, version=None, cwd=Path.cwd()):
     logger.info("Adding required lib.")
 
     rc_file = RCManager.get_rc_file(cwd)
-    env_manager = VENV
+    # env_manager = VENV
     env_path = "pip"
 
     try:
         env_path = RCManager.get_environment_manager_path(logfile=rc_file)
-        env_manager = RCManager.get_environment_manager(logfile=rc_file)
+        # env_manager = RCManager.get_environment_manager(logfile=rc_file)
         in_gryphon_project = True
     except KeyError:
         in_gryphon_project = False
@@ -45,22 +46,29 @@ def add(library_name, version=None, cwd=Path.cwd()):
         if in_gryphon_project:
             append_requirement(lib, location=cwd)
 
-        if env_manager == VENV:
-            EnvironmentManagerOperations.install_libraries_venv(
-                environment_path=env_path,
-                requirements_path=cwd / REQUIREMENTS
-            )
-
-        elif env_manager == CONDA:
-            EnvironmentManagerOperations.install_libraries_conda(
-                environment_path=env_path,
-                requirements_path=cwd / REQUIREMENTS
-            )
-
+        if platform.system() == "Windows":
+            BashUtils.execute_and_log(f'\"{env_path / "Scripts" / "pip"}\" install {lib}')
         else:
-            env_list = [VENV, CONDA]
-            raise RuntimeError(f"Invalid environment manager on the config file: \"{env_manager}\"."
-                               f"Should be one of {env_list}. Restoring the default config file should solve.")
+            BashUtils.execute_and_log(f'\"{env_path / "bin" / "pip"}\" install {lib}')
+
+        logger.log(SUCCESS, "Installation successful!")
+
+        # if env_manager == VENV:
+        #     EnvironmentManagerOperations.install_libraries_venv(
+        #         environment_path=env_path,
+        #         requirements_path=cwd / REQUIREMENTS
+        #     )
+        #
+        # elif env_manager == CONDA:
+        #     EnvironmentManagerOperations.install_libraries_conda(
+        #         environment_path=env_path,
+        #         requirements_path=cwd / REQUIREMENTS
+        #     )
+        #
+        # else:
+        #     env_list = [VENV, CONDA]
+        #     raise RuntimeError(f"Invalid environment manager on the config file: \"{env_manager}\"."
+        #                        f"Should be one of {env_list}. Restoring the default config file should solve.")
 
     except RuntimeError as e:
         if in_gryphon_project:

@@ -47,7 +47,7 @@ class RCManager:
             new_contents[key] = value
 
             f.seek(0)
-            f.write(json.dumps(new_contents))
+            f.write(json.dumps(new_contents, sort_keys=True, indent=4))
             f.truncate()
 
     @staticmethod
@@ -166,7 +166,7 @@ class RCManager:
             )
 
             f.seek(0)
-            f.write(json.dumps(new_contents))
+            f.write(json.dumps(new_contents, sort_keys=True, indent=4))
             f.truncate()
 
     @staticmethod
@@ -193,7 +193,7 @@ class RCManager:
                     )
 
                 f.seek(0)
-                f.write(json.dumps(new_contents))
+                f.write(json.dumps(new_contents, sort_keys=True, indent=4))
                 f.truncate()
         except FileNotFoundError:
             logger.warning(f"The {GRYPHON_RC} file was not found, therefore you are not inside a "
@@ -231,5 +231,5 @@ class RCManager:
                 )
 
             f.seek(0)
-            f.write(json.dumps(new_contents))
+            f.write(json.dumps(new_contents, sort_keys=True, indent=4))
             f.truncate()

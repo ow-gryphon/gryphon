@@ -1,5 +1,5 @@
 {
-    "config_version": 5,
+    "config_version": 6,
     "git_registry": {
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""

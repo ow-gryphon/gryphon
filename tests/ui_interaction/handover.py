@@ -1,22 +1,20 @@
-
-import json
-from time import sleep
 from pathlib import Path
 
-from gryphon.constants import GRYPHON_HOME, CONFIG_FILE, ALWAYS_ASK
-from gryphon.wizard.wizard_text import Text
+from gryphon.constants import GRYPHON_HOME, CONFIG_FILE
 from gryphon.core.core_text import Text as CoreText
+from gryphon.wizard.wizard_text import Text
 from .basic_actions import (
-    start_wizard, quit_process, wait_for_success,
-    type_text,
-    select_nth_option, wait_for_output, enter,
-    navigate_categories, confirm_information
+    start_wizard, quit_process, type_text,
+    select_nth_option, wait_for_output, enter
 )
 from .constants import CONFIRMATION_MESSAGE
-from .generate import choose_first_template
 from .main_menu import select_handover_on_main_menu
 
 CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
+
+
+def choose_first_template(process):
+    select_nth_option(process, n=1)
 
 
 def type_folder_path(process, path):

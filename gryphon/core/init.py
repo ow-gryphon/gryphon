@@ -15,7 +15,7 @@ from .common_operations import (
 )
 from .operations import (
     BashUtils, EnvironmentManagerOperations,
-    RCManager, SettingsManager, PreCommitManager
+    RCManager, SettingsManager, PreCommitManager, NBExtensionsManager
 )
 from .registry import Template
 from ..constants import (
@@ -117,7 +117,7 @@ def init(template: Template, location, python_version, **kwargs):
             environment_path=project_home / VENV_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
-        EnvironmentManagerOperations.install_extra_nbextensions_venv(
+        NBExtensionsManager.install_extra_nbextensions_venv(
             environment_path=project_home / VENV_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
@@ -138,7 +138,7 @@ def init(template: Template, location, python_version, **kwargs):
             environment_path=project_home / CONDA_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
-        EnvironmentManagerOperations.install_extra_nbextensions_conda(
+        NBExtensionsManager.install_extra_nbextensions_conda(
             environment_path=project_home / CONDA_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
