@@ -469,5 +469,5 @@ def test_pre_commit_hooks(
         assert str_ignore_files in stderr
 
     finally:
-        # teardown()
-        pass
+        teardown()
+        # pass
