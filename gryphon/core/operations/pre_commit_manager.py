@@ -36,13 +36,21 @@ class PreCommitManager:
 
     @staticmethod
     def _activate_hooks(environment_path, git_repo_root):
-        BashUtils.execute_and_log(f"cd \"{git_repo_root}\" && \"{environment_path / 'bin' / 'pre-commit'}\" install")
+        sub_folder = 'bin'
+
+        if platform.system() == "Windows":
+            sub_folder = 'Scripts'
+
+        BashUtils.execute_and_log(
+            f"cd \"{git_repo_root}\" && \"{environment_path / sub_folder / 'pre-commit'}\" install"
+        )
 
     @staticmethod
     def _install_pre_commit(environment_path):
 
         if platform.system() == "Windows":
-            BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit')
+            BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit '
+                                      f'--no-warn-script-location')
         else:
             BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
 
