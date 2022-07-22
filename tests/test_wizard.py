@@ -449,7 +449,7 @@ def test_pre_commit_hooks(
                 dst=project_folder
             )
 
-        env_folder =  VENV_FOLDER if environment_manager == VENV else CONDA_FOLDER
+        env_folder = VENV_FOLDER if environment_manager == VENV else CONDA_FOLDER
         pre_commit_path = (project_folder / env_folder / "bin" / "pre-commit")
 
         assert pre_commit_path.is_file()
