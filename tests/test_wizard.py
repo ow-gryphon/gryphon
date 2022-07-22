@@ -446,14 +446,13 @@ def test_pre_commit_hooks(
         if large_file:
             shutil.copy(
                 src=data_folder / "large_file.test",
-                dst=cwd / project_name
+                dst=project_folder
             )
 
-        if environment_manager == VENV:
-            assert (cwd / project_name / VENV_FOLDER / "bin" / "pre-commit").is_file()
+        env_folder =  VENV_FOLDER if environment_manager == VENV else CONDA_FOLDER
+        pre_commit_path = (project_folder / env_folder / "bin" / "pre-commit")
 
-        if environment_manager == CONDA:
-            assert (cwd / project_name / CONDA_FOLDER / "bin" / "pre-commit").is_file()
+        assert pre_commit_path.is_file()
 
         stderr, stdout = execute_and_log(
             f"cd \"{project_folder}\" && "
