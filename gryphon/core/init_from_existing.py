@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 from pathlib import Path
+from textwrap import wrap
 
 from .common_operations import (
     init_new_git_repo, initial_git_commit,
@@ -11,8 +12,7 @@ from .common_operations import (
 )
 from .operations import EnvironmentManagerOperations, RCManager, PathUtils, SettingsManager
 from ..constants import (
-    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, SUCCESS,
-    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 )
 
 logger = logging.getLogger('gryphon')
@@ -90,7 +90,10 @@ def process_environment(location, env_manager, use_existing_environment,
         if delete_existing:
             shutil.rmtree(existing_env_path)
 
+        path = PathUtils.get_destination_path(external_env_path)
+
         if external_env_path is None:
+
             path = location / VENV_FOLDER
 
             if env_manager == CONDA:
@@ -99,13 +102,10 @@ def process_environment(location, env_manager, use_existing_environment,
             elif env_manager == VENV:
                 path = location / VENV_FOLDER
 
-            if not use_existing_environment and path.is_dir():
+            if path.is_dir():
                 path = rename_dir(path)
 
             path = create_environment(path, env_manager=env_manager)
-
-        else:
-            path = PathUtils.get_destination_path(external_env_path)
 
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)
@@ -154,10 +154,28 @@ def handle_template(template, project_home):
 
 
 # CORE
-def init_from_existing(template, location, env_manager, use_existing_environment, existing_env_path,
+def init_from_existing(template, location: Path, env_manager, use_existing_environment, existing_env_path,
                        delete_existing, external_env_path):
 
     os.makedirs(location, exist_ok=True)
+    rc_path = location / GRYPHON_RC
+
+    if rc_path.is_file():
+        gryphon_files_included = RCManager.get_handover_include_gryphon_generated_files(rc_path)
+        if gryphon_files_included:
+            logger.warning("Every Gryphon file used in this project are present in the current directory.")
+        else:
+            operations = RCManager.get_gryphon_operations(rc_path)
+
+            template_string_list = '\n\t- '.join(map(lambda x: f'{x["template_name"]} ({x["action"]})', operations))
+
+            message = "There were some Gryphon files originally used in this project that were suppressed on the " \
+                      "handover process. Please install the following templates if you want the complete set of files:"
+
+            for line in wrap(message, width=100):
+                logger.warning(line)
+
+            logger.warning(f"\n\t- {template_string_list}\n")
 
     # TEMPLATE
     handle_template(template, project_home=location)
@@ -181,5 +199,3 @@ def init_from_existing(template, location, env_manager, use_existing_environment
     elif env_manager == CONDA:
         # CONDA
         EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(location, alternative_env=env_path)
-
-    logger.log(SUCCESS, "Installation successful!")

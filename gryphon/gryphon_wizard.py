@@ -134,9 +134,15 @@ if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
 
-# DONE: rename environments when we already have one on the folder (no_ignore)
-# DONE: MESSAGE giving instructions about commands to use for opening a folder and to activate VENV
-# TODO: create a <back> option on text inputs
-# DONE: check if the external venv really exists before pip downloading a
-#  template an ask again if not
-# DONE: Exclude certain patterns when copying templates to the destination folder (i.e. .git)
+# OK: add an option to open an URL that points to a doc for the
+#  template. If there is not an URL inside metadata just don't show the option "read more"
+
+# OK: não instalar .venv quando ta criando o template scaffold
+# OK: problema pra installar o pre-commit quando ta genrando scaffolding
+# OK: problema pra instalar notebook extensions, bloqueio nos nbextensions
+
+# OK: tem algo curioso acontecendo. Quando se cria um conda env ele fica vazio até que
+# se instale algo nele (nao da pra inclusive achar o pip dentro da pasta). So depois
+# que instala que aparece o pip la dentro, mas ai quando vai na opçao add da pau. pois
+# tem coisas do conda forge la, ai fica rodando infinito. Talvez fosse o caso de instalar
+# antes com o conda e so no add usar o pip

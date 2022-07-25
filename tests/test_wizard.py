@@ -8,7 +8,11 @@ from pathlib import Path
 import pytest
 import yaml
 
-from gryphon.constants import CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK, USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES
+from gryphon.constants import (
+    CONDA, VENV, SYSTEM_DEFAULT, ALWAYS_ASK,
+    USE_LATEST, REQUIREMENTS, GRYPHON_RC, YES,
+    VENV_FOLDER, CONDA_FOLDER
+)
 from gryphon.core.operations import RCManager, SettingsManager
 from .ui_interaction.add import add_library_from_menu, add_library_typing, add_library_selecting_version
 from .ui_interaction.advanced_options import create_template_scaffold
@@ -24,6 +28,7 @@ template_version_politics = [ALWAYS_ASK, USE_LATEST]
 lib_install_method = ["type", "select", "version"]
 dataviz = "Data Visualization"
 seaborn = "seaborn"
+SAMPLE_REQUIREMENTS = "sample_requirements.txt"
 
 
 @pytest.mark.parametrize('python_version', python_versions)
@@ -61,10 +66,10 @@ def test_project_functions(
         libraries_before = []
         if environment_manager == VENV:
             libraries_before = get_pip_libraries(project_folder)
-            assert (project_folder / ".venv").is_dir()
+            assert (project_folder / VENV_FOLDER).is_dir()
         elif environment_manager == CONDA:
             libraries_before = get_conda_libraries(project_folder)
-            assert (project_folder / "envs").is_dir()
+            assert (project_folder / CONDA_FOLDER).is_dir()
 
         add_library_selecting_version(
             working_directory=project_folder,
@@ -93,6 +98,7 @@ def test_project_functions(
 
     finally:
         teardown()
+        # pass
 
 
 @pytest.mark.parametrize('environment_manager', environment_managers)
@@ -128,9 +134,9 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
 
         # assert venv/conda folder
         if environment_manager == VENV:
-            assert (project_folder / ".venv").is_dir()
+            assert (project_folder / VENV_FOLDER).is_dir()
         elif environment_manager == CONDA:
-            assert (project_folder / "envs").is_dir()
+            assert (project_folder / CONDA_FOLDER).is_dir()
 
         generate_template(working_directory=project_folder)
 
@@ -138,7 +144,7 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
         n_files_notebooks_after = len(glob.glob(notebook_pattern, recursive=True))
         assert n_files_notebooks_after > n_files_notebooks_before
 
-        shutil.copy(data_folder / "sample_requirements.txt", project_folder / "sample_requirements.txt")
+        shutil.copy(data_folder / SAMPLE_REQUIREMENTS, project_folder / SAMPLE_REQUIREMENTS)
 
         generate_handover_package(
             working_directory=cwd,
@@ -193,7 +199,7 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
             else:
                 assert not unzipped_notebook.is_file()
 
-        assert (unzip_folder / "sample_requirements.txt").is_file()
+        assert (unzip_folder / SAMPLE_REQUIREMENTS).is_file()
 
     finally:
         teardown()
@@ -318,7 +324,7 @@ def test_add_methods(
 
         # assert venv/conda folder
         libraries_before = get_pip_libraries(project_folder)
-        assert (project_folder / ".venv").is_dir()
+        assert (project_folder / VENV_FOLDER).is_dir()
 
         if lib_install == "type":
             add_library_typing(working_directory=project_folder, library="seaborn")
@@ -404,3 +410,64 @@ def test_template_functions(
     finally:
         SettingsManager.test_template_cleanup()
         teardown()
+
+
+def execute_and_log(command) -> tuple:
+    from subprocess import PIPE, Popen
+
+    p = Popen(command, shell=True, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p.communicate()
+    return stderr.decode(), stdout.decode()
+
+
+@pytest.mark.parametrize('environment_manager', environment_managers)
+@pytest.mark.parametrize('large_file', [True, False])
+def test_pre_commit_hooks(
+    setup, teardown, get_pip_libraries, get_conda_libraries,
+    environment_manager, large_file, data_folder
+):
+
+    str_passed_large_files = "check for added large files..............................................Passed"
+    str_ignore_files = "Ignore undesirable files.................................................Passed"
+    str_failed_large_files = "check for added large files..............................................Failed"
+
+    cwd = setup()
+    project_name = "test_project"
+    project_folder = cwd / project_name
+
+    # Set up config conditions
+    SettingsManager.change_environment_manager(environment_manager)
+    SettingsManager.change_template_version_policy(USE_LATEST)
+    SettingsManager.change_default_python_version(SYSTEM_DEFAULT)
+    SettingsManager.change_pre_commit_file_size_limit(10)
+
+    try:
+        start_new_project(project_name, working_directory=cwd)
+
+        if large_file:
+            shutil.copy(
+                src=data_folder / "large_file.test",
+                dst=project_folder
+            )
+
+        env_folder = VENV_FOLDER if environment_manager == VENV else CONDA_FOLDER
+        pre_commit_path = (project_folder / env_folder / "bin" / "pre-commit")
+
+        assert pre_commit_path.is_file()
+
+        stderr, stdout = execute_and_log(
+            f"cd \"{project_folder}\" && "
+            f"git add . && "
+            f"git commit -m 'test commit'"
+        )
+
+        if large_file:
+            assert str_failed_large_files in stderr
+        else:
+            assert str_passed_large_files in stderr
+
+        assert str_ignore_files in stderr
+
+    finally:
+        teardown()
+        # pass

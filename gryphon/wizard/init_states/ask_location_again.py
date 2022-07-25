@@ -34,12 +34,6 @@ class AskLocationAgain(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-        n_lines = context["n_lines"]
-        if "n_lines_ask_again" not in context:
-            context["n_lines_ask_again"] = 1
-
-        erase_lines(n_lines=n_lines + context["n_lines_warning"])
-
         context["location_temp"] = InitQuestions.ask_init_location()
 
         return context

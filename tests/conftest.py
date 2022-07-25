@@ -75,7 +75,7 @@ def get_conda_libraries() -> callable:
 
     def _get_libraries(folder=Path.cwd()) -> str:
         conda_path = get_conda_path(base_folder=folder)
-        return os.popen(f"conda list --explicit --prefix {conda_path}").read()
+        return os.popen(f"conda list --prefix {conda_path}").read()
 
     return _get_libraries
 

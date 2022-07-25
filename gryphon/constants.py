@@ -35,6 +35,7 @@ TYPING = "type"
 YES = "yes"
 NO = "no"
 BACK = "back"
+READ_MORE = "read_more"
 CHANGE_LOCATION = "change_location"
 TYPE_AGAIN = "type_again"
 SPECIFY_VERSION = "specify_version"
@@ -70,6 +71,8 @@ MIN_MINOR_VERSION = 7
 REMOTE_INDEX = "remote_index"
 LOCAL_TEMPLATE = "local"
 GRYPHON_RC = ".gryphon_rc"
+PRE_COMMIT_YML = '.pre-commit-config.yaml'
 CHANGE_LIMIT = "CHANGE_LIMIT"
 
-ERASE_LINE = "\033[A                                                                                             \033[A"
+ERASE_LINE = "\033[A                                                                                             " \
+             "          \033[A"

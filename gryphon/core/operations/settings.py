@@ -35,7 +35,7 @@ class SettingsManager:
             contents[key] = value
 
             f.seek(0)
-            f.write(json.dumps(contents))
+            f.write(json.dumps(contents, sort_keys=True, indent=4))
             f.truncate()
 
     @classmethod
@@ -66,6 +66,10 @@ class SettingsManager:
     @classmethod
     def change_handover_file_size_limit(cls, limit: float):
         cls._set_key("handover_file_size_limit", limit)
+
+    @classmethod
+    def change_pre_commit_file_size_limit(cls, limit: float):
+        cls._set_key("pre_commit_file_size_limit", limit)
 
     @classmethod
     def change_handover_include_gryphon_generated_files(cls, state: bool):
@@ -153,6 +157,10 @@ class SettingsManager:
         return cls._get_key("handover_file_size_limit")
 
     @classmethod
+    def get_pre_commit_file_size_limit(cls):
+        return cls._get_key("pre_commit_file_size_limit")
+
+    @classmethod
     def get_handover_include_large_files(cls) -> bool:
         return cls._get_key("handover_include_large_files")
 
@@ -184,13 +192,6 @@ class SettingsManager:
         Recovers the current python version from the config file.
         """
         return cls._get_key("default_python_version", DEFAULT_PYTHON_VERSION)
-
-    @classmethod
-    def get_handover_include_gryphon_generated_files(cls):
-        """
-        Recovers the current python version from the config file.
-        """
-        return cls._get_key("handover_include_gryphon_generated_files", DEFAULT_PYTHON_VERSION)
 
     @classmethod
     def get_current_template_version_policy(cls):

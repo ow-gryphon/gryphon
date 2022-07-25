@@ -43,7 +43,6 @@ class Install(State):
 
     def on_start(self, context: dict) -> dict:
 
-        env = VENV
         path = None
         external_path = None
         if context["use_existing"]:
@@ -55,6 +54,7 @@ class Install(State):
             elif context["found_venv"]:
                 env = VENV
                 path = context["venv_path"]
+
             else:
                 raise RuntimeError("Flag 'use_existing' was set without setting 'found_venv' neither 'found_conda'")
 

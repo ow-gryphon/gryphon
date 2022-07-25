@@ -13,11 +13,15 @@ from .common_operations import (
     mark_notebooks_as_readonly,
     clean_readonly_folder, enable_files_overwrite
 )
-from .operations import BashUtils, EnvironmentManagerOperations, RCManager
-from .operations.settings import SettingsManager
+from .operations import (
+    BashUtils, EnvironmentManagerOperations,
+    RCManager, SettingsManager, PreCommitManager, NBExtensionsManager
+)
 from .registry import Template
-from ..constants import DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, \
+from ..constants import (
+    DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX,
     LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+)
 
 logger = logging.getLogger('gryphon')
 
@@ -86,6 +90,7 @@ def init(template: Template, location, python_version, **kwargs):
 
     # TEMPLATE
     handle_template(template, project_home, rc_file)
+    PreCommitManager.initial_setup(project_home)
 
     # Git
     repo = init_new_git_repo(folder=project_home)
@@ -100,19 +105,19 @@ def init(template: Template, location, python_version, **kwargs):
     # ENV Manager
     if env_type == VENV:
         # VENV
-        venv_path = EnvironmentManagerOperations.create_venv(
+        env_path = EnvironmentManagerOperations.create_venv(
             folder=project_home / VENV_FOLDER,
             python_version=python_version
         )
 
         RCManager.set_environment_manager(VENV, logfile=rc_file)
-        RCManager.set_environment_manager_path(venv_path, logfile=rc_file)
+        RCManager.set_environment_manager_path(env_path, logfile=rc_file)
 
         EnvironmentManagerOperations.install_libraries_venv(
             environment_path=project_home / VENV_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
-        EnvironmentManagerOperations.install_extra_nbextensions_venv(
+        NBExtensionsManager.install_extra_nbextensions_venv(
             environment_path=project_home / VENV_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
@@ -121,19 +126,19 @@ def init(template: Template, location, python_version, **kwargs):
     elif env_type == CONDA:
         # CONDA
 
-        conda_path = EnvironmentManagerOperations.create_conda_env(
+        env_path = EnvironmentManagerOperations.create_conda_env(
             project_home / CONDA_FOLDER,
             python_version=python_version
         )
 
         RCManager.set_environment_manager(CONDA, logfile=rc_file)
-        RCManager.set_environment_manager_path(conda_path, logfile=rc_file)
+        RCManager.set_environment_manager_path(env_path, logfile=rc_file)
 
         EnvironmentManagerOperations.install_libraries_conda(
             environment_path=project_home / CONDA_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
-        EnvironmentManagerOperations.install_extra_nbextensions_conda(
+        NBExtensionsManager.install_extra_nbextensions_conda(
             environment_path=project_home / CONDA_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
@@ -141,3 +146,5 @@ def init(template: Template, location, python_version, **kwargs):
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
+
+    PreCommitManager.final_setup(project_home)

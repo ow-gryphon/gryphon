@@ -1,21 +1,44 @@
 import json
 import logging
-from ..wizard_text import Text
-from ..questions import GenerateQuestions, CommonQuestions
+import os
+import platform
+
 from ..functions import display_template_information, erase_lines
+from ..questions import GenerateQuestions, CommonQuestions
+from ..wizard_text import Text
+from ...constants import YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, READ_MORE
 from ...core.registry.versioned_template import VersionedTemplate
-from ...fsm import Transition, State, negate_condition
-from ...constants import NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE
+from ...fsm import Transition, State
 
 logger = logging.getLogger('gryphon')
 
 
 def _condition_confirmation_to_install(context: dict) -> bool:
+    return context["confirmation_response"] == YES
+
+
+def _condition_confirmation_to_ask_template(context: dict) -> bool:
     return context["confirmation_response"] == NO
+
+
+def _condition_confirmation_to_read_more(context: dict) -> bool:
+    return context["confirmation_response"] == READ_MORE
 
 
 def _callback_confirmation_to_install(context: dict) -> dict:
     erase_lines(n_lines=len(context["extra_parameters"]) + 3 + context["n_lines"])
+    return context
+
+
+def _callback_confirmation_to_read_more(context: dict) -> dict:
+    if platform.system() == "Windows":
+        os.system(f'start {context["read_more_link"]}')
+    else:
+        os.system(f"""nohup xdg-open "{context["read_more_link"]}" """)
+        os.system(f"""rm nohup.out""")
+        erase_lines(n_lines=1)
+
+    erase_lines(n_lines=len(context["extra_parameters"]) + 1 + context["n_lines"])
     return context
 
 
@@ -24,12 +47,17 @@ class Confirmation(State):
     transitions = [
         Transition(
             next_state="install",
-            condition=negate_condition(_condition_confirmation_to_install)
+            condition=_condition_confirmation_to_install
         ),
         Transition(
             next_state="ask_template",
-            condition=_condition_confirmation_to_install,
+            condition=_condition_confirmation_to_ask_template,
             callback=_callback_confirmation_to_install
+        ),
+        Transition(
+            next_state="confirmation",
+            condition=_condition_confirmation_to_read_more,
+            callback=_callback_confirmation_to_read_more
         )
     ]
 
@@ -61,8 +89,11 @@ class Confirmation(State):
         else:
             context["extra_parameters"] = {}
 
+        context["read_more_link"] = context["template"].read_more_link
+
         context["confirmation_response"] = GenerateQuestions.confirm_generate(
             template_name=context["template"].display_name,
+            read_more_option=context["read_more_link"] is not None,
             **context["extra_parameters"]
         )
 

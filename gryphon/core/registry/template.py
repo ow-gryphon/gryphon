@@ -19,6 +19,7 @@ class Template:
         self.sector = template_metadata.get("sector", [])
         self.topic = template_metadata.get("topic", [])
         self.arguments = template_metadata.get("arguments", [])
+        self.read_more_link = template_metadata.get("read_more_link", None)
 
         self.dependencies = template_metadata.get("dependencies", [])
         self.description = template_metadata.get("description", "")

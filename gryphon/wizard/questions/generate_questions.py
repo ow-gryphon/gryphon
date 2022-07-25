@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
-from ...constants import (QUIT, YES, NO, TYPE_AGAIN)
+from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE)
 
 
 class GenerateQuestions:
@@ -58,7 +58,7 @@ class GenerateQuestions:
 
     @staticmethod
     @base_question
-    def confirm_generate(template_name, **kwargs):
+    def confirm_generate(template_name, read_more_option=False, **kwargs):
 
         information = Text.generate_confirm_1.replace("{template_name}", template_name)
         information += (
@@ -76,6 +76,13 @@ class GenerateQuestions:
                 value=NO
             )
         ]
+        if read_more_option:
+            choices.append(
+                Choice(
+                    title="Read more",
+                    value=READ_MORE
+                )
+            )
 
         return questionary.select(
             message=information,
