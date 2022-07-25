@@ -179,22 +179,10 @@ class EnvironmentManagerOperations:
             raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
                                f"\nAre you using conda instead of venv?")
 
-        # if platform.system() == "Windows":
-        #     conda_path = environment_path / "Scripts" / "pip"
-        # else:
-        #     conda_path = environment_path / "bin" / "pip"
-
         return_code, output = BashUtils.execute_and_log(
             f"conda install --prefix \"{conda_path}\""
             f" --file \"{requirements_path}\" -k -y"
         )
-
-        # return_code, output = BashUtils.execute_and_log(
-        #     f"\"{conda_path}\" install "
-        #     # f"--prefix \"{conda_path}\""
-        #     f" -m \"{requirements_path}\""
-        #     # f" --file \"{requirements_path}\" -k -y"
-        # )
 
         if return_code is not None:
             # TODO: take the error output from stderr

@@ -26,13 +26,11 @@ def add(library_name, version=None, cwd=Path.cwd()):
     logger.info("Adding required lib.")
 
     rc_file = RCManager.get_rc_file(cwd)
-    # env_manager = VENV
     env_path = "pip"
 
     try:
-        env_path = RCManager.get_environment_manager_path(logfile=rc_file)
-        # env_manager = RCManager.get_environment_manager(logfile=rc_file)
         in_gryphon_project = True
+        env_path = RCManager.get_environment_manager_path(logfile=rc_file)
     except KeyError:
         in_gryphon_project = False
         logger.warning("It seems that we are not inside a Gryphon project folder. Installing libraries globally.")
@@ -52,23 +50,6 @@ def add(library_name, version=None, cwd=Path.cwd()):
             BashUtils.execute_and_log(f'\"{env_path / "bin" / "pip"}\" install {lib}')
 
         logger.log(SUCCESS, "Installation successful!")
-
-        # if env_manager == VENV:
-        #     EnvironmentManagerOperations.install_libraries_venv(
-        #         environment_path=env_path,
-        #         requirements_path=cwd / REQUIREMENTS
-        #     )
-        #
-        # elif env_manager == CONDA:
-        #     EnvironmentManagerOperations.install_libraries_conda(
-        #         environment_path=env_path,
-        #         requirements_path=cwd / REQUIREMENTS
-        #     )
-        #
-        # else:
-        #     env_list = [VENV, CONDA]
-        #     raise RuntimeError(f"Invalid environment manager on the config file: \"{env_manager}\"."
-        #                        f"Should be one of {env_list}. Restoring the default config file should solve.")
 
     except RuntimeError as e:
         if in_gryphon_project:

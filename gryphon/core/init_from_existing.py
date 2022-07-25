@@ -90,7 +90,10 @@ def process_environment(location, env_manager, use_existing_environment,
         if delete_existing:
             shutil.rmtree(existing_env_path)
 
+        path = PathUtils.get_destination_path(external_env_path)
+
         if external_env_path is None:
+
             path = location / VENV_FOLDER
 
             if env_manager == CONDA:
@@ -99,13 +102,10 @@ def process_environment(location, env_manager, use_existing_environment,
             elif env_manager == VENV:
                 path = location / VENV_FOLDER
 
-            if not use_existing_environment and path.is_dir():
+            if path.is_dir():
                 path = rename_dir(path)
 
             path = create_environment(path, env_manager=env_manager)
-
-        else:
-            path = PathUtils.get_destination_path(external_env_path)
 
     logfile = RCManager.get_rc_file(location)
     RCManager.set_environment_manager(env_manager, logfile)

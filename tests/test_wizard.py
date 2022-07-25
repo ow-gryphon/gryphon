@@ -28,6 +28,7 @@ template_version_politics = [ALWAYS_ASK, USE_LATEST]
 lib_install_method = ["type", "select", "version"]
 dataviz = "Data Visualization"
 seaborn = "seaborn"
+SAMPLE_REQUIREMENTS = "sample_requirements.txt"
 
 
 @pytest.mark.parametrize('python_version', python_versions)
@@ -65,10 +66,10 @@ def test_project_functions(
         libraries_before = []
         if environment_manager == VENV:
             libraries_before = get_pip_libraries(project_folder)
-            assert (project_folder / ".venv").is_dir()
+            assert (project_folder / VENV_FOLDER).is_dir()
         elif environment_manager == CONDA:
             libraries_before = get_conda_libraries(project_folder)
-            assert (project_folder / "envs").is_dir()
+            assert (project_folder / CONDA_FOLDER).is_dir()
 
         add_library_selecting_version(
             working_directory=project_folder,
@@ -133,9 +134,9 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
 
         # assert venv/conda folder
         if environment_manager == VENV:
-            assert (project_folder / ".venv").is_dir()
+            assert (project_folder / VENV_FOLDER).is_dir()
         elif environment_manager == CONDA:
-            assert (project_folder / "envs").is_dir()
+            assert (project_folder / CONDA_FOLDER).is_dir()
 
         generate_template(working_directory=project_folder)
 
@@ -143,7 +144,7 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
         n_files_notebooks_after = len(glob.glob(notebook_pattern, recursive=True))
         assert n_files_notebooks_after > n_files_notebooks_before
 
-        shutil.copy(data_folder / "sample_requirements.txt", project_folder / "sample_requirements.txt")
+        shutil.copy(data_folder / SAMPLE_REQUIREMENTS, project_folder / SAMPLE_REQUIREMENTS)
 
         generate_handover_package(
             working_directory=cwd,
@@ -198,7 +199,7 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
             else:
                 assert not unzipped_notebook.is_file()
 
-        assert (unzip_folder / "sample_requirements.txt").is_file()
+        assert (unzip_folder / SAMPLE_REQUIREMENTS).is_file()
 
     finally:
         teardown()
@@ -323,7 +324,7 @@ def test_add_methods(
 
         # assert venv/conda folder
         libraries_before = get_pip_libraries(project_folder)
-        assert (project_folder / ".venv").is_dir()
+        assert (project_folder / VENV_FOLDER).is_dir()
 
         if lib_install == "type":
             add_library_typing(working_directory=project_folder, library="seaborn")

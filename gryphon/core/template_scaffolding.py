@@ -15,9 +15,6 @@ def template_scaffolding(location: Path):
     template_path = DATA_PATH / "template_scaffolding"
     location = Path(location)
 
-    # python_version = SettingsManager.get_current_python_version()
-    # env_type = SettingsManager.get_environment_manager()
-
     logger.info("Creating project scaffolding.")
     logger.info(f"Initializing project at {location}")
 
@@ -27,8 +24,6 @@ def template_scaffolding(location: Path):
         template_source=Path(template_path)
     )
 
-    # PreCommitManager.initial_setup(location)
-
     # TODO: JOIN ALL THE requirements.txt files in one at the time of project
     #  init with more than one zip file downloaded.
 
@@ -37,7 +32,6 @@ def template_scaffolding(location: Path):
     initial_git_commit(repo)
 
     # install pre-commit hooks
-    # PreCommitManager.final_setup(location)
 
     SettingsManager.add_local_template(str(Path(location).absolute()))
     logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
