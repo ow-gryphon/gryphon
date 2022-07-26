@@ -7,12 +7,17 @@ import logging
 import os
 import platform
 import shutil
+import sys
 import traceback
 
+import git
+
+from . import __version__
 from .constants import (
     INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER
 )
+from .core.common_operations import sort_versions
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
@@ -59,6 +64,41 @@ except FileNotFoundError:
     )
     with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
         settings_file = json.load(f)
+
+
+# Check for updates
+
+repo_clone_path = GRYPHON_HOME / "git_gryphon"
+
+if repo_clone_path.is_dir():
+    repo = git.Repo(repo_clone_path)
+else:
+    shutil.rmtree(repo_clone_path, ignore_errors=True)
+    repo = git.Repo.clone_from(
+        url="https://github.com/ow-gryphon/gryphon.git",
+        to_path=repo_clone_path
+    )
+
+repo.git.checkout('master')
+repo.git.pull()
+
+latest_remote_version = sort_versions(list(map(lambda x: x.name, repo.tags)))[-1]
+latest = sort_versions([__version__, latest_remote_version])[-1]
+# print(__version__, latest)
+
+if __version__ != latest:
+    logger.warning("A new version from Gryphon is available.")
+    logger.warning("Updating ...")
+
+    # git clone at the desired tag
+    BashUtils.execute_and_log(f"cd \"{repo_clone_path}\" && git checkout {latest} -qqq")
+
+    # pip install the version
+    BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
+
+    # restart gryphon
+    logger.info("Restarting gryphon")
+    os.execv(sys.argv[0], sys.argv)
 
 
 def main():
@@ -133,16 +173,3 @@ def did_you_mean_gryphon():
 if __name__ == '__main__':
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     main()
-
-# OK: add an option to open an URL that points to a doc for the
-#  template. If there is not an URL inside metadata just don't show the option "read more"
-
-# OK: não instalar .venv quando ta criando o template scaffold
-# OK: problema pra installar o pre-commit quando ta genrando scaffolding
-# OK: problema pra instalar notebook extensions, bloqueio nos nbextensions
-
-# OK: tem algo curioso acontecendo. Quando se cria um conda env ele fica vazio até que
-# se instale algo nele (nao da pra inclusive achar o pip dentro da pasta). So depois
-# que instala que aparece o pip la dentro, mas ai quando vai na opçao add da pau. pois
-# tem coisas do conda forge la, ai fica rodando infinito. Talvez fosse o caso de instalar
-# antes com o conda e so no add usar o pip
