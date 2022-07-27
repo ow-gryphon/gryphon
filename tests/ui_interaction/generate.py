@@ -13,8 +13,8 @@ from .main_menu import select_generate_on_main_menu
 CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
 
 
-def choose_second_template(process):
-    select_nth_option(process, n=2)
+def choose_third_template(process):
+    select_nth_option(process, n=3)
 
 
 def choose_latest_template_version(process):
@@ -34,7 +34,7 @@ def generate_template(working_directory):
         select_generate_on_main_menu(process)
 
         navigate_categories(process, ["Methodology", "Data Exploration"])
-        choose_second_template(process)
+        choose_third_template(process)
 
         choose_latest_template_version(process)
 

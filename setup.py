@@ -3,7 +3,10 @@ Setup module for the gryphon package.
 """
 import glob
 from pathlib import Path
+
 from setuptools import setup, find_packages
+
+from gryphon import __version__
 
 
 def glob_hidden(*args, **kwargs):
@@ -42,7 +45,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name='gryphon',
-    version='0.1.0',
+    version=__version__,
     license='MIT',
     description='OW analytics toolkit cli',
     long_description=long_description,

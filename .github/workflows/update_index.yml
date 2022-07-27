@@ -1,0 +1,26 @@
+name: update_index
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+    branches:
+      - "**"
+#      - master
+#      - main
+
+jobs:
+  tag-status-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
+
+      - name: check tag and version
+        run: python .github/check_tag.py
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
