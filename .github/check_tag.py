@@ -25,8 +25,8 @@ def execute_command(command) -> tuple:
 
 with open(GRYPHON_FOLDER / "__init__.py", "r", encoding="UTF-8") as f:
     raw_text = f.read()
-    eval(raw_text)
-    version = __version__
+
+    version = raw_text.split('"')[-2]
 
 try:
     # check if version on setup.py is equal to tag
