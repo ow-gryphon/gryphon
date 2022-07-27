@@ -45,3 +45,6 @@ except Exception as e:
         print(f"Use the command: \"git tag -d {tag_name}\" to remove the tag from your local repository.")
 
     raise e
+
+
+# TODO: Check if conda can install some libraries (in order for conda to have the pip inside the newly created venv)

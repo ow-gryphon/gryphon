@@ -23,7 +23,3 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        with:
-          repository_name: ${{ github.event.repository.name }}
-          user_email: 'vittorfpereira@gmail.com'
-          user_name: 'vittorfp'

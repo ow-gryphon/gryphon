@@ -183,7 +183,7 @@ def test_handover(setup, teardown, data_folder, environment_manager, file_size_l
         for file in data["excluded_gryphon_files"]:
             assert not Path(unzip_folder / file).is_file()
 
-        unzipped_notebook = (unzip_folder / "notebooks" / "data_exploration.ipynb")
+        unzipped_notebook = (unzip_folder / "notebooks" / "data_exploration" / "dataset_overview.ipynb")
 
         if change_settings is None:
             assert unzipped_notebook.is_file()
