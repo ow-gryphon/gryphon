@@ -76,3 +76,14 @@ CHANGE_LIMIT = "CHANGE_LIMIT"
 
 ERASE_LINE = "\033[A                                                                                             " \
              "          \033[A"
+
+# addon options
+NB_EXTENSIONS = "nbextensions"
+NB_STRIP_OUT = "nbstripout"
+PRE_COMMIT_HOOKS = "hooks"
+
+ADDON_NAME_MAPPING = {
+    NB_EXTENSIONS: "Notebook extensions",
+    NB_STRIP_OUT: "Notebook stripout",
+    PRE_COMMIT_HOOKS: "Pre-commit hooks"
+}

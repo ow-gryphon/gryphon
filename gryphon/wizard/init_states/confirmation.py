@@ -23,7 +23,7 @@ def ask_location_again_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
     ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
 
-    erase_lines(n_lines=n_lines + 1 + context["n_lines_warning"] + ask_again)
+    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"] + ask_again)
     return context
 
 
@@ -67,7 +67,7 @@ class Confirmation(State):
     name = "confirmation"
     transitions = [
         Transition(
-            next_state="ask_template",
+            next_state="select_addons",
             condition=_change_from_confirmation_to_ask_template,
             callback=confirmation_success_callback
         ),
@@ -104,6 +104,7 @@ class Confirmation(State):
             template=template,
             location=Path(location).resolve(),
             read_more_option=context["read_more_link"] is not None,
+            addons=context["selected_addons"],
             **extra_parameters
         )
 

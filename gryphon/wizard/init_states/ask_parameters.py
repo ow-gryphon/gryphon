@@ -48,7 +48,7 @@ class AskParameters(State):
             callback=_callback_from_ask_parameters_to_ask_template
         ),
         Transition(
-            next_state="confirmation",
+            next_state="select_addons",
             condition=_condition_confirmation,
         ),
         Transition(

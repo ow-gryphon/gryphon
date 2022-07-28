@@ -27,7 +27,6 @@ logger = logging.getLogger('gryphon')
 
 
 def handle_template(template, project_home, rc_file):
-
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, project_home)
@@ -69,7 +68,12 @@ def handle_template(template, project_home, rc_file):
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
 
-def init(template: Template, location, python_version, **kwargs):
+def init(template: Template, location, python_version,
+         install_nbextensions=False,
+         install_nbstripout=False,
+         install_pre_commit_hooks=False,
+         **kwargs
+         ):
     """
     Init command from the OW Gryphon CLI.
     """
@@ -90,7 +94,9 @@ def init(template: Template, location, python_version, **kwargs):
 
     # TEMPLATE
     handle_template(template, project_home, rc_file)
-    PreCommitManager.initial_setup(project_home)
+
+    if install_pre_commit_hooks:
+        PreCommitManager.initial_setup(project_home)
 
     # Git
     repo = init_new_git_repo(folder=project_home)
@@ -117,10 +123,13 @@ def init(template: Template, location, python_version, **kwargs):
             environment_path=project_home / VENV_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
-        NBExtensionsManager.install_extra_nbextensions_venv(
-            environment_path=project_home / VENV_FOLDER,
-            requirements_path=project_home / REQUIREMENTS
-        )
+
+        if install_nbextensions:
+            NBExtensionsManager.install_extra_nbextensions_venv(
+                environment_path=project_home / VENV_FOLDER,
+                requirements_path=project_home / REQUIREMENTS
+            )
+
         EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
 
     elif env_type == CONDA:
@@ -138,13 +147,23 @@ def init(template: Template, location, python_version, **kwargs):
             environment_path=project_home / CONDA_FOLDER,
             requirements_path=project_home / REQUIREMENTS
         )
-        NBExtensionsManager.install_extra_nbextensions_conda(
-            environment_path=project_home / CONDA_FOLDER,
-            requirements_path=project_home / REQUIREMENTS
-        )
+
+        if install_nbextensions:
+            NBExtensionsManager.install_extra_nbextensions_conda(
+                environment_path=project_home / CONDA_FOLDER,
+                requirements_path=project_home / REQUIREMENTS
+            )
+
         EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
 
-    PreCommitManager.final_setup(project_home)
+    if install_pre_commit_hooks:
+        PreCommitManager.final_setup(project_home)
+
+    # update addons in gryphon_rc
+    RCManager._set_key_rc(key="nbstripout", value=install_nbstripout, logfile=rc_file)
+    RCManager._set_key_rc(key="nbextensions", value=install_nbextensions, logfile=rc_file)
+    RCManager._set_key_rc(key="pre_commit_hooks", value=install_pre_commit_hooks, logfile=rc_file)
+    # TODO: create the respective methods to encapsulate this _set_key_rc usages

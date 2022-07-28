@@ -73,17 +73,23 @@ def initial_setup():
 def update_gryphon():
     repo_clone_path = GRYPHON_HOME / "git_gryphon"
 
-    if repo_clone_path.is_dir():
-        repo = git.Repo(repo_clone_path)
-    else:
+    try:
+        if repo_clone_path.is_dir():
+            repo = git.Repo(repo_clone_path)
+
+            repo.git.checkout('master')
+            repo.git.checkout('.')
+            repo.git.fetch(['--prune', '--prune-tags'])
+        else:
+            raise git.exc.GitCommandError
+        
+    except git.exc.GitCommandError:
         shutil.rmtree(repo_clone_path, ignore_errors=True)
+
         repo = git.Repo.clone_from(
             url="https://github.com/ow-gryphon/gryphon.git",
             to_path=repo_clone_path
         )
-
-    repo.git.checkout('master')
-    repo.git.fetch(['--prune', '--prune-tags'])
 
     latest_remote_version = sort_versions(list(map(lambda x: x.name, repo.tags)))[-1]
     latest = sort_versions([__version__, latest_remote_version])[-1]

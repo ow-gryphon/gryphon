@@ -147,7 +147,7 @@ class EnvironmentManagerOperations:
         if Path("out.json").is_file():
             os.remove("out.json")
 
-        command = f"conda create --prefix=\"{conda_path}\" -y -k"
+        command = f"conda create --prefix=\"{conda_path}\" pip -y -k"
 
         if python_version and python_version != SYSTEM_DEFAULT and python_version != ALWAYS_ASK:
             command += f" python={python_version}"
@@ -179,9 +179,19 @@ class EnvironmentManagerOperations:
             raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
                                f"\nAre you using conda instead of venv?")
 
+        # return_code, output = BashUtils.execute_and_log(
+        #     f"conda install --prefix \"{conda_path}\""
+        #     f" --file \"{requirements_path}\" -k -y"
+        # )
+
+        if platform.system() == "Windows":
+            # On Windows the venv folder structure is different from unix
+            conda_pip = environment_path / "Scripts" / "pip"
+        else:
+            conda_pip = environment_path / "bin" / "pip"
+
         return_code, output = BashUtils.execute_and_log(
-            f"conda install --prefix \"{conda_path}\""
-            f" --file \"{requirements_path}\" -k -y"
+            f"\"{conda_pip}\" install -r \"{requirements_path}\""
         )
 
         if return_code is not None:

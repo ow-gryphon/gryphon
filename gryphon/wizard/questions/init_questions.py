@@ -4,7 +4,11 @@ from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice, logger
 from ..functions import wrap_text
 from ..wizard_text import Text
-from ...constants import (YES, NO, SYSTEM_DEFAULT, READ_MORE, CHANGE_LOCATION)
+from ...constants import (
+    YES, NO, SYSTEM_DEFAULT, READ_MORE,
+    CHANGE_LOCATION, NB_EXTENSIONS,
+    NB_STRIP_OUT, PRE_COMMIT_HOOKS, ADDON_NAME_MAPPING
+)
 
 
 class InitQuestions:
@@ -52,12 +56,18 @@ class InitQuestions:
 
     @staticmethod
     @base_question
-    def confirm_init(template, location, read_more_option=False, **kwargs):
+    def confirm_init(template, location, read_more_option=False, addons: list = None, **kwargs):
 
-        n_lines = 0
+        yellow_text = ''
         if template.description:
-            text, n_lines = wrap_text(f"{template.description}\n")
-            logger.warning(text)
+            yellow_text = f"{template.description}\n"
+
+        if addons is not None and len(addons):
+            addon_string = ', '.join(map(ADDON_NAME_MAPPING.get, addons))
+            yellow_text = yellow_text + f"\nThe following addons will be added to the project: {addon_string}\n"
+
+        text, n_lines = wrap_text(yellow_text)
+        logger.warning(text)
 
         message = (
             Text.init_confirm_1
@@ -135,4 +145,27 @@ class InitQuestions:
             message=Text.settings_ask_python_version,
             choices=choices,
             use_indicator=True
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_text_prompt
+    def ask_addons():
+        return questionary.checkbox(
+            message=Text.init_prompt_addons,
+            choices=[
+                Choice(
+                    title="Notebook extensions",
+                    value=NB_EXTENSIONS,
+                    checked=True
+                ),
+                Choice(
+                    title="Notebook stripout",
+                    value=NB_STRIP_OUT
+                ),
+                Choice(
+                    title="Pre-commit hooks",
+                    value=PRE_COMMIT_HOOKS,
+                    checked=True
+                )
+            ]
         ).unsafe_ask()

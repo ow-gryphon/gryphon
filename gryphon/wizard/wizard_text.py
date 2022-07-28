@@ -44,6 +44,7 @@ class Text:
 
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
+    init_prompt_addons = "Select the extras that you want to add to the project:"
 
     init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
     init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
