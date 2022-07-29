@@ -81,9 +81,11 @@ ERASE_LINE = "\033[A                                                            
 NB_EXTENSIONS = "nbextensions"
 NB_STRIP_OUT = "nbstripout"
 PRE_COMMIT_HOOKS = "hooks"
+CI_CD = "cicd"
 
 ADDON_NAME_MAPPING = {
     NB_EXTENSIONS: "Notebook extensions",
     NB_STRIP_OUT: "Notebook stripout",
-    PRE_COMMIT_HOOKS: "Pre-commit hooks"
+    PRE_COMMIT_HOOKS: "Pre-commit hooks",
+    CI_CD: "CI/CD"
 }

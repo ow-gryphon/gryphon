@@ -90,6 +90,7 @@ class InitQuestions:
                 value=NO
             )
         ]
+
         if read_more_option:
             options.append(
                 Choice(
@@ -110,7 +111,7 @@ class InitQuestions:
         ).unsafe_ask(), n_lines
 
     @staticmethod
-    @base_question
+    @base_text_prompt
     def ask_just_location():
         return (
             questionary

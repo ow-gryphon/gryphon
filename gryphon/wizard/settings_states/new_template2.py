@@ -1,12 +1,12 @@
 from ..functions import erase_lines
-from ..questions import InitQuestions
+from ..questions import SettingsQuestions
 from ...constants import BACK
 from ...fsm import State, Transition, negate_condition
 
 
 #####
 def _condition_back(context: dict) -> bool:
-    return context["location"] == BACK
+    return context["selected_addons"] == BACK
 
 
 def _callback_back(context: dict) -> dict:
@@ -15,23 +15,21 @@ def _callback_back(context: dict) -> dict:
     return context
 
 
-class NewTemplate(State):
-    name = "new_template"
+class NewTemplate2(State):
+    name = "new_template2"
     transitions = [
         Transition(
-            # CTRL + C
-            next_state="ask_option",
-            condition=_condition_back,
-            callback=_callback_back
+            next_state="new_template3",
+            condition=negate_condition(_condition_back),
         ),
         Transition(
-            next_state="new_template2",
-            condition=negate_condition(_condition_back),
+            # CTRL + C
+            next_state="new_template",
+            condition=_condition_back,
+            callback=_callback_back
         )
     ]
 
     def on_start(self, context: dict) -> dict:
-        # ask for the folder
-        context["location"] = InitQuestions.ask_just_location()
-
+        context["selected_addons"] = SettingsQuestions.ask_addons()
         return context
