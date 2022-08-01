@@ -70,7 +70,7 @@ def handle_template(template, project_home, rc_file):
 
 def init(template: Template, location, python_version,
          install_nbextensions=False,
-         install_nbstripout=False,
+         install_nb_strip_out=False,
          install_pre_commit_hooks=False,
          **kwargs
          ):
@@ -163,7 +163,7 @@ def init(template: Template, location, python_version,
         PreCommitManager.final_setup(project_home)
 
     # update addons in gryphon_rc
-    RCManager._set_key_rc(key="nbstripout", value=install_nbstripout, logfile=rc_file)
+    RCManager._set_key_rc(key="nbstripout", value=install_nb_strip_out, logfile=rc_file)
     RCManager._set_key_rc(key="nbextensions", value=install_nbextensions, logfile=rc_file)
     RCManager._set_key_rc(key="pre_commit_hooks", value=install_pre_commit_hooks, logfile=rc_file)
     # TODO: create the respective methods to encapsulate this _set_key_rc usages

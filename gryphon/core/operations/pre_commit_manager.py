@@ -63,10 +63,11 @@ class PreCommitManager:
         cls._fill_configurations(location)
 
     @classmethod
-    def final_setup(cls, location):
+    def final_setup(cls, location, environment_path=None):
 
         log = location / GRYPHON_RC
-        environment_path = RCManager.get_environment_manager_path(logfile=log)
+        if environment_path is None:
+            environment_path = RCManager.get_environment_manager_path(logfile=log)
 
         cls._install_pre_commit(environment_path)
         cls._activate_hooks(environment_path, location)

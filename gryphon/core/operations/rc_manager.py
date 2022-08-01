@@ -27,6 +27,7 @@ class RCManager:
 
         try:
             return contents[key]
+
         except KeyError:
             raise KeyError(f"Could not find the key \"{key}\" in the contents \"{contents}\" read from the"
                            f" gryphon_rc file at {logfile}.")
