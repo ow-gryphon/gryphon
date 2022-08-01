@@ -43,7 +43,6 @@ package_files.extend(ci_cd_files)
 package_files = list(set(map(lambda x: str(Path(x).relative_to(data_path)), package_files)))
 package_files = sorted(package_files)
 
-print(package_files)
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

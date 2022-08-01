@@ -193,4 +193,4 @@ if __name__ == '__main__':
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Implement gitflow guidelines
 
-# todo: change instructions from multiselect to innclude ctrl+c and enter to proceed
+# NOT POSSIBLE:change instructions from multiselect to include ctrl+c and enter to proceed

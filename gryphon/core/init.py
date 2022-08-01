@@ -14,7 +14,7 @@ from .common_operations import (
     clean_readonly_folder, enable_files_overwrite
 )
 from .operations import (
-    BashUtils, EnvironmentManagerOperations,
+    BashUtils, EnvironmentManagerOperations, NBStripOutManager,
     RCManager, SettingsManager, PreCommitManager, NBExtensionsManager
 )
 from .registry import Template
@@ -82,14 +82,14 @@ def init(template: Template, location, python_version,
         data = json.load(f)
         env_type = data.get("environment_management", DEFAULT_ENV)
 
-    logger.info("Creating project scaffolding.")
-    logger.info(f"Initializing project at {location}")
-
     project_home = Path.cwd() / location
+    logger.info("Creating project scaffolding.")
+    logger.info(f"Initializing project at {project_home}")
+
     os.makedirs(project_home, exist_ok=True)
 
     # RC file
-    rc_file = RCManager.get_rc_file(Path.cwd() / location)
+    rc_file = RCManager.get_rc_file(project_home)
     RCManager.log_operation(template, performed_action=INIT, logfile=rc_file)
 
     # TEMPLATE
@@ -104,7 +104,7 @@ def init(template: Template, location, python_version,
 
     # Requirements
     for r in template.dependencies:
-        append_requirement(r, location)
+        append_requirement(r, project_home)
 
     RCManager.log_add_library(template.dependencies, logfile=rc_file)
 
@@ -158,6 +158,9 @@ def init(template: Template, location, python_version,
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
+
+    if install_nb_strip_out:
+        NBStripOutManager.setup(project_home, environment_path=env_path)
 
     if install_pre_commit_hooks:
         PreCommitManager.final_setup(project_home)

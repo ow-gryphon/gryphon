@@ -5,7 +5,10 @@ from pathlib import Path
 from .common_operations import (
     init_new_git_repo, initial_git_commit,
 )
-from .operations import (BashUtils, SettingsManager, PreCommitManager, CICDManager)
+from .operations import (
+    BashUtils, SettingsManager, PreCommitManager,
+    CICDManager, NBStripOutManager
+)
 from ..constants import (DATA_PATH, SUCCESS)
 
 logger = logging.getLogger('gryphon')
@@ -41,15 +44,20 @@ def template_scaffolding(
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
 
+    if platform.system() == "Windows":
+        _, output = BashUtils.execute_and_log("where python")
+    else:
+        _, output = BashUtils.execute_and_log("which python")
+
+    env_path = Path(output.strip()).parent.parent
+
     # install pre-commit hooks
     if install_pre_commit_hooks:
-        if platform.system() == "Windows":
-            _, output = BashUtils.execute_and_log("where python")
-        else:
-            _, output = BashUtils.execute_and_log("which python")
-        path = Path(output.strip()).parent.parent
 
-        PreCommitManager.final_setup(location, environment_path=path)
+        PreCommitManager.final_setup(location, environment_path=env_path)
+
+    if install_nb_strip_out:
+        NBStripOutManager.setup(location, environment_path=env_path)
 
     SettingsManager.add_local_template(str(Path(location).absolute()))
     logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
