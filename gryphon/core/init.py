@@ -166,7 +166,8 @@ def init(template: Template, location, python_version,
         PreCommitManager.final_setup(project_home)
 
     # update addons in gryphon_rc
-    RCManager._set_key_rc(key="nbstripout", value=install_nb_strip_out, logfile=rc_file)
-    RCManager._set_key_rc(key="nbextensions", value=install_nbextensions, logfile=rc_file)
-    RCManager._set_key_rc(key="pre_commit_hooks", value=install_pre_commit_hooks, logfile=rc_file)
-    # TODO: create the respective methods to encapsulate this _set_key_rc usages
+    RCManager.set_addon_states(
+        install_nb_strip_out=install_nb_strip_out,
+        install_nbextensions=install_nbextensions,
+        install_pre_commit_hooks=install_pre_commit_hooks
+    )

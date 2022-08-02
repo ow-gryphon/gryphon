@@ -33,6 +33,7 @@ class Text:
     handover_display_option = "Handover project"
     about_display_option = "About OW Gryphon"
     settings_display_option = "Advanced options"
+    configure_project_display_option = "Configure project and logs"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"

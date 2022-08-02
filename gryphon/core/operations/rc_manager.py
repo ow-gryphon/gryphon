@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ...constants import (
-    GENERATE, INIT, GRYPHON_RC, CONDA, VENV
+    GENERATE, INIT, GRYPHON_RC, CONDA, VENV, NB_STRIP_OUT, NB_EXTENSIONS, PRE_COMMIT_HOOKS
 )
 
 logger = logging.getLogger('gryphon')
@@ -94,6 +94,21 @@ class RCManager:
         Add information about each and every file added to the project into the rc file.
         """
         cls._set_key_rc(key="handover_include_large_files", value=state, logfile=logfile)
+
+    @classmethod
+    def set_addon_states(
+            cls,
+            install_nb_strip_out: bool = False,
+            install_nbextensions: bool = False,
+            install_pre_commit_hooks: bool = False,
+            logfile=None
+    ):
+        """
+        Add information about each and every file added to the project into the rc file.
+        """
+        cls._set_key_rc(key=NB_STRIP_OUT, value=install_nb_strip_out, logfile=logfile)
+        cls._set_key_rc(key=NB_EXTENSIONS, value=install_nbextensions, logfile=logfile)
+        cls._set_key_rc(key=PRE_COMMIT_HOOKS, value=install_pre_commit_hooks, logfile=logfile)
 
     # GET
     @classmethod

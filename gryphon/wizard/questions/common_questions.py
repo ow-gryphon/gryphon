@@ -2,14 +2,17 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, VALUE, LATEST)
+from ...constants import (
+    INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
+    VALUE, LATEST
+)
 
 
 class CommonQuestions:
 
     @staticmethod
     @base_question
-    def main_question():
+    def main_question(inside_existing_project: bool = False):
         choices = [
             Choice(
                 title=Text.init_display_option,
@@ -45,6 +48,15 @@ class CommonQuestions:
                 value=QUIT
             )
         ]
+
+        if inside_existing_project:
+            choices = [
+                Choice(
+                    title=Text.configure_project_display_option,
+                    value=CONFIGURE_PROJECT
+                ),
+                Separator(Text.menu_separator)
+            ] + choices
 
         return questionary.select(
             message=Text.first_prompt_question,

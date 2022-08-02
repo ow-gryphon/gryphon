@@ -9,6 +9,7 @@ INIT_FROM_EXISTING = "init_from_existing"
 ADD = "add"
 HANDOVER = "handover"
 ABOUT = "about"
+CONFIGURE_PROJECT = "configure_project"
 SETTINGS = "settings"
 
 # tree related

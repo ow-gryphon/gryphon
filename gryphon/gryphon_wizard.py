@@ -9,19 +9,21 @@ import platform
 import shutil
 import sys
 import traceback
+from pathlib import Path
 
 import git
 
 from . import __version__
 from .constants import (
     INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
-    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER
+    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
+    CONFIGURE_PROJECT, GRYPHON_RC
 )
 from .core.common_operations import sort_versions
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
-from .wizard import init, generate, add, about, exit_program, settings, init_from_existing, handover
+from .wizard import init, generate, add, about, exit_program, settings, init_from_existing, handover, configure_project
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
 
@@ -138,9 +140,13 @@ def start_ui(settings_file):
     logger.info(Text.welcome)
 
     while True:
-        chosen_command = CommonQuestions.main_question()
+        gryphon_rc = Path.cwd() / GRYPHON_RC
+        chosen_command = CommonQuestions.main_question(
+            inside_existing_project=gryphon_rc.is_file()
+        )
         
         function = {
+            CONFIGURE_PROJECT: configure_project,
             INIT: init,
             INIT_FROM_EXISTING: init_from_existing,
             GENERATE: generate,
@@ -154,7 +160,7 @@ def start_ui(settings_file):
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD]:
+                if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT]:
                     logger.info("\n\n")
                     continue
                 break
