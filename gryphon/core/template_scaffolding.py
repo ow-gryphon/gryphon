@@ -37,33 +37,34 @@ def template_scaffolding(
     if install_ci_cd:
         CICDManager.setup_ci_cd(location)
 
-    if install_pre_commit_hooks:
-        PreCommitManager.initial_setup(location)
-
     # Git
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
 
     if platform.system() == "Windows":
         _, output = BashUtils.execute_and_log("where python")
+        output = str(list(filter(len, output.split('\n')))[0]).strip()
     else:
         _, output = BashUtils.execute_and_log("which python")
+        output = output.strip()
 
-    env_path = Path(output.strip()).parent.parent
+    env_path = Path(output).parent.parent
 
     # install pre-commit hooks
     if install_pre_commit_hooks:
-
         PreCommitManager.final_setup(location, environment_path=env_path)
 
+    # install nbstripout
     if install_nb_strip_out:
         NBStripOutManager.setup(location, environment_path=env_path)
 
     SettingsManager.add_local_template(str(Path(location).absolute()))
-    logger.info("Added new template into the gryphon registry. You will be able to find it inside gryphon according"
-                " to the information given on metadata.json file.\n\n In order to find it on gryphon menus you will"
-                " have to fill the template information inside metadata.json file (providing at least the display "
-                "name and the command).")
+    logger.info(
+        "Added new template into the gryphon registry. You will be able to find it inside gryphon according"
+        " to the information given on metadata.json file.\n\n In order to find it on gryphon menus you will"
+        " have to fill the template information inside metadata.json file (providing at least the display "
+        "name and the command)."
+    )
     logger.log(SUCCESS, "Installation successful!")
 
 # TODO: prompt whether the template scaffolding is for init or generate]
