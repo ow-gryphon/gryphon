@@ -42,6 +42,11 @@ def choose_latest_python_version(process):
         enter(process)
 
 
+def select_default_addons(process):
+    wait_for_output(process, text=Text.init_prompt_addons)
+    enter(process)
+
+
 def start_new_project(project_name: str, working_directory: Path = Path.cwd()):
     process = None
     try:
@@ -52,6 +57,8 @@ def start_new_project(project_name: str, working_directory: Path = Path.cwd()):
         choose_latest_template_version(process)
         type_the_project_folder_name(process, project_name)
         choose_latest_python_version(process)
+
+        select_default_addons(process)
 
         confirm_information(process)
         wait_for_success(process)

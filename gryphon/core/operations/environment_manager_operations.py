@@ -147,10 +147,12 @@ class EnvironmentManagerOperations:
         if Path("out.json").is_file():
             os.remove("out.json")
 
-        command = f"conda create --prefix=\"{conda_path}\" pip -y -k"
+        command = f"conda create --prefix=\"{conda_path}\""
 
         if python_version and python_version != SYSTEM_DEFAULT and python_version != ALWAYS_ASK:
             command += f" python={python_version}"
+
+        command += " pip -y -k"
 
         return_code, _ = BashUtils.execute_and_log(command)
         if return_code is not None:

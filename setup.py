@@ -40,7 +40,8 @@ package_files.extend(yaml_config_files)
 package_files.extend(scaffolding_files)
 package_files.extend(ci_cd_files)
 
-package_files = list(set(map(lambda x: str(Path(x).relative_to(data_path)), package_files)))
+# package_files = list(set(map(lambda x: str(Path(x).relative_to(data_path)), package_files)))
+package_files = list(set(map(lambda x: x[8:], package_files)))
 package_files = sorted(package_files)
 
 
