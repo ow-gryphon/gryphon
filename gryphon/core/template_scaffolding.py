@@ -44,11 +44,11 @@ def template_scaffolding(
     if platform.system() == "Windows":
         _, output = BashUtils.execute_and_log("where python")
         output = str(list(filter(len, output.split('\n')))[0]).strip()
+        env_path = Path(output).parent
     else:
         _, output = BashUtils.execute_and_log("which python")
         output = output.strip()
-
-    env_path = Path(output).parent.parent
+        env_path = Path(output).parent.parent
 
     # install pre-commit hooks
     if install_pre_commit_hooks:
