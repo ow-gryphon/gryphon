@@ -7,3 +7,5 @@ from .path_utils import PathUtils
 from .pre_commit_manager import PreCommitManager
 from .rc_manager import RCManager
 from .settings import SettingsManager
+
+# TODO: Create addons folder and common interface class to make it straightforward to implement new ones
