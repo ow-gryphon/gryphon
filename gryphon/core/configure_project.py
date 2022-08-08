@@ -21,11 +21,12 @@ def get_addon_states(rc_file: Path):
         }
 
 
-def set_new_addon_states(new_states: Dict[str, bool]):
+def set_new_addon_states(new_states: Dict[str, bool], rc_file: Path):
     RCManager.set_addon_states(
         install_nb_strip_out=new_states[NB_STRIP_OUT],
         install_nbextensions=new_states[NB_EXTENSIONS],
-        install_pre_commit_hooks=new_states[PRE_COMMIT_HOOKS]
+        install_pre_commit_hooks=new_states[PRE_COMMIT_HOOKS],
+        logfile=rc_file
     )
 
 
@@ -82,6 +83,6 @@ def configure_project(new_activated_addons: List[str], logfile: Path):
         rc_file=logfile
     )
 
-    set_new_addon_states(new_addons)
+    set_new_addon_states(new_addons, rc_file=logfile)
 
     logger.log(SUCCESS, "Successfully updated project addons.")

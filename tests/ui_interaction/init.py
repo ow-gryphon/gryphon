@@ -5,7 +5,7 @@ from gryphon.constants import GRYPHON_HOME, CONFIG_FILE, ALWAYS_ASK
 from gryphon.wizard.wizard_text import Text
 from .basic_actions import (
     wait_for_output, enter, type_text, quit_process,
-    start_wizard, wait_for_success, confirm_information
+    start_wizard, wait_for_end, confirm_information
 )
 from .main_menu import select_init_on_main_menu
 
@@ -47,7 +47,20 @@ def select_default_addons(process):
     enter(process)
 
 
-def start_new_project(project_name: str, working_directory: Path = Path.cwd()):
+def select_all_addons(process):
+    wait_for_output(process, text=Text.init_prompt_addons)
+    type_text(process, 'a')
+    enter(process)
+
+
+def select_no_addons(process):
+    wait_for_output(process, text=Text.init_prompt_addons)
+    type_text(process, 'a')
+    type_text(process, 'a')
+    enter(process)
+
+
+def start_new_project(project_name: str, working_directory: Path = Path.cwd(), activate_all: bool = None):
     process = None
     try:
         process = start_wizard(working_directory)
@@ -58,13 +71,18 @@ def start_new_project(project_name: str, working_directory: Path = Path.cwd()):
         type_the_project_folder_name(process, project_name)
         choose_latest_python_version(process)
 
-        select_default_addons(process)
+        if activate_all is None:
+            select_default_addons(process)
+        elif activate_all:
+            select_all_addons(process)
+        else:
+            select_no_addons(process)
 
         confirm_information(process)
-        wait_for_success(process)
+        wait_for_end(process)
         # I had to comment the code that creates a new session inside the created
         #  folder in order to make this test to work. It was giving timeout always
-        wait_for_output(process, text="pre-commit installed", timeout=600)
+        # wait_for_output(process, text="pre-commit installed", timeout=600)
 
         quit_process(process)
     except Exception as e:

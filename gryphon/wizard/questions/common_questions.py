@@ -22,6 +22,9 @@ class CommonQuestions:
                 title=Text.init_from_existing_display_option,
                 value=INIT_FROM_EXISTING
             ),
+
+            Separator(Text.menu_separator),
+
             Choice(
                 title=Text.generate_display_option,
                 value=GENERATE
@@ -34,7 +37,9 @@ class CommonQuestions:
                 title=Text.handover_display_option,
                 value=HANDOVER
             ),
+
             Separator(Text.menu_separator),
+
             Choice(
                 title=Text.settings_display_option,
                 value=SETTINGS
@@ -50,13 +55,13 @@ class CommonQuestions:
         ]
 
         if inside_existing_project:
-            choices = [
+            choices.insert(
+                5,
                 Choice(
                     title=Text.configure_project_display_option,
                     value=CONFIGURE_PROJECT
-                ),
-                Separator(Text.menu_separator)
-            ] + choices
+                )
+            )
 
         return questionary.select(
             message=Text.first_prompt_question,

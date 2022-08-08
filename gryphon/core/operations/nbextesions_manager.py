@@ -303,7 +303,7 @@ class NBExtensionsManager:
 
         return_code, _ = BashUtils.execute_and_log(
             f'\"{activate_env_command}\" && pip --disable-pip-version-check uninstall '
-            f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator'
+            f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator -y'
         )
 
         if return_code is not None:

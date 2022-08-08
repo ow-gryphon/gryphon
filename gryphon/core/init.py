@@ -19,7 +19,7 @@ from .operations import (
 )
 from .registry import Template
 from ..constants import (
-    DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX,
+    DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, SUCCESS,
     LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
 )
 
@@ -169,5 +169,9 @@ def init(template: Template, location, python_version,
     RCManager.set_addon_states(
         install_nb_strip_out=install_nb_strip_out,
         install_nbextensions=install_nbextensions,
-        install_pre_commit_hooks=install_pre_commit_hooks
+        install_pre_commit_hooks=install_pre_commit_hooks,
+        logfile=rc_file
     )
+    logger.log(SUCCESS, "Project created successfully.")
+
+

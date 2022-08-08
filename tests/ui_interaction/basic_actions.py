@@ -59,8 +59,18 @@ def select_nth_option(process, n: int):
     enter(process)
 
 
+def select_nth_option_upper(process, n: int):
+    assert n >= 1
+    key_up(process, times=n-1)
+    enter(process)
+
+
 def wait_for_success(process):
     wait_for_output(process, SUCCESS_MESSAGE, timeout=180)
+
+
+def wait_for_end(process):
+    wait_for_output(process, "Project created successfully.", timeout=180)
 
 
 def navigate_categories(process, categories: List[str]):
