@@ -25,6 +25,7 @@ class LocalRegistry(TemplateRegistry):
 
     def _copy_registry(self):
         """Updates the template registry to the latest changes in local folder."""
+
         shutil.copytree(
             src=self.registry_origin,
             dst=self.registry_folder,

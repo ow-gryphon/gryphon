@@ -44,7 +44,7 @@ class RegistryCollection:
 
         local_registry = settings.get("local_registry", {})
         template_indexes = settings.get("template_indexes", {})
-        local_templates = settings.get("local_templates", {})
+        local_templates = settings.get("local_templates", [])
 
         template_registries = []
 

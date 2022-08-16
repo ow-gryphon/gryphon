@@ -50,6 +50,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path, kwargs)
         RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
+
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
@@ -116,7 +117,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     logger.info(f"Creating files at {definitive_path}")
 
     # Move files to destination
-    origin = Path(template_path)
+    origin = Path(template_path) / "template"
     shutil.copytree(
         src=origin,
         dst=Path(temp_path),
