@@ -130,7 +130,7 @@ def init(template: Template, location, python_version,
                 requirements_path=project_home / REQUIREMENTS
             )
 
-        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
+        # EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
 
     elif env_type == CONDA:
         # CONDA
@@ -154,7 +154,7 @@ def init(template: Template, location, python_version,
                 requirements_path=project_home / REQUIREMENTS
             )
 
-        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
+        # EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
@@ -172,6 +172,9 @@ def init(template: Template, location, python_version,
         install_pre_commit_hooks=install_pre_commit_hooks,
         logfile=rc_file
     )
+
+    EnvironmentManagerOperations.final_instructions(project_home, env_manager=env_type)
+
     logger.log(SUCCESS, "Project created successfully.")
 
 

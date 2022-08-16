@@ -188,8 +188,6 @@ class NBExtensionsManager:
         if return_code is not None:
             raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")
 
-        # os.chdir(target_folder.parent)
-
     @classmethod
     def uninstall_extra_nbextensions_conda(cls, environment_path=None, requirements_path=None):
         """
