@@ -48,7 +48,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
-        parse_project_template(template.path, kwargs)
+        parse_project_template(template.path / "template", kwargs)
         RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
 
     else:
@@ -117,7 +117,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
     logger.info(f"Creating files at {definitive_path}")
 
     # Move files to destination
-    origin = Path(template_path) / "template"
+    origin = Path(template_path)
     shutil.copytree(
         src=origin,
         dst=Path(temp_path),
@@ -131,6 +131,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             ".ipynb_checkpoints"
         )
     )
+
     try:
         # Replace patterns and rename files
         glob_pattern = temp_path / "**"
