@@ -171,6 +171,11 @@ def fetch_template(template, project_folder):
     try:
         _download_template(template, download_folder)
         _unzip_templates(download_folder, zip_folder)
+
+        enable_files_overwrite(
+            source_folder=zip_folder / "notebooks",
+            destination_folder=template_folder / "notebooks"
+        )
         _unify_templates(zip_folder, template_folder)
     finally:
         shutil.rmtree(download_folder, ignore_errors=True)

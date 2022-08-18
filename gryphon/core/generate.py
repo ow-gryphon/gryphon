@@ -39,6 +39,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
                 source_folder=template_folder / "notebooks",
                 destination_folder=folder / "notebooks"
             )
+
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
             RCManager.log_new_files(template, template_folder,
