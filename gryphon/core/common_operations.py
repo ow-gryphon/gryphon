@@ -198,10 +198,12 @@ def enable_files_overwrite(source_folder: Path, destination_folder: Path):
     """
     Changes permissions from read only files in order to make then overridable.
     """
-    pattern = "*.ipynb"
 
     # Get all relevant files from source
-    files_to_modify = [s[s.find('notebooks'):][10:] for s in glob.glob(str(source_folder / pattern))]
+    files_to_modify = [
+        Path(s).relative_to(source_folder)
+        for s in glob.glob(str(source_folder / "**" / "*.ipynb"), recursive=True)
+    ]
 
     # Apply chmod to these files if they exist in the to_folder
     for target_file in files_to_modify:
