@@ -83,7 +83,7 @@ def init(template: Template, location, python_version,
         env_type = data.get("environment_management", DEFAULT_ENV)
 
     project_home = Path.cwd() / location
-    logger.info("Creating project scaffolding.")
+
     logger.info(f"Initializing project at {project_home}")
 
     os.makedirs(project_home, exist_ok=True)

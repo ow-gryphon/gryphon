@@ -170,3 +170,8 @@ class InitQuestions:
                 )
             ]
         ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def ask_init_from_existing():
+        return questionary.confirm(message=Text.init_prompt_init_from_existing).unsafe_ask()

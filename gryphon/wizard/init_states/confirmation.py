@@ -3,10 +3,11 @@ import os
 import platform
 from pathlib import Path
 
-from ..functions import erase_lines
+from ..init_from_existing import init_from_existing
+from ..functions import erase_lines, BackSignal
 from ..questions import InitQuestions
-from ...constants import YES, NO, READ_MORE, CHANGE_LOCATION
-from ...fsm import State, Transition
+from ...constants import YES, NO, READ_MORE, CHANGE_LOCATION, SUCCESS, BACK
+from ...fsm import State, Transition, HaltSignal
 
 logger = logging.getLogger('gryphon')
 
@@ -87,6 +88,9 @@ class Confirmation(State):
         )
     ]
 
+    def __init__(self, registry):
+        self.registry = registry
+
     def on_start(self, context: dict) -> dict:
         template = context["template"]
         location = context["location"]
@@ -94,9 +98,32 @@ class Confirmation(State):
 
         context["n_lines_warning"] = 0
         path = Path.cwd() / location
+
         if path.is_dir():
-            context["n_lines_warning"] = 1
-            logger.warning("WARNING: The selected folder already exists.")
+            context["n_lines_warning"] = 2
+
+            def is_empty(x): return not os.listdir(x)
+
+            if is_empty(path):
+                # empty
+                logger.warning("\nWARNING: The selected folder already exists.")
+            else:
+                # not empty
+                logger.warning("\nWARNING: The selected folder is not empty.")
+                want_to_go_to_init_from_existing = InitQuestions.ask_init_from_existing()
+                context["n_lines_warning"] += 1
+
+                if want_to_go_to_init_from_existing:
+                    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
+                    erase_lines(n_lines=4 + context["n_lines_warning"] + ask_again)
+
+                    logger.log(SUCCESS, "Creating Gryphon project from the existing folder")
+                    result = init_from_existing(None, self.registry)
+
+                    if result == BACK:
+                        raise BackSignal()
+                    else:
+                        raise HaltSignal()
 
         context["read_more_link"] = context["template"].read_more_link
 
