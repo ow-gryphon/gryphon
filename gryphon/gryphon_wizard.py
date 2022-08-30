@@ -201,5 +201,5 @@ if __name__ == '__main__':
 
 # NOT POSSIBLE:change instructions from multiselect to include ctrl+c and enter to proceed
 
-# TODO: suppress git download  outputs
+# OK: suppress git download  outputs
 # OK: redirect user to "create from existing" if the folder already exists and is not empty.

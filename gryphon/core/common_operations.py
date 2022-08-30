@@ -127,7 +127,8 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
         f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
         f"-i {template.template_index} "
         f"-d \"{temp_folder}\" "
-        f"--trusted-host ow-gryphon.github.io"  # TODO: Find a definitive solution for this
+        f"--trusted-host ow-gryphon.github.io "  # TODO: Find a definitive solution for this
+        f"-qqq"
     )
     if status_code is not None:
         raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")
