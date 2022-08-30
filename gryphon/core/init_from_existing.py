@@ -192,10 +192,3 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
     # Git
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
-
-    if env_manager == VENV:
-        # VENV
-        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(location, alternative_env=env_path)
-    elif env_manager == CONDA:
-        # CONDA
-        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(location, alternative_env=env_path)
