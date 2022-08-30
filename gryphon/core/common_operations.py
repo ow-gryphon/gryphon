@@ -241,7 +241,7 @@ def multiple_file_types(*patterns):
     return list(set(files))
 
 
-def list_files(path):
+def list_files(path: Path):
     base_path = str(path)
     pattern = str(path / "**" / '**')
     pattern2 = str(path / "**" / '.**')
@@ -249,7 +249,8 @@ def list_files(path):
     all_files = multiple_file_types(pattern, pattern2)
 
     return [
-        f.split(base_path)[1][1:]
+        # f.split(base_path)[1][1:]
+        Path(f).relative_to(path)
         for f in all_files
         if Path(f).is_file() and
         ".git" not in f and

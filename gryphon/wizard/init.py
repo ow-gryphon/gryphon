@@ -13,8 +13,8 @@ def init(_, registry):
     ask_template = AskTemplate(registry)
 
     possible_states = [
-        ask_template, Confirmation(registry), AskParameters(registry),
-        Install(), MainMenu(), AskLocationAgain(), SelectAddons()
+        ask_template, Confirmation(), AskParameters(registry),
+        Install(), MainMenu(), AskLocationAgain(), SelectAddons(registry)
     ]
 
     machine = Machine(
