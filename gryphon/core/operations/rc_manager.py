@@ -30,7 +30,7 @@ class RCManager:
 
         except KeyError:
             raise KeyError(f"Could not find the key \"{key}\" in the contents \"{contents}\" read from the"
-                           f" gryphon_rc file at {logfile}.")
+                           f" gryphon_rc file at \"{logfile}\".")
 
     @staticmethod
     def _set_key_rc(key, value, logfile=None):

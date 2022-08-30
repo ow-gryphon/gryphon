@@ -238,13 +238,13 @@ def multiple_file_types(*patterns):
     for pattern in patterns:
         files.extend(glob.glob(pattern, recursive=True))
 
-    return files
+    return list(set(files))
 
 
 def list_files(path):
     base_path = str(path)
-    pattern = str(path / '**')
-    pattern2 = str(path / '.**')
+    pattern = str(path / "**" / '**')
+    pattern2 = str(path / "**" / '.**')
 
     all_files = multiple_file_types(pattern, pattern2)
 
