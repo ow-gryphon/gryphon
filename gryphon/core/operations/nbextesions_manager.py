@@ -52,9 +52,6 @@ class NBExtensionsManager:
         Function to install the libraries from a 'requirements.txt' file
         """
 
-        # Install requirements
-        logger.info("Installing extra notebook extensions.")
-
         if requirements_path is None:
             assert environment_path is not None
             requirements_path = environment_path.parent / REQUIREMENTS
@@ -88,7 +85,8 @@ class NBExtensionsManager:
 
         return_code, _ = BashUtils.execute_and_log(
             f'\"{conda_pip}\" install jupyter_contrib_nbextensions '
-            f'jupyter_nbextensions_configurator'  # --prefix=\"{environment_path}\" --yes -k'
+            f'jupyter_nbextensions_configurator  --disable-pip-version-check'
+            # --prefix=\"{environment_path}\" --yes -k'
         )
 
         if return_code is not None:
@@ -150,8 +148,6 @@ class NBExtensionsManager:
             redirect = ""
 
         # Install requirements
-        logger.info("Installing extra notebook extensions.")
-
         if not pip_path.is_file():
             raise RuntimeError(f"Virtual environment not found inside folder. Should be at {pip_path}"
                                f"\nAre you using venv instead of conda?")
@@ -195,7 +191,7 @@ class NBExtensionsManager:
         """
 
         # Install requirements
-        logger.info("Installing extra notebook extensions.")
+        logger.info("Uninstalling extra notebook extensions.")
         if requirements_path is None:
             assert environment_path is not None
             requirements_path = environment_path.parent / REQUIREMENTS

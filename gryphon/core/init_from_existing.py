@@ -12,7 +12,8 @@ from .common_operations import (
 )
 from .operations import EnvironmentManagerOperations, RCManager, PathUtils, SettingsManager
 from ..constants import (
-    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE,
+    VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS, SUCCESS
 )
 
 logger = logging.getLogger('gryphon')
@@ -159,7 +160,7 @@ def handle_template(template, project_home):
         if template.registry_type == REMOTE_INDEX:
             clean_readonly_folder(template_folder)
     finally:
-        if template_folder is not None:
+        if template_folder is not None and template_folder.is_dir():
             clean_readonly_folder(template_folder)
 
 
@@ -177,7 +178,7 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
             gryphon_files_included = True
 
         if gryphon_files_included:
-            logger.warning("Every Gryphon file used in this project are present in the current directory.")
+            logger.debug("Every Gryphon file used in this project are expected to be present in the current directory.")
 
         else:
             operations = RCManager.get_gryphon_operations(rc_path)
@@ -205,6 +206,7 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
     process_requirements(location, env_manager, env_path)
 
     # Git
+    logger.info("Starting git repository.")
     repo = init_new_git_repo(folder=location)
     initial_git_commit(repo)
-# CORE
+    logger.log(SUCCESS, "Git repository started successfully.")

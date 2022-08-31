@@ -125,12 +125,13 @@ def init(template: Template, location, python_version,
         )
 
         if install_nbextensions:
+            logger.info("Installing extra notebook extensions.")
+
             NBExtensionsManager.install_extra_nbextensions_venv(
                 environment_path=project_home / VENV_FOLDER,
                 requirements_path=project_home / REQUIREMENTS
             )
-
-        # EnvironmentManagerOperations.change_shell_folder_and_activate_venv(project_home)
+            logger.log(SUCCESS, "Notebook extensions installed successfully.")
 
     elif env_type == CONDA:
         # CONDA
@@ -149,21 +150,26 @@ def init(template: Template, location, python_version,
         )
 
         if install_nbextensions:
+            logger.info("Installing extra notebook extensions.")
             NBExtensionsManager.install_extra_nbextensions_conda(
                 environment_path=project_home / CONDA_FOLDER,
                 requirements_path=project_home / REQUIREMENTS
             )
+            logger.log(SUCCESS, "Notebook extensions installed successfully.")
 
-        # EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(project_home)
     else:
         raise RuntimeError("Invalid \"environment_management\" option on gryphon_config.json file."
                            f"Should be one of {[INIT, CONDA]} but \"{env_type}\" was given.")
 
     if install_nb_strip_out:
+        logger.info("Installing nbstripout")
         NBStripOutManager.setup(project_home, environment_path=env_path)
+        logger.log(SUCCESS, "Nbstripout installed successfully.")
 
     if install_pre_commit_hooks:
+        logger.info("Installing pre-commit hooks")
         PreCommitManager.final_setup(project_home)
+        logger.log(SUCCESS, "Pre-commit hooks installed successfully.")
 
     # update addons in gryphon_rc
     RCManager.set_addon_states(
@@ -176,5 +182,3 @@ def init(template: Template, location, python_version,
     EnvironmentManagerOperations.final_instructions(project_home, env_manager=env_type)
 
     logger.log(SUCCESS, "Project created successfully.")
-
-

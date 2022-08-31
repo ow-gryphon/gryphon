@@ -61,18 +61,20 @@ class PreCommitManager:
 
         if platform.system() == "Windows":
             BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit '
-                                      f'--no-warn-script-location')
+                                      f'--no-warn-script-location --disable-pip-version-check')
         else:
-            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit '
+                                      f'--disable-pip-version-check')
 
     @staticmethod
     def _uninstall_pre_commit(environment_path):
 
         if platform.system() == "Windows":
             BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" uninstall pre-commit -y '
-                                      f'--no-warn-script-location')
+                                      f'--no-warn-script-location --disable-pip-version-check')
         else:
-            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" uninstall pre-commit -y')
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" uninstall pre-commit -y '
+                                      f'--disable-pip-version-check')
 
     @classmethod
     def initial_setup(cls, location):

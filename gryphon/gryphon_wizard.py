@@ -198,8 +198,3 @@ if __name__ == '__main__':
 
 # TODO: Have a single readme file with all the readmes from other templates
 # TODO: Implement gitflow guidelines
-
-# NOT POSSIBLE:change instructions from multiselect to include ctrl+c and enter to proceed
-
-# OK: suppress git download  outputs
-# OK: redirect user to "create from existing" if the folder already exists and is not empty.

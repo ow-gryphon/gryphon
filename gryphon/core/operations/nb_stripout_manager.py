@@ -12,18 +12,20 @@ class NBStripOutManager:
 
         if platform.system() == "Windows":
             BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install nbstripout '
-                                      f'--no-warn-script-location')
+                                      f'--no-warn-script-location --disable-pip-version-check')
         else:
-            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install nbstripout')
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install nbstripout '
+                                      f'--disable-pip-version-check')
 
     @staticmethod
     def _uninstall_nb_strip_out(environment_path):
 
         if platform.system() == "Windows":
             BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" uninstall nbstripout -y'
-                                      f'--no-warn-script-location')
+                                      f'--no-warn-script-location --disable-pip-version-check')
         else:
-            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" uninstall nbstripout -y')
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" uninstall nbstripout -y'
+                                      f' --disable-pip-version-check')
 
     @staticmethod
     def _activate_nb_strip_out(environment_path, git_repo_root):
