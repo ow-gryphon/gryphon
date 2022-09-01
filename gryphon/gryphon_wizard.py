@@ -15,7 +15,7 @@ import git
 
 from . import __version__
 from .constants import (
-    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
+    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, FEEDBACK, REPORT_BUG, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
     CONFIGURE_PROJECT, GRYPHON_RC
 )
@@ -23,7 +23,11 @@ from .core.common_operations import sort_versions
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
-from .wizard import init, generate, add, about, exit_program, settings, init_from_existing, handover, configure_project
+from .wizard import (
+    init, generate, add, about, exit_program,
+    settings, init_from_existing, handover, configure_project,
+    feedback, report_bug
+)
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
 
@@ -154,13 +158,15 @@ def start_ui(settings_file):
             HANDOVER: handover,
             ABOUT: about,
             SETTINGS: settings,
-            QUIT: exit_program
+            QUIT: exit_program,
+            FEEDBACK: feedback,
+            REPORT_BUG: report_bug
         }[chosen_command]
 
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT]:
+                if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT, FEEDBACK, REPORT_BUG]:
                     logger.info("\n\n")
                     continue
                 break

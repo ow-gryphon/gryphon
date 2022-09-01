@@ -10,6 +10,8 @@ ADD = "add"
 HANDOVER = "handover"
 ABOUT = "about"
 CONFIGURE_PROJECT = "configure_project"
+FEEDBACK = "feedback"
+REPORT_BUG = "report_bug"
 SETTINGS = "settings"
 
 # tree related

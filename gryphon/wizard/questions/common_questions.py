@@ -4,7 +4,7 @@ from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
 from ...constants import (
     INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
-    VALUE, LATEST
+    VALUE, LATEST, REPORT_BUG, FEEDBACK
 )
 
 
@@ -47,6 +47,14 @@ class CommonQuestions:
             Choice(
                 title=Text.about_display_option,
                 value=ABOUT
+            ),
+            Choice(
+                title=Text.feedback_display_option,
+                value=FEEDBACK
+            ),
+            Choice(
+                title=Text.report_bug_display_option,
+                value=REPORT_BUG
             ),
             Choice(
                 title=Text.quit_display_option,
