@@ -92,3 +92,5 @@ ADDON_NAME_MAPPING = {
     PRE_COMMIT_HOOKS: "Pre-commit hooks",
     CI_CD: "CI/CD"
 }
+
+EMAIL_RECIPIENT = 'vittor@blueorange.digital'

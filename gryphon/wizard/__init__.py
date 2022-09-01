@@ -2,8 +2,10 @@ from .about import about
 from .add import add
 from .configure_project import configure_project
 from .exit_program import exit_program
+from .feedback import feedback
 from .generate import generate
 from .handover import handover
 from .init import init
 from .init_from_existing import init_from_existing
+from .report_bug import report_bug
 from .settings import settings
