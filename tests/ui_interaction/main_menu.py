@@ -38,12 +38,12 @@ def select_handover_on_main_menu(process):
 
 
 def select_advanced_on_main_menu(process):
-    select_nth_option_upper(process, n=4)
+    select_nth_option_upper(process, n=5)
     wait_for_output(process, NEXT_MENU)
 
 
 def select_about_on_main_menu(process):
-    select_nth_option_upper(process, n=3)
+    select_nth_option_upper(process, n=4)
     wait_for_output(process, USEFUL_LINKS)
 
 

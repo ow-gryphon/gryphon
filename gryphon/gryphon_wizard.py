@@ -8,37 +8,39 @@ import os
 import platform
 import shutil
 import sys
-import traceback
 from pathlib import Path
 
 import git
 
 from . import __version__
 from .constants import (
-    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, FEEDBACK, REPORT_BUG, INIT_FROM_EXISTING,
+    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
-    CONFIGURE_PROJECT, GRYPHON_RC
+    CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, CONTACT_US
 )
 from .core.common_operations import sort_versions
+from .core.core_text import Text as CoreText
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
 from .wizard import (
     init, generate, add, about, exit_program,
     settings, init_from_existing, handover, configure_project,
-    feedback, report_bug
+    contact_us
 )
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
 
 
 def output_error(er: Exception):
+    import traceback
+
     logger.debug("Traceback (most recent call last):")
     for line in traceback.format_tb(er.__traceback__):
         logger.debug(line)
 
     # sample:                    ValueError(er)
-    logger.error(f'{er.__class__.__name__}({er}). Please report to the support.')
+    logger.error(f'\n{er.__class__.__name__}({er}).')
 
 
 def initial_setup():
@@ -119,6 +121,28 @@ def update_gryphon():
         os.execv(sys.argv[0], sys.argv)
 
 
+def send_traceback(exception):
+    import webbrowser
+    import urllib.parse
+    import traceback
+
+    tb = "Error Traceback:\n\nTraceback (most recent call last):"
+    for line in traceback.format_tb(exception.__traceback__):
+        tb += line
+
+    subject = 'Report Crash'
+
+    url_data = urllib.parse.urlencode(
+        dict(
+            to=EMAIL_RECIPIENT,
+            subject=subject,
+            body=CoreText.bug_report_email_template.replace("{traceback}", tb)
+        )
+    )
+
+    webbrowser.open(f"mailto:?{url_data}", new=0)
+
+
 def start_ui(settings_file):
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', '-d', action='store_true')
@@ -159,14 +183,13 @@ def start_ui(settings_file):
             ABOUT: about,
             SETTINGS: settings,
             QUIT: exit_program,
-            FEEDBACK: feedback,
-            REPORT_BUG: report_bug
+            CONTACT_US: contact_us,
         }[chosen_command]
 
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT, FEEDBACK, REPORT_BUG]:
+                if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT, CONTACT_US]:
                     logger.info("\n\n")
                     continue
                 break
@@ -181,6 +204,10 @@ def start_ui(settings_file):
 
         except Exception as er:
             output_error(er)
+            response = CommonQuestions.send_feedback()
+            if response == YES:
+                send_traceback(er)
+
             exit(1)
 
 

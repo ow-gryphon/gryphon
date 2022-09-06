@@ -13,6 +13,7 @@ CONFIGURE_PROJECT = "configure_project"
 FEEDBACK = "feedback"
 REPORT_BUG = "report_bug"
 SETTINGS = "settings"
+CONTACT_US = "contact_us"
 
 # tree related
 NODE = "node"
@@ -93,4 +94,4 @@ ADDON_NAME_MAPPING = {
     CI_CD: "CI/CD"
 }
 
-EMAIL_RECIPIENT = 'vittor@blueorange.digital'
+EMAIL_RECIPIENT = "OWGryphonSupport@mmcglobal.onmicrosoft.com,vittor@blueorange.digital"

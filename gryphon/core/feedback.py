@@ -1,4 +1,4 @@
-from ..wizard.wizard_text import Text
+from .core_text import Text
 from ..constants import EMAIL_RECIPIENT
 
 

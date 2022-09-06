@@ -1,4 +1,4 @@
-from ..wizard.wizard_text import Text
+from .core_text import Text
 from ..constants import EMAIL_RECIPIENT
 
 
@@ -12,7 +12,8 @@ def report_bug():
         dict(
             to=EMAIL_RECIPIENT,
             subject=subject,
-            body=Text.bug_report_email_template
+            body=Text.bug_report_email_template.replace("{traceback}", ""),
+            attach='/home/vittorfp/blue-orange/gryphon/coverage.xml'
         )
     )
 

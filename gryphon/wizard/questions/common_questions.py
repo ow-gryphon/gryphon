@@ -4,7 +4,7 @@ from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
 from ...constants import (
     INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
-    VALUE, LATEST, REPORT_BUG, FEEDBACK
+    VALUE, LATEST, REPORT_BUG, FEEDBACK, YES, NO, CONTACT_US
 )
 
 
@@ -49,12 +49,8 @@ class CommonQuestions:
                 value=ABOUT
             ),
             Choice(
-                title=Text.feedback_display_option,
-                value=FEEDBACK
-            ),
-            Choice(
-                title=Text.report_bug_display_option,
-                value=REPORT_BUG
+                title=Text.contact_us_display_option,
+                value=CONTACT_US
             ),
             Choice(
                 title=Text.quit_display_option,
@@ -73,6 +69,25 @@ class CommonQuestions:
 
         return questionary.select(
             message=Text.first_prompt_question,
+            choices=choices
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def send_feedback():
+        choices = [
+            Choice(
+                title="Send description by email",
+                value=YES
+            ),
+            Choice(
+                title="Exit and ignore",
+                value=NO
+            )
+        ]
+
+        return questionary.select(
+            message="Gryphon failed for an unexpected reason, do you want to report the issue?",
             choices=choices
         ).unsafe_ask()
 

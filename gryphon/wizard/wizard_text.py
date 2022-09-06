@@ -25,28 +25,6 @@ class Text:
 
     """
 
-    feedback_email_template = """Hello Gryphon team!
-
-    Here is my feedbacks about the tool:
-
-        <<Type your feedback here>>
-
-
-    Thanks for the amazing tool!
-    Bye
-    """
-
-    bug_report_email_template = """Hello Gryphon team!
-
-Here is the bug I have found in the tool:
-
-    <<Type the bug description and reproduction instructions here>>
-
-
-Thanks for the amazing tool!
-Bye
-"""
-
     first_prompt_question = "What would you like to do?"
 
     init_display_option = "Start a new Gryphon project"
@@ -58,6 +36,7 @@ Bye
     settings_display_option = "Advanced options"
     feedback_display_option = "Send feedback"
     report_bug_display_option = "Report bug"
+    contact_us_display_option = "Contact us (bugs, feedback, etc.)"
     configure_project_display_option = "Configure project and logs"
     quit_display_option = "Exit"
 
@@ -142,3 +121,5 @@ Bye
 
     settings_confirm_new_template = "Confirm that you want to create a new template scaffolding inside the " \
                                     "folder '{location}'?"
+
+    contact_us_type_question = "What would you like to do?"
