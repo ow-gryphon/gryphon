@@ -143,6 +143,12 @@ def send_traceback(exception):
     webbrowser.open(f"mailto:?{url_data}", new=0)
 
 
+def ask_to_report(exception):
+    response = CommonQuestions.send_feedback()
+    if response == YES:
+        send_traceback(exception)
+
+
 def start_ui(settings_file):
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', '-d', action='store_true')
@@ -196,6 +202,7 @@ def start_ui(settings_file):
 
         except RuntimeError as er:
             logger.error(f'Runtime error: {er}')
+            ask_to_report(er)
             exit(1)
 
         except KeyboardInterrupt:
@@ -204,10 +211,7 @@ def start_ui(settings_file):
 
         except Exception as er:
             output_error(er)
-            response = CommonQuestions.send_feedback()
-            if response == YES:
-                send_traceback(er)
-
+            ask_to_report(er)
             exit(1)
 
 

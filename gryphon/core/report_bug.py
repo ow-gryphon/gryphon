@@ -12,8 +12,7 @@ def report_bug():
         dict(
             to=EMAIL_RECIPIENT,
             subject=subject,
-            body=Text.bug_report_email_template.replace("{traceback}", ""),
-            attach='/home/vittorfp/blue-orange/gryphon/coverage.xml'
+            body=Text.bug_report_email_template.replace("{traceback}", "")
         )
     )
 
