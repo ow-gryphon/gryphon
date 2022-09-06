@@ -31,8 +31,12 @@ def initial_git_commit(repository: git.Repo):
     repository.index.commit("Initial commit")
 
 
-# requirements.txt UTILS
+def initial_git_commit_os(repository: Path):
+    """Does the first git commit."""
+    BashUtils.execute_and_log(f"cd {str(repository)} && git add . && git commit -m 'Initial commit'")
 
+
+# requirements.txt UTILS
 def get_library_name(library_name):
     """
     Utility to split between the library name and version number when needed
@@ -242,7 +246,6 @@ def multiple_file_types(*patterns):
 
 
 def list_files(path: Path):
-    base_path = str(path)
     pattern = str(path / "**" / '**')
     pattern2 = str(path / "**" / '.**')
 
