@@ -13,7 +13,8 @@ def feedback():
             to=EMAIL_RECIPIENT,
             subject=subject,
             body=Text.feedback_email_template
-        )
+        ),
+        quote_via=urllib.parse.quote
     )
 
     webbrowser.open(f"mailto:?{url_data}", new=0)

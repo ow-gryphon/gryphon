@@ -34,7 +34,7 @@ class Text:
     handover_display_option = "Handover project"
     about_display_option = "About OW Gryphon"
     settings_display_option = "Advanced options"
-    feedback_display_option = "Send feedback"
+    feedback_display_option = "General contact/feedback"
     report_bug_display_option = "Report bug"
     contact_us_display_option = "Contact us (bugs, feedback, etc.)"
     configure_project_display_option = "Configure project and logs"

@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 
 from .common_operations import (
-    init_new_git_repo, initial_git_commit_os,
+    init_new_git_repo, initial_git_commit,
     fetch_template, append_requirement,
     mark_notebooks_as_readonly,
     clean_readonly_folder, enable_files_overwrite
@@ -100,8 +100,8 @@ def init(template: Template, location, python_version,
 
     # Git
     repo = init_new_git_repo(folder=project_home)
-    initial_git_commit_os(project_home)
-    # initial_git_commit(repo)
+    # initial_git_commit_os(project_home)
+    initial_git_commit(repo)
 
     # Requirements
     for r in template.dependencies:

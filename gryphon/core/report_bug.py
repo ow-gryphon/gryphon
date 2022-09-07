@@ -13,7 +13,8 @@ def report_bug():
             to=EMAIL_RECIPIENT,
             subject=subject,
             body=Text.bug_report_email_template.replace("{traceback}", "")
-        )
+        ),
+        quote_via=urllib.parse.quote
     )
 
     webbrowser.open(f"mailto:?{url_data}", new=0)
