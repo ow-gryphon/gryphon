@@ -8,9 +8,7 @@ class Text:
 
     feedback_email_template = """Hello Gryphon team!
 
-Here is my feedbacks about the tool:
-
-    <<Type your feedback here>>
+    <<Type your message/feedback here>>
 
 
 Thanks for the amazing tool!
