@@ -46,13 +46,35 @@ class PreCommitManager:
         )
 
     @staticmethod
+    def _deactivate_hooks(environment_path, git_repo_root):
+        sub_folder = 'bin'
+
+        if platform.system() == "Windows":
+            sub_folder = 'Scripts'
+
+        BashUtils.execute_and_log(
+            f"cd \"{git_repo_root}\" && \"{environment_path / sub_folder / 'pre-commit'}\" uninstall"
+        )
+
+    @staticmethod
     def _install_pre_commit(environment_path):
 
         if platform.system() == "Windows":
             BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" install pre-commit '
-                                      f'--no-warn-script-location')
+                                      f'--no-warn-script-location --disable-pip-version-check')
         else:
-            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit')
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" install pre-commit '
+                                      f'--disable-pip-version-check')
+
+    @staticmethod
+    def _uninstall_pre_commit(environment_path):
+
+        if platform.system() == "Windows":
+            BashUtils.execute_and_log(f'\"{environment_path / "Scripts" / "pip"}\" uninstall pre-commit -y '
+                                      f'--no-warn-script-location --disable-pip-version-check')
+        else:
+            BashUtils.execute_and_log(f'\"{environment_path / "bin" / "pip"}\" uninstall pre-commit -y '
+                                      f'--disable-pip-version-check')
 
     @classmethod
     def initial_setup(cls, location):
@@ -63,10 +85,23 @@ class PreCommitManager:
         cls._fill_configurations(location)
 
     @classmethod
-    def final_setup(cls, location):
+    def final_setup(cls, location, environment_path=None):
 
         log = location / GRYPHON_RC
-        environment_path = RCManager.get_environment_manager_path(logfile=log)
+        if environment_path is None:
+            environment_path = RCManager.get_environment_manager_path(logfile=log)
 
         cls._install_pre_commit(environment_path)
         cls._activate_hooks(environment_path, location)
+
+    @classmethod
+    def full_setup(cls, location, environment_path):
+
+        cls.initial_setup(location=location)
+        cls.final_setup(location=location, environment_path=environment_path)
+
+    @classmethod
+    def teardown(cls, location, environment_path):
+
+        cls._deactivate_hooks(git_repo_root=location, environment_path=environment_path)
+        cls._uninstall_pre_commit(environment_path=environment_path)

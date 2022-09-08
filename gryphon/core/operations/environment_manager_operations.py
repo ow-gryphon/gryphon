@@ -8,7 +8,7 @@ from .path_utils import PathUtils
 from ..core_text import Text
 from ...constants import (
     SUCCESS, VENV_FOLDER, CONDA_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
-    SYSTEM_DEFAULT
+    SYSTEM_DEFAULT, CONDA, VENV
 )
 
 logger = logging.getLogger('gryphon')
@@ -100,41 +100,6 @@ class EnvironmentManagerOperations:
         else:
             logger.log(SUCCESS, "Installation successful!")
 
-    @staticmethod
-    def change_shell_folder_and_activate_venv(location, alternative_env=None):
-
-        target_folder = PathUtils.get_destination_path(location)
-        if alternative_env:
-            env_folder = alternative_env
-        else:
-            env_folder = target_folder / VENV_FOLDER
-
-        if platform == "windows":
-            logger.warning(f"""
-                {Text.install_end_message_1}
-    
-                ANACONDA PROMPT/COMMAND PROMPT:
-    
-                >> cd \"{target_folder}\"
-                >> {env_folder / "Scripts" / "activate.bat"}
-    
-                GIT BASH:
-    
-                >> cd \"{str(target_folder).replace(chr(92), '/')}\"
-                >> source {env_folder / "Scripts" / "activate"}
-    
-                {Text.install_end_message_2}
-            """)
-        else:
-            logger.warning(f"""
-                {Text.install_end_message_1}
-
-                >> cd \"{str(target_folder).replace(chr(92), '/')}\"
-                >> source {env_folder / "scripts" / "activate"}
-
-                {Text.install_end_message_2}
-            """)
-
     # CONDA
     @staticmethod
     def create_conda_env(folder=None, python_version=None):
@@ -147,10 +112,12 @@ class EnvironmentManagerOperations:
         if Path("out.json").is_file():
             os.remove("out.json")
 
-        command = f"conda create --prefix=\"{conda_path}\" -y -k"
+        command = f"conda create --prefix=\"{conda_path}\""
 
         if python_version and python_version != SYSTEM_DEFAULT and python_version != ALWAYS_ASK:
             command += f" python={python_version}"
+
+        command += " pip -y -k"
 
         return_code, _ = BashUtils.execute_and_log(command)
         if return_code is not None:
@@ -179,9 +146,19 @@ class EnvironmentManagerOperations:
             raise RuntimeError(f"Conda environment not found inside folder. Should be at {conda_path}"
                                f"\nAre you using conda instead of venv?")
 
+        # return_code, output = BashUtils.execute_and_log(
+        #     f"conda install --prefix \"{conda_path}\""
+        #     f" --file \"{requirements_path}\" -k -y"
+        # )
+
+        if platform.system() == "Windows":
+            # On Windows the venv folder structure is different from unix
+            conda_pip = environment_path / "Scripts" / "pip"
+        else:
+            conda_pip = environment_path / "bin" / "pip"
+
         return_code, output = BashUtils.execute_and_log(
-            f"conda install --prefix \"{conda_path}\""
-            f" --file \"{requirements_path}\" -k -y"
+            f"\"{conda_pip}\" install -r \"{requirements_path}\""
         )
 
         if return_code is not None:
@@ -194,24 +171,58 @@ class EnvironmentManagerOperations:
             logger.log(SUCCESS, "Installation successful!")
 
     @staticmethod
-    def change_shell_folder_and_activate_conda_env(location, alternative_env=None):
-        target_folder = PathUtils.get_destination_path(location)
-
-        if alternative_env:
-            env_folder = alternative_env
-        else:
-            env_folder = target_folder / CONDA_FOLDER
-
-        logger.warning(f"""
-            {Text.install_end_message_1}
-
-            >> cd {target_folder}
-            >> conda activate --prefix=\"{env_folder}\"
-
-            {Text.install_end_message_2}
-        """)
-
-    @staticmethod
     def update_conda():
         if BashUtils.execute_and_log("conda update conda -k -y")[0] is not None:
             raise RuntimeError("Failed to update conda.")
+
+    @staticmethod
+    def final_instructions(location, env_manager, alternative_env=None):
+        target_folder = PathUtils.get_destination_path(location)
+        env_folder = alternative_env
+
+        if env_manager == CONDA:
+
+            if not alternative_env:
+                env_folder = target_folder / CONDA_FOLDER
+
+            logger.warning(f"""
+                        {Text.install_end_message_1}
+
+                        >> cd {target_folder}
+                        >> conda activate --prefix=\"{env_folder}\"
+
+                        {Text.install_end_message_2}
+                    """)
+
+        elif env_manager == VENV:
+
+            if not alternative_env:
+                env_folder = target_folder / VENV_FOLDER
+
+            if platform.system() == "Windows":
+
+                logger.warning(f"""
+                    {Text.install_end_message_1}
+
+                    ANACONDA PROMPT/COMMAND PROMPT:
+
+                    >> cd \"{target_folder}\"
+                    >> {env_folder / "Scripts" / "activate.bat"}
+
+                    GIT BASH:
+
+                    >> cd \"{str(target_folder).replace(chr(92), '/')}\"
+                    >> source {env_folder / "Scripts" / "activate"}
+
+                    {Text.install_end_message_2}
+                """)
+            else:
+
+                logger.warning(f"""
+                    {Text.install_end_message_1}
+
+                    >> cd \"{str(target_folder).replace(chr(92), '/')}\"
+                    >> source {env_folder / "scripts" / "activate"}
+
+                    {Text.install_end_message_2}
+                """)

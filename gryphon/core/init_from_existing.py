@@ -5,14 +5,15 @@ from pathlib import Path
 from textwrap import wrap
 
 from .common_operations import (
-    init_new_git_repo, initial_git_commit,
+    init_new_git_repo, initial_git_commit_os,
     fetch_template, append_requirement,
     mark_notebooks_as_readonly,
-    clean_readonly_folder, list_files
+    clean_readonly_folder, list_files, enable_files_overwrite
 )
 from .operations import EnvironmentManagerOperations, RCManager, PathUtils, SettingsManager
 from ..constants import (
-    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+    GRYPHON_RC, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE,
+    VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS, SUCCESS
 )
 
 logger = logging.getLogger('gryphon')
@@ -77,15 +78,16 @@ def create_environment(path: Path, env_manager=None):
         return EnvironmentManagerOperations.create_venv(path)
 
 
-def process_environment(location, env_manager, use_existing_environment,
-                        existing_env_path, delete_existing, external_env_path):
-    print(use_existing_environment, existing_env_path, delete_existing, external_env_path)
+def process_environment(
+        location, env_manager, use_existing_environment,
+        existing_env_path, delete_existing, external_env_path):
 
     if use_existing_environment:
         if external_env_path is None:
             path = existing_env_path
         else:
             raise RuntimeError("Unexpected condition. Logic failure.")
+
     else:
         if delete_existing:
             shutil.rmtree(existing_env_path)
@@ -117,43 +119,51 @@ def process_environment(location, env_manager, use_existing_environment,
 # TEMPLATE
 
 def handle_template(template, project_home):
+    template_folder = None
+    try:
+        if template.registry_type == REMOTE_INDEX:
 
-    if template.registry_type == REMOTE_INDEX:
+            template_folder = fetch_template(template, project_home)
+            mark_notebooks_as_readonly(template_folder / "notebooks")
 
-        template_folder = fetch_template(template, project_home)
-        mark_notebooks_as_readonly(template_folder / "notebooks")
+        elif template.registry_type == LOCAL_TEMPLATE:
+            template_folder = Path(template.path) / "template"
 
-    elif template.registry_type == LOCAL_TEMPLATE:
-        template_folder = Path(template.path) / "template"
+        else:
+            raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
-    else:
-        raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
+        new_files = list_files(template_folder)
+        existing_files = list_files(project_home)
 
-    new_files = list_files(template_folder)
-    existing_files = list_files(project_home)
-
-    not_collided = [
-        file
-        for file in new_files
-        if file not in existing_files
-    ]
-
-    for file in not_collided:
-
-        origin = template_folder / file
-        destination = project_home / file
-
-        os.makedirs(destination.parent, exist_ok=True)
-        shutil.copy2(
-            src=origin,
-            dst=destination
+        enable_files_overwrite(
+            source_folder=template_folder,
+            destination_folder=project_home
         )
 
-    if template.registry_type == REMOTE_INDEX:
-        clean_readonly_folder(template_folder)
+        not_collided = [
+            file
+            for file in new_files
+            if file not in existing_files
+        ]
+
+        for file in not_collided:
+
+            origin = template_folder / file
+            destination = project_home / file
+
+            os.makedirs(destination.parent, exist_ok=True)
+            shutil.copy2(
+                src=origin,
+                dst=destination
+            )
+
+        if template.registry_type == REMOTE_INDEX:
+            clean_readonly_folder(template_folder)
+    finally:
+        if template_folder is not None and template_folder.is_dir():
+            clean_readonly_folder(template_folder)
 
 
-# CORE
 def init_from_existing(template, location: Path, env_manager, use_existing_environment, existing_env_path,
                        delete_existing, external_env_path):
 
@@ -161,9 +171,15 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
     rc_path = location / GRYPHON_RC
 
     if rc_path.is_file():
-        gryphon_files_included = RCManager.get_handover_include_gryphon_generated_files(rc_path)
+        try:
+            gryphon_files_included = RCManager.get_handover_include_gryphon_generated_files(rc_path)
+        except KeyError as e:
+            assert "handover_include_gryphon_generated_files" in str(e)
+            gryphon_files_included = True
+
         if gryphon_files_included:
-            logger.warning("Every Gryphon file used in this project are present in the current directory.")
+            logger.debug("Every Gryphon file used in this project are expected to be present in the current directory.")
+
         else:
             operations = RCManager.get_gryphon_operations(rc_path)
 
@@ -190,12 +206,7 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
     process_requirements(location, env_manager, env_path)
 
     # Git
-    repo = init_new_git_repo(folder=location)
-    initial_git_commit(repo)
-
-    if env_manager == VENV:
-        # VENV
-        EnvironmentManagerOperations.change_shell_folder_and_activate_venv(location, alternative_env=env_path)
-    elif env_manager == CONDA:
-        # CONDA
-        EnvironmentManagerOperations.change_shell_folder_and_activate_conda_env(location, alternative_env=env_path)
+    logger.info("Starting git repository.")
+    init_new_git_repo(folder=location)
+    initial_git_commit_os(location)
+    logger.log(SUCCESS, "Git repository started successfully.")

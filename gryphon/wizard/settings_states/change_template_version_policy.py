@@ -3,7 +3,7 @@ import logging
 from ..functions import erase_lines
 from ..questions import SettingsQuestions
 from ...constants import BACK, SUCCESS, ALWAYS_ASK
-from ...core.operations import RCManager, SettingsManager
+from ...core.operations import SettingsManager
 from ...fsm import State, Transition, negate_condition
 
 logger = logging.getLogger('gryphon')
@@ -53,7 +53,7 @@ class ChangeTemplateVersionPolicy(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-        current_policy = RCManager.get_current_template_version_policy()
+        current_policy = SettingsManager.get_current_template_version_policy()
         context["selected_option"] = SettingsQuestions.ask_template_version_policy(current_policy)
 
         return context

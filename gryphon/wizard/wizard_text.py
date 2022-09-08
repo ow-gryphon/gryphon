@@ -24,6 +24,7 @@ class Text:
     - Vittor Pereira (vittor.pereira@oliverwyman.com)
 
     """
+
     first_prompt_question = "What would you like to do?"
 
     init_display_option = "Start a new Gryphon project"
@@ -33,6 +34,10 @@ class Text:
     handover_display_option = "Handover project"
     about_display_option = "About OW Gryphon"
     settings_display_option = "Advanced options"
+    feedback_display_option = "General contact/feedback"
+    report_bug_display_option = "Report bug"
+    contact_us_display_option = "Contact us (bugs, feedback, etc.)"
+    configure_project_display_option = "Configure project and logs"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"
@@ -44,6 +49,8 @@ class Text:
 
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
+    init_prompt_addons = "Select the extras that you want to add to the project:"
+    init_prompt_init_from_existing = "Did you meant to get a Gryphon project from an existing folder?"
 
     init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
     init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
@@ -114,3 +121,5 @@ class Text:
 
     settings_confirm_new_template = "Confirm that you want to create a new template scaffolding inside the " \
                                     "folder '{location}'?"
+
+    contact_us_type_question = "What would you like to do?"

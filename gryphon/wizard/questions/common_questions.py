@@ -2,14 +2,17 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
-from ...constants import (INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, VALUE, LATEST)
+from ...constants import (
+    INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
+    VALUE, LATEST, REPORT_BUG, FEEDBACK, YES, NO, CONTACT_US
+)
 
 
 class CommonQuestions:
 
     @staticmethod
     @base_question
-    def main_question():
+    def main_question(inside_existing_project: bool = False):
         choices = [
             Choice(
                 title=Text.init_display_option,
@@ -19,6 +22,9 @@ class CommonQuestions:
                 title=Text.init_from_existing_display_option,
                 value=INIT_FROM_EXISTING
             ),
+
+            Separator(Text.menu_separator),
+
             Choice(
                 title=Text.generate_display_option,
                 value=GENERATE
@@ -31,7 +37,9 @@ class CommonQuestions:
                 title=Text.handover_display_option,
                 value=HANDOVER
             ),
+
             Separator(Text.menu_separator),
+
             Choice(
                 title=Text.settings_display_option,
                 value=SETTINGS
@@ -41,13 +49,45 @@ class CommonQuestions:
                 value=ABOUT
             ),
             Choice(
+                title=Text.contact_us_display_option,
+                value=CONTACT_US
+            ),
+            Choice(
                 title=Text.quit_display_option,
                 value=QUIT
             )
         ]
 
+        if inside_existing_project:
+            choices.insert(
+                5,
+                Choice(
+                    title=Text.configure_project_display_option,
+                    value=CONFIGURE_PROJECT
+                )
+            )
+
         return questionary.select(
             message=Text.first_prompt_question,
+            choices=choices
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_question
+    def send_feedback():
+        choices = [
+            Choice(
+                title="Send description by email",
+                value=YES
+            ),
+            Choice(
+                title="Exit and ignore",
+                value=NO
+            )
+        ]
+
+        return questionary.select(
+            message="Gryphon failed for an unexpected reason, do you want to report the issue?",
             choices=choices
         ).unsafe_ask()
 

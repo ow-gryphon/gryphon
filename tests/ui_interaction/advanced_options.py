@@ -1,4 +1,3 @@
-import platform
 from pathlib import Path
 
 from gryphon.constants import GRYPHON_HOME, CONFIG_FILE
@@ -8,8 +7,8 @@ from .basic_actions import (
     confirm_information, select_nth_option,
     enter, wait_for_output, type_text
 )
+from .init import select_default_addons
 from .main_menu import select_advanced_on_main_menu
-
 
 CONFIG_FILE_PATH = Path(GRYPHON_HOME) / CONFIG_FILE
 
@@ -32,6 +31,9 @@ def create_template_scaffold(working_directory):
         select_advanced_on_main_menu(process)
         select_create_template_scaffold(process)
         type_folder_name(process, "test_template")
+
+        select_default_addons(process)
+
         confirm_information(process)
         wait_for_success(process)
         quit_process(process)

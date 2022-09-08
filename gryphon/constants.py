@@ -9,7 +9,11 @@ INIT_FROM_EXISTING = "init_from_existing"
 ADD = "add"
 HANDOVER = "handover"
 ABOUT = "about"
+CONFIGURE_PROJECT = "configure_project"
+FEEDBACK = "feedback"
+REPORT_BUG = "report_bug"
 SETTINGS = "settings"
+CONTACT_US = "contact_us"
 
 # tree related
 NODE = "node"
@@ -76,3 +80,18 @@ CHANGE_LIMIT = "CHANGE_LIMIT"
 
 ERASE_LINE = "\033[A                                                                                             " \
              "          \033[A"
+
+# addon options
+NB_EXTENSIONS = "nbextensions"
+NB_STRIP_OUT = "nbstripout"
+PRE_COMMIT_HOOKS = "hooks"
+CI_CD = "cicd"
+
+ADDON_NAME_MAPPING = {
+    NB_EXTENSIONS: "Notebook extensions",
+    NB_STRIP_OUT: "Notebook stripout",
+    PRE_COMMIT_HOOKS: "Pre-commit hooks",
+    CI_CD: "CI/CD"
+}
+
+EMAIL_RECIPIENT = "OWGryphonSupport@mmcglobal.onmicrosoft.com"

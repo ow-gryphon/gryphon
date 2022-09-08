@@ -23,7 +23,7 @@ def ask_location_again_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
     ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
 
-    erase_lines(n_lines=n_lines + 1 + context["n_lines_warning"] + ask_again)
+    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"] + ask_again)
     return context
 
 
@@ -67,7 +67,7 @@ class Confirmation(State):
     name = "confirmation"
     transitions = [
         Transition(
-            next_state="ask_template",
+            next_state="select_addons",
             condition=_change_from_confirmation_to_ask_template,
             callback=confirmation_success_callback
         ),
@@ -93,10 +93,33 @@ class Confirmation(State):
         extra_parameters = context["extra_parameters"]
 
         context["n_lines_warning"] = 0
-        path = Path.cwd() / location
-        if path.is_dir():
-            context["n_lines_warning"] = 1
-            logger.warning("WARNING: The selected folder already exists.")
+        # path = Path.cwd() / location
+        #
+        # if path.is_dir():
+        #     context["n_lines_warning"] = 2
+        #
+        #     def is_empty(x): return not os.listdir(x)
+        #
+        #     if is_empty(path):
+        #         # empty
+        #         logger.warning("\nWARNING: The selected folder already exists.")
+        #     else:
+        #         # not empty
+        #         logger.warning("\nWARNING: The selected folder is not empty.")
+        #         want_to_go_to_init_from_existing = InitQuestions.ask_init_from_existing()
+        #         context["n_lines_warning"] += 1
+        #
+        #         if want_to_go_to_init_from_existing:
+        #             ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
+        #             erase_lines(n_lines=context["n_lines_warning"] + ask_again)
+        #
+        #             logger.log(SUCCESS, "Creating Gryphon project from the existing folder")
+        #             result = init_from_existing(None, self.registry)
+        #
+        #             if result == BACK:
+        #                 raise BackSignal()
+        #             else:
+        #                 raise HaltSignal()
 
         context["read_more_link"] = context["template"].read_more_link
 
@@ -104,6 +127,7 @@ class Confirmation(State):
             template=template,
             location=Path(location).resolve(),
             read_more_option=context["read_more_link"] is not None,
+            addons=context["selected_addons"],
             **extra_parameters
         )
 

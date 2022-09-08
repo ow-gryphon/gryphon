@@ -28,7 +28,7 @@ def wrap_text(text) -> Tuple[str, int]:
         line = fill(
             i, width=100, drop_whitespace=False,
             expand_tabs=True, replace_whitespace=False,
-            break_on_hyphens=False, subsequent_indent='\t'
+            break_on_hyphens=True, subsequent_indent='\t'
         )
         wrapped += '\n' + line
 

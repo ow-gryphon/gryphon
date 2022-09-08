@@ -8,31 +8,39 @@ import os
 import platform
 import shutil
 import sys
-import traceback
+from pathlib import Path
 
 import git
 
 from . import __version__
 from .constants import (
     INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
-    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER
+    GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
+    CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, CONTACT_US
 )
 from .core.common_operations import sort_versions
+from .core.core_text import Text as CoreText
 from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
-from .wizard import init, generate, add, about, exit_program, settings, init_from_existing, handover
+from .wizard import (
+    init, generate, add, about, exit_program,
+    settings, init_from_existing, handover, configure_project,
+    contact_us
+)
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
 
 
 def output_error(er: Exception):
+    import traceback
+
     logger.debug("Traceback (most recent call last):")
     for line in traceback.format_tb(er.__traceback__):
         logger.debug(line)
 
     # sample:                    ValueError(er)
-    logger.error(f'{er.__class__.__name__}({er}). Please report to the support.')
+    logger.error(f'\n{er.__class__.__name__}({er}).')
 
 
 def initial_setup():
@@ -71,19 +79,29 @@ def initial_setup():
 
 
 def update_gryphon():
-    repo_clone_path = GRYPHON_HOME / "git_gryphon"
 
-    if repo_clone_path.is_dir():
-        repo = git.Repo(repo_clone_path)
-    else:
+    def clone_from_remote():
         shutil.rmtree(repo_clone_path, ignore_errors=True)
-        repo = git.Repo.clone_from(
+
+        return git.Repo.clone_from(
             url="https://github.com/ow-gryphon/gryphon.git",
             to_path=repo_clone_path
         )
 
-    repo.git.checkout('master')
-    repo.git.fetch(['--prune', '--prune-tags'])
+    repo_clone_path = GRYPHON_HOME / "git_gryphon"
+
+    try:
+        if repo_clone_path.is_dir():
+            repo = git.Repo(repo_clone_path)
+
+            repo.git.checkout('master')
+            repo.git.checkout('.')
+            repo.git.fetch(['--prune', '--prune-tags'])
+        else:
+            repo = clone_from_remote()
+        
+    except git.exc.GitCommandError:
+        repo = clone_from_remote()
 
     latest_remote_version = sort_versions(list(map(lambda x: x.name, repo.tags)))[-1]
     latest = sort_versions([__version__, latest_remote_version])[-1]
@@ -101,6 +119,34 @@ def update_gryphon():
         # restart gryphon
         logger.info("Restarting gryphon")
         os.execv(sys.argv[0], sys.argv)
+
+
+def send_traceback(exception):
+    import webbrowser
+    import urllib.parse
+    import traceback
+
+    tb = "Error Traceback:\n\nTraceback (most recent call last):"
+    for line in traceback.format_tb(exception.__traceback__):
+        tb += line
+
+    subject = 'Report Crash'
+
+    url_data = urllib.parse.urlencode(
+        dict(
+            to=EMAIL_RECIPIENT,
+            subject=subject,
+            body=CoreText.bug_report_email_template.replace("{traceback}", tb)
+        )
+    )
+
+    webbrowser.open(f"mailto:?{url_data}", new=0)
+
+
+def ask_to_report(exception):
+    response = CommonQuestions.send_feedback()
+    if response == YES:
+        send_traceback(exception)
 
 
 def start_ui(settings_file):
@@ -128,9 +174,28 @@ def start_ui(settings_file):
     logger.info(Text.welcome)
 
     while True:
-        chosen_command = CommonQuestions.main_question()
+        gryphon_rc = Path.cwd() / GRYPHON_RC
+
+        if platform.system() == "Windows":
+            # noinspection PyUnresolvedReferences
+            import msvcrt
+
+            sys.stdout.flush()
+            while msvcrt.kbhit():
+                msvcrt.getch()
+
+        else:
+            from termios import tcflush, TCIOFLUSH
+
+            sys.stdout.flush()
+            tcflush(sys.stdin, TCIOFLUSH)
+
+        chosen_command = CommonQuestions.main_question(
+            inside_existing_project=gryphon_rc.is_file()
+        )
         
         function = {
+            CONFIGURE_PROJECT: configure_project,
             INIT: init,
             INIT_FROM_EXISTING: init_from_existing,
             GENERATE: generate,
@@ -138,19 +203,21 @@ def start_ui(settings_file):
             HANDOVER: handover,
             ABOUT: about,
             SETTINGS: settings,
-            QUIT: exit_program
+            QUIT: exit_program,
+            CONTACT_US: contact_us,
         }[chosen_command]
 
         try:
             response = function(DATA_PATH, registry)
             if response != BACK:
-                if chosen_command in [GENERATE, ADD]:
+                if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT, CONTACT_US]:
                     logger.info("\n\n")
                     continue
                 break
 
         except RuntimeError as er:
             logger.error(f'Runtime error: {er}')
+            ask_to_report(er)
             exit(1)
 
         except KeyboardInterrupt:
@@ -159,6 +226,7 @@ def start_ui(settings_file):
 
         except Exception as er:
             output_error(er)
+            ask_to_report(er)
             exit(1)
 
 

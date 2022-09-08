@@ -39,6 +39,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
                 source_folder=template_folder / "notebooks",
                 destination_folder=folder / "notebooks"
             )
+
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
             RCManager.log_new_files(template, template_folder,
@@ -48,8 +49,9 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             clean_readonly_folder(template_folder)
 
     elif template.registry_type == LOCAL_TEMPLATE:
-        parse_project_template(template.path, kwargs)
+        parse_project_template(template.path / "template", kwargs)
         RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
+
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
 
@@ -130,6 +132,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             ".ipynb_checkpoints"
         )
     )
+
     try:
         # Replace patterns and rename files
         glob_pattern = temp_path / "**"

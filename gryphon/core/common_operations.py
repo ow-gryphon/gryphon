@@ -31,8 +31,17 @@ def initial_git_commit(repository: git.Repo):
     repository.index.commit("Initial commit")
 
 
-# requirements.txt UTILS
+def initial_git_commit_os(repository: Path):
+    """Does the first git commit."""
 
+    pipe = "&&"
+    if platform.system() == "Windows":
+        pipe = "&"
+
+    BashUtils.execute_and_log(f'cd {str(repository)} {pipe} git add . {pipe} git commit -m "Initial commit"')
+
+
+# requirements.txt UTILS
 def get_library_name(library_name):
     """
     Utility to split between the library name and version number when needed
@@ -127,7 +136,8 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
         f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
         f"-i {template.template_index} "
         f"-d \"{temp_folder}\" "
-        f"--trusted-host ow-gryphon.github.io"  # TODO: Find a definitive solution for this
+        f"--trusted-host ow-gryphon.github.io "  # TODO: Find a definitive solution for this
+        f"-qqq"
     )
     if status_code is not None:
         raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")
@@ -171,6 +181,11 @@ def fetch_template(template, project_folder):
     try:
         _download_template(template, download_folder)
         _unzip_templates(download_folder, zip_folder)
+
+        enable_files_overwrite(
+            source_folder=zip_folder / "notebooks",
+            destination_folder=template_folder / "notebooks"
+        )
         _unify_templates(zip_folder, template_folder)
     finally:
         shutil.rmtree(download_folder, ignore_errors=True)
@@ -193,10 +208,12 @@ def enable_files_overwrite(source_folder: Path, destination_folder: Path):
     """
     Changes permissions from read only files in order to make then overridable.
     """
-    pattern = "*.ipynb"
 
     # Get all relevant files from source
-    files_to_modify = [s[s.find('notebooks'):][10:] for s in glob.glob(str(source_folder / pattern))]
+    files_to_modify = [
+        Path(s).relative_to(source_folder)
+        for s in glob.glob(str(source_folder / "**" / "*.ipynb"), recursive=True)
+    ]
 
     # Apply chmod to these files if they exist in the to_folder
     for target_file in files_to_modify:
@@ -230,18 +247,18 @@ def multiple_file_types(*patterns):
     for pattern in patterns:
         files.extend(glob.glob(pattern, recursive=True))
 
-    return files
+    return list(set(files))
 
 
-def list_files(path):
-    base_path = str(path)
-    pattern = str(path / '**')
-    pattern2 = str(path / '.**')
+def list_files(path: Path):
+    pattern = str(path / "**" / '**')
+    pattern2 = str(path / "**" / '.**')
 
     all_files = multiple_file_types(pattern, pattern2)
 
     return [
-        f.split(base_path)[1][1:]
+        # f.split(base_path)[1][1:]
+        Path(f).relative_to(path)
         for f in all_files
         if Path(f).is_file() and
         ".git" not in f and

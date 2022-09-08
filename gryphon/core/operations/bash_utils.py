@@ -44,7 +44,7 @@ class BashUtils:
         """Copies the templates to destination folder."""
 
         template_path = template_source / "template"
-        template_path.mkdir(exist_ok=True)
+        template_destiny.mkdir(exist_ok=True)
 
         shutil.copytree(
             src=template_path,

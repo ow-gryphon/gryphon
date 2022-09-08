@@ -18,7 +18,6 @@ def init_from_existing(_, registry):
     possible_states = [
         ask_template, MainMenu(), AskLocation(), AskPointExternal(),
         AskExternalEnvPath(), AskUseExisting(), Install(registry)
-
     ]
 
     machine = Machine(

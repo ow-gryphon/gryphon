@@ -2,11 +2,12 @@ import json
 
 import questionary
 from questionary import Choice, Separator
-from .common_functions import base_question, get_back_choice
+
+from .common_functions import base_question, get_back_choice, base_text_prompt
 from ..wizard_text import Text
 from ...constants import (
-    YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT, CHANGE_LOCATION,
-    DATA_PATH, USE_LATEST
+    YES, NO, NAME, VALUE, ALWAYS_ASK, SYSTEM_DEFAULT,
+    CHANGE_LOCATION, DATA_PATH, USE_LATEST, NB_STRIP_OUT, PRE_COMMIT_HOOKS
 )
 
 
@@ -212,5 +213,28 @@ class SettingsQuestions:
                 ),
                 Separator(),
                 get_back_choice()
+            ]
+        ).unsafe_ask()
+
+    @staticmethod
+    @base_text_prompt
+    def ask_addons():
+        return questionary.checkbox(
+            message=Text.init_prompt_addons,
+            choices=[
+                # Choice(
+                #     title="CI/CD",
+                #     value=CI_CD,
+                #     checked=True
+                # ),
+                Choice(
+                    title="Notebook stripout",
+                    value=NB_STRIP_OUT
+                ),
+                Choice(
+                    title="Pre-commit hooks",
+                    value=PRE_COMMIT_HOOKS,
+                    checked=True
+                )
             ]
         ).unsafe_ask()
