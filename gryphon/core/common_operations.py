@@ -38,7 +38,7 @@ def initial_git_commit_os(repository: Path):
     if platform.system() == "Windows":
         pipe = "&"
 
-    BashUtils.execute_and_log(f"cd {str(repository)} {pipe} git add . {pipe} git commit -m 'Initial commit'")
+    BashUtils.execute_and_log(f'cd {str(repository)} {pipe} git add . {pipe} git commit -m "Initial commit"')
 
 
 # requirements.txt UTILS

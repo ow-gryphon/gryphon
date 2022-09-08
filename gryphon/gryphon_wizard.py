@@ -177,6 +177,7 @@ def start_ui(settings_file):
         gryphon_rc = Path.cwd() / GRYPHON_RC
 
         if platform.system() == "Windows":
+            # noinspection PyUnresolvedReferences
             import msvcrt
 
             sys.stdout.flush()
