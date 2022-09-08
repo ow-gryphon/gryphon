@@ -9,7 +9,6 @@ import platform
 import shutil
 import sys
 from pathlib import Path
-from termios import tcflush, TCIOFLUSH
 
 import git
 
@@ -177,8 +176,18 @@ def start_ui(settings_file):
     while True:
         gryphon_rc = Path.cwd() / GRYPHON_RC
 
-        sys.stdout.flush()
-        tcflush(sys.stdin, TCIOFLUSH)
+        if platform.system() == "Windows":
+            import msvcrt
+
+            sys.stdout.flush()
+            while msvcrt.kbhit():
+                msvcrt.getch()
+
+        else:
+            from termios import tcflush, TCIOFLUSH
+
+            sys.stdout.flush()
+            tcflush(sys.stdin, TCIOFLUSH)
 
         chosen_command = CommonQuestions.main_question(
             inside_existing_project=gryphon_rc.is_file()
