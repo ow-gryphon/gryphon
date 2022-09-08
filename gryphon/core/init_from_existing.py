@@ -207,6 +207,6 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
 
     # Git
     logger.info("Starting git repository.")
-    repo = init_new_git_repo(folder=location)
-    initial_git_commit_os(repo)
+    init_new_git_repo(folder=location)
+    initial_git_commit_os(location)
     logger.log(SUCCESS, "Git repository started successfully.")
