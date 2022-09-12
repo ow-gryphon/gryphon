@@ -45,10 +45,12 @@ def output_error(er: Exception):
 
 def initial_setup():
     if platform.system() == "Windows":
+        logger.debug("Loading Windows colorama")
         # noinspection PyUnresolvedReferences,PyPackageRequirements
         from colorama import init as init_colorama
         init_colorama()
 
+    logger.debug("Loading settings")
     try:
         with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
             settings_file = json.load(f)
@@ -79,8 +81,10 @@ def initial_setup():
 
 
 def update_gryphon():
+    logger.debug("Updating gryphon")
 
     def clone_from_remote():
+        logger.debug("Cloning repo from scratch")
         shutil.rmtree(repo_clone_path, ignore_errors=True)
 
         return git.Repo.clone_from(
@@ -91,6 +95,7 @@ def update_gryphon():
     repo_clone_path = GRYPHON_HOME / "git_gryphon"
 
     try:
+        logger.debug("Updating local gryphon copy")
         if repo_clone_path.is_dir():
             repo = git.Repo(repo_clone_path)
 
@@ -107,18 +112,26 @@ def update_gryphon():
     latest = sort_versions([__version__, latest_remote_version])[-1]
 
     if __version__ != latest:
+        logger.debug("Update needed")
         logger.warning("A new version from Gryphon is available.")
         logger.warning("Updating ...")
 
         # git clone at the desired tag
+        logger.debug("Checkout")
         repo.git.checkout([latest, '-qqq'])
 
         # pip install the version
         BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
 
         # restart gryphon
-        logger.info("Restarting gryphon")
-        os.execv(sys.argv[0], sys.argv)
+        if platform.system() == "Windows":
+            logger.info("Update complete. Please start gryphon again by typing “gryphon”")
+            exit(0)
+        else:
+            logger.info("Restarting gryphon")
+            os.execv(sys.argv[0], sys.argv)
+
+    logger.debug("Update routine finished")
 
 
 def send_traceback(exception):
@@ -149,7 +162,7 @@ def ask_to_report(exception):
         send_traceback(exception)
 
 
-def start_ui(settings_file):
+def set_log_mode():
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', '-d', action='store_true')
     debug = parser.parse_args().debug
@@ -158,7 +171,27 @@ def start_ui(settings_file):
 
         handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
         handler.setLevel(logging.DEBUG)
+        # handler.setFormatter(debug_formatter)
 
+
+def ignore_previous_keystrokes():
+    if platform.system() == "Windows":
+        # noinspection PyUnresolvedReferences
+        import msvcrt
+
+        sys.stdout.flush()
+        while msvcrt.kbhit():
+            msvcrt.getch()
+
+    else:
+        from termios import tcflush, TCIOFLUSH
+
+        sys.stdout.flush()
+        tcflush(sys.stdin, TCIOFLUSH)
+
+
+def start_ui(settings_file):
+    logger.debug("Loading registries")
     registry = None
     try:
 
@@ -171,25 +204,14 @@ def start_ui(settings_file):
         output_error(e)
         exit(1)
 
+    logger.debug("Setup finished")
     logger.info(Text.welcome)
 
     while True:
         gryphon_rc = Path.cwd() / GRYPHON_RC
 
-        if platform.system() == "Windows":
-            # noinspection PyUnresolvedReferences
-            import msvcrt
-
-            sys.stdout.flush()
-            while msvcrt.kbhit():
-                msvcrt.getch()
-
-        else:
-            from termios import tcflush, TCIOFLUSH
-
-            sys.stdout.flush()
-            tcflush(sys.stdin, TCIOFLUSH)
-
+        # ignore partial keystrokes
+        ignore_previous_keystrokes()
         chosen_command = CommonQuestions.main_question(
             inside_existing_project=gryphon_rc.is_file()
         )
@@ -235,18 +257,14 @@ def did_you_mean_gryphon():
 
 
 def main():
+    set_log_mode()
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
-    settings_file = initial_setup()
     update_gryphon()
+    settings_file = initial_setup()
     start_ui(settings_file)
 
 
 if __name__ == '__main__':
     main()
 
-
-# TODO: Test installation.
-# TODO: Resizing error on windows (duplicating texts).
-
-# TODO: Have a single readme file with all the readmes from other templates
-# TODO: Implement gitflow guidelines
+# TODO: test if gryphon works offline

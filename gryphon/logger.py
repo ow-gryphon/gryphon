@@ -19,21 +19,43 @@ NOTSET 0
 logging.root.setLevel(logging.DEBUG)
 logging.addLevelName(21, 'SUCCESS')
 
-formatter = ColoredFormatter(
-    "%(log_color)s%(message)s",
-    log_colors={
-        'SUCCESS': 'green',
-        'WARNING': 'yellow',
-        'ERROR': 'red',
-        'CRITICAL': 'red,bg_white'
-    }
-)
+DEBUG_FORMATTER = '%(levelname)s %(asctime)s - %(message)s'
+
+
+class DebugFormatter(ColoredFormatter):
+
+    default_formatter = "%(log_color)s%(msg)s"
+
+    def __init__(self):
+        ColoredFormatter.__init__(
+            self,
+            self.default_formatter,
+            log_colors={
+                'SUCCESS': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'red,bg_white'
+            }
+        )
+
+    def format(self, record):
+
+        if record.levelno == logging.DEBUG:
+            self._style._fmt = DEBUG_FORMATTER
+
+        # Call the original formatter class to do the grunt work
+        result = ColoredFormatter.format(self, record)
+
+        # Restore the original format configured by the user
+        self._style._fmt = self.default_formatter
+
+        return result
 
 
 console_handler = logging.StreamHandler()
 console_handler.set_name("console")
 console_handler.setLevel(logging.INFO)
-console_handler.setFormatter(formatter)
+console_handler.setFormatter(DebugFormatter())
 
 
 LOGFILE = GRYPHON_HOME / "logs" / "app.log"

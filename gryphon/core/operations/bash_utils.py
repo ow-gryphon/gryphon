@@ -58,7 +58,8 @@ class BashUtils:
         cmd = os.popen(command)
         output = cmd.read()
         for line in output.split('\n'):
-            logger.debug(line)
+            if len(line):
+                logger.debug(line)
 
         # status code
         return cmd.close(), output
