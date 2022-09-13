@@ -1,13 +1,17 @@
-import os
-import json
 import glob
-from typing import List, Dict
+import json
+import os
 from pathlib import Path
+from typing import List, Dict
+
+import git
 from git import Repo
+
 from .template import Template
 from .versioned_template import VersionedTemplate
 from ..operations.bash_utils import BashUtils
 from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX
+from ...logger import logger
 
 
 class RemoteIndex:
@@ -21,7 +25,14 @@ class RemoteIndex:
         else:
             BashUtils.remove_folder(self.index_local_path)
 
-        self.repo = Repo.clone_from(self.index_repo, self.index_local_path)
+        try:
+            self.repo = Repo.clone_from(self.index_repo, self.index_local_path)
+        except git.exc.GitCommandError:
+            logger.warning(f"Failed to get index: {self.index_url}\nNo template from this index will be available.")
+            logger.debug(f"Failed to get index: {self.index_url}")
+            self.templates = {}
+
+            return
 
         self.templates = self.generate_templates()
 

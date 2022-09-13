@@ -105,8 +105,13 @@ def update_gryphon():
         else:
             repo = clone_from_remote()
         
-    except git.exc.GitCommandError:
-        repo = clone_from_remote()
+    except git.exc.GitCommandError as e:
+        if "unable to access" not in str(e):
+            repo = clone_from_remote()
+        else:
+            logger.warning("Failed to check updates for Gryphon.")
+            logger.debug("Failed to update")
+            return
 
     latest_remote_version = sort_versions(list(map(lambda x: x.name, repo.tags)))[-1]
     latest = sort_versions([__version__, latest_remote_version])[-1]
