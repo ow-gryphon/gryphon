@@ -21,6 +21,9 @@
                         "name": "Geospatial"
                   },
                   {
+                        "name": "Data parsing (Web scraping, XML, PDF, etc.)"
+                  },
+                  {
                         "name": "Other"
                   }
             ]
