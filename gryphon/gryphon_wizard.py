@@ -288,6 +288,7 @@ def did_you_mean_gryphon():
 
 
 def main():
+    logger.info("Starting gryphon...")
     set_log_mode()
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
     update_gryphon()
@@ -299,7 +300,7 @@ if __name__ == '__main__':
     main()
 
 # OK: test if gryphon works offline
-# TODO: sort templates alphabetically
-# TODO: Remove the "(remote index)" sign, just have it for local ones.
+# OK: sort templates alphabetically
+# OK: Remove the "(remote index)" sign, just have it for local ones.
 # TODO: have a key "applicability" on metadata.json that specifies wether a template
 #  applies to only an specific

@@ -6,7 +6,7 @@ from ..functions import wrap_text
 from ..wizard_text import Text
 from ...constants import (
     YES, NO, SYSTEM_DEFAULT, READ_MORE,
-    CHANGE_LOCATION, NB_EXTENSIONS,
+    CHANGE_LOCATION, NB_EXTENSIONS, LOCAL_TEMPLATE,
     NB_STRIP_OUT, PRE_COMMIT_HOOKS, ADDON_NAME_MAPPING
 )
 
@@ -18,12 +18,13 @@ class InitQuestions:
     def ask_which_template(metadata):
         options = [
             Choice(
-                title=f"{template.display_name} ({template.registry_type})",
+                title=f"{template.display_name} "
+                      + (f"(local template)" if template.registry_type == LOCAL_TEMPLATE else ""),
                 value=name
             )
             for name, template in metadata.items()
         ]
-
+        options = sorted(options, key=lambda x: x.title)
         options.extend([
             Separator(Text.menu_separator),
             get_back_choice()
