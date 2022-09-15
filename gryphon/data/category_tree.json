@@ -18,10 +18,10 @@
                         "name": "NLP"
                   },
                   {
-                        "name": "Geographical Analyses"
+                        "name": "Geospatial"
                   },
                   {
-                        "name": "Other (TBD)"
+                        "name": "Other"
                   }
             ]
 },
@@ -31,6 +31,9 @@
                   {
                         "name": "Navigate by Sector",
                         "children": [
+                              {
+                                    "name": "THESE ARE PLACEHOLDERS. USE-CASES TO COME SOON!"
+                              },
                               {
                                     "name": "Financial Services"
                               },
@@ -45,6 +48,9 @@
                   {
                         "name": "Navigate by Topic",
                         "children": [
+                              {
+                                    "name": "THESE ARE PLACEHOLDERS. USE-CASES TO COME SOON!"
+                              },
                               {
                                     "name": "Price Elasticity"
                               },
