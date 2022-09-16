@@ -60,9 +60,11 @@ def handle_template(template, project_home, rc_file):
 
         BashUtils.copy_project_template(
             template_destiny=project_home,
-            template_source=Path(template.path) / "template"
+            template_source=Path(template.path)  # / "template"
         )
-        RCManager.log_new_files(template, Path(template.path) / "template", performed_action=INIT, logfile=rc_file)
+
+        # RCManager.log_new_files(template, Path(template.path) / "template", performed_action=INIT, logfile=rc_file)
+        RCManager.log_new_files(template, Path(template.path), performed_action=INIT, logfile=rc_file)
 
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
