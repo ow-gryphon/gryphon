@@ -20,7 +20,7 @@ def choose_first_template(process):
 def type_folder_path(process, path):
     type_text(process, text=str(path))
     enter(process)
-    wait_for_output(process, CONFIRMATION_MESSAGE[2:])
+    wait_for_output(process, CONFIRMATION_MESSAGE[2:], timeout=60)
 
 
 def get_back_from_change_configuration(process):

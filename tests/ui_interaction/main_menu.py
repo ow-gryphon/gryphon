@@ -33,7 +33,7 @@ def select_configure_and_logs_on_main_menu(process):
 
 
 def select_handover_on_main_menu(process):
-    select_nth_option_upper(process, n=5)
+    select_nth_option_upper(process, n=6)
     wait_for_output(process, "project folder")
 
 
