@@ -9,7 +9,7 @@ USEFUL_LINKS = "Useful links"
 #   AND starting on the first option
 def select_init_on_main_menu(process):
     select_nth_option(process, n=1)
-    wait_for_output(process, Text.init_prompt_template_question)
+    wait_for_output(process, Text.init_prompt_template_question[5:-5])
 
 
 def select_init_from_existing_on_main_menu(process):
