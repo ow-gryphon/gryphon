@@ -22,7 +22,7 @@ REQUIREMENTS_TXT = "requirements.txt"
 def on_error(func, path, exc):
     value = exc[1]  # os.rmdir
     if func in (os.unlink,  os.remove) and value.errno == errno.EACCES:
-        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+        os.chmod(path, 0o777)  # stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
         try:
             func(path)
         except PermissionError:
