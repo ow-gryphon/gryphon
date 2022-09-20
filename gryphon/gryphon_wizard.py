@@ -299,8 +299,18 @@ def main():
 if __name__ == '__main__':
     main()
 
-# OK: test if gryphon works offline
-# OK: sort templates alphabetically
-# OK: Remove the "(remote index)" sign, just have it for local ones.
 # TODO: have a key "applicability" on metadata.json that specifies wether a template
 #  applies to only an specific
+
+# fix tests
+# DONE: test_add
+# DONE: test_generate
+# OK: test_command_operations (2 not passing)
+# TODO: test_init
+# DONE: test_registry (1 does not pass but it is because of a library I used to get output)
+# DONE: test_settings
+# TODO: test_init_from_existing (4 passing)
+# TODO: test_wizard (nenhum passou)
+# TODO: test_handover
+# TODO: test_addons
+# TODO: test_template_scaffold

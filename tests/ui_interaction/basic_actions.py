@@ -27,11 +27,20 @@ def start_wizard(working_directory: Path) -> pexpect.spawn:
 
 
 def quit_process(process):
-    process.close()
+    if platform.system() == "Windows":
+        # Exit from cmd
+        process.sendline('exit')
+        # Waiting for cmd termination.
+        #process.wait()
+    else:
+        process.close()
 
 
 def enter(process):
-    process.sendcontrol('m')
+    if platform.system() == "Windows":
+        process.sendline(s='') 
+    else:
+        process.sendcontrol('m')
 
 
 def key_down(process, times=1):

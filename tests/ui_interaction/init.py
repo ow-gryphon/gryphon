@@ -88,4 +88,5 @@ def start_new_project(project_name: str, working_directory: Path = Path.cwd(), a
     except Exception as e:
         if process:
             print(process.before)
+            quit_process(process)
         raise e

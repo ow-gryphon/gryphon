@@ -13,6 +13,7 @@ import pytest
 from gryphon.core.common_operations import (init_new_git_repo, initial_git_commit)
 from gryphon.core.operations import EnvironmentManagerOperations, BashUtils, RCManager
 from gryphon.constants import VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+from gryphon.core.operations import BashUtils
 from gryphon.core.registry import Template
 from .utils import (
     create_folder_with_venv, create_folder_with_conda_env,
@@ -229,11 +230,7 @@ def test_git_commit_1(setup, teardown):
         assert path.isdir(git_path)
 
         initial_git_commit(repo)
-        logs = subprocess.run(
-            ['git', 'log'],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
-        ).stdout.decode()
+        _, logs = BashUtils.execute_and_log("git log")
         assert "Initial commit" in logs
 
     finally:
