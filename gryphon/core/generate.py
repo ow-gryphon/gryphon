@@ -25,7 +25,12 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     Generate command from the OW Gryphon CLI.
     """
     current_path = PathUtils.get_destination_path(folder)
-    rc_file = RCManager.get_rc_file(folder)
+    try:
+        rc_file = RCManager.get_rc_file(folder, create=False)
+    except FileNotFoundError:
+        raise RuntimeError("Please run Gryphon from inside your project folder before attempting to render a new "
+                           "template.")
+
     env_path = RCManager.get_environment_manager_path(logfile=rc_file)
     env_type = RCManager.get_environment_manager(logfile=rc_file)
 

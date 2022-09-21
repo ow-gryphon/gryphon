@@ -1,5 +1,4 @@
 from ..logger import logger
-from ..constants import ERASE_LINE
 
 
 class HaltSignal(Exception):
@@ -30,19 +29,24 @@ class Machine:
         transition = self.current_state.check_transitions(context)
 
         self.current_state = self.find_state_by_name(transition.next_state)
-        logger.debug(f"State: {transition.next_state}")
+
         if transition is None:
             raise HaltSignal()
 
         context = transition.callback(context)
 
         self.history.append(self.current_state.name)
-        logger.debug(ERASE_LINE)
+
         return context
 
     def run(self):
-        context = {}
-        while self.current_state and not self.current_state.is_final_state():
-            context = self.run_interaction(context)
+        try:
+            context = {}
+            while self.current_state and not self.current_state.is_final_state():
+                context = self.run_interaction(context)
 
-        self.current_state.on_start(context)
+            self.current_state.on_start(context)
+            logger.debug(f"state machine history: {self.history}")
+        except Exception as e:
+            logger.debug(f"state machine history: {self.history}")
+            raise e

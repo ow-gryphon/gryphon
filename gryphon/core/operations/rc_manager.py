@@ -52,7 +52,7 @@ class RCManager:
             f.truncate()
 
     @staticmethod
-    def get_rc_file(folder=Path.cwd()):
+    def get_rc_file(folder=Path.cwd(), create=True):
         """
         Updates the needed options inside the .labskitrc file.
         """
@@ -60,10 +60,13 @@ class RCManager:
         if path.is_file():
             return path
 
-        with open(path, "w", encoding="utf-8") as f:
-            f.write("{}")
+        if create:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write("{}")
 
-        return path
+            return path
+        else:
+            raise FileNotFoundError("Could not find .gryphon_rc file inside folder.")
 
     # SET
     @classmethod

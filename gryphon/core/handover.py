@@ -45,7 +45,7 @@ def handover(
         for f in file_list:
             if f not in gryphon_exclusion_list and f not in large_files_exclusion_list:
                 zip_file.write(filename=relative_path / f)
-                if GRYPHON_RC in f:
+                if GRYPHON_RC in str(f):
                     rc_present = True
 
     if rc_present:

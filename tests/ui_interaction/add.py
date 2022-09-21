@@ -50,6 +50,7 @@ def add_library_selecting_version(working_directory, menu_way, version):
     except Exception as e:
         if process:
             print(process.before)
+            quit_process(process)
         raise e
 
 

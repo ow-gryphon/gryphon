@@ -20,13 +20,13 @@ def choose_first_template(process):
 def type_folder_path(process, path):
     type_text(process, text=str(path))
     enter(process)
-    wait_for_output(process, CONFIRMATION_MESSAGE[2:])
+    wait_for_output(process, CONFIRMATION_MESSAGE[2:-2], timeout=60)
 
 
 def get_back_from_change_configuration(process):
     wait_for_output(process, Text.handover_prompt_change_settings[5:-2])
     select_nth_option(process, n=3)
-    wait_for_output(process, CONFIRMATION_MESSAGE[2:])
+    wait_for_output(process, CONFIRMATION_MESSAGE[2:-2])
 
 
 def generate_handover_package(working_directory, handover_folder, file_size_limit,

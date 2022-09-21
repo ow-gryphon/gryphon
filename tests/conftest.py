@@ -37,6 +37,7 @@ def setup() -> callable:
         os.chdir(SANDBOX_PATH)
         with open(GRYPHON_RC, "w") as f:
             f.write("{}")
+        os.system("conda config --set always_copy true")
 
         return Path.cwd()
     return _setup
@@ -47,7 +48,13 @@ def teardown() -> callable:
 
     def _teardown():
         os.chdir(INIT_PATH)
+        if platform.system() == "Windows":
+            conda_path = SANDBOX_PATH / "envs"
+            if conda_path.is_dir():
+                os.system(f"conda deactivate --prefix \"{str(conda_path)}\"")
+                os.system(f"conda env remove --prefix \"{str(conda_path)}\"")
         remove_folder(SANDBOX_PATH.resolve())
+        os.system("conda config --set always_copy false")
 
     return _teardown
 

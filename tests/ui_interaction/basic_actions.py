@@ -27,11 +27,20 @@ def start_wizard(working_directory: Path) -> pexpect.spawn:
 
 
 def quit_process(process):
-    process.close()
+    if platform.system() == "Windows":
+        # Exit from cmd
+        process.sendline('exit')
+        # Waiting for cmd termination.
+        #process.wait()
+    else:
+        process.close()
 
 
 def enter(process):
-    process.sendcontrol('m')
+    if platform.system() == "Windows":
+        process.sendline(s='') 
+    else:
+        process.sendcontrol('m')
 
 
 def key_down(process, times=1):
@@ -48,7 +57,7 @@ def type_text(process, text: str):
     process.send(text)
 
 
-def wait_for_output(process, text: str, timeout=10):
+def wait_for_output(process, text: str, timeout=30):
     process.expect(text, timeout=timeout)
     print(f"Found \"{text}\" on the outputs.")
 

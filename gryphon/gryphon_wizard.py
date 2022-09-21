@@ -45,10 +45,12 @@ def output_error(er: Exception):
 
 def initial_setup():
     if platform.system() == "Windows":
+        logger.debug("Loading Windows colorama")
         # noinspection PyUnresolvedReferences,PyPackageRequirements
         from colorama import init as init_colorama
         init_colorama()
 
+    logger.debug("Loading settings")
     try:
         with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
             settings_file = json.load(f)
@@ -79,46 +81,88 @@ def initial_setup():
 
 
 def update_gryphon():
+    logger.debug("Updating gryphon")
 
-    def clone_from_remote():
-        shutil.rmtree(repo_clone_path, ignore_errors=True)
+    def clone_from_remote(destination_path):
+        logger.debug("Cloning repo from scratch")
+        shutil.rmtree(destination_path, ignore_errors=True)
 
         return git.Repo.clone_from(
             url="https://github.com/ow-gryphon/gryphon.git",
-            to_path=repo_clone_path
+            to_path=destination_path
         )
 
-    repo_clone_path = GRYPHON_HOME / "git_gryphon"
+    def get_tags():
+        temp_file = GRYPHON_HOME / "refs.txt"
+        status_code, _ = BashUtils.execute_and_log(
+            f"git ls-remote --tags https://github.com/ow-gryphon/gryphon >> \"{str(temp_file)}\""
+        )
 
+        if status_code is not None:
+            raise RuntimeError(f"Failed to fetch gryphon tags. Status: {status_code}")
+
+        with open(temp_file, 'r') as f:
+            contents = f.read().strip()
+
+        lines = contents.split('\n')
+        tags = []
+        for line in lines:
+            ref = line.split(' ')[-1]
+            tag = ref.split('/')[-1]
+            tags.append(tag)
+
+        os.remove(temp_file)
+        return tags
+
+    logger.debug("Fetching remote tags.")
     try:
-        if repo_clone_path.is_dir():
-            repo = git.Repo(repo_clone_path)
+        remote_tags = get_tags()
+    except RuntimeError:
+        logger.warning("Failed to check updates for Gryphon.")
+        logger.debug("It was not possible to fetch the existing gryphon versions.")
+        logger.debug("Failed to update")
+        return
 
-            repo.git.checkout('master')
-            repo.git.checkout('.')
-            repo.git.fetch(['--prune', '--prune-tags'])
-        else:
-            repo = clone_from_remote()
-        
-    except git.exc.GitCommandError:
-        repo = clone_from_remote()
-
-    latest_remote_version = sort_versions(list(map(lambda x: x.name, repo.tags)))[-1]
+    latest_remote_version = sort_versions(remote_tags)[-1]
     latest = sort_versions([__version__, latest_remote_version])[-1]
 
     if __version__ != latest:
+        logger.debug("Update needed")
         logger.warning("A new version from Gryphon is available.")
         logger.warning("Updating ...")
+        repo_clone_path = GRYPHON_HOME / "git_gryphon"
 
-        # git clone at the desired tag
-        repo.git.checkout([latest, '-qqq'])
+        try:
+            if not repo_clone_path.is_dir():
+                repo = clone_from_remote(repo_clone_path)
+            else:
+                repo = git.Repo(path=repo_clone_path)
+
+            # git clone at the desired tag
+            logger.debug("Checkout")
+            repo.git.checkout([latest, '-qqq'])
+
+        except git.exc.GitCommandError as e:
+            if "unable to access" in str(e):
+                logger.warning("Failed to check updates for Gryphon.")
+                logger.debug("Failed to update")
+                return
 
         # pip install the version
+        logger.debug("Installing the new version")
         BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
 
         # restart gryphon
-        logger.info("Restarting gryphon")
-        os.execv(sys.argv[0], sys.argv)
+        if platform.system() == "Windows":
+            logger.info("Update complete. Please start gryphon again by typing “gryphon”")
+            exit(0)
+        else:
+            logger.info("Restarting gryphon")
+            os.execv(sys.argv[0], sys.argv)
+    else:
+        logger.debug("No update needed")
+
+    logger.debug("Update routine finished")
 
 
 def send_traceback(exception):
@@ -149,7 +193,7 @@ def ask_to_report(exception):
         send_traceback(exception)
 
 
-def start_ui(settings_file):
+def set_log_mode():
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', '-d', action='store_true')
     debug = parser.parse_args().debug
@@ -158,7 +202,27 @@ def start_ui(settings_file):
 
         handler = list(filter(lambda x: x.name == "console", logger.handlers))[0]
         handler.setLevel(logging.DEBUG)
+        # handler.setFormatter(debug_formatter)
 
+
+def ignore_previous_keystrokes():
+    if platform.system() == "Windows":
+        # noinspection PyUnresolvedReferences
+        import msvcrt
+
+        sys.stdout.flush()
+        while msvcrt.kbhit():
+            msvcrt.getch()
+
+    else:
+        from termios import tcflush, TCIOFLUSH
+
+        sys.stdout.flush()
+        tcflush(sys.stdin, TCIOFLUSH)
+
+
+def start_ui(settings_file):
+    logger.debug("Loading registries")
     registry = None
     try:
 
@@ -171,25 +235,14 @@ def start_ui(settings_file):
         output_error(e)
         exit(1)
 
+    logger.debug("Setup finished")
     logger.info(Text.welcome)
 
     while True:
         gryphon_rc = Path.cwd() / GRYPHON_RC
 
-        if platform.system() == "Windows":
-            # noinspection PyUnresolvedReferences
-            import msvcrt
-
-            sys.stdout.flush()
-            while msvcrt.kbhit():
-                msvcrt.getch()
-
-        else:
-            from termios import tcflush, TCIOFLUSH
-
-            sys.stdout.flush()
-            tcflush(sys.stdin, TCIOFLUSH)
-
+        # ignore partial keystrokes
+        ignore_previous_keystrokes()
         chosen_command = CommonQuestions.main_question(
             inside_existing_project=gryphon_rc.is_file()
         )
@@ -235,18 +288,29 @@ def did_you_mean_gryphon():
 
 
 def main():
+    logger.info("Starting gryphon...")
+    set_log_mode()
     BashUtils.execute_and_log("conda config --set notify_outdated_conda false")
-    settings_file = initial_setup()
     update_gryphon()
+    settings_file = initial_setup()
     start_ui(settings_file)
 
 
 if __name__ == '__main__':
     main()
 
+# TODO: have a key "applicability" on metadata.json that specifies wether a template
+#  applies to only an specific
 
-# TODO: Test installation.
-# TODO: Resizing error on windows (duplicating texts).
-
-# TODO: Have a single readme file with all the readmes from other templates
-# TODO: Implement gitflow guidelines
+# fix tests
+# DONE: test_add
+# DONE: test_generate
+# OK: test_command_operations (2 not passing)
+# TODO: test_init
+# DONE: test_registry (1 does not pass but it is because of a library I used to get output)
+# DONE: test_settings
+# TODO: test_init_from_existing (4 passing)
+# TODO: test_wizard (nenhum passou)
+# TODO: test_handover
+# TODO: test_addons
+# TODO: test_template_scaffold

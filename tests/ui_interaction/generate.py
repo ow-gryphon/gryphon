@@ -46,4 +46,6 @@ def generate_template(working_directory):
     except Exception as e:
         if process:
             print(process.before)
+            quit_process(process)
         raise e
+    

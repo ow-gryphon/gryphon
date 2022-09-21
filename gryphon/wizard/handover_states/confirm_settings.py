@@ -72,7 +72,7 @@ class ConfirmSettings(State):
         logger.warning("")
         logger.warning(f"Files that exceeded the size limit ({limit} MB):")
         for file, size in large_file_list.items():
-            logger.warning(f"   - {file[:60].ljust(40)}\t{size:.2f} MB")
+            logger.warning(f"   - {str(file)[:60].ljust(40)}\t{size:.2f} MB")
 
         logger.warning("")
 

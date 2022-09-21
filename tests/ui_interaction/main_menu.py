@@ -9,7 +9,7 @@ USEFUL_LINKS = "Useful links"
 #   AND starting on the first option
 def select_init_on_main_menu(process):
     select_nth_option(process, n=1)
-    wait_for_output(process, Text.init_prompt_template_question)
+    wait_for_output(process, Text.init_prompt_template_question[5:-5])
 
 
 def select_init_from_existing_on_main_menu(process):
@@ -33,7 +33,7 @@ def select_configure_and_logs_on_main_menu(process):
 
 
 def select_handover_on_main_menu(process):
-    select_nth_option_upper(process, n=5)
+    select_nth_option_upper(process, n=6)
     wait_for_output(process, "project folder")
 
 

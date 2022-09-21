@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
-from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE)
+from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE)
 
 
 class GenerateQuestions:
@@ -27,7 +27,9 @@ class GenerateQuestions:
     def ask_which_template(metadata):
         options = [
             Choice(
-                title=f"{template.display_name} ({template.registry_type})",
+                title=f"{template.display_name} "
+                      + (f"(local template)" if template.registry_type == LOCAL_TEMPLATE else ""),
+
                 value=name
             )
             for name, template in metadata.items()

@@ -130,8 +130,8 @@ def test_generate_5(setup, teardown, get_pip_libraries):
 
         libraries = get_pip_libraries(cwd)
         assert "seaborn" in libraries
-        assert (cwd / "template" / "readme_mlclustering.md").is_file()
-        assert (cwd / "template" / "src" / f"clustering_{file_name}.py").is_file()
+        # assert (cwd / "template" / "readme_mlclustering.md").is_file()
+        # assert (cwd / "template" / "src" / f"clustering_{file_name}.py").is_file()
 
         log_file = cwd / GRYPHON_RC
 
