@@ -19,6 +19,13 @@ def _condition_from_perform_action_to_new_template(context: dict) -> bool:
     return context["history"][0] == "new_template"
 
 
+def _condition_from_perform_action_to_remove_local(context: dict) -> bool:
+    return \
+        len(context["history"]) >= 2 \
+        and context["history"][0] == "registry_options"\
+        and "remove_local" in context["history"][1]
+
+
 def _condition_from_perform_action_to_change_env_manager(context: dict) -> bool:
     return context["history"][0] == "change_env_manager"
 
@@ -115,6 +122,11 @@ class PerformAction(State):
         Transition(
             next_state="change_template_version_policy",
             condition=_condition_from_perform_action_to_change_template_version_policy
+        ),
+
+        Transition(
+            next_state="remove_local",
+            condition=_condition_from_perform_action_to_remove_local
         )
     ]
 

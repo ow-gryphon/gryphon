@@ -35,6 +35,10 @@
 				"value": "add_local"
 			},
 			{
+				"name": "Remove local registry (computer folder)",
+				"value": "remove_local"
+			},
+			{
 				"name": "Remove a registry",
 				"value": "remove_registry"
 			},
