@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from ..functions import list_conda_available_python_versions, erase_lines
 from ..questions import InitQuestions, CommonQuestions
@@ -7,7 +8,7 @@ from ...constants import (
     LATEST, USE_LATEST
 )
 from ...core.registry.versioned_template import VersionedTemplate
-from ...fsm import State, Transition
+from ...fsm import State, Transition, negate_condition
 
 
 def _change_from_ask_parameters_to_ask_template(context):
@@ -29,7 +30,13 @@ def _condition_return_to_self(context):
 
 
 def _condition_confirmation(context):
-    return context["chosen_version"] != BACK and context["location"] != BACK
+    return context["chosen_version"] != BACK and context["location"] != BACK \
+           and negate_condition(_condition_deal_with_existing_folder)(context)
+
+
+def _condition_deal_with_existing_folder(context):
+    path = Path.cwd() / context["location"]
+    return path.is_dir()
 
 
 class AskParameters(State):
@@ -55,6 +62,10 @@ class AskParameters(State):
             next_state="ask_parameters",
             condition=_condition_return_to_self,
             callback=_callback_from_ask_parameters_to_self
+        ),
+        Transition(
+            next_state="deal_with_existing_folder",
+            condition=_condition_deal_with_existing_folder
         )
     ]
 

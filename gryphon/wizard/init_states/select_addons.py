@@ -1,12 +1,9 @@
 import logging
-import os
-from pathlib import Path
 
-from ..functions import erase_lines, BackSignal
-from ..init_from_existing import init_from_existing
+from ..functions import erase_lines
 from ..questions import InitQuestions
-from ...constants import SUCCESS, BACK
-from ...fsm import State, Transition, HaltSignal
+from ...constants import BACK
+from ...fsm import State, Transition
 from ...fsm import negate_condition
 
 logger = logging.getLogger('gryphon')
@@ -14,11 +11,23 @@ logger = logging.getLogger('gryphon')
 
 def _go_back_callback(context: dict) -> dict:
     erase_lines(n_lines=2)
+    del context["selected_addons"]
+    return context
+
+
+def _go_back_from_divided_flow_callback(context: dict) -> dict:
+    erase_lines(n_lines=context["n_lines_warning"])
+    del context["n_lines_warning"]
+    del context["selected_addons"]
     return context
 
 
 def _go_back(context: dict) -> bool:
-    return context["selected_addons"] == BACK
+    return context["selected_addons"] == BACK and "n_lines_warning" not in context
+
+
+def _go_back_from_divided_flow(context: dict) -> bool:
+    return context["selected_addons"] == BACK and "n_lines_warning" in context
 
 
 class SelectAddons(State):
@@ -32,48 +41,17 @@ class SelectAddons(State):
             callback=_go_back_callback
         ),
         Transition(
+            next_state="ask_location_again",
+            condition=_go_back_from_divided_flow,
+            callback=_go_back_from_divided_flow_callback
+        ),
+        Transition(
             next_state="confirmation",
-            condition=negate_condition(_go_back)
+            condition=lambda x: negate_condition(_go_back)(x) and negate_condition(_go_back_from_divided_flow)(x)
         )
     ]
 
-    def __init__(self, registry):
-        self.registry = registry
-
     def on_start(self, context: dict) -> dict:
-
-        location = context["location"]
-        context["n_lines_warning"] = 0
-
-        path = Path.cwd() / location
-
-        if path.is_dir():
-            context["n_lines_warning"] = 2
-
-            def is_empty(x):
-                return not os.listdir(x)
-
-            if is_empty(path):
-                # empty
-                logger.warning("\nWARNING: The selected folder already exists.")
-            else:
-                # not empty
-                logger.warning("\nWARNING: The selected folder is not empty.")
-                want_to_go_to_init_from_existing = InitQuestions.ask_init_from_existing()
-
-                if want_to_go_to_init_from_existing:
-                    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
-                    erase_lines(n_lines=context["n_lines_warning"] + ask_again)
-
-                    logger.log(SUCCESS, "Creating Gryphon project from the existing folder")
-                    result = init_from_existing(None, self.registry)
-
-                    if result == BACK:
-                        raise BackSignal()
-                    else:
-                        raise HaltSignal()
-                else:
-                    erase_lines(n_lines=3)
 
         context["selected_addons"] = InitQuestions.ask_addons()
         return context

@@ -1,6 +1,6 @@
 from .init_states import (
     AskTemplate, AskParameters, Confirmation,
-    Install, MainMenu, AskLocationAgain, SelectAddons
+    Install, MainMenu, AskLocationAgain, SelectAddons, DealWithExistingFolder
 )
 from .functions import BackSignal
 from ..constants import BACK
@@ -14,7 +14,8 @@ def init(_, registry):
 
     possible_states = [
         ask_template, Confirmation(), AskParameters(registry),
-        Install(), MainMenu(), AskLocationAgain(), SelectAddons(registry)
+        Install(), MainMenu(), AskLocationAgain(), SelectAddons(),
+        DealWithExistingFolder(registry)
     ]
 
     machine = Machine(
