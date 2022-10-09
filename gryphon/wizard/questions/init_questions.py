@@ -61,11 +61,11 @@ class InitQuestions:
 
         yellow_text = ''
         if template.description:
-            yellow_text = f"{template.description}\n"
+            yellow_text = f"\t{template.description}\n"
 
         if addons is not None and len(addons):
             addon_string = ', '.join(map(ADDON_NAME_MAPPING.get, addons))
-            yellow_text = yellow_text + f"\nThe following addons will be added to the project: {addon_string}\n"
+            yellow_text = yellow_text + f"\n\tThe following addons will be added to the project: {addon_string}\n"
 
         text, n_lines = wrap_text(yellow_text)
         logger.warning(text)

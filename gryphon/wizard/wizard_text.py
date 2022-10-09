@@ -33,16 +33,16 @@ class Text:
     first_prompt_question = "What would you like to do?"
 
     init_display_option = "Start a new Gryphon project"
-    init_from_existing_display_option = "Set up Gryphon with existing folder"
+    init_from_existing_display_option = "Set up Gryphon with an existing project folder"
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
-    handover_display_option = "Handover project"
+    handover_display_option = "Hand over project"
     about_display_option = "About OW Gryphon"
     settings_display_option = "Advanced options"
     feedback_display_option = "General contact/feedback"
     report_bug_display_option = "Report bug"
     contact_us_display_option = "Contact us (bugs, feedback, etc.)"
-    configure_project_display_option = "Configure project and logs"
+    configure_project_display_option = "Configure Gryphon project defaults and logs"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"
@@ -54,8 +54,8 @@ class Text:
 
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
-    init_prompt_addons = "Select the extras that you want to add to the project:"
-    init_prompt_init_from_existing = "Did you meant to get a Gryphon project from an existing folder?"
+    init_prompt_addons = "Select the extras that you would like to add to the project and then press Enter:"
+    init_prompt_init_from_existing = "Did you mean to set up a Gryphon project from an existing folder instead?"
 
     init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
     init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
@@ -71,8 +71,8 @@ class Text:
     add_prompt_type_version = "Type the version you want to install:"
 
     handover_prompt_folder_question = "Type the project folder (blank if current folder):"
-    handover_prompt_new_size_limit_question = "Type the new size limit you want to use in MBs, current {limit} MB " \
-                                              "(type a negative number to go back to previous):"
+    handover_prompt_new_size_limit_question = "Type the new size limit you want to use in MBs, current limit: " \
+                                              "{limit} MB (type a negative number to cancel and go back):"
     handover_prompt_include_large_files_question = "Some large files were found. Do you want to include them in " \
                                                    "the package:"
     handover_prompt_confirm_configurations = "Confirm that you want to proceed with the configurations from above. " \
@@ -99,7 +99,7 @@ class Text:
     # {template_name} is going to be replaced with the template name
     # {arguments} is going to be replaced with the extra parameters from the template
     init_confirm_1 = "Confirm that you want to start a new \"{template_name}\" project" \
-                     "\nInside the folder \"{location}\""
+                     "\ninside the folder \"{location}\""
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
 
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"

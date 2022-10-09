@@ -1,10 +1,10 @@
 [
 	{
-		"name": "Create new gryphon template (basic scaffolding)",
+		"name": "Create a new Gryphon template (basic scaffolding)",
 		"value": "new_template"
 	},
 	{
-		"name": "Select environment manager",
+		"name": "Select your default environment manager",
 		"value": "change_env_manager",
 		"children": [
 			{
@@ -19,7 +19,7 @@
 	},
 
 	{
-		"name": "Select Python version",
+		"name": "Select your default Python version",
 		"value": "change_python_version"
 	},
 	{
@@ -27,7 +27,7 @@
 		"value": "registry_options",
 		"children": [
 			{
-				"name": "Add remote registry (git repo)",
+				"name": "Add remote registry (git repository)",
 				"value": "add_remote"
 			},
 			{
@@ -49,7 +49,7 @@
 		"value": "restore_defaults"
 	},
 	{
-		"name": "Update conda",
+		"name": "Update Conda",
 		"value": "update_conda"
 	},
 	{
