@@ -31,11 +31,13 @@ def add(library_name, version=None, cwd=Path.cwd()):
     try:
         in_gryphon_project = True
         env_path = RCManager.get_environment_manager_path(logfile=rc_file)
+
     except KeyError:
         in_gryphon_project = False
         logger.warning("It seems that we are not inside a Gryphon project folder. Installing libraries globally.")
 
     requirements_backup = backup_requirements(cwd)
+
     lib = library_name
     if version is not None:
         lib = f"{library_name}=={version}"

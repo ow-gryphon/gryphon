@@ -207,3 +207,25 @@ class SettingsManager:
         Recovers the current template version policy from the config file.
         """
         return cls._get_key("environment_manager", VENV)
+
+    @classmethod
+    def get_local_templates(cls):
+        """
+        Recovers the registered local templates from the config file.
+        """
+        return cls._get_key("local_templates", [])
+
+    @classmethod
+    def remove_local_template(cls, template_path):
+        """
+        Recovers the registered local templates from the config file.
+        """
+        templates = cls._get_key("local_templates", [])
+
+        if template_path not in templates:
+            raise RuntimeError(f"Local template \"{template_path}\" was not found in the config file."
+                               f"It might be deleted already.")
+
+        templates.remove(template_path)
+
+        cls._set_key("local_templates", templates)

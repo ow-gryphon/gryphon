@@ -1,6 +1,16 @@
+from ..functions import erase_lines
 from ..questions import AddQuestions
-from ...constants import NAME
-from ...fsm import State, Transition
+from ...constants import NAME, BACK
+from ...fsm import State, Transition, negate_condition
+
+
+def _condition_back(context):
+    return BACK in map(lambda x: x[NAME], context["chosen_option"])
+
+
+def _callback_back(context):
+    erase_lines()
+    return context
 
 
 class TypeLibraryName(State):
@@ -8,7 +18,12 @@ class TypeLibraryName(State):
     transitions = [
         Transition(
             next_state="confirmation",
-            condition=lambda context: True
+            condition=negate_condition(_condition_back)
+        ),
+        Transition(
+            next_state="ask_option",
+            condition=_condition_back,
+            callback=_callback_back
         )
     ]
 

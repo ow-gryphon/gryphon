@@ -7,7 +7,8 @@ from .settings_states import (
     NewTemplate, ChangeEnvManager, RestoreDefaults,
     RestoreDefaultRegistry, AddRemoteRegistry,
     AddLocalRegistry, RemoveRegistry, UpdateConda,
-    ChangeTemplateVersionPolicy, NewTemplate2, NewTemplate3
+    ChangeTemplateVersionPolicy, NewTemplate2, NewTemplate3,
+    RemoveLocal
 )
 from ..constants import (
     CONFIG_FILE, DEFAULT_ENV, NAME, VALUE, BACK
@@ -49,7 +50,7 @@ def settings(data_path, _):
         ChangeEnvManager(), RestoreDefaults(),
         RestoreDefaultRegistry(), AddRemoteRegistry(),
         AddLocalRegistry(), RemoveRegistry(), UpdateConda(),
-        ChangeTemplateVersionPolicy()
+        ChangeTemplateVersionPolicy(), RemoveLocal()
     ]
 
     machine = Machine(

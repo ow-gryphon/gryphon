@@ -8,6 +8,7 @@ from .new_template import NewTemplate
 from .new_template2 import NewTemplate2
 from .new_template3 import NewTemplate3
 from .perform_action import PerformAction
+from .remove_local import RemoveLocal
 from .remove_registry import RemoveRegistry
 from .restore_default_registry import RestoreDefaultRegistry
 from .restore_defaults import RestoreDefaults

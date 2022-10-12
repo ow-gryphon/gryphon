@@ -186,10 +186,10 @@ class EnvironmentManagerOperations:
                 env_folder = target_folder / CONDA_FOLDER
 
             logger.warning(f"""
-                        {Text.install_end_message_1}
+                    {Text.install_end_message_1}
 
-                        >> cd {target_folder}
-                        >> conda activate --prefix=\"{env_folder}\"
+                        >> cd \"{target_folder.relative_to(Path.cwd())}\"
+                        >> conda activate --prefix=\"{env_folder.relative_to(target_folder)}\"
 
                         {Text.install_end_message_2}
                     """)
@@ -202,27 +202,27 @@ class EnvironmentManagerOperations:
             if platform.system() == "Windows":
 
                 logger.warning(f"""
-                    {Text.install_end_message_1}
+                {Text.install_end_message_1}
 
                     ANACONDA PROMPT/COMMAND PROMPT:
 
-                    >> cd \"{target_folder}\"
-                    >> {env_folder / "Scripts" / "activate.bat"}
+                    >> cd \"{target_folder.relative_to(Path.cwd())}\"
+                    >> {(env_folder / "Scripts" / "activate.bat").relative_to(target_folder)}
 
                     GIT BASH:
 
                     >> cd \"{str(target_folder).replace(chr(92), '/')}\"
-                    >> source {env_folder / "Scripts" / "activate"}
+                    >> source {(env_folder / "Scripts" / "activate").relative_to(target_folder)}
 
-                    {Text.install_end_message_2}
+                {Text.install_end_message_2}
                 """)
             else:
 
                 logger.warning(f"""
-                    {Text.install_end_message_1}
+                {Text.install_end_message_1}
 
-                    >> cd \"{str(target_folder).replace(chr(92), '/')}\"
-                    >> source {env_folder / "scripts" / "activate"}
+                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
+                    >> source {(env_folder / "scripts" / "activate").relative_to(target_folder)}
 
-                    {Text.install_end_message_2}
+                {Text.install_end_message_2}
                 """)

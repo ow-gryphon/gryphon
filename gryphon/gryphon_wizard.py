@@ -236,7 +236,7 @@ def start_ui(settings_file):
         exit(1)
 
     logger.debug("Setup finished")
-    logger.info(Text.welcome)
+    logger.warning(Text.welcome)
 
     while True:
         gryphon_rc = Path.cwd() / GRYPHON_RC
@@ -261,10 +261,17 @@ def start_ui(settings_file):
         }[chosen_command]
 
         try:
-            response = function(DATA_PATH, registry)
+            try:
+
+                response = function(DATA_PATH, registry)
+            except OSError as er:
+                response = None
+                logger.debug(er)
+
             if response != BACK:
                 if chosen_command in [GENERATE, ADD, CONFIGURE_PROJECT, CONTACT_US]:
                     logger.info("\n\n")
+                    ignore_previous_keystrokes()
                     continue
                 break
 
@@ -298,19 +305,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# TODO: have a key "applicability" on metadata.json that specifies wether a template
-#  applies to only an specific
-
-# fix tests
-# DONE: test_add
-# DONE: test_generate
-# OK: test_command_operations (2 not passing)
-# TODO: test_init
-# DONE: test_registry (1 does not pass but it is because of a library I used to get output)
-# DONE: test_settings
-# TODO: test_init_from_existing (4 passing)
-# TODO: test_wizard (nenhum passou)
-# TODO: test_handover
-# TODO: test_addons
-# TODO: test_template_scaffold

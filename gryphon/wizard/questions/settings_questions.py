@@ -238,3 +238,24 @@ class SettingsQuestions:
                 )
             ]
         ).unsafe_ask()
+
+    @staticmethod
+    @base_text_prompt
+    def ask_witch_local_template(templates):
+        choices = [
+            Choice(
+                title=path,
+                value=path
+            )
+            for path in templates
+        ]
+
+        if not len(choices):
+            choices = [Separator("-- No local templates on the config file --")]
+
+        choices.extend([Separator(), get_back_choice()])
+
+        return questionary.select(
+            message=Text.settings_ask_local_template,
+            choices=choices
+        ).unsafe_ask()
