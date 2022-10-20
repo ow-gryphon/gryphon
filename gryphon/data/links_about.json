@@ -1,10 +1,10 @@
 [
     {
-        "title": "OWpen Source Wiki page for OW Gryphon",
+        "title": "OWpen Source Wiki for OW Gryphon (Instructions, Documentation, etc.)",
         "value": "https://owlabs.atlassian.net/wiki/spaces/Gryphon"
     },
     {
-        "title": "Github page for OW Gryphon (temporary)",
+        "title": "Github for OW Gryphon",
         "value": "https://github.com/ow-gryphon"
     }
 ]

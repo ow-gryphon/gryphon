@@ -13,7 +13,7 @@ def _condition_ask_category_to_back(context: dict) -> bool:
 
 
 def _callback_ask_category_to_back(context: dict) -> dict:
-    erase_lines(n_lines=3)
+    erase_lines(n_lines=2)
     if len(context["history"]) >= 1:
         context["history"].pop()
     else:

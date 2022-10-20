@@ -13,7 +13,7 @@ def configure_project(_, __):
     new_activated_addons = ConfigureProjectQuestions.ask_addons(current_addons)
 
     if new_activated_addons == BACK:
-        erase_lines(2)
+        erase_lines(3)
         return BACK
 
     core_configure_project(new_activated_addons, logfile)
