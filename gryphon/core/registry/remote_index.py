@@ -103,10 +103,6 @@ class RemoteIndex:
             sort_order = [i for (v, i) in sorted((v, i) for (i, v) in enumerate(display_names))]
             keys = list(templates[command].keys())
             
-            logger.info(command)
-            logger.info(keys)
-            logger.info(sort_order)
-            
             new_dict = {}
             for order in sort_order:
                 new_dict[keys[order]] = templates[command][keys[order]]
