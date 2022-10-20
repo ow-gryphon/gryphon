@@ -93,6 +93,25 @@ class RemoteIndex:
         for name, template in template_versions.items():
             assert template.command in [INIT, GENERATE]
             templates[template.command][name] = template
+            
+        # Sort the template list
+        for command in [INIT, GENERATE]:
+            display_names = []
+            for name, template in templates[command].items():
+                display_names.append(template.display_name)
+                
+            sort_order = [i for (v, i) in sorted((v, i) for (i, v) in enumerate(display_names))]
+            keys = list(templates[command].keys())
+            
+            logger.info(command)
+            logger.info(keys)
+            logger.info(sort_order)
+            
+            new_dict = {}
+            for order in sort_order:
+                new_dict[keys[order]] = templates[command][keys[order]]
+            
+            templates[command] = new_dict
 
         return templates
 
