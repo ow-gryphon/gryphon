@@ -137,7 +137,8 @@ def update_gryphon():
         for folder in glob.glob(str(GRYPHON_HOME / "git_gryphon*")):
             try:
                 if folder != str(repo_clone_path):
-                    shutil.rmtree(folder)
+                    logger.debug("Removing cached version of old version: {}".format(folder))
+                    BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
             except:
                 logger.debug("Failed to completely remove cached old version: {}".format(folder))
         
