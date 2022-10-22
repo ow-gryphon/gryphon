@@ -133,11 +133,8 @@ def update_gryphon():
         repo_clone_path = GRYPHON_HOME / "git_gryphon"
 
         try:
-            if not repo_clone_path.is_dir():
-                repo = clone_from_remote(repo_clone_path)
-            else:
-                repo = git.Repo(path=repo_clone_path)
-
+            repo = clone_from_remote(repo_clone_path)
+            
             # git clone at the desired tag
             logger.debug("Checkout")
             repo.git.checkout([latest, '-qqq'])
@@ -151,7 +148,9 @@ def update_gryphon():
         # pip install the version
         logger.debug("Installing the new version")
         BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
-
+        
+        shutil.rmtree(repo_clone_path)
+        
         # restart gryphon
         if platform.system() == "Windows":
             logger.info("Update complete. Please start gryphon again by typing “gryphon”")
