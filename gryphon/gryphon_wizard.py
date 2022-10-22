@@ -132,6 +132,13 @@ def update_gryphon():
         logger.warning("Updating ...")
         repo_clone_path = GRYPHON_HOME / "git_gryphon"
 
+        # Attempt to delete cached repo
+        try:
+            if os.path.exists(repo_clone_path):
+                shutil.rmtree(repo_clone_path)
+        except:
+            pass
+        
         try:
             repo = clone_from_remote(repo_clone_path)
             
@@ -148,8 +155,6 @@ def update_gryphon():
         # pip install the version
         logger.debug("Installing the new version")
         BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
-        
-        shutil.rmtree(repo_clone_path)
         
         # restart gryphon
         if platform.system() == "Windows":
