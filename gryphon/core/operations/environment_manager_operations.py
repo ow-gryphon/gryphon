@@ -207,7 +207,7 @@ class EnvironmentManagerOperations:
                     ANACONDA PROMPT/COMMAND PROMPT:
 
                     >> cd \"{target_folder.relative_to(Path.cwd())}\"
-                    >> {(env_folder / "Scripts" / "activate.bat").relative_to(target_folder)}
+                    >> {(env_folder / "Scripts" / "activate").relative_to(target_folder)}
 
                     GIT BASH:
 

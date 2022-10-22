@@ -3,7 +3,7 @@
             "name": "Methodology",
             "children": [
                   {
-                        "name": "Data Exploration"
+                        "name": "Data exploration and transformation"
                   },
                   {
                         "name": "Classification"
@@ -15,19 +15,19 @@
                         "name": "Clustering"
                   },
                   {
-                        "name": "NLP"
+                        "name": "Text and natural language processing"
                   },
                   {
                         "name": "Geospatial"
                   },
                   {
-                        "name": "Data parsing"
+                        "name": "Data scraping and parsing"
                   },
                   {
                         "name": "Other"
                   }
             ]
-},
+	  },
       {
             "name": "Use-cases",
             "children": [
@@ -38,13 +38,46 @@
                                     "name": "THESE ARE PLACEHOLDERS. USE-CASES TO COME SOON!"
                               },
                               {
-                                    "name": "Financial Services"
+                                    "name": "Automotive"
+                              },
+                              {
+                                    "name": "Banking"
+                              },
+                              {
+                                    "name": "Business Services"
+                              },
+                              {
+                                    "name": "Communications"
+                              },
+                              {
+                                    "name": "Consumer Goods"
+                              },
+                              {
+                                    "name": "Energy and Utilities"
                               },
                               {
                                     "name": "Healthcare"
                               },
                               {
-                                    "name": "Consumer Goods"
+                                    "name": "Industrial"
+                              },
+                              {
+                                    "name": "Insurance"
+                              },
+                              {
+                                    "name": "Public and Non-Profit Sector"
+                              },
+                              {
+                                    "name": "Real Estate"
+                              },
+                              {
+                                    "name": "Transportation and Logistics"
+                              },
+                              {
+                                    "name": "Travel and Leisure"
+                              },
+                              {
+                                    "name": "Wealth and Asset Management"
                               }
                         ]
                   },
@@ -55,13 +88,40 @@
                                     "name": "THESE ARE PLACEHOLDERS. USE-CASES TO COME SOON!"
                               },
                               {
-                                    "name": "Price Elasticity"
+                                    "name": "Change Management, Organization and People"
                               },
                               {
-                                    "name": "Financial Planning"
+                                    "name": "Corporate Strategy"
                               },
                               {
-                                    "name": "Cyber risk"
+                                    "name": "Cost Management"
+                              },
+                              {
+                                    "name": "Customer Management"
+                              },
+                              {
+                                    "name": "Finance Management"
+                              },
+                              {
+                                    "name": "Information Technology"
+                              },
+                              {
+                                    "name": "Pricing, Marketing and Sales"
+                              },
+                              {
+                                    "name": "Product and Service Development and Offer"
+                              },
+                              {
+                                    "name": "Risk Management"
+                              },
+                              {
+                                    "name": "Service and Manufacturing Operations"
+                              },
+                              {
+                                    "name": "Sourcing, Supply Chain and Logistics"
+                              },
+                              {
+                                    "name": "Sustainability"
                               }
                         ]
                   }

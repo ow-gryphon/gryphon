@@ -21,12 +21,12 @@ class Text:
     visualizations and numerous resources for different methodologies and use cases, 
     Gryphon is designed to be your one-stop-Python-shop! 
     
-    Owners:
+    Owners & Main Contacts:
     - Daniel Wang (daniel.wang@oliverwyman.com)
     - Daniel Uken (daniel.uken@oliverwyman.com)
     
     Developers:
-    - Vittor Pereira (vittor.pereira@oliverwyman.com)
+    - Vittor Pereira
 
     """
 
@@ -42,7 +42,7 @@ class Text:
     feedback_display_option = "General contact/feedback"
     report_bug_display_option = "Report bug"
     contact_us_display_option = "Contact us (bugs, feedback, etc.)"
-    configure_project_display_option = "Configure Gryphon project defaults and logs"
+    configure_project_display_option = "Configure defaults for this Gryphon project"
     quit_display_option = "Exit"
 
     menu_separator = "------------------------------"
@@ -54,7 +54,7 @@ class Text:
 
     init_prompt_template_question = "Please select the template you would like to use:"
     init_prompt_location_question = "Please give your project folder a name:"
-    init_prompt_addons = "Select the extras that you would like to add to the project and then press Enter:"
+    init_prompt_addons = "Select the extras to add to the project and then press Enter (or Ctrl+C to go back):\n "
     init_prompt_init_from_existing = "Did you mean to set up a Gryphon project from an existing folder instead?"
 
     init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
