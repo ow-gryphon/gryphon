@@ -8,6 +8,7 @@ import os
 import platform
 import shutil
 import sys
+import glob
 from pathlib import Path
 
 import git
@@ -130,18 +131,21 @@ def update_gryphon():
         logger.debug("Update needed")
         logger.warning("A new version from Gryphon is available.")
         logger.warning("Updating ...")
-        repo_clone_path = GRYPHON_HOME / "git_gryphon"
-
-        # Attempt to delete cached repo
-        try:
-            if os.path.exists(repo_clone_path):
-                shutil.rmtree(repo_clone_path)
-        except:
-            pass
+        repo_clone_path = GRYPHON_HOME / "git_gryphon_{}".format(str(latest))
+        
+        # Try to delete old versions
+        for folder in glob.glob(GRYPHON_HOME / "git_gryphon*"):
+            try:
+                shutil.rmtree(folder)
+            except:
+                logger.debug("Failed to completely remove cached old version: {}".format(folder))
         
         try:
-            repo = clone_from_remote(repo_clone_path)
-            
+            if not repo_clone_path.is_dir():
+                repo = clone_from_remote(repo_clone_path)
+            else:
+                repo = git.Repo(path=repo_clone_path)
+
             # git clone at the desired tag
             logger.debug("Checkout")
             repo.git.checkout([latest, '-qqq'])
@@ -155,7 +159,7 @@ def update_gryphon():
         # pip install the version
         logger.debug("Installing the new version")
         BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
-        
+
         # restart gryphon
         if platform.system() == "Windows":
             logger.info("Update complete. Please start gryphon again by typing “gryphon”")
