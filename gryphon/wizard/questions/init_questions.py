@@ -167,7 +167,7 @@ class InitQuestions:
                 Choice(
                     title="Pre-commit hooks",
                     value=PRE_COMMIT_HOOKS,
-                    checked=True
+                    checked=False
                 )
             ]
         ).unsafe_ask()
