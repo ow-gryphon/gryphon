@@ -163,18 +163,6 @@ class ConfirmSettings(State):
 
         return context
 
-# DONE: get the settings from the gryphon_rc file if there is if not get from the
-# DONE: put text wrapping on the wider lines
 
-# DONE: format timestamp on the zip name
-# DONE: Create the file on the parent folder
-# DONE: space separated values on add functionality
-
-# DONE: Just consider to exclude gryphon files that are inside the notebooks
-#  folder. Just display the amount of files inside the folder (not to print every
-#  name as it could get very long)
-
-# DONE: if user types 0 on the file limit don't consider the file size
 # TODO: Have a logfile specifying how the zip was generated (configs and choices) placed on the parent folder
-# DONE: show confirmation of file path
-# DONE: CTRL + C as back on text fields
+
