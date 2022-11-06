@@ -138,7 +138,10 @@ def update_gryphon():
             try:
                 if folder != str(repo_clone_path):
                     logger.debug("Removing cached version of old version: {}".format(folder))
-                    BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
+                    if platform.system() == "Windows":
+                        BashUtils.execute_and_log(f"rmdir /s /q \"{folder}\"")
+                    else:
+                        BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
             except:
                 logger.debug("Failed to completely remove cached old version: {}".format(folder))
         

@@ -85,7 +85,8 @@ class NBExtensionsManager:
 
         return_code, _ = BashUtils.execute_and_log(
             f'\"{conda_pip}\" install jupyter_contrib_nbextensions '
-            f'jupyter_nbextensions_configurator  --disable-pip-version-check'
+            f'jupyter_nbextensions_configurator  --disable-pip-version-check '
+            f'--no-warn-script-location'
             # --prefix=\"{environment_path}\" --yes -k'
         )
 

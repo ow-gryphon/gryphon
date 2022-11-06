@@ -158,7 +158,7 @@ class EnvironmentManagerOperations:
             conda_pip = environment_path / "bin" / "pip"
 
         return_code, output = BashUtils.execute_and_log(
-            f"\"{conda_pip}\" install -r \"{requirements_path}\""
+            f"\"{conda_pip}\" install -r \"{requirements_path}\" --no-warn-script-location"
         )
 
         if return_code is not None:
@@ -186,13 +186,20 @@ class EnvironmentManagerOperations:
                 env_folder = target_folder / CONDA_FOLDER
 
             logger.warning(f"""
-                    {Text.install_end_message_1}
+                {Text.install_end_message_1}
 
-                        >> cd \"{target_folder.relative_to(Path.cwd())}\"
-                        >> conda activate --prefix=\"{env_folder.relative_to(target_folder)}\"
+                    ANACONDA PROMPT/COMMAND PROMPT:
 
-                        {Text.install_end_message_2}
-                    """)
+                    >> cd \"{target_folder.relative_to(Path.cwd())}\"
+                    >> conda activate {env_folder.relative_to(target_folder)}\\
+
+                    GIT BASH:
+
+                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
+                    >> conda activate {env_folder.relative_to(target_folder)}/
+
+                {Text.install_end_message_2}
+                """)
 
         elif env_manager == VENV:
 
@@ -211,7 +218,7 @@ class EnvironmentManagerOperations:
 
                     GIT BASH:
 
-                    >> cd \"{str(target_folder).replace(chr(92), '/')}\"
+                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
                     >> source {(env_folder / "Scripts" / "activate").relative_to(target_folder)}
 
                 {Text.install_end_message_2}
