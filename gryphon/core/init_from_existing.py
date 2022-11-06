@@ -110,6 +110,7 @@ def process_environment(
             path = create_environment(path, env_manager=env_manager)
 
     logfile = RCManager.get_rc_file(location)
+    RCManager.initialize_log(logfile)
     RCManager.set_environment_manager(env_manager, logfile)
     RCManager.set_environment_manager_path(path, logfile)
 

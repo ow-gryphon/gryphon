@@ -68,6 +68,29 @@ class RCManager:
         else:
             raise FileNotFoundError("Could not find .gryphon_rc file inside folder.")
 
+    # INITIALIZE
+    @classmethod
+    def initialize_log(cls, logfile=None):
+        """
+        Initialize the log file with require keys 
+        """
+        if logfile is None:
+            raise FileNotFoundError("Could not find .gryphon_rc file inside folder.")
+
+        with open(logfile, "r+", encoding="utf-8") as f:
+            contents = json.load(f)
+
+            new_contents = contents.copy()
+            if "files" not in new_contents:
+                new_contents["files"] = []
+
+            if "operations" not in new_contents:
+                new_contents["operations"] = []
+
+            f.seek(0)
+            f.write(json.dumps(new_contents, sort_keys=True, indent=4))
+            f.truncate()
+
     # SET
     @classmethod
     def set_environment_manager(cls, environment_manager: str, logfile=None):

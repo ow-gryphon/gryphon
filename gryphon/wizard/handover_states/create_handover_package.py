@@ -10,6 +10,7 @@ class CreateHandoverPackage(State):
     def on_start(self, context: dict) -> dict:
         # check for large files
         logfile = RCManager.get_rc_file(context["location"])
+        RCManager.initialize_log(logfile) # Backward compatibility, to ensure keys exists
         try:
             keep_gryphon_files = RCManager.get_handover_include_gryphon_generated_files(logfile)
         except KeyError:
