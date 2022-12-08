@@ -14,6 +14,7 @@ def _condition_back_to_settings(context):
 def _callback_back_to_settings(context):
     erase_lines(n_lines=2)
     erase_lines(n_lines=context["extra_lines"])
+    context["extra_lines"] = 0
     return context
 
 

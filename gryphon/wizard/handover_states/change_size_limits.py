@@ -9,7 +9,7 @@ def _condition_check_files_to_check_large_files(_):
 
 
 def _callback_check_files(context):
-    erase_lines(n_lines=2)
+    erase_lines(n_lines=3)
     return context
 
 
