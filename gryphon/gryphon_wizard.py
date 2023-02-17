@@ -15,7 +15,7 @@ import git
 
 from . import __version__
 from .constants import (
-    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
+    INIT, DOWNLOAD, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
     CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, CONTACT_US
 )
@@ -25,7 +25,7 @@ from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
 from .wizard import (
-    init, generate, add, about, exit_program,
+    init, download, generate, add, about, exit_program,
     settings, init_from_existing, handover, configure_project,
     contact_us
 )
@@ -264,6 +264,7 @@ def start_ui(settings_file):
             CONFIGURE_PROJECT: configure_project,
             INIT: init,
             INIT_FROM_EXISTING: init_from_existing,
+            DOWNLOAD: download,
             GENERATE: generate,
             ADD: add,
             HANDOVER: handover,

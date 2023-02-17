@@ -10,7 +10,7 @@ from git import Repo
 from .template import Template
 from .versioned_template import VersionedTemplate
 from ..operations.bash_utils import BashUtils
-from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX
+from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX, DOWNLOAD
 from ...logger import logger
 
 
@@ -87,15 +87,16 @@ class RemoteIndex:
 
         templates = {
             GENERATE: {},
-            INIT: {}
+            INIT: {},
+            DOWNLOAD: {},
         }
 
         for name, template in template_versions.items():
-            assert template.command in [INIT, GENERATE]
+            assert template.command in [INIT, GENERATE, DOWNLOAD]
             templates[template.command][name] = template
             
         # Sort the template list
-        for command in [INIT, GENERATE]:
+        for command in [INIT, GENERATE, DOWNLOAD]:
             display_names = []
             for name, template in templates[command].items():
                 display_names.append(template.display_name)
@@ -116,7 +117,7 @@ class RemoteIndex:
         if command is None:
             return self.templates
 
-        assert command in [GENERATE, INIT]
+        assert command in [GENERATE, INIT, DOWNLOAD]
         return self.templates[command]
 
 
@@ -136,7 +137,8 @@ class RemoteIndexCollection:
     def unify_templates(self) -> Dict[str, Dict[str, Template]]:
         templates = {
             GENERATE: {},
-            INIT: {}
+            INIT: {},
+            DOWNLOAD: {},
         }
         for index in self.indexes:
             for command, temp in index.get_templates().items():
@@ -148,5 +150,5 @@ class RemoteIndexCollection:
         if command is None:
             return self.templates
 
-        assert command in [GENERATE, INIT]
+        assert command in [GENERATE, INIT, DOWNLOAD]
         return self.templates[command]

@@ -2,6 +2,7 @@ from .about import about
 from .add import add
 from .configure_project import configure_project
 from .contact_us import contact_us
+from .download import download
 from .exit_program import exit_program
 from .generate import generate
 from .handover import handover

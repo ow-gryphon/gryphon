@@ -34,6 +34,8 @@ class Text:
 
     init_display_option = "Start a new Gryphon project"
     init_from_existing_display_option = "Set up Gryphon with an existing project folder"
+    download_display_option = "Download standalone content into folder (e.g. training materials, non-Python code)"
+    
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
     handover_display_option = "Hand over project"
@@ -56,7 +58,10 @@ class Text:
     init_prompt_location_question = "Please give your project folder a name:"
     init_prompt_addons = "Select the extras to add to the project and then press Enter (or Ctrl+C to go back):\n "
     init_prompt_init_from_existing = "Did you mean to set up a Gryphon project from an existing folder instead?"
-
+    
+    download_prompt_template_question = "Please select the repository you would like to download:"
+    download_prompt_location_question = "Please give your folder a name:"
+    
     init_from_existing_prompt_location_question = "Select the target folder (blank if current folder):"
     init_from_existing_confirm_conda_question = "An existing conda environment was found inside the project folder," \
                                                 " do you want to use it as the project environment?"
@@ -102,6 +107,11 @@ class Text:
                      "\ninside the folder \"{location}\""
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
 
+    download_confirm_1 = "Confirm that you want to download \"{template_name}\" " \
+                     "\ninto the folder \"{location}\""
+    download_confirm_2 = "\nUsing the following arguments: {arguments}"
+
+    
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"
     could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
     generate_keyword_argument = "Type the keyword you want to search for:"

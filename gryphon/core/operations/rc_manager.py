@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ...constants import (
-    GENERATE, INIT, GRYPHON_RC, CONDA, VENV, NB_STRIP_OUT, NB_EXTENSIONS, PRE_COMMIT_HOOKS
+    GENERATE, INIT, DOWNLOAD, GRYPHON_RC, CONDA, VENV, NB_STRIP_OUT, NB_EXTENSIONS, PRE_COMMIT_HOOKS
 )
 
 logger = logging.getLogger('gryphon')
@@ -186,7 +186,7 @@ class RCManager:
         Add information about the operations made on the project into the rc file.
         """
 
-        assert performed_action in [INIT, GENERATE]
+        assert performed_action in [INIT, GENERATE, DOWNLOAD]
 
         if logfile is None:
             logfile = Path.cwd() / GRYPHON_RC
@@ -246,7 +246,7 @@ class RCManager:
         """
         Add information about each and every file added to the project into the rc file.
         """
-        assert performed_action in [INIT, GENERATE]
+        assert performed_action in [INIT, GENERATE, DOWNLOAD]
         if logfile is None:
             logfile = Path.cwd() / GRYPHON_RC
 

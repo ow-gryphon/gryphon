@@ -9,6 +9,7 @@ import shutil
 import zipfile
 from distutils.version import StrictVersion
 from pathlib import Path
+from urllib.parse import urljoin
 
 import git
 
@@ -140,7 +141,34 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
         f"-qqq"
     )
     if status_code is not None:
-        raise RuntimeError("Not able to find the pip command in the environment (required for this feature).")
+        raise RuntimeError("Unable to pip download the repository.")
+
+
+def _basic_download_template(template, temp_folder=Path().cwd() / ".temp"):
+    """
+    Downloads a template and its dependencies in the zip format to a temporary folder.
+    """
+    
+    repo_url = template.repo_url
+    
+    if repo_url is None:
+        raise RuntimeError("Metadata.json files does not contain a repo_url")
+    
+    # tag_url = urljoin(base_url, f"archive/refs/tags/{template.version}.zip")
+    
+    status_code, _ = BashUtils.execute_and_log(
+        f"start-ssh-agent & git clone {repo_url} {temp_folder}"
+        
+        # f"curl -o {temp_folder} --remote={tag_url}"
+    )
+    if status_code is not None:
+        raise RuntimeError("Unable to git clone the repository.")
+        
+    # Check if .git folder is included
+    git_folder = os.path.join(temp_folder, ".git")
+    
+    if os.path.exists(git_folder):
+        clean_readonly_folder(git_folder) 
 
 
 def _unzip_templates(origin_path: Path, target_folder) -> Path:
@@ -158,15 +186,21 @@ def _unzip_templates(origin_path: Path, target_folder) -> Path:
     return target_folder
 
 
-def _unify_templates(origin_folder: Path, destination_folder: Path) -> Path:
+def _unify_templates(origin_folder: Path, destination_folder: Path, subfolder = "template") -> Path:
     """
     Copies the template and its dependencies to a single folder.
     """
     expanded_folders = glob.glob(str(origin_folder / "*"))
 
     for folder in expanded_folders:
+    
+        if subfolder is not None:
+            source_folder = Path(folder) / subfolder
+        else:
+            source_folder = Path(folder)
+            
         shutil.copytree(
-            src=Path(folder) / "template",
+            src=source_folder,
             dst=destination_folder,
             dirs_exist_ok=True
         )
@@ -192,6 +226,34 @@ def fetch_template(template, project_folder):
         shutil.rmtree(zip_folder, ignore_errors=True)
 
     return template_folder
+    
+    
+#def download_template(template, project_folder):
+#    download_folder = project_folder / ".temp"
+#    template_folder = project_folder / ".target"
+#
+#    try:
+#        _basic_download_template(template, download_folder)
+#        shutil.copytree(
+#            src=download_folder,
+#            dst=template_folder,
+#            dirs_exist_ok=True
+#        )
+#        
+#    finally:
+#        # shutil.rmtree(download_folder, ignore_errors=True)
+#        logger.info("HERE")
+#
+#    return template_folder
+
+   
+def download_template(template, project_folder):
+    template_folder = project_folder / ".target"
+
+    _basic_download_template(template, template_folder)
+        
+    return template_folder
+
 
 
 def clean_readonly_folder(folder):

@@ -3,7 +3,7 @@ from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
 from ...constants import (
-    INIT, INIT_FROM_EXISTING, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
+    INIT, INIT_FROM_EXISTING, DOWNLOAD, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
     VALUE, LATEST, REPORT_BUG, FEEDBACK, YES, NO, CONTACT_US
 )
 
@@ -21,6 +21,10 @@ class CommonQuestions:
             Choice(
                 title=Text.init_from_existing_display_option,
                 value=INIT_FROM_EXISTING
+            ),
+            Choice(
+                title=Text.download_display_option,
+                value=DOWNLOAD
             ),
 
             Separator(Text.menu_separator),
