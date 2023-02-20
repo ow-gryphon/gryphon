@@ -10,7 +10,7 @@ from git import Repo
 from .template import Template
 from .versioned_template import VersionedTemplate
 from ..operations.bash_utils import BashUtils
-from ...constants import GRYPHON_HOME, GENERATE, INIT, REMOTE_INDEX
+from ...constants import GRYPHON_HOME, GENERATE, INIT, DOWNLOAD, REMOTE_INDEX
 from ...logger import logger
 
 
@@ -87,11 +87,13 @@ class RemoteIndex:
 
         templates = {
             GENERATE: {},
-            INIT: {}
+            INIT: {},
+            DOWNLOAD: {},
         }
 
         for name, template in template_versions.items():
-            assert template.command in [INIT, GENERATE]
+            if template.command not in [INIT, GENERATE, DOWNLOAD]:
+                logger.warning(f"template.command in generate_templates is not one of INIT, GENERATE, DOWNLOAD")
             templates[template.command][name] = template
             
         # Sort the template list
@@ -116,7 +118,8 @@ class RemoteIndex:
         if command is None:
             return self.templates
 
-        assert command in [GENERATE, INIT]
+        if command not in [GENERATE, INIT, DOWNLOAD]:
+            logger.warning(f"command in get_templates is not one of INIT, GENERATE, DOWNLOAD")
         return self.templates[command]
 
 
@@ -136,7 +139,8 @@ class RemoteIndexCollection:
     def unify_templates(self) -> Dict[str, Dict[str, Template]]:
         templates = {
             GENERATE: {},
-            INIT: {}
+            INIT: {},
+            DOWNLOAD: {},
         }
         for index in self.indexes:
             for command, temp in index.get_templates().items():
@@ -147,6 +151,6 @@ class RemoteIndexCollection:
         """Returns the template metadata."""
         if command is None:
             return self.templates
-
-        assert command in [GENERATE, INIT]
+        if command not in [GENERATE, INIT, DOWNLOAD]:
+            logger.warning(f"command in get_templates is not one of INIT, GENERATE, DOWNLOAD")
         return self.templates[command]

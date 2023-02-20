@@ -18,7 +18,7 @@ Best regards,
 
 Please find details regarding the bug below:
 
-    <<Type the bug description and reproduction instructions here>>
+    [[Please explain how you arrived at this bug]]
 
 {traceback}
 

@@ -180,6 +180,8 @@ class EnvironmentManagerOperations:
         target_folder = PathUtils.get_destination_path(location)
         env_folder = alternative_env
 
+        backslash_char = "\\"
+        
         if env_manager == CONDA:
 
             if not alternative_env:
@@ -196,7 +198,7 @@ class EnvironmentManagerOperations:
                     GIT BASH:
 
                     >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
-                    >> conda activate {env_folder.relative_to(target_folder)}/
+                    >> conda activate {str(env_folder.relative_to(target_folder)).replace(chr(92), '/')}/
 
                 {Text.install_end_message_2}
                 """)
@@ -218,8 +220,8 @@ class EnvironmentManagerOperations:
 
                     GIT BASH:
 
-                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
-                    >> source {(env_folder / "Scripts" / "activate").relative_to(target_folder)}
+                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/').replace(backslash_char,'/')}\"
+                    >> source {str((env_folder / "Scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}
                 """)
@@ -228,8 +230,8 @@ class EnvironmentManagerOperations:
                 logger.warning(f"""
                 {Text.install_end_message_1}
 
-                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
-                    >> source {(env_folder / "scripts" / "activate").relative_to(target_folder)}
+                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/').replace(backslash_char,'/')}\"
+                    >> source {str((env_folder / "scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}
                 """)

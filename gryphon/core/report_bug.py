@@ -1,6 +1,9 @@
 from .core_text import Text
 from ..constants import EMAIL_RECIPIENT
 
+import logging
+logger = logging.getLogger('gryphon')
+
 
 def report_bug():
     import webbrowser
@@ -16,5 +19,5 @@ def report_bug():
         ),
         quote_via=urllib.parse.quote
     )
-
-    webbrowser.open(f"mailto:?{url_data}", new=0)
+    
+    webbrowser.open(f"mailto:?{url_data}".replace("+","%20"), new=0)
