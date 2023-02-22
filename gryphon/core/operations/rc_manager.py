@@ -186,7 +186,8 @@ class RCManager:
         Add information about the operations made on the project into the rc file.
         """
 
-        assert performed_action in [INIT, GENERATE, DOWNLOAD]
+        if performed_action not in [INIT, GENERATE, DOWNLOAD]:
+            logger.warning(f"In log_operation, the performed action was not INIT, GENERATE, or DOWNLOAD.")
 
         if logfile is None:
             logfile = Path.cwd() / GRYPHON_RC
@@ -246,7 +247,10 @@ class RCManager:
         """
         Add information about each and every file added to the project into the rc file.
         """
-        assert performed_action in [INIT, GENERATE, DOWNLOAD]
+
+        if performed_action not in [INIT, GENERATE, DOWNLOAD]:
+            logger.warning(f"The performed_action in log_new_files is not INIT, GENERATE, or DOWNLOAD")
+
         if logfile is None:
             logfile = Path.cwd() / GRYPHON_RC
 

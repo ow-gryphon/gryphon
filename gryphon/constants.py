@@ -5,6 +5,7 @@ from pathlib import Path
 QUIT = "quit"
 GENERATE = "generate"
 INIT = "init"
+DOWNLOAD = "download"
 INIT_FROM_EXISTING = "init_from_existing"
 DOWNLOAD = "download"
 ADD = "add"

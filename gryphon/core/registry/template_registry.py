@@ -76,7 +76,9 @@ class TemplateRegistry:
         if command is None:
             return self.template_data
 
-        assert command in ['add', 'generate', 'init', 'download']
+        if command not in ['add', 'generate', 'init', 'download']:
+            logger.warning(f"command in get_templates is not one of add, generate, init, download")
+
         return self.template_data[command]
 
     def update_registry(self):
