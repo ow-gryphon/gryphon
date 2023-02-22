@@ -11,7 +11,7 @@ import glob
 from pathlib import Path
 from typing import List
 from .template import Template
-from ...constants import INIT, GENERATE
+from ...constants import INIT, GENERATE, DOWNLOAD
 
 
 logger = logging.getLogger('gryphon')
@@ -29,7 +29,8 @@ class TemplateRegistry:
     def __init__(self, templates_root: Path = None, template_paths: List[Path] = None):
         self.template_data = {
             INIT: {},
-            GENERATE: {}
+            GENERATE: {},
+            DOWNLOAD: {}
         }
 
         if template_paths is not None:
@@ -56,7 +57,7 @@ class TemplateRegistry:
                 continue
 
             command = metadata["command"]
-            if command not in ['add', 'generate', 'init']:
+            if command not in ['add', 'generate', 'init', 'download']:
                 continue
 
             name = os.path.basename(path)
@@ -75,7 +76,8 @@ class TemplateRegistry:
         if command is None:
             return self.template_data
 
-        assert command in ['add', 'generate', 'init']
+        if command not in ['add', 'generate', 'init', 'download']:
+            logger.warning(f"command in get_templates is not one of add, generate, init, download")
         return self.template_data[command]
 
     def update_registry(self):

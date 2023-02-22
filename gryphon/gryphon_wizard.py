@@ -197,7 +197,7 @@ def send_traceback(exception):
         )
     )
 
-    webbrowser.open(f"mailto:?{url_data}", new=0)
+    webbrowser.open(f"mailto:?{url_data}".replace("+","%20"), new=0)
 
 
 def ask_to_report(exception):
