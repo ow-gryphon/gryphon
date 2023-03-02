@@ -11,6 +11,14 @@ from ...fsm import State, Transition
 logger = logging.getLogger('gryphon')
 
 
+def confirmation_success_callback(context: dict) -> dict:
+    n_lines = context["n_lines"]
+    ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
+
+    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"] + ask_again)
+    return context
+
+
 def ask_location_again_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
     ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
@@ -52,6 +60,7 @@ def _change_from_confirmation_to_confirm(context: dict) -> bool:
 def _change_from_confirmation_to_ask_location_again(context: dict) -> bool:
     confirmed = context["confirmed"]
     return confirmed == CHANGE_LOCATION
+    
 
 
 class Confirmation(State):
@@ -71,7 +80,13 @@ class Confirmation(State):
             next_state="confirmation",
             condition=_change_from_confirmation_to_confirm,
             callback=read_more_callback
-        )
+        ),
+        Transition(
+            next_state="ask_template",
+            condition=_change_from_confirmation_to_ask_template,
+            callback=confirmation_success_callback
+        ),
+        
     ]
 
     def on_start(self, context: dict) -> dict:
