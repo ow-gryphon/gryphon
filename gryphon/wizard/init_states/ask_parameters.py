@@ -85,7 +85,7 @@ class AskParameters(State):
             context["template"] = template
 
         context["chosen_version"] = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
-        context["location"] = InitQuestions.ask_init_location()
+        context["location"] = str(InitQuestions.ask_init_location()).strip()
 
         if context["location"] == BACK:
             return context

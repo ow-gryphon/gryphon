@@ -136,7 +136,7 @@ def check_for_ssh(template):
         ssh_domains = settings_file.get("ssh_domains")
         
         if ssh_domains is not None:
-            for ssh_domain in ssh_domains:
+            for ssh_domain in ssh_domains.keys():
                 if ssh_domain in repo_url: # TODO: More precise check
                     ssh_prefix = "start-ssh-agent & "
                     
@@ -183,8 +183,15 @@ def _basic_download_template(template, temp_folder=Path().cwd() / ".temp"):
     
     logger.info("Downloading the repository")
     
+    version = template.version
+    
+    if version != "":
+        version_string = f"--branch {version} -c advice.detachedHead=false"
+    else:
+        version_string = ""
+    
     status_code, _ = BashUtils.execute_and_log(
-        f"{check_for_ssh(template)}git clone {repo_url} {temp_folder} --depth 1 {quiet}"
+        f"{check_for_ssh(template)}git clone {repo_url} \"{str(temp_folder).strip()}\" --depth 1 {quiet} {version_string}"
         
         # f"curl -o {temp_folder} --remote={tag_url}"
     )
