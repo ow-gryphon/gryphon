@@ -7,5 +7,5 @@ class MainMenu(State):
     transitions = []
 
     def on_start(self, _: dict):
-        erase_lines()
+        erase_lines(n_lines=2)
         raise BackSignal()

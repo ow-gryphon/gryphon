@@ -23,7 +23,7 @@ def ask_location_again_callback(context: dict) -> dict:
     n_lines = context["n_lines"]
     ask_again = context["n_lines_ask_again"] if "n_lines_ask_again" in context else 0
 
-    erase_lines(n_lines=n_lines + 2 + context["n_lines_warning"] + ask_again)
+    erase_lines(n_lines=n_lines + 1 + context["n_lines_warning"] + ask_again)
     return context
 
 
