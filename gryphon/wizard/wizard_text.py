@@ -34,7 +34,7 @@ class Text:
 
     init_display_option = "Start a new Gryphon project"
     init_from_existing_display_option = "Set up Gryphon with an existing project folder"
-    download_display_option = "Download standalone content into folder (e.g. training materials, non-Python code)"
+    download_display_option = "Download standalone content (e.g. training materials, non-Python code)"
     
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"

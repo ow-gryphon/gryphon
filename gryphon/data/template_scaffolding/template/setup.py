@@ -1,7 +1,7 @@
 import json
 import setuptools
 
-with open("template/README.md", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 with open('requirements.txt') as fr:
@@ -20,6 +20,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="",  # Repository URL or externally maintained page
     packages=setuptools.find_packages(),
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     install_requires=requirements,
 )
