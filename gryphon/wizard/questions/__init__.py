@@ -6,4 +6,5 @@ from .generate_questions import GenerateQuestions
 from .handover_questions import HandoverQuestions
 from .init_from_existing_questions import InitFromExistingQuestions
 from .init_questions import InitQuestions
+from .download_questions import DownloadQuestions
 from .settings_questions import SettingsQuestions

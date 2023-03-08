@@ -15,7 +15,7 @@ import git
 
 from . import __version__
 from .constants import (
-    INIT, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
+    INIT, DOWNLOAD, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
     CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, CONTACT_US
 )
@@ -25,7 +25,7 @@ from .core.operations import BashUtils
 from .core.registry import RegistryCollection
 from .logger import logger
 from .wizard import (
-    init, generate, add, about, exit_program,
+    init, download, generate, add, about, exit_program,
     settings, init_from_existing, handover, configure_project,
     contact_us
 )
@@ -61,8 +61,54 @@ def initial_setup():
 
         try:
             if settings_file["config_version"] < default_settings_file["config_version"]:
-                os.remove(CONFIG_FILE)
-                raise FileNotFoundError()
+                
+                logger.debug("Found new Gryphon config version")
+                
+                settings_file["config_version"] = default_settings_file["config_version"]
+                
+                # Check key value pairs
+                old_config_keys = settings_file.keys()
+                new_config_keys = default_settings_file.keys()
+                
+                for new_key in list(set(new_config_keys) - set(old_config_keys)):
+                    settings_file[new_key] = default_settings_file[new_key]
+                    
+                # For other keys
+                for old_key in old_config_keys:
+                    if old_key not in new_config_keys:
+                        continue
+                        
+                    # If types are not the same, then use the new one
+                    if type(settings_file[old_key]) != type(default_settings_file[old_key]):
+                        settings_file[old_key] = default_settings_file[old_key]
+                    else:
+                        if isinstance(settings_file[old_key], list):
+                            
+                            for new_item in default_settings_file[old_key]:
+                                not_found = True
+                                
+                                for old_item in settings_file[old_key]:
+                                    if old_item == new_item:
+                                        not_found = False
+                                
+                                if not_found:
+                                    settings_file[old_key].append(default_settings_file[old_key][new_item])
+                                    
+                    
+                        elif isinstance(settings_file[old_key], dict):
+                            for new_nested_key in list(set(default_settings_file[old_key].keys()) - set(settings_file[old_key].keys())):
+                                settings_file[old_key][new_nested_key] = default_settings_file[old_key][new_nested_key]
+                        
+                        else:
+                            # Don't modify the old key
+                            pass
+                
+                # Write the file
+            with open(CONFIG_FILE, "w", encoding="UTF-8") as f:
+                json.dump(settings_file, f, indent=2)
+                
+                # os.remove(CONFIG_FILE)
+                # raise FileNotFoundError()
         except KeyError:
             raise FileNotFoundError()
 
@@ -264,6 +310,7 @@ def start_ui(settings_file):
             CONFIGURE_PROJECT: configure_project,
             INIT: init,
             INIT_FROM_EXISTING: init_from_existing,
+            DOWNLOAD: download,
             GENERATE: generate,
             ADD: add,
             HANDOVER: handover,

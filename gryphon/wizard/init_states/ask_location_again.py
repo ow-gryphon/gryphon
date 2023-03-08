@@ -60,6 +60,6 @@ class AskLocationAgain(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-        context["location_temp"] = InitQuestions.ask_init_location()
+        context["location_temp"] = str(InitQuestions.ask_init_location()).strip()
 
         return context

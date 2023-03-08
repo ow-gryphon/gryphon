@@ -24,6 +24,9 @@ class Template:
         self.dependencies = template_metadata.get("dependencies", [])
         self.description = template_metadata.get("description", "")
         self.version = template_metadata.get("version", "")
+        
+        self.ssh_domain = template_metadata.get("ssh_domain", None)
+        self.repo_url = template_metadata.get("repo_url", None)
 
     @classmethod
     def template_from_path(cls, template_path: Path, type=""):

@@ -1,5 +1,5 @@
 {
-    "config_version": 6,
+    "config_version": 7,
     "git_registry": {
         "open-source": "https://github.com/ow-gryphon/template_registry.git",
         "ow-private": ""
@@ -20,5 +20,9 @@
     "pre_commit_file_size_limit": 100.0,
     "handover_file_size_limit": 10.0,
     "handover_include_large_files": false,
-    "handover_include_gryphon_generated_files": true
+    "handover_include_gryphon_generated_files": true,
+    "ssh_domains": {
+        "mmctech": "id_rsa",
+        "oliverwymantechssg": "id_rsa"
+    }
 }

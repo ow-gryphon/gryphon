@@ -30,7 +30,7 @@ class TemplateRegistry:
         self.template_data = {
             INIT: {},
             GENERATE: {},
-            DOWNLOAD: {}
+            DOWNLOAD: {},
         }
 
         if template_paths is not None:
@@ -78,6 +78,7 @@ class TemplateRegistry:
 
         if command not in ['add', 'generate', 'init', 'download']:
             logger.warning(f"command in get_templates is not one of add, generate, init, download")
+
         return self.template_data[command]
 
     def update_registry(self):
