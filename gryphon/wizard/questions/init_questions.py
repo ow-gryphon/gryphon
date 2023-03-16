@@ -57,6 +57,40 @@ class InitQuestions:
 
     @staticmethod
     @base_question
+    def ask_project_info(template):
+
+        yellow_text = ''
+        if template.description:
+            yellow_text = f"\t{template.description}\n"
+
+        text, n_lines = wrap_text(yellow_text)
+        logger.warning(text)
+
+        message = (
+            Text.init_ask_project_info
+        )
+
+        n_lines += len(message.split('\n'))
+
+        options = [
+            Choice(
+                title="Yes",
+                value=YES
+            ),
+            Choice(
+                title="No",
+                value=NO
+            )
+        ]
+        
+        return questionary.select(
+            message=message,
+            choices=options
+        ).unsafe_ask(), n_lines
+    
+    
+    @staticmethod
+    @base_question
     def confirm_init(template, location, read_more_option=False, addons: list = None, **kwargs):
 
         yellow_text = ''

@@ -96,4 +96,4 @@ ADDON_NAME_MAPPING = {
     CI_CD: "CI/CD"
 }
 
-EMAIL_RECIPIENT = "OWGryphonSupport@mmcglobal.onmicrosoft.com"
+EMAIL_RECIPIENT = "OWGryphonSupport@oliverwyman.com"

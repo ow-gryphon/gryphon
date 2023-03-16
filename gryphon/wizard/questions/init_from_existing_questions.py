@@ -14,7 +14,34 @@ class InitFromExistingQuestions:
     @base_question
     def ask_existing_location():
         return Path(questionary.path(message=Text.init_from_existing_prompt_location_question).unsafe_ask())
+    
+    
+    @staticmethod
+    @base_question
+    def ask_project_info(template_name):
 
+        message = (
+            Text.init_ask_project_info
+        )
+
+        n_lines = len(message.split('\n'))
+
+        options = [
+            Choice(
+                title="Yes",
+                value=YES
+            ),
+            Choice(
+                title="No",
+                value=NO
+            )
+        ]
+        
+        return questionary.select(
+            message=message,
+            choices=options
+        ).unsafe_ask(), n_lines
+    
     @staticmethod
     @base_question
     def confirm_use_existing_environment(env_manager):

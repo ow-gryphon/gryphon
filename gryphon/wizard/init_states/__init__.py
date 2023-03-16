@@ -1,6 +1,7 @@
 from .ask_location_again import AskLocationAgain
 from .ask_parameters import AskParameters
 from .ask_template import AskTemplate
+from .ask_project_info import AskProjectInfo
 from .confirmation import Confirmation
 from .deal_with_existing_folder import DealWithExistingFolder
 from .install import Install
