@@ -34,7 +34,7 @@ class Text:
 
     init_display_option = "Start a new Gryphon project"
     init_from_existing_display_option = "Set up Gryphon with an existing project folder"
-    download_display_option = "Download standalone content (e.g. training materials, non-Python code)"
+    download_display_option = "Download standalone content into folder (e.g. training materials, non-Python code)"
     
     generate_display_option = "Load template code into an existing Gryphon project"
     add_display_option = "Install Python libraries/packages"
@@ -106,6 +106,8 @@ class Text:
     init_confirm_1 = "Confirm that you want to start a new \"{template_name}\" project" \
                      "\ninside the folder \"{location}\""
     init_confirm_2 = "\nUsing the following arguments: {arguments}"
+    init_ask_project_info = "Are you using this for a project (either client or internal)?" \
+                            "\n  (If yes, this will open a short email form to provide us with some info)"
 
     download_confirm_1 = "Confirm that you want to download \"{template_name}\" " \
                      "\ninto the folder \"{location}\""

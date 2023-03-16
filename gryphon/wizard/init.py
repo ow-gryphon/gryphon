@@ -1,5 +1,5 @@
 from .init_states import (
-    AskTemplate, AskParameters, Confirmation,
+    AskTemplate, AskParameters, Confirmation, AskProjectInfo, 
     Install, MainMenu, AskLocationAgain, SelectAddons, DealWithExistingFolder
 )
 from .functions import BackSignal
@@ -13,7 +13,7 @@ def init(_, registry):
     ask_template = AskTemplate(registry)
 
     possible_states = [
-        ask_template, Confirmation(), AskParameters(registry),
+        ask_template, Confirmation(), AskProjectInfo(), AskParameters(registry),
         Install(), MainMenu(), AskLocationAgain(), SelectAddons(),
         DealWithExistingFolder(registry)
     ]
