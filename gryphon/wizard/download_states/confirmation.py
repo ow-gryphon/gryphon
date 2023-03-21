@@ -100,7 +100,7 @@ class Confirmation(State):
         confirmed, n_lines = DownloadQuestions.confirm_download(
             template=template,
             location=Path(location).resolve(),
-            read_more_option=context["read_more_link"] is not None,
+            read_more_option=context["read_more_link"] != "",
             **extra_parameters
         )
 
