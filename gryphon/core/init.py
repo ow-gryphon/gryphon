@@ -95,7 +95,7 @@ def init(template: Template, location, python_version,
     
     try:
         os.makedirs(project_home, exist_ok=True)
-    except Exception as r:
+    except Exception as e:
         logger.error("Unable to access the folder. Please check the folder path.")
         logger.debug(str(e))
         
