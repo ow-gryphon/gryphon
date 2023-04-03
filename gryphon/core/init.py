@@ -52,6 +52,11 @@ def handle_template(template, project_home, rc_file):
                     ".ipynb_checkpoints"
                 )
             )
+            
+        except Exception as e:
+            logger.error("Failed to move template files into target folder.")
+            logger.error(str(e))
+        
         finally:
             RCManager.log_new_files(template, template_folder, performed_action=INIT, logfile=rc_file)
             clean_readonly_folder(template_folder)
@@ -87,9 +92,13 @@ def init(template: Template, location, python_version,
     project_home = Path.cwd() / location
 
     logger.info(f"Initializing project at {project_home}")
-
-    os.makedirs(project_home, exist_ok=True)
-
+    
+    try:
+        os.makedirs(project_home, exist_ok=True)
+    except Exception as r:
+        logger.error("Unable to access the folder. Please check the folder path.")
+        logger.debug(str(e))
+        
     # RC file
     rc_file = RCManager.get_rc_file(project_home)
     RCManager.log_operation(template, performed_action=INIT, logfile=rc_file)

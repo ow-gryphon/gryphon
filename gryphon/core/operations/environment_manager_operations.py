@@ -182,22 +182,29 @@ class EnvironmentManagerOperations:
 
         backslash_char = "\\"
         
+        # Check if folder is absolute or relative path
+        try:
+            path_for_cd = target_folder.relative_to(Path.cwd())
+        except:
+            path_for_cd = target_folder
+            
+        
         if env_manager == CONDA:
 
             if not alternative_env:
                 env_folder = target_folder / CONDA_FOLDER
-
+            
             logger.warning(f"""
                 {Text.install_end_message_1}
 
                     ANACONDA PROMPT/COMMAND PROMPT:
 
-                    >> cd \"{target_folder.relative_to(Path.cwd())}\"
+                    >> cd \"{path_for_cd}\"
                     >> conda activate {env_folder.relative_to(target_folder)}\\
 
                     GIT BASH:
 
-                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/')}\"
+                    >> cd \"{str(path_for_cd).replace(chr(92), '/')}\"
                     >> conda activate {str(env_folder.relative_to(target_folder)).replace(chr(92), '/')}/
 
                 {Text.install_end_message_2}
@@ -215,12 +222,12 @@ class EnvironmentManagerOperations:
 
                     ANACONDA PROMPT/COMMAND PROMPT:
 
-                    >> cd \"{target_folder.relative_to(Path.cwd())}\"
+                    >> cd \"{path_for_cd}\"
                     >> {(env_folder / "Scripts" / "activate").relative_to(target_folder)}
 
                     GIT BASH:
 
-                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/').replace(backslash_char,'/')}\"
+                    >> cd \"{str(path_for_cd).replace(chr(92), '/').replace(backslash_char,'/')}\"
                     >> source {str((env_folder / "Scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}
@@ -230,7 +237,7 @@ class EnvironmentManagerOperations:
                 logger.warning(f"""
                 {Text.install_end_message_1}
 
-                    >> cd \"{str(target_folder.relative_to(Path.cwd())).replace(chr(92), '/').replace(backslash_char,'/')}\"
+                    >> cd \"{str(path_for_cd).replace(chr(92), '/').replace(backslash_char,'/')}\"
                     >> source {str((env_folder / "scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}

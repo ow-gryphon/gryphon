@@ -295,7 +295,7 @@ def clean_readonly_folder(folder):
     Logic to remove folders with readonly files.
     """
     if platform.system() == "Windows":
-        BashUtils.execute_and_log(f"rmdir /s /Q {folder}")
+        BashUtils.execute_and_log(f"rmdir /s /Q \"{folder}\"")
     else:
         shutil.rmtree(folder, ignore_errors=True)
 
