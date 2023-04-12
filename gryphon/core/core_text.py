@@ -3,6 +3,14 @@ class Text:
                 environment you can use the following commands:"""
 
     install_end_message_2 = "Once you've done this you will be able to add libraries and templates to your project."
+    
+    install_end_message_4 = """To enter the folder of the created project, use the command:"""
+    
+    install_end_message_3 = """Then run Gryphon again to add templates and libraries to the project. 
+    
+                You can also type
+                    >> pipenv shell
+                    to activate and enter the virtual environment."""
 
     handover_end_message = "Handover package successfully generated:"
 

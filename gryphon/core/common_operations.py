@@ -362,6 +362,7 @@ def list_files(path: Path):
         ".github" not in f and
         ".venv" not in f and
         "envs" not in f and
+        "pipenv_venv" not in f and
         ".ipynb_checkpoints" not in f
     ]
 

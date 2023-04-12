@@ -52,9 +52,11 @@ SUCCESS = 21
 # environment
 VENV_FOLDER = ".venv"
 CONDA_FOLDER = "envs"
+PIPENV_FOLDER = ".venv"
 DEFAULT_ENV = "venv"
 VENV = "venv"
 CONDA = "conda"
+PIPENV = "pipenv"
 
 # path
 GRYPHON_HOME = Path.home() / ".gryphon"

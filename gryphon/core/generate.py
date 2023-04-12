@@ -15,7 +15,7 @@ from .common_operations import (
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
-from ..constants import GENERATE, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, REQUIREMENTS
+from ..constants import GENERATE, VENV, CONDA, PIPENV, REMOTE_INDEX, LOCAL_TEMPLATE, REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -64,9 +64,14 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
 
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
-
-    for r in template.dependencies:
-        append_requirement(r, location=folder)
+        
+    if env_type != PIPENV:
+        for r in template.dependencies:
+            append_requirement(r, location=folder)
+    else:
+        pipenv_requirements = []
+        pipenv_requirements.extend(template.dependencies)
+        pipenv_requirements = list(set(pipenv_requirements))
 
     RCManager.log_add_library(template.dependencies)
     if env_type == VENV:
@@ -79,6 +84,9 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             environment_path=env_path,
             requirements_path=current_path / REQUIREMENTS
         )
+    elif env_type == PIPENV:
+        logger.debug(pipenv_requirements)
+        EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
 
     # RC file
     RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)
@@ -139,6 +147,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             "__pycache__",
             "envs",
             ".venv",
+            "pipenv_venv",
             ".ipynb_checkpoints"
         )
     )
@@ -162,7 +171,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             dirs_exist_ok=True
         )
         
-    
     except Exception as e:
         logger.error("Failed to move template files into target folder.")
         logger.error(str(e))

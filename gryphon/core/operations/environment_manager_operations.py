@@ -1,5 +1,6 @@
 import logging
 import os
+import psutil
 import platform
 from pathlib import Path
 
@@ -7,8 +8,8 @@ from .bash_utils import BashUtils
 from .path_utils import PathUtils
 from ..core_text import Text
 from ...constants import (
-    SUCCESS, VENV_FOLDER, CONDA_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
-    SYSTEM_DEFAULT, CONDA, VENV
+    SUCCESS, VENV_FOLDER, PIPENV_FOLDER, CONDA_FOLDER, ALWAYS_ASK, GRYPHON_HOME,
+    SYSTEM_DEFAULT, CONDA, VENV, PIPENV
 )
 
 logger = logging.getLogger('gryphon')
@@ -53,6 +54,80 @@ class EnvironmentManagerOperations:
         logger.log(SUCCESS, "Done creating virtual environment.")
 
         return venv_path
+        
+    @classmethod
+    def create_pipenv_venv(cls, project_folder, current_folder=True, python_version=None):
+        """Function to a virtual environment inside a folder."""
+        
+        logger.debug(f"Use current folder for pipenv: {current_folder}")
+        
+        if current_folder:
+            if platform.system() == "Windows":
+                # On Windows the venv folder structure is different from unix
+                
+                process_name = psutil.Process(os.getppid()).name()
+                
+                logger.debug(f"Process Name: {process_name}")
+                
+                if process_name in ["cmd.exe", "powershell.exe"]:
+                    environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1 & "
+                elif process_name in ["winpty-agent.exe"]:
+                    environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
+                else:
+                    try:
+                        BashUtils.execute_and_log("SET PIPENV_VENV_IN_PROJECT=1")
+                        environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1"
+                    except:
+                        environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
+                
+            else:
+                environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
+        else:
+            environment_prefix = ""
+
+        python_path = "python"
+
+        # Create virtual environment
+        if current_folder:
+            logger.info(f"Creating the pipenv virtual environment in the project folder, named .venv")
+        else:
+            logger.info(f"Creating the pipenv virtual environment in the default folder used by pipenv")
+            
+        logger.info(f"Setting up virtual environment and installing the packages in the Piplock file")
+        return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" & {environment_prefix}pipenv install")
+        
+        if return_code:
+            raise RuntimeError("Failed to create virtual environment.")
+            # TODO: Check whats happened
+
+        logger.log(SUCCESS, "Done creating virtual environment.")
+
+        return "Completed"
+        
+        
+    @staticmethod
+    def install_libraries_pipenv(packages):
+        """
+        Function to install the libraries from a 'requirements.txt' file
+        """
+
+        target_folder = Path.cwd()
+
+        # Install requirements
+        logger.info("Installing requirements. This may take several minutes ...")
+        
+        #for package in packages:
+        #logger.info(f"Installing {package}")
+        return_code, output = BashUtils.execute_and_log(f"pipenv install {' '.join(packages)}")
+
+        if return_code is not None:
+            # TODO: take the error output from stderr
+            if "Could not find a version that satisfies the requirement" in output:
+                logger.error(output)
+            else:
+                logger.error(f"Failed on pip install command. Status code: {return_code}")
+        
+        logger.log(SUCCESS, "Completed installation successful!")
 
     @staticmethod
     def install_libraries_venv(requirements_path=None, environment_path=None):
@@ -241,4 +316,14 @@ class EnvironmentManagerOperations:
                     >> source {str((env_folder / "scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}
+                """)
+        
+        elif env_manager == PIPENV:
+            
+            logger.warning(f"""
+                {Text.install_end_message_4}
+
+                    >> cd \"{str(path_for_cd).replace(chr(92), '/').replace(backslash_char,'/')}\"
+
+                {Text.install_end_message_3}
                 """)

@@ -19,8 +19,8 @@ from .operations import (
 )
 from .registry import Template
 from ..constants import (
-    DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, SUCCESS,
-    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+    DEFAULT_ENV, INIT, VENV, PIPENV, CONDA, REMOTE_INDEX, SUCCESS,
+    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS, CONFIG_FILE
 )
 
 logger = logging.getLogger('gryphon')
@@ -85,9 +85,15 @@ def init(template: Template, location, python_version,
     Init command from the OW Gryphon CLI.
     """
     kwargs.copy()
-    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
-        data = json.load(f)
-        env_type = data.get("environment_management", DEFAULT_ENV)
+    
+    force_env = template.force_env
+    
+    if force_env:
+        env_type = force_env
+    else:
+        with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
+            data = json.load(f)
+            env_type = data.get("environment_management", DEFAULT_ENV)
 
     project_home = Path.cwd() / location
 
@@ -102,7 +108,7 @@ def init(template: Template, location, python_version,
     # RC file
     rc_file = RCManager.get_rc_file(project_home)
     RCManager.log_operation(template, performed_action=INIT, logfile=rc_file)
-
+    
     # TEMPLATE
     handle_template(template, project_home, rc_file)
 
@@ -115,13 +121,41 @@ def init(template: Template, location, python_version,
     initial_git_commit(repo)
 
     # Requirements
-    for r in template.dependencies:
-        append_requirement(r, project_home)
-
+    if env_type != PIPENV:
+        for r in template.dependencies:
+            append_requirement(r, project_home)
+    else:
+        pipenv_requirements = []
+        pipenv_requirements.extend(template.dependencies)
+        pipenv_requirements = list(set(pipenv_requirements))
+        
     RCManager.log_add_library(template.dependencies, logfile=rc_file)
 
     # ENV Manager
-    if env_type == VENV:
+    if env_type == PIPENV:
+        
+        with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
+            settings_file = json.load(f)
+        use_this_folder = settings_file.get("pipenv_in_project")
+        
+        if use_this_folder is None:
+            use_this_folder = False
+            
+        EnvironmentManagerOperations.create_pipenv_venv(project_folder = project_home, current_folder=use_this_folder)
+        
+        RCManager.set_environment_manager(PIPENV, logfile=rc_file)
+        
+        if use_this_folder:
+            RCManager.set_environment_manager_path("project_folder", logfile=rc_file)
+        else:
+            RCManager.set_environment_manager_path("default", logfile=rc_file)
+            
+        # Install libraries
+        logger.debug(pipenv_requirements)
+        EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
+        
+        
+    elif env_type == VENV:
         # VENV
         env_path = EnvironmentManagerOperations.create_venv(
             folder=project_home / VENV_FOLDER,

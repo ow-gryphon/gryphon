@@ -24,5 +24,6 @@
     "ssh_domains": {
         "mmctech": "id_rsa",
         "oliverwymantechssg": "id_rsa"
-    }
+    },
+	"pipenv_in_project": true
 }
