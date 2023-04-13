@@ -138,6 +138,8 @@ def init(template: Template, location, python_version,
             settings_file = json.load(f)
         use_this_folder = settings_file.get("pipenv_in_project")
         
+        logger.debug(f"use folder: {use_this_folder}")
+        
         if use_this_folder is None:
             use_this_folder = False
             

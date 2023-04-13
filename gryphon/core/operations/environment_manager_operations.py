@@ -68,17 +68,25 @@ class EnvironmentManagerOperations:
                 process_name = psutil.Process(os.getppid()).name()
                 
                 logger.debug(f"Process Name: {process_name}")
+
+# Doesn't work, since process_name is gryphon.exe
                 
-                if process_name in ["cmd.exe", "powershell.exe"]:
-                    environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1 & "
-                elif process_name in ["winpty-agent.exe"]:
+#                if process_name in ["cmd.exe", "powershell.exe"]:
+#                    environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1 & "
+#                elif process_name in ["winpty-agent.exe"]:
+#                    environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
+#                else:
+#                    return_code, _ = BashUtils.execute_and_log("SET PIPENV_VENV_IN_PROJECT=1")
+#                    if return_code:
+#                        environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
+#                    else:
+#                        environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1 & "
+
+                return_code, _ = BashUtils.execute_and_log("SET PIPENV_VENV_IN_PROJECT=1")
+                if return_code:
                     environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
                 else:
-                    try:
-                        BashUtils.execute_and_log("SET PIPENV_VENV_IN_PROJECT=1")
-                        environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1"
-                    except:
-                        environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
+                    environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1 & "
                 
             else:
                 environment_prefix = "EXPORT PIPENV_VENV_IN_PROJECT=1 & "
