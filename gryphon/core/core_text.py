@@ -25,3 +25,14 @@ Please find details regarding the bug below:
 Best regards,
 
 """
+
+    project_use_description_template = """Hi Gryphon team,
+
+I intend to use Gryphon on the project / initiative: [Case Code if available. Otherwise, name of key Partner(s) on project]
+
+Description of use: [Brief overview of the use-case and technical / analytical methodology]
+
+Expected project duration: [When do you expect this project to finish?]
+
+(Note: This information helps the Gryphon team understand how the tool is used and the value it brings to the firm, which enables continued support and improvements to the tool) 
+"""

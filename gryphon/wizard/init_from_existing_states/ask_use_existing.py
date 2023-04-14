@@ -21,7 +21,7 @@ def _condition_ask_point_external_ignore(context):
     return context["use_existing"] == "no_ignore"
 
 
-def _condition_install(context):
+def _condition_ask_project_info(context):
     return context["use_existing"] == YES
 
 
@@ -53,8 +53,8 @@ class AskUseExisting(State):
             callback=_back_callback
         ),
         Transition(
-            next_state="install",
-            condition=_condition_install,
+            next_state="ask_project_info",
+            condition=_condition_ask_project_info,
             callback=_install_using_existing
         ),
         Transition(

@@ -2,7 +2,7 @@ import logging
 
 from .functions import BackSignal
 from .init_from_existing_states import (
-    AskTemplate, MainMenu, AskLocation, AskPointExternal,
+    AskTemplate, MainMenu, AskLocation, AskPointExternal, AskProjectInfo,
     AskExternalEnvPath, AskUseExisting, Install
 )
 from ..constants import BACK
@@ -16,7 +16,7 @@ def init_from_existing(_, registry):
     ask_template = AskTemplate(registry)
 
     possible_states = [
-        ask_template, MainMenu(), AskLocation(), AskPointExternal(),
+        ask_template, MainMenu(), AskLocation(), AskPointExternal(), AskProjectInfo(),
         AskExternalEnvPath(), AskUseExisting(), Install(registry)
     ]
 

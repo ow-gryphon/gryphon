@@ -50,6 +50,11 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             RCManager.log_new_files(template, template_folder,
                                     performed_action=GENERATE, logfile=rc_file)
 
+        
+        except Exception as e:
+            logger.error("Failed to move template files into target folder.")
+            logger.error(str(e))
+        
         finally:
             clean_readonly_folder(template_folder)
 
@@ -107,7 +112,7 @@ def pattern_replacement(input_file, mapper):
             os.remove(input_file)
 
     except UnicodeDecodeError:
-        logger.warning("There are binary files inside template folder.")
+        logger.debug("There are binary files (Excels) inside template folder.")
 
 
 def parse_project_template(template_path: Path, mapper, destination_folder=None):
@@ -156,6 +161,11 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             dst=definitive_path,
             dirs_exist_ok=True
         )
+        
+    
+    except Exception as e:
+        logger.error("Failed to move template files into target folder.")
+        logger.error(str(e))
 
     finally:
         shutil.rmtree(temp_path)

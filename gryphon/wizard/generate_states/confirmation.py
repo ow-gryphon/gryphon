@@ -93,7 +93,7 @@ class Confirmation(State):
 
         context["confirmation_response"] = GenerateQuestions.confirm_generate(
             template_name=context["template"].display_name,
-            read_more_option=context["read_more_link"] is not None,
+            read_more_option=context["read_more_link"] != "",
             **context["extra_parameters"]
         )
 

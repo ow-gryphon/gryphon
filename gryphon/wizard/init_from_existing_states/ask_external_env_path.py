@@ -10,7 +10,7 @@ class AskExternalEnvPath(State):
     name = "ask_external_env_path"
     transitions = [
         Transition(
-            next_state="install",
+            next_state="ask_project_info",
             condition=lambda context: True
         )
     ]

@@ -18,7 +18,7 @@ setuptools.setup(
     description=metadata.get("description", ""),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="",  # Repository URL or externally maintained page
+    url=metadata.get("read_more_link", ""),  # Repository URL or externally maintained page
     packages=setuptools.find_packages(),
     python_requires='>=3.7',
     install_requires=requirements,
