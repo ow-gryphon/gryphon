@@ -73,6 +73,7 @@ def handle_template(template, project_home, rc_file):
 
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
+        
 
 
 def init(template: Template, location, python_version,
@@ -154,6 +155,9 @@ def init(template: Template, location, python_version,
             
         # Install libraries
         logger.debug(pipenv_requirements)
+        
+        print(pipenv_requirements)
+        
         EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
         
         
@@ -226,7 +230,12 @@ def init(template: Template, location, python_version,
         install_pre_commit_hooks=install_pre_commit_hooks,
         logfile=rc_file
     )
-
+    
+    # Check if any shell script is provided
+    if template.shell_exec is not None:
+        logger.info(f"Executing additional shell script: cd \"{project_home}\" & {template.shell_exec}.")
+        BashUtils.execute_and_log(f"cd \"{project_home}\" & {template.shell_exec}")
+    
     EnvironmentManagerOperations.final_instructions(project_home, env_manager=env_type)
 
     logger.log(SUCCESS, "Project created successfully.")

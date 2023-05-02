@@ -10,7 +10,18 @@ def _change_from_ask_template_to_main_menu(context):
 class AskTemplate(State):
 
     def __init__(self, registry):
-        self.templates = registry.get_templates(INIT)
+        all_init_templates = registry.get_templates(INIT)
+        
+        # Filter out irrelevant templates
+        relevant_templates = {}
+        
+        for name, template in all_init_templates.items():
+            if template.force_env in ["pipenv"]:
+                pass
+            else:
+                relevant_templates[name] = template
+    
+        self.templates = relevant_templates
         super().__init__()
 
     name = "ask_template"

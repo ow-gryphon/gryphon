@@ -85,7 +85,9 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             requirements_path=current_path / REQUIREMENTS
         )
     elif env_type == PIPENV:
-        logger.debug(pipenv_requirements)
+    
+        # Check where to install these libraries
+        
         EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
 
     # RC file

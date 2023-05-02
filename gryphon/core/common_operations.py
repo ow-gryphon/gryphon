@@ -157,7 +157,7 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
         f"-i {template.template_index} "
         f"-d \"{temp_folder}\" "
         f"--trusted-host ow-gryphon.github.io "  # TODO: Find a definitive solution for this
-        f"-qqq"
+        f"-qqq", use_subprocess=True
     )
     if status_code is not None:
         raise RuntimeError("Unable to pip download the repository.")
@@ -191,9 +191,7 @@ def _basic_download_template(template, temp_folder=Path().cwd() / ".temp"):
         version_string = ""
     
     status_code, _ = BashUtils.execute_and_log(
-        f"{check_for_ssh(template)}git clone {repo_url} \"{str(temp_folder).strip()}\" --depth 1 {quiet} {version_string}"
-        
-        # f"curl -o {temp_folder} --remote={tag_url}"
+        f"{check_for_ssh(template)}git clone {repo_url} \"{str(temp_folder).strip()}\" --depth 1 {quiet} {version_string}", subprocess=True
     )
     if status_code is not None:
         raise RuntimeError("Unable to git clone the repository.")
@@ -256,9 +254,9 @@ def fetch_template(template, project_folder):
         )
         _unify_templates(zip_folder, template_folder)
     finally:
-        shutil.rmtree(download_folder, ignore_errors=True)
-        shutil.rmtree(zip_folder, ignore_errors=True)
-
+        shutil.rmtree(download_folder, ignore_errors=True)   # UNCOMMENT
+        shutil.rmtree(zip_folder, ignore_errors=True)  # UNCOMMENT
+        pass
     return template_folder
     
     

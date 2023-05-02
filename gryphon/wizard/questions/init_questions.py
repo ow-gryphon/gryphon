@@ -178,25 +178,24 @@ class InitQuestions:
 
     @staticmethod
     @base_text_prompt
-    def ask_addons():
+    def ask_addons(add_ons = [{"addon_name": NB_EXTENSIONS, "checked": True}, 
+                              {"addon_name": NB_STRIP_OUT, "checked": False}, 
+                              {"addon_name": PRE_COMMIT_HOOKS, "checked": False}]):
+    
+        choices = []
+        
+        for add_on in add_ons:
+            choices.append(
+                Choice(
+                    title = ADDON_NAME_MAPPING[add_on["addon_name"]],
+                    value = add_on["addon_name"],
+                    checked = add_on["checked"]
+                )
+            )
+            
         return questionary.checkbox(
             message=Text.init_prompt_addons,
-            choices=[
-                Choice(
-                    title="Notebook extensions",
-                    value=NB_EXTENSIONS,
-                    checked=True
-                ),
-                Choice(
-                    title="Notebook stripout",
-                    value=NB_STRIP_OUT
-                ),
-                Choice(
-                    title="Pre-commit hooks",
-                    value=PRE_COMMIT_HOOKS,
-                    checked=False
-                )
-            ]
+            choices=choices
         ).unsafe_ask()
 
     @staticmethod

@@ -28,6 +28,11 @@ class Template:
         
         self.ssh_domain = template_metadata.get("ssh_domain", None)
         self.repo_url = template_metadata.get("repo_url", None)
+        
+        # For init templates only
+        self.shell_exec = template_metadata.get("shell_exec", None)
+        self.addons = template_metadata.get("addons", None)
+        
 
     @classmethod
     def template_from_path(cls, template_path: Path, type=""):
