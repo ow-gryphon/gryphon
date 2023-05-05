@@ -11,7 +11,8 @@ from .common_operations import (
     init_new_git_repo, initial_git_commit,
     fetch_template, append_requirement,
     mark_notebooks_as_readonly,
-    clean_readonly_folder, enable_files_overwrite
+    clean_readonly_folder, enable_files_overwrite,
+    backup_files_to_be_overwritten
 )
 from .operations import (
     BashUtils, EnvironmentManagerOperations, NBStripOutManager,
@@ -37,7 +38,9 @@ def handle_template(template, project_home, rc_file):
                 destination_folder=project_home / "notebooks"
             )
             mark_notebooks_as_readonly(template_folder / "notebooks")
-
+            
+            backup_files_to_be_overwritten(Path(template_folder), Path(project_home), subfolders = ["utilities"])
+            
             # Move files to destination
             shutil.copytree(
                 src=Path(template_folder),

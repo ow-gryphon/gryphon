@@ -11,7 +11,7 @@ from pathlib import Path
 from .common_operations import (
     fetch_template,    mark_notebooks_as_readonly,
     enable_files_overwrite, clean_readonly_folder,
-    append_requirement
+    append_requirement, backup_files_to_be_overwritten
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
@@ -44,7 +44,9 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
                 source_folder=template_folder / "notebooks",
                 destination_folder=folder / "notebooks"
             )
-
+            
+            backup_files_to_be_overwritten(Path(template_folder), Path(folder), subfolders = ["utilities"])
+            
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
             RCManager.log_new_files(template, template_folder,

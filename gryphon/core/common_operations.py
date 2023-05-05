@@ -7,6 +7,7 @@ import os
 import platform
 import shutil
 import zipfile
+import datetime
 from distutils.version import StrictVersion
 from pathlib import Path
 from urllib.parse import urljoin
@@ -191,7 +192,7 @@ def _basic_download_template(template, temp_folder=Path().cwd() / ".temp"):
         version_string = ""
     
     status_code, _ = BashUtils.execute_and_log(
-        f"{check_for_ssh(template)}git clone {repo_url} \"{str(temp_folder).strip()}\" --depth 1 {quiet} {version_string}", subprocess=True
+        f"{check_for_ssh(template)}git clone {repo_url} \"{str(temp_folder).strip()}\" --depth 1 {quiet} {version_string}", use_subprocess=True
     )
     if status_code is not None:
         raise RuntimeError("Unable to git clone the repository.")
@@ -239,11 +240,110 @@ def _unify_templates(origin_folder: Path, destination_folder: Path, subfolder = 
     return destination_folder
 
 
+def _find_matching_files(origin_folder: Path, destination_folder: Path, exclude_extensions=[]) -> tuple:
+    """
+    Compare the files within two folders to identify files with the same relative filepaths but different content. Return a list of those file paths.
+    """
+    
+    # Get file paths from origin folder
+    origin_file_list = []
+    for root, dirs, files in os.walk(origin_folder):
+        for file in files:
+            file_path = os.path.join(root, file)
+            origin_file_list.append(os.path.relpath(file_path, origin_folder))
+    
+    # Get file paths from origin folder
+    shared_files = []
+    for root, dirs, files in os.walk(destination_folder):
+        for file in files:
+            file_path = os.path.join(root, file)
+            file_rel_path = os.path.relpath(file_path, destination_folder)
+    
+            # Check if this file exists in the origin folder
+            if file_rel_path in origin_file_list:
+                
+                # Check if file is in list of extensions to be excluded (i.e. overwritten instead of renamed)
+                if len(exclude_extensions) and _has_specific_extension(file_rel_path, exclude_extensions):
+                    continue
+                    
+                # Check for differences between text   # FILE ENDINGS
+                with open(origin_folder / file_rel_path, 'r') as file:
+                    new_file_contents = file.read().splitlines()
+                
+                with open(destination_folder / file_rel_path, 'r') as file:
+                    prior_file_contents = file.read().splitlines()
+                
+                if new_file_contents != prior_file_contents:
+                    shared_files.append(file_rel_path)
+                
+    return shared_files
+
+
+def _has_specific_extension(file_name, extensions):
+    """Check if file_name has one of the extensions in the extensions list."""
+    _, file_extension = os.path.splitext(file_name)
+    return file_extension.lower() in extensions
+
+def _rename_files(folder, files, suffix) -> tuple:
+    
+    copied_files = []
+    
+    try:
+        for file in files:
+            file_to_copy = folder / file
+            file_path, file_ext = os.path.splitext(file_to_copy )
+            new_file_name = str(file_path) + str(suffix) + str(file_ext)
+            
+            shutil.copy(file_to_copy, new_file_name)
+            copied_files.append(new_file_name)
+        
+    except Exception as e:
+        logger.error(f"Failed to backup files to be overwritten. Will revert changes. Full message: {str(e)}")
+        
+        return 1, copied_files
+        
+    return 0, copied_files
+
+
+def backup_files_to_be_overwritten(origin_folder: Path, destination_folder: Path, subfolders, exclude_extensions=[]):
+    
+    suffix = datetime.datetime.now().strftime("_%Y%m%d %H%M")
+    all_renamed_files = [] # List to hold full path of all files renamed
+    
+    for folder in subfolders:
+        
+        # Check if folder exists
+        if not (os.path.exists(origin_folder / folder) and os.path.exists(destination_folder / folder)):
+            continue
+        
+        # Find files
+        matched_files = _find_matching_files(origin_folder / folder, destination_folder / folder, exclude_extensions)
+        
+        logger.info(matched_files)
+        
+        # Rename files by copying the existing file
+        rename_error, renamed_files = _rename_files(destination_folder / folder, matched_files, suffix)
+        all_renamed_files.extend([destination_folder / folder / file for file in renamed_files])
+        
+        if rename_error:
+            _remove_files(all_renamed_files)
+            raise IOError(f"Unable to back up files to be overwritten in the folder {destination_folder / folder}. ")
+            
+    return 0
+
+    
+# NOT IMPLEMENTED. NOT NEEDED CURRENTLY
+#def scrub_files(folder: Path, folder_pattern = ["__pycache__", ".ipynb_checkpoints"], file_pattern = [""]):
+#    """
+#    Remove files from origin folder that follows a particular pattern
+#    """
+    
+
 def fetch_template(template, project_folder):
     download_folder = project_folder / ".temp"
     zip_folder = project_folder / ".unzip"
     template_folder = project_folder / ".target"
-
+    
     try:
         _download_template(template, download_folder)
         _unzip_templates(download_folder, zip_folder)
@@ -252,13 +352,27 @@ def fetch_template(template, project_folder):
             source_folder=zip_folder / "notebooks",
             destination_folder=template_folder / "notebooks"
         )
+        
         _unify_templates(zip_folder, template_folder)
+        
     finally:
         shutil.rmtree(download_folder, ignore_errors=True)   # UNCOMMENT
         shutil.rmtree(zip_folder, ignore_errors=True)  # UNCOMMENT
         pass
     return template_folder
     
+    
+def _remove_files(files_to_remove):
+    
+    for file in files_to_remove:
+        
+        try:
+            os.remove(file)
+        except:
+            if platform.system() == "Windows":
+                BashUtils.execute_and_log(f"del /f /q \"{file}\"")
+            else:
+                BashUtils.execute_and_log(f"rm -f \"{file}\"")
     
 #def download_template(template, project_folder):
 #    download_folder = project_folder / ".temp"
