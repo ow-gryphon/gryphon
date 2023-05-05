@@ -17,7 +17,8 @@ from . import __version__
 from .constants import (
     INIT, DOWNLOAD, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
-    CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, CONTACT_US
+    CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, EMAIL_RECIPIENT_CC,
+    CONTACT_US
 )
 from .core.common_operations import sort_versions
 from .core.core_text import Text as CoreText
@@ -238,6 +239,7 @@ def send_traceback(exception):
     url_data = urllib.parse.urlencode(
         dict(
             to=EMAIL_RECIPIENT,
+            cc=EMAIL_RECIPIENT_CC,
             subject=subject,
             body=CoreText.bug_report_email_template.replace("{traceback}", tb)
         )
