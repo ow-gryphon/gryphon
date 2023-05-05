@@ -5,7 +5,7 @@ from pathlib import Path
 
 from ..functions import erase_lines
 from ..questions import InitFromExistingQuestions
-from ...constants import YES, NO, EMAIL_RECIPIENT
+from ...constants import YES, NO, EMAIL_RECIPIENT, EMAIL_RECIPIENT_CC
 from ...fsm import State, Transition
 from ...core.core_text import Text as CoreText
 
@@ -25,6 +25,7 @@ def _change_from_ask_project_info_to_install(context: dict) -> bool:
         url_data = urllib.parse.urlencode(
             dict(
                 to=EMAIL_RECIPIENT,
+                cc=EMAIL_RECIPIENT_CC,
                 subject=subject,
                 body=CoreText.project_use_description_template
             )

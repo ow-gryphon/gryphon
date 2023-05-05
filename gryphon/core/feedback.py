@@ -1,5 +1,5 @@
 from .core_text import Text
-from ..constants import EMAIL_RECIPIENT
+from ..constants import EMAIL_RECIPIENT, EMAIL_RECIPIENT_CC
 
 
 def feedback():
@@ -11,6 +11,7 @@ def feedback():
     url_data = urllib.parse.urlencode(
         dict(
             to=EMAIL_RECIPIENT,
+            cc=EMAIL_RECIPIENT_CC,
             subject=subject,
             body=Text.feedback_email_template
         ),
