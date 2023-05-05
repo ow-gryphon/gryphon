@@ -135,3 +135,6 @@ token.txt
 gryphon/data/template_registry/**
 .ipynb_checkpoints/
 gryphon/data/versions_raw.txt
+
+.gryphon_logs
+.gryphon_warning*.txt
