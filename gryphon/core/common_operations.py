@@ -8,6 +8,7 @@ import platform
 import shutil
 import zipfile
 import datetime
+import difflib
 from distutils.version import StrictVersion
 from pathlib import Path
 from urllib.parse import urljoin
@@ -268,10 +269,10 @@ def _find_matching_files(origin_folder: Path, destination_folder: Path, exclude_
                     
                 # Check for differences between text   # FILE ENDINGS
                 with open(origin_folder / file_rel_path, 'r') as file:
-                    new_file_contents = file.read().splitlines()
+                    new_file_contents = file.read().replace('\r\n', '\n')
                 
                 with open(destination_folder / file_rel_path, 'r') as file:
-                    prior_file_contents = file.read().splitlines()
+                    prior_file_contents = file.read().replace('\r\n', '\n')
                 
                 if new_file_contents != prior_file_contents:
                     shared_files.append(file_rel_path)
@@ -318,9 +319,7 @@ def backup_files_to_be_overwritten(origin_folder: Path, destination_folder: Path
         
         # Find files
         matched_files = _find_matching_files(origin_folder / folder, destination_folder / folder, exclude_extensions)
-        
-        logger.info(matched_files)
-        
+
         # Rename files by copying the existing file
         rename_error, renamed_files = _rename_files(destination_folder / folder, matched_files, suffix)
         all_renamed_files.extend([destination_folder / folder / file for file in renamed_files])
@@ -329,8 +328,55 @@ def backup_files_to_be_overwritten(origin_folder: Path, destination_folder: Path
             _remove_files(all_renamed_files)
             raise IOError(f"Unable to back up files to be overwritten in the folder {destination_folder / folder}. ")
             
-    return 0
+    return all_renamed_files, suffix
 
+
+def log_changes(destination_folder, renamed_files, suffix):
+    """
+    Create a log describing all changes
+    """
+    
+    # If no files to rename
+    if len(renamed_files) == 0:
+        return 0
+    
+    # Log outputs
+    log_file_name = destination_folder / f".gryphon_warning{suffix}.txt"
+    log_folder = destination_folder / f".gryphon_logs/changes{suffix}"
+    
+    # Create the log folder
+    os.makedirs(log_folder, mode = 0o777, exist_ok = True)
+
+    for file in renamed_files:
+        
+        if not _has_specific_extension(file, extensions = [".py"]):
+            continue
+        
+        new_file = str(file).replace(suffix, "")
+        
+        # Compare both files using difflib
+        with open(file, 'r') as file_input, open(new_file, 'r') as new_file_input:
+            file_contents = file_input.read().replace('\r\n', '\n')
+            new_file_contents = new_file_input.read().replace('\r\n', '\n')
+            
+        diff_html = difflib.HtmlDiff(wrapcolumn = 100).make_file(file_contents, new_file_contents, context=True)
+        
+        output_file = log_folder / str(os.path.relpath(new_file, destination_folder))
+        output_file, _ = os.path.splitext(output_file)
+        output_file = str(output_file) + ".html"
+        
+        os.makedirs(os.path.dirname(output_file), mode = 0o777, exist_ok = True)
+        Path(output_file).write_text(diff_html)
+        
+    # Create the log file
+    with open(log_file_name, 'w') as log_file:
+        log_file.write("The following files in your project folder were backed up before being overwritten by the Gryphon template downloaded at this time: \n")
+        
+        for file in renamed_files:
+            relative_file_path = str(os.path.relpath(file, destination_folder))
+            log_file.write(f" - {relative_file_path}\n")
+            
+        log_file.write(f"\nFor any changed .py scripts, you can find a 'code comparison' in the \".gryphon_logs/changes{suffix}\" folder. If you want to keep your old files, rename them back. Once you are done, you can delete this file and the .gryphon_logs folder.")
     
 # NOT IMPLEMENTED. NOT NEEDED CURRENTLY
 #def scrub_files(folder: Path, folder_pattern = ["__pycache__", ".ipynb_checkpoints"], file_pattern = [""]):

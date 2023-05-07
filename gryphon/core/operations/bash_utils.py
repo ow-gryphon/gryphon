@@ -58,7 +58,6 @@ class BashUtils:
         logger.debug(f"command: {command}")
         
         if use_subprocess:
-                    
             cmd = subprocess.run(command, shell=True, capture_output=True, text=True)
             if cmd.stderr == '':
                 output = cmd.stdout + " ERROR: " + cmd.stderr

@@ -12,7 +12,7 @@ from .common_operations import (
     fetch_template, append_requirement,
     mark_notebooks_as_readonly,
     clean_readonly_folder, enable_files_overwrite,
-    backup_files_to_be_overwritten
+    backup_files_to_be_overwritten, log_changes
 )
 from .operations import (
     BashUtils, EnvironmentManagerOperations, NBStripOutManager,
@@ -31,7 +31,8 @@ def handle_template(template, project_home, rc_file):
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, project_home)
-
+        all_renamed_files = None
+        
         try:
             enable_files_overwrite(
                 source_folder=template_folder / "notebooks",
@@ -39,7 +40,7 @@ def handle_template(template, project_home, rc_file):
             )
             mark_notebooks_as_readonly(template_folder / "notebooks")
             
-            backup_files_to_be_overwritten(Path(template_folder), Path(project_home), subfolders = ["utilities"])
+            all_renamed_files, suffix = backup_files_to_be_overwritten(Path(template_folder), Path(project_home), subfolders = ["utilities"])
             
             # Move files to destination
             shutil.copytree(
@@ -63,6 +64,13 @@ def handle_template(template, project_home, rc_file):
         finally:
             RCManager.log_new_files(template, template_folder, performed_action=INIT, logfile=rc_file)
             clean_readonly_folder(template_folder)
+            
+            # Log changes to files            
+            if all_renamed_files is not None:
+                log_changes(destination_folder = project_home, renamed_files = all_renamed_files, suffix = suffix)
+                
+                logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")
+                logger.info([str(os.path.relpath(file, project_home)) for file in all_renamed_files])
 
     elif template.registry_type == LOCAL_TEMPLATE:
 

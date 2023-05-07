@@ -11,7 +11,7 @@ from pathlib import Path
 from .common_operations import (
     fetch_template,    mark_notebooks_as_readonly,
     enable_files_overwrite, clean_readonly_folder,
-    append_requirement, backup_files_to_be_overwritten
+    append_requirement, backup_files_to_be_overwritten, log_changes
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
@@ -38,14 +38,14 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, folder)
-
+        all_renamed_files = None
         try:
             enable_files_overwrite(
                 source_folder=template_folder / "notebooks",
                 destination_folder=folder / "notebooks"
             )
             
-            backup_files_to_be_overwritten(Path(template_folder), Path(folder), subfolders = ["utilities"])
+            all_renamed_files, suffix = backup_files_to_be_overwritten(Path(template_folder), Path(folder), subfolders = ["utilities"])
             
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
@@ -59,7 +59,14 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
         
         finally:
             clean_readonly_folder(template_folder)
-
+            
+            # Log changes to files            
+            if all_renamed_files is not None:
+                log_changes(destination_folder = folder, renamed_files = all_renamed_files, suffix = suffix)
+                
+                logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")
+                logger.info([str(os.path.relpath(file, folder)) for file in all_renamed_files])
+            
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path / "template", kwargs)
         RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
