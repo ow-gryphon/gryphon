@@ -356,8 +356,8 @@ def log_changes(destination_folder, renamed_files, suffix):
         
         # Compare both files using difflib
         with open(file, 'r') as file_input, open(new_file, 'r') as new_file_input:
-            file_contents = file_input.read().replace('\r\n', '\n')
-            new_file_contents = new_file_input.read().replace('\r\n', '\n')
+            file_contents = file_input.read().replace('\r\n', '\n').splitlines()
+            new_file_contents = new_file_input.read().replace('\r\n', '\n').splitlines()
             
         diff_html = difflib.HtmlDiff(wrapcolumn = 100).make_file(file_contents, new_file_contents, context=True)
         
