@@ -31,7 +31,7 @@ def handle_template(template, project_home, rc_file):
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, project_home)
-        all_renamed_files = None
+        all_renamed_files = []
         
         try:
             enable_files_overwrite(
@@ -66,7 +66,7 @@ def handle_template(template, project_home, rc_file):
             clean_readonly_folder(template_folder)
             
             # Log changes to files            
-            if all_renamed_files is not None:
+            if len(all_renamed_files) > 0:
                 log_changes(destination_folder = project_home, renamed_files = all_renamed_files, suffix = suffix)
                 
                 logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")
