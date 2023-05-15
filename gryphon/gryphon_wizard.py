@@ -210,7 +210,7 @@ def update_gryphon():
 
         # pip install the version
         logger.debug("Installing the new version")
-        BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq")
+        BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq --user")
 
         # restart gryphon
         if platform.system() == "Windows":
