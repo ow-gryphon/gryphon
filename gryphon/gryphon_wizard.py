@@ -177,48 +177,51 @@ def update_gryphon():
     if __version__ != latest:
         logger.debug("Update needed")
         logger.warning("A new version from Gryphon is available.")
-        logger.warning("Updating ...")
-        repo_clone_path = GRYPHON_HOME / "git_gryphon_{}".format(str(latest))
-        
-        # Try to delete old versions
-        for folder in glob.glob(str(GRYPHON_HOME / "git_gryphon*")):
-            try:
-                if folder != str(repo_clone_path):
-                    logger.debug("Removing cached version of old version: {}".format(folder))
-                    if platform.system() == "Windows":
-                        BashUtils.execute_and_log(f"rmdir /s /q \"{folder}\"")
-                    else:
-                        BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
-            except:
-                logger.debug("Failed to completely remove cached old version: {}".format(folder))
-        
-        try:
-            if not repo_clone_path.is_dir():
-                repo = clone_from_remote(repo_clone_path)
-            else:
-                repo = git.Repo(path=repo_clone_path)
-
-            # git clone at the desired tag
-            logger.debug("Checkout")
-            repo.git.checkout([latest, '-qqq'])
-
-        except git.exc.GitCommandError as e:
-            if "unable to access" in str(e):
-                logger.warning("Failed to check updates for Gryphon.")
-                logger.debug("Failed to update")
-                return
-
-        # pip install the version
-        logger.debug("Installing the new version")
-        BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq --user")
-
-        # restart gryphon
-        if platform.system() == "Windows":
-            logger.info("Update complete. Please start gryphon again by typing “gryphon”")
-            exit(0)
-        else:
-            logger.info("Restarting gryphon")
-            os.execv(sys.argv[0], sys.argv)
+        logger.warning("Please deactivate any virtual environments and then run the following to update:")
+        logger.warning("pip install git+https://github.com/ow-gryphon/gryphon")
+        exit(0)
+        # logger.warning("Updating ...")
+        # repo_clone_path = GRYPHON_HOME / "git_gryphon_{}".format(str(latest))
+        #
+        # # Try to delete old versions
+        # for folder in glob.glob(str(GRYPHON_HOME / "git_gryphon*")):
+        #     try:
+        #         if folder != str(repo_clone_path):
+        #             logger.debug("Removing cached version of old version: {}".format(folder))
+        #             if platform.system() == "Windows":
+        #                 BashUtils.execute_and_log(f"rmdir /s /q \"{folder}\"")
+        #             else:
+        #                 BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
+        #     except:
+        #         logger.debug("Failed to completely remove cached old version: {}".format(folder))
+        #
+        # try:
+        #     if not repo_clone_path.is_dir():
+        #         repo = clone_from_remote(repo_clone_path)
+        #     else:
+        #         repo = git.Repo(path=repo_clone_path)
+        #
+        #     # git clone at the desired tag
+        #     logger.debug("Checkout")
+        #     repo.git.checkout([latest, '-qqq'])
+        #
+        # except git.exc.GitCommandError as e:
+        #     if "unable to access" in str(e):
+        #         logger.warning("Failed to check updates for Gryphon.")
+        #         logger.debug("Failed to update")
+        #         return
+        #
+        # # pip install the version
+        # logger.debug("Installing the new version")
+        # BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq --user")
+        #
+        # # restart gryphon
+        # if platform.system() == "Windows":
+        #     logger.info("Update complete. Please start gryphon again by typing “gryphon”")
+        #     exit(0)
+        # else:
+        #     logger.info("Restarting gryphon")
+        #     os.execv(sys.argv[0], sys.argv)
     else:
         logger.debug("No update needed")
 
