@@ -131,14 +131,23 @@ def initial_setup():
 def update_gryphon():
     logger.debug("Updating gryphon")
 
-    def clone_from_remote(destination_path):
-        logger.debug("Cloning repo from scratch")
-        shutil.rmtree(destination_path, ignore_errors=True)
+    # def clone_from_remote(destination_path):
+    #     logger.debug("Cloning repo from scratch")
+    #     shutil.rmtree(destination_path, ignore_errors=True)
+    #
+    #     return git.Repo.clone_from(
+    #         url="https://github.com/ow-gryphon/gryphon.git",
+    #         to_path=destination_path
+    #     )
 
-        return git.Repo.clone_from(
-            url="https://github.com/ow-gryphon/gryphon.git",
-            to_path=destination_path
-        )
+    def is_in_virtualenv():
+        return 'VIRTUAL_ENV' in os.environ # If True, venv is activated
+
+    def is_in_user_condaenv():
+        if 'conda' in sys.version or 'CONDA_PREFIX' in os.environ: # Conda env detected
+                return os.environ['CONDA_DEFAULT_ENV'] != 'base' # If True, Conda env is user-created
+        else:
+            return False # No Conda environment detected
 
     def get_tags():
         temp_file = GRYPHON_HOME / "refs.txt"
@@ -176,49 +185,72 @@ def update_gryphon():
 
     if __version__ != latest:
         logger.debug("Update needed")
-        logger.warning("A new version from Gryphon is available.")
-        logger.warning("Updating ...")
-        repo_clone_path = GRYPHON_HOME / "git_gryphon_{}".format(str(latest))
-        
-        # Try to delete old versions
-        for folder in glob.glob(str(GRYPHON_HOME / "git_gryphon*")):
-            try:
-                if folder != str(repo_clone_path):
-                    logger.debug("Removing cached version of old version: {}".format(folder))
-                    if platform.system() == "Windows":
-                        BashUtils.execute_and_log(f"rmdir /s /q \"{folder}\"")
-                    else:
-                        BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
-            except:
-                logger.debug("Failed to completely remove cached old version: {}".format(folder))
-        
-        try:
-            if not repo_clone_path.is_dir():
-                repo = clone_from_remote(repo_clone_path)
-            else:
-                repo = git.Repo(path=repo_clone_path)
+        logger.warning("A new version of Gryphon is available.")
 
-            # git clone at the desired tag
-            logger.debug("Checkout")
-            repo.git.checkout([latest, '-qqq'])
+        in_virtualenv = is_in_virtualenv()
+        in_user_condaenv = is_in_user_condaenv()
 
-        except git.exc.GitCommandError as e:
-            if "unable to access" in str(e):
-                logger.warning("Failed to check updates for Gryphon.")
-                logger.debug("Failed to update")
-                return
+        if in_virtualenv:
+            logger.warning("""To update, please first deactivate your virtual environment using 
 
-        # pip install the version
-        logger.debug("Installing the new version")
-        BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq --user")
+            >> deactivate
+                """)
 
-        # restart gryphon
-        if platform.system() == "Windows":
-            logger.info("Update complete. Please start gryphon again by typing “gryphon”")
-            exit(0)
+        if in_user_condaenv:
+            logger.warning("""To update, please first deactivate your Conda environment using
+
+            >> conda deactivate
+                """)
+
+        if in_virtualenv or in_user_condaenv:
+            logger.warning("Then use the following command to update Gryphon:")
         else:
-            logger.info("Restarting gryphon")
-            os.execv(sys.argv[0], sys.argv)
+            logger.warning("Please use the following command to update:")
+
+        logger.warning("pip install git+https://github.com/ow-gryphon/gryphon")
+        exit(0)
+        # logger.warning("Updating ...")
+        # repo_clone_path = GRYPHON_HOME / "git_gryphon_{}".format(str(latest))
+        #
+        # # Try to delete old versions
+        # for folder in glob.glob(str(GRYPHON_HOME / "git_gryphon*")):
+        #     try:
+        #         if folder != str(repo_clone_path):
+        #             logger.debug("Removing cached version of old version: {}".format(folder))
+        #             if platform.system() == "Windows":
+        #                 BashUtils.execute_and_log(f"rmdir /s /q \"{folder}\"")
+        #             else:
+        #                 BashUtils.execute_and_log(f"rm -rf \"{folder}\"")
+        #     except:
+        #         logger.debug("Failed to completely remove cached old version: {}".format(folder))
+        #
+        # try:
+        #     if not repo_clone_path.is_dir():
+        #         repo = clone_from_remote(repo_clone_path)
+        #     else:
+        #         repo = git.Repo(path=repo_clone_path)
+        #
+        #     # git clone at the desired tag
+        #     logger.debug("Checkout")
+        #     repo.git.checkout([latest, '-qqq'])
+        #
+        # except git.exc.GitCommandError as e:
+        #     if "unable to access" in str(e):
+        #         logger.warning("Failed to check updates for Gryphon.")
+        #         logger.debug("Failed to update")
+        #         return
+        #
+        # # pip install the version
+        # logger.debug("Installing the new version")
+        # BashUtils.execute_and_log(f"python -m pip install \"{repo_clone_path}\" -U -qqq --user")
+        #
+        # # restart gryphon
+        # if platform.system() == "Windows":
+        #     logger.info("Update complete. Please start gryphon again by typing “gryphon”")
+        #     exit(0)
+        # else:
+        #     logger.info("Restarting gryphon")
+        #     os.execv(sys.argv[0], sys.argv)
     else:
         logger.debug("No update needed")
 
