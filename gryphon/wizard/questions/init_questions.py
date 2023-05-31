@@ -39,7 +39,17 @@ class InitQuestions:
 
     @staticmethod
     @base_text_prompt
-    def ask_init_location():
+    def ask_init_location(template=None):
+        
+        if template is not None:
+        
+            yellow_text = ''
+            if template.description:
+                yellow_text = f"\t{template.description}\n"
+                
+            text, n_lines = wrap_text(yellow_text)
+            logger.warning(text)
+        
         return questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
 
     @staticmethod
@@ -87,8 +97,9 @@ class InitQuestions:
     def confirm_init(template, location, read_more_option=False, addons: list = None, **kwargs):
 
         yellow_text = ''
-        if template.description:
-            yellow_text = f"\t{template.description}\n"
+        # Already shown during 'ask_init_location'
+        # if template.description:
+        #    yellow_text = f"\t{template.description}\n"
 
         if addons is not None and len(addons):
             addon_string = ', '.join(map(ADDON_NAME_MAPPING.get, addons))

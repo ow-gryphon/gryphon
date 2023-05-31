@@ -21,6 +21,7 @@ def _callback_from_ask_parameters_to_ask_template(context):
 
 
 def _callback_from_ask_parameters_to_self(context):
+    # erase_lines(context['n_lines'])
     erase_lines(n_lines=2)
     return context
 
@@ -83,9 +84,13 @@ class AskParameters(State):
 
         else:
             context["template"] = template
-
+            
         context["chosen_version"] = self.settings.get("default_python_version", DEFAULT_PYTHON_VERSION)
-        context["location"] = str(InitQuestions.ask_init_location()).strip()
+        
+        # location, nlines = InitQuestions.ask_init_location(context["template"])
+        # context['nlines'] = nlines
+        
+        context["location"] = str(InitQuestions.ask_init_location(context["template"])).strip()
 
         if context["location"] == BACK:
             return context
