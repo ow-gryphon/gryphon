@@ -2,7 +2,7 @@ import logging
 
 from ..functions import erase_lines
 from ..questions import InitQuestions
-from ...constants import BACK
+from ...constants import BACK, PIPENV, NB_EXTENSIONS, NB_STRIP_OUT, PRE_COMMIT_HOOKS
 from ...fsm import State, Transition
 from ...fsm import negate_condition
 
@@ -52,8 +52,22 @@ class SelectAddons(State):
     ]
 
     def on_start(self, context: dict) -> dict:
-
-        context["selected_addons"] = InitQuestions.ask_addons()
+    
+        template = context["template"]
+        
+        if template.addons:
+            context["selected_addons"] = InitQuestions.ask_addons(template.addons)
+        else:
+            
+            if template.force_env == PIPENV:
+                context["selected_addons"] = InitQuestions.ask_addons([
+                              {"addon_name": NB_EXTENSIONS, "checked": False}
+                              ])
+                
+            else:
+                context["selected_addons"] = InitQuestions.ask_addons()
+            
+            
         return context
 
 # TODO: Implement the same logic in the project scaffold creation

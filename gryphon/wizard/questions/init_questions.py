@@ -39,7 +39,17 @@ class InitQuestions:
 
     @staticmethod
     @base_text_prompt
-    def ask_init_location():
+    def ask_init_location(template=None):
+        
+        if template is not None:
+        
+            yellow_text = ''
+            if template.description:
+                yellow_text = f"\t{template.description}\n"
+                
+            text, n_lines = wrap_text(yellow_text)
+            logger.warning(text)
+        
         return questionary.text(message=Text.init_prompt_location_question).unsafe_ask()
 
     @staticmethod
@@ -87,8 +97,9 @@ class InitQuestions:
     def confirm_init(template, location, read_more_option=False, addons: list = None, **kwargs):
 
         yellow_text = ''
-        if template.description:
-            yellow_text = f"\t{template.description}\n"
+        # Already shown during 'ask_init_location'
+        # if template.description:
+        #    yellow_text = f"\t{template.description}\n"
 
         if addons is not None and len(addons):
             addon_string = ', '.join(map(ADDON_NAME_MAPPING.get, addons))
@@ -178,25 +189,24 @@ class InitQuestions:
 
     @staticmethod
     @base_text_prompt
-    def ask_addons():
+    def ask_addons(add_ons = [{"addon_name": NB_EXTENSIONS, "checked": True}, 
+                              {"addon_name": NB_STRIP_OUT, "checked": False}, 
+                              {"addon_name": PRE_COMMIT_HOOKS, "checked": False}]):
+    
+        choices = []
+        
+        for add_on in add_ons:
+            choices.append(
+                Choice(
+                    title = ADDON_NAME_MAPPING[add_on["addon_name"]],
+                    value = add_on["addon_name"],
+                    checked = add_on["checked"]
+                )
+            )
+            
         return questionary.checkbox(
             message=Text.init_prompt_addons,
-            choices=[
-                Choice(
-                    title="Notebook extensions",
-                    value=NB_EXTENSIONS,
-                    checked=True
-                ),
-                Choice(
-                    title="Notebook stripout",
-                    value=NB_STRIP_OUT
-                ),
-                Choice(
-                    title="Pre-commit hooks",
-                    value=PRE_COMMIT_HOOKS,
-                    checked=False
-                )
-            ]
+            choices=choices
         ).unsafe_ask()
 
     @staticmethod

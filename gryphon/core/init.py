@@ -11,7 +11,8 @@ from .common_operations import (
     init_new_git_repo, initial_git_commit,
     fetch_template, append_requirement,
     mark_notebooks_as_readonly,
-    clean_readonly_folder, enable_files_overwrite
+    clean_readonly_folder, enable_files_overwrite,
+    backup_files_to_be_overwritten, log_changes
 )
 from .operations import (
     BashUtils, EnvironmentManagerOperations, NBStripOutManager,
@@ -19,8 +20,8 @@ from .operations import (
 )
 from .registry import Template
 from ..constants import (
-    DEFAULT_ENV, INIT, VENV, CONDA, REMOTE_INDEX, SUCCESS,
-    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS
+    DEFAULT_ENV, INIT, VENV, PIPENV, CONDA, REMOTE_INDEX, SUCCESS,
+    LOCAL_TEMPLATE, VENV_FOLDER, CONDA_FOLDER, REQUIREMENTS, CONFIG_FILE
 )
 
 logger = logging.getLogger('gryphon')
@@ -30,14 +31,17 @@ def handle_template(template, project_home, rc_file):
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, project_home)
-
+        all_renamed_files = []
+        
         try:
             enable_files_overwrite(
                 source_folder=template_folder / "notebooks",
                 destination_folder=project_home / "notebooks"
             )
             mark_notebooks_as_readonly(template_folder / "notebooks")
-
+            
+            all_renamed_files, suffix = backup_files_to_be_overwritten(Path(template_folder), Path(project_home), subfolders = ["utilities"])
+            
             # Move files to destination
             shutil.copytree(
                 src=Path(template_folder),
@@ -60,6 +64,13 @@ def handle_template(template, project_home, rc_file):
         finally:
             RCManager.log_new_files(template, template_folder, performed_action=INIT, logfile=rc_file)
             clean_readonly_folder(template_folder)
+            
+            # Log changes to files            
+            if len(all_renamed_files) > 0:
+                log_changes(destination_folder = project_home, renamed_files = all_renamed_files, suffix = suffix)
+                
+                logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")
+                logger.info([str(os.path.relpath(file, project_home)) for file in all_renamed_files])
 
     elif template.registry_type == LOCAL_TEMPLATE:
 
@@ -73,6 +84,7 @@ def handle_template(template, project_home, rc_file):
 
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
+        
 
 
 def init(template: Template, location, python_version,
@@ -85,9 +97,15 @@ def init(template: Template, location, python_version,
     Init command from the OW Gryphon CLI.
     """
     kwargs.copy()
-    with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
-        data = json.load(f)
-        env_type = data.get("environment_management", DEFAULT_ENV)
+    
+    force_env = template.force_env
+    
+    if force_env:
+        env_type = force_env
+    else:
+        with open(SettingsManager.get_config_path(), "r", encoding="UTF-8") as f:
+            data = json.load(f)
+            env_type = data.get("environment_management", DEFAULT_ENV)
 
     project_home = Path.cwd() / location
 
@@ -102,7 +120,7 @@ def init(template: Template, location, python_version,
     # RC file
     rc_file = RCManager.get_rc_file(project_home)
     RCManager.log_operation(template, performed_action=INIT, logfile=rc_file)
-
+    
     # TEMPLATE
     handle_template(template, project_home, rc_file)
 
@@ -115,13 +133,46 @@ def init(template: Template, location, python_version,
     initial_git_commit(repo)
 
     # Requirements
-    for r in template.dependencies:
-        append_requirement(r, project_home)
-
+    if env_type != PIPENV:
+        for r in template.dependencies:
+            append_requirement(r, project_home)
+    else:
+        pipenv_requirements = []
+        pipenv_requirements.extend(template.dependencies)
+        pipenv_requirements = list(set(pipenv_requirements))
+        
     RCManager.log_add_library(template.dependencies, logfile=rc_file)
 
     # ENV Manager
-    if env_type == VENV:
+    if env_type == PIPENV:
+        
+        with open(CONFIG_FILE, "r", encoding="UTF-8") as f:
+            settings_file = json.load(f)
+        use_this_folder = settings_file.get("pipenv_in_project")
+        
+        logger.debug(f"use folder: {use_this_folder}")
+        
+        if use_this_folder is None:
+            use_this_folder = False
+            
+        EnvironmentManagerOperations.create_pipenv_venv(project_folder = project_home, current_folder=use_this_folder)
+        
+        RCManager.set_environment_manager(PIPENV, logfile=rc_file)
+        
+        if use_this_folder:
+            RCManager.set_environment_manager_path("project_folder", logfile=rc_file)
+        else:
+            RCManager.set_environment_manager_path("default", logfile=rc_file)
+            
+        # Install libraries
+        logger.debug(pipenv_requirements)
+        
+        print(pipenv_requirements)
+        
+        EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
+        
+        
+    elif env_type == VENV:
         # VENV
         env_path = EnvironmentManagerOperations.create_venv(
             folder=project_home / VENV_FOLDER,
@@ -190,7 +241,12 @@ def init(template: Template, location, python_version,
         install_pre_commit_hooks=install_pre_commit_hooks,
         logfile=rc_file
     )
-
+    
+    # Check if any shell script is provided
+    if template.shell_exec is not None:
+        logger.info(f"Executing additional shell script: cd \"{project_home}\" & {template.shell_exec}.")
+        BashUtils.execute_and_log(f"cd \"{project_home}\" & {template.shell_exec}")
+    
     EnvironmentManagerOperations.final_instructions(project_home, env_manager=env_type)
 
     logger.log(SUCCESS, "Project created successfully.")

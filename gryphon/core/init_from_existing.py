@@ -158,8 +158,8 @@ def handle_template(template, project_home):
                 dst=destination
             )
 
-        if template.registry_type == REMOTE_INDEX:
-            clean_readonly_folder(template_folder)
+        #if template.registry_type == REMOTE_INDEX:
+        #    clean_readonly_folder(template_folder)
             
     except Exception as e:
         logger.error("Failed to move template files into target folder.")

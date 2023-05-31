@@ -3,6 +3,7 @@ import logging
 import os
 import shutil
 import stat
+import subprocess
 from pathlib import Path
 
 logger = logging.getLogger('gryphon')
@@ -53,13 +54,29 @@ class BashUtils:
         )
 
     @staticmethod
-    def execute_and_log(command) -> tuple:
+    def execute_and_log(command, use_subprocess=False) -> tuple:
         logger.debug(f"command: {command}")
-        cmd = os.popen(command)
-        output = cmd.read()
-        for line in output.split('\n'):
-            if len(line):
-                logger.debug(line)
+        
+        if use_subprocess:
+            cmd = subprocess.run(command, shell=True, capture_output=True, text=True)
+            if cmd.stderr == '':
+                output = cmd.stdout + " ERROR: " + cmd.stderr
+            else:
+                output = cmd.stdout
+                
+            status_code = cmd.returncode
+            if status_code == 0:
+                status_code = None
+            # status code
+            return status_code, output
+        
+        else:
+            
+            cmd = os.popen(command)
+            output = cmd.read()
+            for line in output.split('\n'):
+                if len(line):
+                    logger.debug(line)
 
-        # status code
-        return cmd.close(), output
+            # status code
+            return cmd.close(), output

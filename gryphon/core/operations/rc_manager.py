@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ...constants import (
-    GENERATE, INIT, DOWNLOAD, GRYPHON_RC, CONDA, VENV, NB_STRIP_OUT, NB_EXTENSIONS, PRE_COMMIT_HOOKS
+    GENERATE, INIT, DOWNLOAD, GRYPHON_RC, CONDA, VENV, PIPENV, NB_STRIP_OUT, NB_EXTENSIONS, PRE_COMMIT_HOOKS
 )
 
 logger = logging.getLogger('gryphon')
@@ -97,7 +97,7 @@ class RCManager:
         """
         Add information about each and every file added to the project into the rc file.
         """
-        assert environment_manager in [CONDA, VENV]
+        assert environment_manager in [CONDA, VENV, PIPENV]
         cls._set_key_rc(key="environment_manager", value=environment_manager, logfile=logfile)
 
     @classmethod

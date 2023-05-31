@@ -11,11 +11,11 @@ from pathlib import Path
 from .common_operations import (
     fetch_template,    mark_notebooks_as_readonly,
     enable_files_overwrite, clean_readonly_folder,
-    append_requirement
+    append_requirement, backup_files_to_be_overwritten, log_changes
 )
 from .operations import EnvironmentManagerOperations, PathUtils, RCManager
 from .registry import Template
-from ..constants import GENERATE, VENV, CONDA, REMOTE_INDEX, LOCAL_TEMPLATE, REQUIREMENTS
+from ..constants import GENERATE, VENV, CONDA, PIPENV, REMOTE_INDEX, LOCAL_TEMPLATE, REQUIREMENTS
 
 logger = logging.getLogger('gryphon')
 
@@ -38,13 +38,15 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
     if template.registry_type == REMOTE_INDEX:
 
         template_folder = fetch_template(template, folder)
-
+        all_renamed_files = None
         try:
             enable_files_overwrite(
                 source_folder=template_folder / "notebooks",
                 destination_folder=folder / "notebooks"
             )
-
+            
+            all_renamed_files, suffix = backup_files_to_be_overwritten(Path(template_folder), Path(folder), subfolders = ["utilities"])
+            
             parse_project_template(template_folder, kwargs)
             mark_notebooks_as_readonly(folder / "notebooks")
             RCManager.log_new_files(template, template_folder,
@@ -57,16 +59,28 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
         
         finally:
             clean_readonly_folder(template_folder)
-
+            
+            # Log changes to files            
+            if all_renamed_files is not None:
+                log_changes(destination_folder = folder, renamed_files = all_renamed_files, suffix = suffix)
+                
+                logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")
+                logger.info([str(os.path.relpath(file, folder)) for file in all_renamed_files])
+            
     elif template.registry_type == LOCAL_TEMPLATE:
         parse_project_template(template.path / "template", kwargs)
         RCManager.log_new_files(template, Path(template.path) / "template", performed_action=GENERATE, logfile=rc_file)
 
     else:
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
-
-    for r in template.dependencies:
-        append_requirement(r, location=folder)
+        
+    if env_type != PIPENV:
+        for r in template.dependencies:
+            append_requirement(r, location=folder)
+    else:
+        pipenv_requirements = []
+        pipenv_requirements.extend(template.dependencies)
+        pipenv_requirements = list(set(pipenv_requirements))
 
     RCManager.log_add_library(template.dependencies)
     if env_type == VENV:
@@ -79,6 +93,11 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             environment_path=env_path,
             requirements_path=current_path / REQUIREMENTS
         )
+    elif env_type == PIPENV:
+    
+        # Check where to install these libraries
+        
+        EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
 
     # RC file
     RCManager.log_operation(template, performed_action=GENERATE, logfile=rc_file)
@@ -139,6 +158,7 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             "__pycache__",
             "envs",
             ".venv",
+            "pipenv_venv",
             ".ipynb_checkpoints"
         )
     )
@@ -162,7 +182,6 @@ def parse_project_template(template_path: Path, mapper, destination_folder=None)
             dirs_exist_ok=True
         )
         
-    
     except Exception as e:
         logger.error("Failed to move template files into target folder.")
         logger.error(str(e))
