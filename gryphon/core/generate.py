@@ -61,7 +61,7 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
             clean_readonly_folder(template_folder)
             
             # Log changes to files            
-            if all_renamed_files is not None:
+            if (all_renamed_files is not None) and (len(all_renamed_files) > 0):
                 log_changes(destination_folder = folder, renamed_files = all_renamed_files, suffix = suffix)
                 
                 logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")

@@ -3,7 +3,8 @@ from pathlib import Path
 import questionary
 from questionary import Choice, Separator
 
-from .common_functions import base_question, get_back_choice
+from .common_functions import base_question, get_back_choice, logger
+from ..functions import wrap_text
 from ..wizard_text import Text
 from ...constants import (YES, NO, CONDA)
 
@@ -12,7 +13,17 @@ class InitFromExistingQuestions:
 
     @staticmethod
     @base_question
-    def ask_existing_location():
+    def ask_existing_location(template = None):
+    
+        if template is not None:
+        
+            yellow_text = ''
+            if template.description:
+                yellow_text = f"\t{template.description}\n"
+                
+            text, n_lines = wrap_text(yellow_text)
+            logger.warning(text)
+        
         return Path(questionary.path(message=Text.init_from_existing_prompt_location_question).unsafe_ask())
     
     

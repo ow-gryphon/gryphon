@@ -267,12 +267,20 @@ def _find_matching_files(origin_folder: Path, destination_folder: Path, exclude_
                 if len(exclude_extensions) and _has_specific_extension(file_rel_path, exclude_extensions):
                     continue
                     
-                # Check for differences between text   # FILE ENDINGS
-                with open(origin_folder / file_rel_path, 'r') as file:
-                    new_file_contents = file.read().replace('\r\n', '\n')
-                
-                with open(destination_folder / file_rel_path, 'r') as file:
-                    prior_file_contents = file.read().replace('\r\n', '\n')
+                # Check for differences between text
+                try:
+                    with open(origin_folder / file_rel_path, 'r') as file:
+                        new_file_contents = file.read().replace('\r\n', '\n')
+                except UnicodeDecodeError:
+                    with open(origin_folder / file_rel_path, 'r', encoding='utf8') as file:
+                        new_file_contents = file.read().replace('\r\n', '\n')
+
+                try:
+                    with open(destination_folder / file_rel_path, 'r') as file:
+                        prior_file_contents = file.read().replace('\r\n', '\n')
+                except UnicodeDecodeError:
+                    with open(destination_folder / file_rel_path, 'r', encoding='utf8') as file:
+                        prior_file_contents = file.read().replace('\r\n', '\n')
                 
                 if new_file_contents != prior_file_contents:
                     shared_files.append(file_rel_path)
@@ -355,9 +363,15 @@ def log_changes(destination_folder, renamed_files, suffix):
         new_file = str(file).replace(suffix, "")
         
         # Compare both files using difflib
-        with open(file, 'r') as file_input, open(new_file, 'r') as new_file_input:
-            file_contents = file_input.read().replace('\r\n', '\n').splitlines()
-            new_file_contents = new_file_input.read().replace('\r\n', '\n').splitlines()
+        try:
+            with open(file, 'r') as file_input, open(new_file, 'r') as new_file_input:
+                file_contents = file_input.read().replace('\r\n', '\n').splitlines()
+                new_file_contents = new_file_input.read().replace('\r\n', '\n').splitlines()
+        except: 
+            with open(file, 'r', encoding='utf8') as file_input, open(new_file, 'r', encoding='utf8') as new_file_input:
+                file_contents = file_input.read().replace('\r\n', '\n').splitlines()
+                new_file_contents = new_file_input.read().replace('\r\n', '\n').splitlines()
+        
             
         diff_html = difflib.HtmlDiff(wrapcolumn = 100).make_file(file_contents, new_file_contents, context=True)
         

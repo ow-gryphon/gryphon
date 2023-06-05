@@ -16,7 +16,7 @@ def init_from_existing(_, registry):
     ask_template = AskTemplate(registry)
 
     possible_states = [
-        ask_template, MainMenu(), AskLocation(), AskPointExternal(), AskProjectInfo(),
+        ask_template, MainMenu(), AskLocation(registry), AskPointExternal(), AskProjectInfo(),
         AskExternalEnvPath(), AskUseExisting(), Install(registry)
     ]
 

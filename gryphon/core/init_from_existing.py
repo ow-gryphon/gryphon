@@ -174,8 +174,10 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
                        delete_existing, external_env_path):
 
     os.makedirs(location, exist_ok=True)
+    logger.info(f"Setting up project template at {location}")
+    
     rc_path = location / GRYPHON_RC
-
+    
     if rc_path.is_file():
         try:
             gryphon_files_included = RCManager.get_handover_include_gryphon_generated_files(rc_path)

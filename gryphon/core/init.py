@@ -66,7 +66,7 @@ def handle_template(template, project_home, rc_file):
             clean_readonly_folder(template_folder)
             
             # Log changes to files            
-            if len(all_renamed_files) > 0:
+            if (all_renamed_files is not None) and (len(all_renamed_files) > 0):
                 log_changes(destination_folder = project_home, renamed_files = all_renamed_files, suffix = suffix)
                 
                 logger.info(f"The following files were overwritten and the old version has been backed up with new file names: ")
