@@ -152,7 +152,7 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
     """
     # TODO: This implementation doesn't address cases where one template depends
     #  on another from a different index
-        
+
     status_code, _ = BashUtils.execute_and_log(
         f"{check_for_ssh(template)}pip --disable-pip-version-check download {template.name}"
         f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
@@ -161,8 +161,20 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
         f"--trusted-host ow-gryphon.github.io "  # TODO: Find a definitive solution for this
         f"-qqq", use_subprocess=True
     )
+
+    # On some installations on Unix systems, only pip3 is available
+    if status_code==127:
+        status_code, _ = BashUtils.execute_and_log(
+            f"{check_for_ssh(template)}pip3 --disable-pip-version-check download {template.name}"
+            f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
+            f"-i {template.template_index} "
+            f"-d \"{temp_folder}\" "
+            f"--trusted-host ow-gryphon.github.io "  # TODO: Find a definitive solution for this
+            f"-qqq", use_subprocess=True
+        )
+
     if status_code is not None:
-        raise RuntimeError("Unable to pip download the repository.")
+        raise RuntimeError(f"Unable to pip download the repository. Status code: {status_code}")
 
 
 def _basic_download_template(template, temp_folder=Path().cwd() / ".temp"):
@@ -196,7 +208,7 @@ def _basic_download_template(template, temp_folder=Path().cwd() / ".temp"):
         f"{check_for_ssh(template)}git clone {repo_url} \"{str(temp_folder).strip()}\" --depth 1 {quiet} {version_string}", use_subprocess=True
     )
     if status_code is not None:
-        raise RuntimeError("Unable to git clone the repository.")
+        raise RuntimeError(f"Unable to git clone the repository. Status code {status_code}")
         
     # Check if .git folder is included
     git_folder = os.path.join(temp_folder, ".git")

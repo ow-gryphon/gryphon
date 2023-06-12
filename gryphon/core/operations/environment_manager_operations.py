@@ -158,6 +158,8 @@ class EnvironmentManagerOperations:
             pip_path = venv_folder / "Scripts" / "pip.exe"
         else:
             pip_path = venv_folder / "bin" / "pip"
+            if not pip_path.is_file():
+                pip_path = venv_folder / "bin" / "pip3"
 
         # Install requirements
         logger.info("Installing requirements. This may take several minutes ...")
