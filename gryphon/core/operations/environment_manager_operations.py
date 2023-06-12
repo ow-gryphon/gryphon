@@ -47,6 +47,9 @@ class EnvironmentManagerOperations:
         # Create venv
         logger.info(f"Creating virtual environment in {venv_path}")
         return_code, _ = BashUtils.execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
+        # For some Python installations on Unix systems only python3 works
+        if return_code == 127:
+            return_code, _ = BashUtils.execute_and_log(f"python3 -m venv \"{venv_path}\"")
         if return_code:
             raise RuntimeError("Failed to create virtual environment.")
             # TODO: Check whats happened
