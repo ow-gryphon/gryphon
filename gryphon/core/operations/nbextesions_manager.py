@@ -173,7 +173,7 @@ class NBExtensionsManager:
         )
 
         # On some Python installations on Unix systems, only pip3 is available
-        if return_code == 127:
+        if return_code == 32512:
             return_code, _ = BashUtils.execute_and_log(
                 f'\"{activate_env_command}\" && pip3 --disable-pip-version-check install '
                 f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator'
