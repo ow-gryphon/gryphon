@@ -53,6 +53,10 @@ class AskCategory(State):
         with open(data_path / "category_tree.json", encoding="UTF-8") as file:
             self.full_tree = json.load(file)
         self.templates = registry.get_templates(GENERATE)
+        
+        # NEED TO ADD DOWNLOADS that are appropriate 
+        # TODO
+        
         super().__init__()
 
     def on_start(self, context: dict) -> dict:
@@ -74,5 +78,6 @@ class AskCategory(State):
         possibilities = get_option_names(context["template_tree"])
 
         # categories
-        context["actual_selection"] = GenerateQuestions.get_generate_option(possibilities)
+        selected_category = GenerateQuestions.get_generate_option(possibilities, context=context)
+        context["actual_selection"] = selected_category.split(" | ")[0]
         return context
