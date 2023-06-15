@@ -140,7 +140,10 @@ def check_for_ssh(template):
         if ssh_domains is not None:
             for ssh_domain in ssh_domains.keys():
                 if ssh_domain in repo_url: # TODO: More precise check
-                    ssh_prefix = "start-ssh-agent & "
+                    if platform.system() == "Windows":
+                        ssh_prefix = "start-ssh-agent & "
+                    else:
+                        ssh_prefix = "eval $(ssh-agent) && "
                     
     return ssh_prefix
 
