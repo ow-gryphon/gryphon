@@ -58,17 +58,29 @@ class BashUtils:
         logger.debug(f"command: {command}")
         
         if use_subprocess:
-            cmd = subprocess.run(command, shell=True, capture_output=True, text=True)
-            if cmd.stderr == '':
-                output = cmd.stdout + " ERROR: " + cmd.stderr
-            else:
-                output = cmd.stdout
+            cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            
+            # Read the output and error streams in real-time
+            full_output = []
+            
+            check_output = True
+            while check_output:
+                output = cmd.stdout.readline()
+                error = cmd.stderr.readline()
+                if output == b'' and error == b'' and cmd.poll() is not None:
+                    break
+                if output:
+                    if output.decode('utf-8').strip() == "":
+                        check_output = False
+                    full_output.append(output.decode('utf-8').strip())
+                if error:
+                    full_output.append(error.decode('utf-8').strip())
                 
             status_code = cmd.returncode
             if status_code == 0:
                 status_code = None
             # status code
-            return status_code, output
+            return status_code, ", ".join(full_output)
         
         else:
             
