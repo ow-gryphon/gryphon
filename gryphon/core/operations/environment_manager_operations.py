@@ -327,7 +327,7 @@ class EnvironmentManagerOperations:
                 {Text.install_end_message_1}
 
                     >> cd \"{str(path_for_cd).replace(chr(92), '/').replace(backslash_char,'/')}\"
-                    >> source {str((env_folder / "scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
+                    >> source {str((env_folder / "bin" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}
                 """)
