@@ -6,7 +6,7 @@ import platform
 from ..functions import display_template_information, erase_lines
 from ..questions import GenerateQuestions, CommonQuestions
 from ..wizard_text import Text
-from ...constants import YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, READ_MORE
+from ...constants import YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, READ_MORE, DOWNLOAD
 from ...core.registry.versioned_template import VersionedTemplate
 from ...fsm import Transition, State
 
@@ -63,6 +63,8 @@ class Confirmation(State):
 
     def __init__(self, registry):
         self.templates = registry.get_templates(GENERATE)
+        self.templates.update(registry.get_templates(DOWNLOAD))
+        
         with open(CONFIG_FILE, "r+", encoding="utf-8") as f:
             self.settings = json.load(f)
         super().__init__()

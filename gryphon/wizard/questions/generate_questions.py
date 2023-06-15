@@ -2,7 +2,7 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
-from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE, USE_CASES, METHODOLOGY, TOPIC, SECTOR)
+from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE, USE_CASES, METHODOLOGY, TOPIC, SECTOR, DOWNLOAD)
 
 import logging
 logger = logging.getLogger('gryphon')
@@ -21,7 +21,8 @@ class GenerateQuestions:
                 pass
                 
             elif (context["history"][0] == METHODOLOGY):
-                    
+                
+                if (len(context["history"]) == 1):
                     for idx, category in enumerate(categories):
                         
                         counter = 0
@@ -32,14 +33,14 @@ class GenerateQuestions:
                         if counter != 1:
                             categories[idx] = category + " | " + str(counter) + " templates"
                         else:
-                            categories[idx] = category + " | " + str(counter) + " template"
+                            categories[idx] = category + " | " + str(counter) + " template" 
             
             elif (context["history"][0] == USE_CASES): 
                 
                 if (len(context["history"]) == 1):
                     pass
                 
-                elif (len(context["history"]) > 1) and (context["history"][1] in [TOPIC, SECTOR]):
+                elif (len(context["history"]) == 2) and (context["history"][1] in [TOPIC, SECTOR]):
                     
                     for idx, category in enumerate(categories):
                         
@@ -73,7 +74,7 @@ class GenerateQuestions:
         options = [
             Choice(
                 title=f"{template.display_name} "
-                      + (f"(local template)" if template.registry_type == LOCAL_TEMPLATE else ""),
+                      + (f"(local template)" if template.registry_type == LOCAL_TEMPLATE else "") + (f"(Standalone download)" if template.command == DOWNLOAD else ""),
 
                 value=name
             )

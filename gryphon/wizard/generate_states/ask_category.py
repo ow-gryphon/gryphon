@@ -4,7 +4,7 @@ from ..functions import (
     erase_lines, get_current_tree_state, get_option_names, BackSignal
 )
 from ...fsm import Transition, State
-from ...constants import SEARCH_BY_KEYWORD, BACK, GENERATE
+from ...constants import SEARCH_BY_KEYWORD, BACK, GENERATE, DOWNLOAD
 
 
 # CONDITIONS AND CALLBACKS
@@ -54,8 +54,9 @@ class AskCategory(State):
             self.full_tree = json.load(file)
         self.templates = registry.get_templates(GENERATE)
         
-        # NEED TO ADD DOWNLOADS that are appropriate 
-        # TODO
+        # Add DOWNLOAD templates (which will be filtered at later stage)
+        self.templates.update(registry.get_templates(DOWNLOAD))
+        
         
         super().__init__()
 
