@@ -106,7 +106,11 @@ class EnvironmentManagerOperations:
             logger.info(f"Creating the pipenv virtual environment in the default folder used by pipenv")
             
         logger.info(f"Setting up virtual environment and installing the packages in the Piplock file")
-        return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" & {environment_prefix}pipenv install")
+        
+        if platform.system() == "Windows":
+            return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" & {environment_prefix}pipenv install")
+        else:
+            return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" && {environment_prefix.replace('&','&&')}pipenv install")
         
         if return_code:
             raise RuntimeError("Failed to create virtual environment.")

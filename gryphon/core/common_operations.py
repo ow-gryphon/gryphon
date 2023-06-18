@@ -141,9 +141,9 @@ def check_for_ssh(template):
             for ssh_domain in ssh_domains.keys():
                 if ssh_domain in repo_url: # TODO: More precise check
                     if platform.system() == "Windows":
-                        ssh_prefix = "start-ssh-agent & "
+                        ssh_prefix = "start-ssh-agent "#& "
                     else:
-                        ssh_prefix = "eval $(ssh-agent) && "
+                        ssh_prefix = "eval $(ssh-agent) "#&& "
                     
     return ssh_prefix
 
@@ -157,7 +157,8 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
     #  on another from a different index
 
     status_code, _ = BashUtils.execute_and_log(
-        f"{check_for_ssh(template)}pip --disable-pip-version-check download {template.name}"
+        f"{check_for_ssh(template)}"
+        f"pip --disable-pip-version-check download {template.name}"
         f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
         f"-i {template.template_index} "
         f"-d \"{temp_folder}\" "
@@ -168,7 +169,8 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
     # On some installations on Unix systems, only pip3 is available
     if status_code==127:
         status_code, _ = BashUtils.execute_and_log(
-            f"{check_for_ssh(template)}pip3 --disable-pip-version-check download {template.name}"
+            f"{check_for_ssh(template)}"
+            f"pip3 --disable-pip-version-check download {template.name}"
             f"{f'=={template.version}' if hasattr(template, 'version') else ''} "
             f"-i {template.template_index} "
             f"-d \"{temp_folder}\" "

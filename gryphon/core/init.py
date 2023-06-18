@@ -245,11 +245,12 @@ def init(template: Template, location, python_version,
     
     # Check if any shell script is provided
     if template.shell_exec is not None:
-        logger.info(f"Executing additional shell script: cd \"{project_home}\" & {template.shell_exec}.")
         
         if platform.system() == "Windows":
+            logger.info(f"Executing additional shell script: cd \"{project_home}\" & {template.shell_exec}.")
             BashUtils.execute_and_log(f"cd \"{project_home}\" & {template.shell_exec}")
         else:
+            logger.info(f"Executing additional shell script: cd \"{project_home}\" && {str(template.shell_exec).replace('&','&&')}.")
             BashUtils.execute_and_log(f"cd \"{project_home}\" && {str(template.shell_exec).replace('&','&&')}")
         
     EnvironmentManagerOperations.final_instructions(project_home, env_manager=env_type)
