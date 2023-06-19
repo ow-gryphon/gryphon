@@ -110,7 +110,7 @@ class EnvironmentManagerOperations:
         if platform.system() == "Windows":
             return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" & {environment_prefix}pipenv install")
         else:
-            return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" && {environment_prefix.replace('&','&&')}pipenv install")
+            return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" && {environment_prefix.replace('&','&&').replace('EXPORT', 'export')}pipenv install")
         
         if return_code:
             raise RuntimeError("Failed to create virtual environment.")
