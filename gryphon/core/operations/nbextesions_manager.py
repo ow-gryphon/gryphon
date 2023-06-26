@@ -142,6 +142,9 @@ class NBExtensionsManager:
             redirect = ">nul 2>&1"
         else:
             pip_path = venv_folder / "bin" / "pip"
+            # Some Python installations on Unix systems only have access to pip3
+            if not pip_path.is_file():
+                pip_path = venv_folder / "bin" / "pip3"
             activate_path = venv_folder / "bin" / "activate"
             activate_env_command = str(activate_path)
             os.system(f"chmod 777 \"{activate_path}\"")
@@ -168,6 +171,13 @@ class NBExtensionsManager:
             f'\"{activate_env_command}\" && pip --disable-pip-version-check install '
             f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator'
         )
+
+        # On some Python installations on Unix systems, only pip3 is available
+        if return_code == 32512:
+            return_code, _ = BashUtils.execute_and_log(
+                f'\"{activate_env_command}\" && pip3 --disable-pip-version-check install '
+                f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator'
+            )
 
         if return_code is not None:
             raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
@@ -272,6 +282,9 @@ class NBExtensionsManager:
             redirect = ">nul 2>&1"
         else:
             pip_path = venv_folder / "bin" / "pip"
+            # On some installations on Unix systems, only pip3 is available
+            if not pip_path.is_file():
+                pip_path = venv_folder / "bin" / "pip3"
             activate_path = venv_folder / "bin" / "activate"
             activate_env_command = str(activate_path)
             os.system(f"chmod 777 \"{activate_path}\"")
@@ -301,8 +314,15 @@ class NBExtensionsManager:
             f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator -y'
         )
 
+        # On some installations on Unix systems, only pip3 is available
+        if return_code == 32512:
+            return_code, _ = BashUtils.execute_and_log(
+                f'\"{activate_env_command}\" && pip3 --disable-pip-version-check uninstall '
+                f'jupyter_contrib_nbextensions jupyter_nbextensions_configurator -y'
+            )
+
         if return_code is not None:
-            raise RuntimeError(f"Failed on pip install command. Return code: {return_code}")
+            raise RuntimeError(f"Failed on pip uninstall command. Return code: {return_code}")
 
         if return_code is not None:
             raise RuntimeError(f"Failed to install jupyter nbextensions. Return code: {return_code}")

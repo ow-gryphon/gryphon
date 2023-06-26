@@ -47,6 +47,10 @@ class EnvironmentManagerOperations:
         # Create venv
         logger.info(f"Creating virtual environment in {venv_path}")
         return_code, _ = BashUtils.execute_and_log(f"\"{python_path}\" -m venv \"{venv_path}\"")
+        # For some Python installations on Unix systems only python3 works
+        if return_code == 32512:
+            logger.info("Trying python3 instead.")
+            return_code, _ = BashUtils.execute_and_log(f"python3 -m venv \"{venv_path}\"")
         if return_code:
             raise RuntimeError("Failed to create virtual environment.")
             # TODO: Check whats happened
@@ -102,7 +106,11 @@ class EnvironmentManagerOperations:
             logger.info(f"Creating the pipenv virtual environment in the default folder used by pipenv")
             
         logger.info(f"Setting up virtual environment and installing the packages in the Piplock file")
-        return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" & {environment_prefix}pipenv install")
+        
+        if platform.system() == "Windows":
+            return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" & {environment_prefix}pipenv install")
+        else:
+            return_code, _ = BashUtils.execute_and_log(f"cd \"{project_folder}\" && {environment_prefix.replace('&','&&').replace('EXPORT', 'export')}pipenv install")
         
         if return_code:
             raise RuntimeError("Failed to create virtual environment.")
@@ -158,6 +166,8 @@ class EnvironmentManagerOperations:
             pip_path = venv_folder / "Scripts" / "pip.exe"
         else:
             pip_path = venv_folder / "bin" / "pip"
+            if not pip_path.is_file():
+                pip_path = venv_folder / "bin" / "pip3"
 
         # Install requirements
         logger.info("Installing requirements. This may take several minutes ...")
@@ -321,7 +331,7 @@ class EnvironmentManagerOperations:
                 {Text.install_end_message_1}
 
                     >> cd \"{str(path_for_cd).replace(chr(92), '/').replace(backslash_char,'/')}\"
-                    >> source {str((env_folder / "scripts" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
+                    >> source {str((env_folder / "bin" / "activate").relative_to(target_folder)).replace(chr(92), '/')}
 
                 {Text.install_end_message_2}
                 """)
