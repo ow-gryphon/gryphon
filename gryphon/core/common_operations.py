@@ -148,7 +148,6 @@ def check_for_ssh(template):
     return ssh_prefix
 
 
-
 def _download_template(template, temp_folder=Path().cwd() / ".temp"):
     """
     Downloads a template and its dependencies in the zip format to a temporary folder.
@@ -167,7 +166,7 @@ def _download_template(template, temp_folder=Path().cwd() / ".temp"):
     )
 
     # On some installations on Unix systems, only pip3 is available
-    if status_code==127:
+    if status_code == 127:
         status_code, _ = BashUtils.execute_and_log(
             f"{check_for_ssh(template)}"
             f"pip3 --disable-pip-version-check download {template.name}"
@@ -310,6 +309,7 @@ def _has_specific_extension(file_name, extensions):
     _, file_extension = os.path.splitext(file_name)
     return file_extension.lower() in extensions
 
+
 def _rename_files(folder, files, suffix) -> tuple:
     
     copied_files = []
@@ -388,26 +388,28 @@ def log_changes(destination_folder, renamed_files, suffix):
             with open(file, 'r', encoding='utf8') as file_input, open(new_file, 'r', encoding='utf8') as new_file_input:
                 file_contents = file_input.read().replace('\r\n', '\n').splitlines()
                 new_file_contents = new_file_input.read().replace('\r\n', '\n').splitlines()
-        
-            
+
         diff_html = difflib.HtmlDiff(wrapcolumn = 100).make_file(file_contents, new_file_contents, context=True)
         
         output_file = log_folder / str(os.path.relpath(new_file, destination_folder))
         output_file, _ = os.path.splitext(output_file)
         output_file = str(output_file) + ".html"
         
-        os.makedirs(os.path.dirname(output_file), mode = 0o777, exist_ok = True)
+        os.makedirs(os.path.dirname(output_file), mode=0o777, exist_ok = True)
         Path(output_file).write_text(diff_html)
         
     # Create the log file
     with open(log_file_name, 'w') as log_file:
-        log_file.write("The following files in your project folder were backed up before being overwritten by the Gryphon template downloaded at this time: \n")
+        log_file.write("The following files in your project folder were backed up before being overwritten by the "
+                       "Gryphon template downloaded at this time: \n")
         
         for file in renamed_files:
             relative_file_path = str(os.path.relpath(file, destination_folder))
             log_file.write(f" - {relative_file_path}\n")
             
-        log_file.write(f"\nFor any changed .py scripts, you can find a 'code comparison' in the \".gryphon_logs/changes{suffix}\" folder. If you want to keep your old files, rename them back. Once you are done, you can delete this file and the .gryphon_logs folder.")
+        log_file.write(f"\nFor any changed .py scripts, you can find a 'code comparison' in the "
+                       f"\".gryphon_logs/changes{suffix}\" folder. If you want to keep your old files, "
+                       f"rename them back. Once you are done, you can delete this file and the .gryphon_logs folder.")
     
 # NOT IMPLEMENTED. NOT NEEDED CURRENTLY
 #def scrub_files(folder: Path, folder_pattern = ["__pycache__", ".ipynb_checkpoints"], file_pattern = [""]):
@@ -476,7 +478,6 @@ def download_template(template, project_folder):
     _basic_download_template(template, template_folder)
         
     return template_folder
-
 
 
 def clean_readonly_folder(folder):

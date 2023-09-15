@@ -1,6 +1,7 @@
 from ...fsm import State
 from ...core.download import download as core_download
 
+
 class Download(State):
     name = "download"
     transitions = []

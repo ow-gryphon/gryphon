@@ -1,6 +1,6 @@
 from .download_states import (
     AskTemplate, Confirmation,
-    Download, MainMenu, AskLocationAgain, AskParameters
+    Download, MainMenu, AskLocationAgain, AskParameters, ConfirmShellExec, AskProjectInfo
 )
 from .functions import BackSignal
 from ..constants import BACK
@@ -13,7 +13,8 @@ def download(_, registry):
     ask_template = AskTemplate(registry)
 
     possible_states = [
-        ask_template, Confirmation(), Download(), MainMenu(), AskLocationAgain(), AskParameters(registry)
+        ask_template, Confirmation(), Download(), MainMenu(), AskLocationAgain(), AskParameters(registry),
+        ConfirmShellExec(), AskProjectInfo()
     ]
 
     machine = Machine(

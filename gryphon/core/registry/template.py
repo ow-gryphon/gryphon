@@ -46,9 +46,11 @@ class Template:
         
         self.ssh_domain = template_metadata.get("ssh_domain", None)
         self.repo_url = template_metadata.get("repo_url", None)
-        
-        # For init templates only
+
         self.shell_exec = template_metadata.get("shell_exec", None)
+        self.shell_exec_description = template_metadata.get("shell_exec_description", None)
+
+        # For init templates only
         self.addons = template_metadata.get("addons", None)
         
 
