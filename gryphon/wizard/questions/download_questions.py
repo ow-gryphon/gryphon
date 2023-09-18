@@ -123,11 +123,11 @@ class DownloadQuestions:
 
         yellow_text = ''
         if template.shell_exec_description:
-            yellow_text = f"\tDescription of shell script:\n\t{template.description}\n"
-            message.replace("{description}", " (description given above)")
+            yellow_text = f"\tDescription of shell script:\n\t{template.shell_exec_description}\n"
+            message = message.replace("{description}", " (description given above)")
 
         else:
-            message.replace("{description}", "")
+            message = message.replace("{description}", "")
 
         text, n_lines = wrap_text(yellow_text)
         logger.warning(text)
