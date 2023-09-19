@@ -1,7 +1,7 @@
 import logging
 
 from ..questions import DownloadQuestions
-from ...constants import YES, NO
+from ...constants import YES, NO, SUCCESS
 from ...fsm import State, Transition
 
 logger = logging.getLogger('gryphon')
@@ -9,6 +9,10 @@ logger = logging.getLogger('gryphon')
 
 def _change_from_exec_confirmation_to_ask_project_info(context: dict) -> bool:
     confirmed = context["confirmed"]
+    
+    if confirmed == NO:
+        logger.log(SUCCESS, "Note: Manual installation may be required following the download of this repository.") 
+    
     return confirmed == YES or confirmed == NO
 
 

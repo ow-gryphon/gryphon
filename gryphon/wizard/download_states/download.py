@@ -8,7 +8,11 @@ class Download(State):
 
     def on_start(self, context: dict) -> dict:
         template = context["template"]
-        location = context["location"]
+        
+        if 'location' not in context.keys():
+            location = context['template'].name
+        else:
+            location = context["location"]
         extra_parameters = context["extra_parameters"]
 
         core_download(

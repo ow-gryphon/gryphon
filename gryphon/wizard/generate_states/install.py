@@ -1,7 +1,10 @@
 from ...fsm import State
 from ...core import generate as core_generate
-from ...core.download import download as core_download
+# from ...core.download import download as core_download
 from ...constants import DOWNLOAD
+import logging
+
+logger = logging.getLogger('gryphon')
 
 
 class Install(State):
@@ -13,10 +16,9 @@ class Install(State):
         template = context["template"]
         
         if template.command == DOWNLOAD:
-            core_download(
-                template=template,
-                location=template.name
-            )
+            
+            # This should never be reached, as a different path of the finite state machine should have been reached for DOWNLOAD templates
+            raise ValueError("An error has occured. Please notify the Gryphon support team")
         
         else:
             core_generate(
