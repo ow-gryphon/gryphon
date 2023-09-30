@@ -87,7 +87,6 @@ def handle_template(template, project_home, rc_file):
         raise RuntimeError(f"Invalid registry type: {template.registry_type}.")
         
 
-
 def init(template: Template, location, python_version,
          install_nbextensions=False,
          install_nb_strip_out=False,
@@ -171,8 +170,7 @@ def init(template: Template, location, python_version,
         print(pipenv_requirements)
         
         EnvironmentManagerOperations.install_libraries_pipenv(pipenv_requirements)
-        
-        
+
     elif env_type == VENV:
         # VENV
         env_path = EnvironmentManagerOperations.create_venv(

@@ -6,7 +6,7 @@ import platform
 from ..functions import display_template_information, erase_lines
 from ..questions import GenerateQuestions, CommonQuestions
 from ..wizard_text import Text
-from ...constants import YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, READ_MORE
+from ...constants import YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, READ_MORE, DOWNLOAD
 from ...core.registry.versioned_template import VersionedTemplate
 from ...fsm import Transition, State
 
@@ -14,7 +14,9 @@ logger = logging.getLogger('gryphon')
 
 
 def _condition_confirmation_to_install(context: dict) -> bool:
-    return context["confirmation_response"] == YES
+    confirmed = context["confirmation_response"]
+    command = context["template"].command
+    return (confirmed == YES) and (command == GENERATE)
 
 
 def _condition_confirmation_to_ask_template(context: dict) -> bool:
@@ -41,6 +43,17 @@ def _callback_confirmation_to_read_more(context: dict) -> dict:
     erase_lines(n_lines=len(context["extra_parameters"]) + 1 + context["n_lines"])
     return context
 
+# Download templates
+def _change_from_confirmation_to_ask_project_info(context: dict) -> bool:
+    confirmed = context["confirmation_response"]
+    command = context["template"].command
+    return (confirmed == YES) and (command == DOWNLOAD) and not bool(context["template"].shell_exec)
+    
+def _change_from_confirmation_to_confirm_shell_exec(context: dict) -> bool:
+    confirmed = context["confirmation_response"]
+    command = context["template"].command
+    return (confirmed == YES) and (command == DOWNLOAD) and bool(context["template"].shell_exec)
+
 
 class Confirmation(State):
     name = "confirmation"
@@ -58,11 +71,21 @@ class Confirmation(State):
             next_state="confirmation",
             condition=_condition_confirmation_to_read_more,
             callback=_callback_confirmation_to_read_more
+        ),
+        Transition(
+            next_state="confirm_shell_exec",
+            condition=_change_from_confirmation_to_confirm_shell_exec
+        ),
+        Transition(
+            next_state="ask_project_info",
+            condition=_change_from_confirmation_to_ask_project_info
         )
     ]
 
     def __init__(self, registry):
         self.templates = registry.get_templates(GENERATE)
+        self.templates.update(registry.get_templates(DOWNLOAD))
+        
         with open(CONFIG_FILE, "r+", encoding="utf-8") as f:
             self.settings = json.load(f)
         super().__init__()

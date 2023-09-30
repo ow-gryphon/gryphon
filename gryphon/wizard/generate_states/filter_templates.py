@@ -6,9 +6,10 @@ from ...constants import (
 
 
 def filter_templates_by_category(state: dict) -> dict:
-    return {
-        name: template
-        for name, template in state["templates"].items()
+    
+    found_templates = {}
+    
+    for name, template in state["templates"].items():
         if (
                 (
                         state["history"][0] == METHODOLOGY and
@@ -22,8 +23,10 @@ def filter_templates_by_category(state: dict) -> dict:
                         state["history"][1] == TOPIC and
                         state["history"][2] in template.topic
                 )
-        )
-    }
+        ):
+            found_templates[name] = template
+            
+    return found_templates
 
 
 # CONDITIONS AND CALLBACKS

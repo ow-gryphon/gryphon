@@ -2,15 +2,60 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
-from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE)
+from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE, USE_CASES, METHODOLOGY, TOPIC, SECTOR, DOWNLOAD)
 
+import logging
+logger = logging.getLogger('gryphon')
 
 class GenerateQuestions:
 
     @staticmethod
     @base_question
-    def get_generate_option(categories: list):
+    def get_generate_option(categories: list, context = None):
         categories = categories.copy()
+        
+        if (context is not None):
+            # Context is available
+        
+            if (context.get("history") is None) or (len(context.get("history")) == 0):
+                pass
+                
+            elif (context["history"][0] == METHODOLOGY):
+                
+                if (len(context["history"]) == 1):
+                    for idx, category in enumerate(categories):
+                        
+                        counter = 0
+                        for name, template in context["templates"].items():
+                            if category in template.methodology:
+                                counter += 1
+                        
+                        if counter != 1:
+                            categories[idx] = category + " | " + str(counter) + " templates"
+                        else:
+                            categories[idx] = category + " | " + str(counter) + " template" 
+            
+            elif (context["history"][0] == USE_CASES): 
+                
+                if (len(context["history"]) == 1):
+                    pass
+                
+                elif (len(context["history"]) == 2) and (context["history"][1] in [TOPIC, SECTOR]):
+                    
+                    for idx, category in enumerate(categories):
+                        
+                        counter = 0
+                        for name, template in context["templates"].items():
+                            if (context["history"][1] == TOPIC) and (category in template.topic):
+                                counter += 1
+                            elif (context["history"][1] == SECTOR) and (category in template.sector):
+                                counter += 1
+                        
+                        if counter != 1:
+                            categories[idx] = category + " | " + str(counter) + " templates"
+                        else:
+                            categories[idx] = category + " | " + str(counter) + " template"
+                
         categories.extend([
             Separator(Text.menu_separator),
             get_back_choice()
@@ -19,6 +64,7 @@ class GenerateQuestions:
         return questionary.select(
             message=Text.add_prompt_categories_question,
             choices=categories,
+            # choices=dict(zip([str(x) + " AA" for x in categories], categories)), # DOES NOT WORK
             instruction=Text.add_prompt_instruction
         ).unsafe_ask()
 
@@ -28,7 +74,7 @@ class GenerateQuestions:
         options = [
             Choice(
                 title=f"{template.display_name} "
-                      + (f"(local template)" if template.registry_type == LOCAL_TEMPLATE else ""),
+                      + (f"(local template)" if template.registry_type == LOCAL_TEMPLATE else "") + (f"(Standalone download)" if template.command == DOWNLOAD else ""),
 
                 value=name
             )

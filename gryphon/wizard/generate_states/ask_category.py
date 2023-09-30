@@ -4,7 +4,7 @@ from ..functions import (
     erase_lines, get_current_tree_state, get_option_names, BackSignal
 )
 from ...fsm import Transition, State
-from ...constants import SEARCH_BY_KEYWORD, BACK, GENERATE
+from ...constants import SEARCH_BY_KEYWORD, BACK, GENERATE, DOWNLOAD
 
 
 # CONDITIONS AND CALLBACKS
@@ -53,6 +53,11 @@ class AskCategory(State):
         with open(data_path / "category_tree.json", encoding="UTF-8") as file:
             self.full_tree = json.load(file)
         self.templates = registry.get_templates(GENERATE)
+        
+        # Add DOWNLOAD templates (which will be filtered at later stage)
+        self.templates.update(registry.get_templates(DOWNLOAD))
+        
+        
         super().__init__()
 
     def on_start(self, context: dict) -> dict:
@@ -74,5 +79,6 @@ class AskCategory(State):
         possibilities = get_option_names(context["template_tree"])
 
         # categories
-        context["actual_selection"] = GenerateQuestions.get_generate_option(possibilities)
+        selected_category = GenerateQuestions.get_generate_option(possibilities, context=context)
+        context["actual_selection"] = selected_category.split(" | ")[0]
         return context

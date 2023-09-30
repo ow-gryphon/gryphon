@@ -113,7 +113,9 @@ class Text:
                      "\ninto the folder \"{location}\""
     download_confirm_2 = "\nUsing the following arguments: {arguments}"
 
-    
+    shell_exec_confirm = "This template includes a shell setup script{description}. \n" \
+                         "Would you like Gryphon to run it once the template has been downloaded?"
+
     generate_ask_extra_parameters = "Please fill some extra parameters needed for the template"
     could_not_find_any_templates = "Could not find any template with the given keyword. What to do next?"
     generate_keyword_argument = "Type the keyword you want to search for:"

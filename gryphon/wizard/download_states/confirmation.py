@@ -42,9 +42,14 @@ def read_more_callback(context: dict) -> dict:
     return context
 
 
-def _change_from_confirmation_to_install(context: dict) -> bool:
+def _change_from_confirmation_to_ask_project_info(context: dict) -> bool:
     confirmed = context["confirmed"]
-    return confirmed == YES
+    return confirmed == YES and not bool(context["template"].shell_exec)
+
+
+def _change_from_confirmation_to_confirm_shell_exec(context: dict) -> bool:
+    confirmed = context["confirmed"]
+    return confirmed == YES and bool(context["template"].shell_exec)
 
 
 def _change_from_confirmation_to_ask_template(context: dict) -> bool:
@@ -62,14 +67,13 @@ def _change_from_confirmation_to_ask_location_again(context: dict) -> bool:
     return confirmed == CHANGE_LOCATION
     
 
-
 class Confirmation(State):
 
     name = "confirmation"
     transitions = [
         Transition(
-            next_state="download",
-            condition=_change_from_confirmation_to_install
+            next_state="ask_project_info",
+            condition=_change_from_confirmation_to_ask_project_info
         ),
         Transition(
             next_state="ask_location_again",
@@ -86,6 +90,10 @@ class Confirmation(State):
             condition=_change_from_confirmation_to_ask_template,
             callback=confirmation_success_callback
         ),
+        Transition(
+            next_state="confirm_shell_exec",
+            condition=_change_from_confirmation_to_confirm_shell_exec
+        )
         
     ]
 
@@ -108,4 +116,6 @@ class Confirmation(State):
             n_lines=n_lines,
             confirmed=confirmed
         ))
+        context["extra_parameters"]["confirm_shell_exec"] = False
+
         return context

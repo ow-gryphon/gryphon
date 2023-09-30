@@ -6,3 +6,5 @@ from .confirmation import Confirmation
 from .download import Download
 from .main_menu import MainMenu
 # from .select_addons import SelectAddons
+from .confirm_shell_exec import ConfirmShellExec
+from .ask_project_info import AskProjectInfo

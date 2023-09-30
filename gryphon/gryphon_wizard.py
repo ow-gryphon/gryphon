@@ -331,6 +331,9 @@ def start_ui(settings_file):
     logger.debug("Setup finished")
     logger.warning(Text.welcome)
 
+    if Path.cwd().joinpath(".gryphon_rc").is_file():
+        logger.warning(f"        In Gryphon project folder: {os.path.basename(Path.cwd())}\n")
+
     while True:
         gryphon_rc = Path.cwd() / GRYPHON_RC
 
@@ -356,7 +359,6 @@ def start_ui(settings_file):
 
         try:
             try:
-
                 response = function(DATA_PATH, registry)
             except OSError as er:
                 response = None

@@ -115,6 +115,40 @@ class DownloadQuestions:
             .unsafe_ask()
         )
 
+    @staticmethod
+    @base_question
+    def confirm_shell_execution(template):
+
+        message = Text.shell_exec_confirm
+
+        yellow_text = ''
+        if template.shell_exec_description:
+            yellow_text = f"\tDescription of shell script:\n\t{template.shell_exec_description}\n"
+            message = message.replace("{description}", " (description given above)")
+
+        else:
+            message = message.replace("{description}", "")
+
+        text, n_lines = wrap_text(yellow_text)
+        logger.warning(text)
+
+        n_lines += len(message.split('\n'))
+
+        options = [
+            Choice(
+                title="Yes, run the setup script",
+                value=YES
+            ),
+            Choice(
+                title="No, proceed with download only",
+                value=NO
+            )
+        ]
+
+        return questionary.select(
+            message=message,
+            choices=options
+        ).unsafe_ask(), n_lines
 
 
     
