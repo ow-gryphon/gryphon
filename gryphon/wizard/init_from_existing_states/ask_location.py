@@ -1,6 +1,6 @@
 from ...core.init_from_existing import check_for_environment
 from ...fsm import State, Transition
-from ...wizard.questions import InitFromExistingQuestions
+from ...wizard.questions import InitFromExistingQuestions, CommonQuestions
 
 import logging
 import os
@@ -55,7 +55,7 @@ class AskLocation(State):
                 template = template[chosen_version]
                 
         context["location"] = InitFromExistingQuestions.ask_existing_location(template)
-        
+
         if not os.path.isdir(context["location"]):
             logger.warning(f"{context['location']} is not an existing folder. A new folder will be created if you proceed.")
         
