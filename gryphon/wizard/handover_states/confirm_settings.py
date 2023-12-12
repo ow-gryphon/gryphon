@@ -1,4 +1,5 @@
 from textwrap import wrap
+from pathlib import Path
 
 from ..questions.handover_questions import HandoverQuestions
 from ...constants import BACK, NO, YES
@@ -128,7 +129,7 @@ class ConfirmSettings(State):
 
         files = RCManager.get_gryphon_files(logfile=rc_file)
 
-        file_names = list(map(lambda x: x["path"], filter(lambda x: "notebooks" in x["path"], files)))
+        file_names = list(map(lambda x: Path(x["path"]), filter(lambda x: "notebooks" in x["path"], files)))
         context["excluded_files_gryphon"] = []
 
         if not include_gryphon_files:
@@ -165,4 +166,3 @@ class ConfirmSettings(State):
 
 
 # TODO: Have a logfile specifying how the zip was generated (configs and choices) placed on the parent folder
-

@@ -13,7 +13,7 @@ class InitFromExistingQuestions:
 
     @staticmethod
     @base_question
-    def ask_existing_location(template = None):
+    def ask_existing_location(template=None):
     
         if template is not None:
         

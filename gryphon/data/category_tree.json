@@ -38,9 +38,6 @@
                         "name": "Navigate by Sector",
                         "children": [
                               {
-                                    "name": "THESE ARE PLACEHOLDERS. USE-CASES TO COME SOON!"
-                              },
-                              {
                                     "name": "Automotive"
                               },
                               {
@@ -87,9 +84,6 @@
                   {
                         "name": "Navigate by Topic",
                         "children": [
-                              {
-                                    "name": "THESE ARE PLACEHOLDERS. USE-CASES TO COME SOON!"
-                              },
                               {
                                     "name": "Change Management, Organization and People"
                               },
