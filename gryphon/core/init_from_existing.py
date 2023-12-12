@@ -176,7 +176,7 @@ def init_from_existing(template, location: Path, env_manager, use_existing_envir
     os.makedirs(location, exist_ok=True)
 
     if str(location) == ".":
-        logger.info(f"Setting up project template in {os.path.dirname(os.getcwd())}")
+        logger.info(f"Setting up project template in {str(os.getcwd())}")
     else:
         logger.info(f"Setting up project template at {location}")
 
