@@ -54,15 +54,16 @@ def display_template_information(template) -> int:
     wrapped, n_lines = wrap_text(information)
     logger.info(wrapped)
 
-    if len(template.approver):
+    if template.approver:
         approver_warning_text = f"\tNOTE: This template requires author approval. " \
                                 f"Please contact {template.approver} for access to the repository before attempting " \
-                                f"to use this template. If you do not yet have MMC GitHub access, please see the link" \
-                                f"below to get setup."
+                                f"to use this template. If you do not yet have MMC GitHub access, please see the " \
+                                f"link below to get set up.\n"
         wrapped, n_lines_approver = wrap_text(approver_warning_text)
         logger.error(wrapped)
+        n_lines += n_lines_approver
 
-    return n_lines + n_lines_approver
+    return n_lines
 
 
 def get_current_tree_state(tree, history):

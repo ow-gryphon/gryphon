@@ -50,6 +50,8 @@ class Template:
         self.shell_exec = template_metadata.get("shell_exec", None)
         self.shell_exec_description = template_metadata.get("shell_exec_description", None)
 
+        self.approver = template_metadata.get("approver", None)
+
         # For init templates only
         self.addons = template_metadata.get("addons", None)
         

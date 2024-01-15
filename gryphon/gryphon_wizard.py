@@ -94,8 +94,7 @@ def initial_setup():
                                 
                                 if not_found:
                                     settings_file[old_key].append(default_settings_file[old_key][new_item])
-                                    
-                    
+
                         elif isinstance(settings_file[old_key], dict):
                             for new_nested_key in list(set(default_settings_file[old_key].keys()) - set(settings_file[old_key].keys())):
                                 settings_file[old_key][new_nested_key] = default_settings_file[old_key][new_nested_key]

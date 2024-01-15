@@ -16,6 +16,8 @@ FEEDBACK = "feedback"
 REPORT_BUG = "report_bug"
 SETTINGS = "settings"
 CONTACT_US = "contact_us"
+EMAIL_APPROVER = "email_approver"
+MMC_GITHUB_SETUP = "mmc_github_setup"
 
 # tree related
 NODE = "node"

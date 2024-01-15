@@ -43,12 +43,14 @@ def _callback_confirmation_to_read_more(context: dict) -> dict:
     erase_lines(n_lines=len(context["extra_parameters"]) + 1 + context["n_lines"])
     return context
 
+
 # Download templates
 def _change_from_confirmation_to_ask_project_info(context: dict) -> bool:
     confirmed = context["confirmation_response"]
     command = context["template"].command
     return (confirmed == YES) and (command == DOWNLOAD) and not bool(context["template"].shell_exec)
-    
+
+
 def _change_from_confirmation_to_confirm_shell_exec(context: dict) -> bool:
     confirmed = context["confirmation_response"]
     command = context["template"].command
@@ -117,6 +119,7 @@ class Confirmation(State):
         context["confirmation_response"] = GenerateQuestions.confirm_generate(
             template_name=context["template"].display_name,
             read_more_option=context["read_more_link"] != "",
+            approval_required=context["template"].approver is not None,
             **context["extra_parameters"]
         )
 
