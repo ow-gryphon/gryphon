@@ -6,9 +6,10 @@ import platform
 from ..functions import display_template_information, erase_lines
 from ..questions import GenerateQuestions, CommonQuestions
 from ..wizard_text import Text
-from ...constants import (YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, \
-    READ_MORE, DOWNLOAD, MMC_GITHUB_SETUP, MMC_GITHUB_SETUP_LINK)
+from ...constants import (YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE,
+                          READ_MORE, DOWNLOAD, EMAIL_APPROVER, MMC_GITHUB_SETUP, MMC_GITHUB_SETUP_LINK)
 from ...core.registry.versioned_template import VersionedTemplate
+from ...core.email_approver import email_approver
 from ...fsm import Transition, State
 
 logger = logging.getLogger('gryphon')
@@ -26,6 +27,10 @@ def _condition_confirmation_to_ask_template(context: dict) -> bool:
 
 def _condition_confirmation_to_read_more(context: dict) -> bool:
     return context["confirmation_response"] == READ_MORE
+
+
+def _condition_confirmation_to_email_approver(context: dict) -> bool:
+    return context["confirmation_response"] == EMAIL_APPROVER
 
 
 def _condition_confirmation_to_mmc_github_setup(context: dict) -> bool:
@@ -49,6 +54,13 @@ def _callback_confirmation_to_read_more(context: dict) -> dict:
     return context
 
 
+def _callback_confirmation_to_email_approver(context: dict) -> dict:
+    email_approver(context["template"].approver, context["template"].repo_url)
+
+    erase_lines(n_lines=len(context["extra_parameters"]) + 2 + context["n_lines"])
+    return context
+
+
 def _callback_confirmation_to_mmc_github_setup(context: dict) -> dict:
     if platform.system() == "Windows":
         os.system(f'start {MMC_GITHUB_SETUP_LINK}')
@@ -57,7 +69,7 @@ def _callback_confirmation_to_mmc_github_setup(context: dict) -> dict:
         os.system(f"""rm nohup.out""")
         erase_lines(n_lines=1)
 
-    erase_lines(n_lines=len(context["extra_parameters"]) + 1 + context["n_lines"])
+    erase_lines(n_lines=len(context["extra_parameters"]) + 2 + context["n_lines"])
     return context
 
 
@@ -98,6 +110,11 @@ class Confirmation(State):
         Transition(
             next_state="ask_project_info",
             condition=_change_from_confirmation_to_ask_project_info
+        ),
+        Transition(
+            next_state="confirmation",
+            condition=_condition_confirmation_to_email_approver,
+            callback=_callback_confirmation_to_email_approver
         ),
         Transition(
             next_state="confirmation",
