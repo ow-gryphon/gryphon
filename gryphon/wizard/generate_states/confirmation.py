@@ -6,7 +6,8 @@ import platform
 from ..functions import display_template_information, erase_lines
 from ..questions import GenerateQuestions, CommonQuestions
 from ..wizard_text import Text
-from ...constants import YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, READ_MORE, DOWNLOAD
+from ...constants import (YES, NO, LATEST, USE_LATEST, ALWAYS_ASK, GENERATE, CONFIG_FILE, \
+    READ_MORE, DOWNLOAD, MMC_GITHUB_SETUP, MMC_GITHUB_SETUP_LINK)
 from ...core.registry.versioned_template import VersionedTemplate
 from ...fsm import Transition, State
 
@@ -27,6 +28,10 @@ def _condition_confirmation_to_read_more(context: dict) -> bool:
     return context["confirmation_response"] == READ_MORE
 
 
+def _condition_confirmation_to_mmc_github_setup(context: dict) -> bool:
+    return context["confirmation_response"] == MMC_GITHUB_SETUP
+
+
 def _callback_confirmation_to_install(context: dict) -> dict:
     erase_lines(n_lines=len(context["extra_parameters"]) + 3 + context["n_lines"])
     return context
@@ -37,6 +42,18 @@ def _callback_confirmation_to_read_more(context: dict) -> dict:
         os.system(f'start {context["read_more_link"]}')
     else:
         os.system(f"""nohup xdg-open "{context["read_more_link"]}" """)
+        os.system(f"""rm nohup.out""")
+        erase_lines(n_lines=1)
+
+    erase_lines(n_lines=len(context["extra_parameters"]) + 1 + context["n_lines"])
+    return context
+
+
+def _callback_confirmation_to_mmc_github_setup(context: dict) -> dict:
+    if platform.system() == "Windows":
+        os.system(f'start {MMC_GITHUB_SETUP_LINK}')
+    else:
+        os.system(f"""nohup xdg-open "{MMC_GITHUB_SETUP_LINK}" """)
         os.system(f"""rm nohup.out""")
         erase_lines(n_lines=1)
 
@@ -81,6 +98,11 @@ class Confirmation(State):
         Transition(
             next_state="ask_project_info",
             condition=_change_from_confirmation_to_ask_project_info
+        ),
+        Transition(
+            next_state="confirmation",
+            condition=_condition_confirmation_to_mmc_github_setup,
+            callback=_callback_confirmation_to_mmc_github_setup
         )
     ]
 
