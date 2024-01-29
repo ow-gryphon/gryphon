@@ -16,6 +16,8 @@ FEEDBACK = "feedback"
 REPORT_BUG = "report_bug"
 SETTINGS = "settings"
 CONTACT_US = "contact_us"
+EMAIL_APPROVER = "email_approver"
+MMC_GITHUB_SETUP = "mmc_github_setup"
 
 # tree related
 NODE = "node"
@@ -100,3 +102,4 @@ ADDON_NAME_MAPPING = {
 
 EMAIL_RECIPIENT = "OWGryphonSupport@mmcglobal.onmicrosoft.com"
 EMAIL_RECIPIENT_CC = "daniel.uken@oliverwyman.com; daniel.wang@oliverwyman.com"
+MMC_GITHUB_SETUP_LINK = "https://owlabs.atlassian.net/wiki/spaces/Gryphon/pages/3819864084/Setting+up+access+to+MMC+s+Github+Enterprise+Instance"

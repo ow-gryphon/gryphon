@@ -22,6 +22,16 @@ Best regards,
 
 """
 
+    access_request_email_template = """Hi,
+
+Please may I be given access to the GitHub repository for the following Gryphon template:
+    
+{template_url}
+
+Thanks and best regards,
+
+"""
+
     bug_report_email_template = """Hello Gryphon team!
 
 Please find details regarding the bug below:

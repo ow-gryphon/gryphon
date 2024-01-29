@@ -2,10 +2,12 @@ import questionary
 from questionary import Choice, Separator
 from .common_functions import base_question, base_text_prompt, get_back_choice
 from ..wizard_text import Text
-from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE, USE_CASES, METHODOLOGY, TOPIC, SECTOR, DOWNLOAD)
+from ...constants import (QUIT, YES, NO, TYPE_AGAIN, READ_MORE, LOCAL_TEMPLATE,
+                          USE_CASES, METHODOLOGY, TOPIC, SECTOR, DOWNLOAD, EMAIL_APPROVER, MMC_GITHUB_SETUP)
 
 import logging
 logger = logging.getLogger('gryphon')
+
 
 class GenerateQuestions:
 
@@ -14,15 +16,15 @@ class GenerateQuestions:
     def get_generate_option(categories: list, context = None):
         categories = categories.copy()
         
-        if (context is not None):
+        if context is not None:
             # Context is available
         
             if (context.get("history") is None) or (len(context.get("history")) == 0):
                 pass
                 
-            elif (context["history"][0] == METHODOLOGY):
+            elif context["history"][0] == METHODOLOGY:
                 
-                if (len(context["history"]) == 1):
+                if len(context["history"]) == 1:
                     for idx, category in enumerate(categories):
                         
                         counter = 0
@@ -35,9 +37,9 @@ class GenerateQuestions:
                         else:
                             categories[idx] = category + " | " + str(counter) + " template" 
             
-            elif (context["history"][0] == USE_CASES): 
+            elif context["history"][0] == USE_CASES:
                 
-                if (len(context["history"]) == 1):
+                if len(context["history"]) == 1:
                     pass
                 
                 elif (len(context["history"]) == 2) and (context["history"][1] in [TOPIC, SECTOR]):
@@ -106,7 +108,7 @@ class GenerateQuestions:
 
     @staticmethod
     @base_question
-    def confirm_generate(template_name, read_more_option=False, **kwargs):
+    def confirm_generate(template_name, read_more_option=False, approval_required=False, **kwargs):
 
         information = Text.generate_confirm_1.replace("{template_name}", template_name)
         information += (
@@ -129,6 +131,19 @@ class GenerateQuestions:
                 Choice(
                     title="Read more",
                     value=READ_MORE
+                )
+            )
+        if approval_required:
+            choices.append(
+                Choice(
+                    title="Email approver",
+                    value=EMAIL_APPROVER
+                )
+            )
+            choices.append(
+                Choice(
+                    title="Get set up with MMC GitHub",
+                    value=MMC_GITHUB_SETUP
                 )
             )
 
