@@ -17,3 +17,7 @@ envs_**/**
 
 __pycache__/
 **/__pycache__/
+
+~*.xlsx
+~*.csv
+~*.xlsm
