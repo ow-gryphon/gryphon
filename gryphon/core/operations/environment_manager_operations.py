@@ -55,6 +55,19 @@ class EnvironmentManagerOperations:
             raise RuntimeError("Failed to create virtual environment.")
             # TODO: Check whats happened
 
+        # Install setuptools and wheel if they are not already installed (version 3.12 of venv doesn't include them)
+        if platform.system() == "Windows":
+            # On Windows the venv folder structure is different from unix
+            pip_path = venv_path / "Scripts" / "pip.exe"
+        else:
+            pip_path = venv_path / "bin" / "pip"
+            if not pip_path.is_file():
+                pip_path = venv_path / "bin" / "pip3"
+
+        return_code, _ = BashUtils.execute_and_log(
+            f'\"{pip_path}\" install setuptools wheel'
+        )
+
         logger.log(SUCCESS, "Done creating virtual environment.")
 
         return venv_path
