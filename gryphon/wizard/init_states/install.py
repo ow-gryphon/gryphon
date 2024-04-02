@@ -19,7 +19,7 @@ class Install(State):
             python_version=chosen_version,
             install_nb_strip_out=NB_STRIP_OUT in context["selected_addons"],
             install_pre_commit_hooks=PRE_COMMIT_HOOKS in context["selected_addons"],
-            install_nbextensions=NB_EXTENSIONS in context["selected_addons"],
+#             install_nbextensions=NB_EXTENSIONS in context["selected_addons"],
             **extra_parameters
         )
 

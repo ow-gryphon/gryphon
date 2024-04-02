@@ -189,8 +189,7 @@ class InitQuestions:
 
     @staticmethod
     @base_text_prompt
-    def ask_addons(add_ons = [{"addon_name": NB_EXTENSIONS, "checked": True}, 
-                              {"addon_name": NB_STRIP_OUT, "checked": False}, 
+    def ask_addons(add_ons = [{"addon_name": NB_STRIP_OUT, "checked": False}, 
                               {"addon_name": PRE_COMMIT_HOOKS, "checked": False}]):
     
         choices = []

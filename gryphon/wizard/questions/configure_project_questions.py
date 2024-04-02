@@ -16,11 +16,11 @@ class ConfigureProjectQuestions:
         return questionary.checkbox(
             message=Text.init_prompt_addons,
             choices=[
-                Choice(
-                    title="Notebook extensions",
-                    value=NB_EXTENSIONS,
-                    checked=current_states[NB_EXTENSIONS]
-                ),
+#                Choice(
+#                    title="Notebook extensions",
+#                    value=NB_EXTENSIONS,
+#                    checked=current_states[NB_EXTENSIONS]
+#                ),
                 Choice(
                     title="Notebook stripout",
                     value=NB_STRIP_OUT,
