@@ -6,3 +6,4 @@ colorlog
 PyYAML
 pre-commit
 pipenv
+wheel
