@@ -95,6 +95,8 @@ class Text:
     generate_confirm_1 = "Confirm that you want to render the \"{template_name}\" template inside the current project."
     generate_confirm_2 = "\nUsing the following arguments: {arguments}"
 
+    generate_all_confirm = "Confirm that you want to download all Gryphon templates into the current project."
+
     # {library_name} is going to be replaced with the library name
     add_confirm = "Confirm that you want to install the \"{library_name}\" library to the current project."
     add_confirm_multiple = "Confirm that you want to install the following libraries to the current project: " \

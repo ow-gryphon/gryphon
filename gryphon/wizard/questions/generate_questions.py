@@ -153,6 +153,28 @@ class GenerateQuestions:
         ).unsafe_ask()
 
     @staticmethod
+    @base_question
+    def confirm_generate_all():
+
+        information = Text.generate_all_confirm
+
+        choices = [
+            Choice(
+                title="Yes",
+                value=YES
+            ),
+            Choice(
+                title="No",
+                value=NO
+            )
+        ]
+
+        return questionary.select(
+            message=information,
+            choices=choices
+        ).unsafe_ask()
+
+    @staticmethod
     @base_text_prompt
     def generate_keyword_question():
         return questionary.text(message=Text.generate_keyword_argument).unsafe_ask()
