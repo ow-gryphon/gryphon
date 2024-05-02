@@ -9,3 +9,4 @@ from .handover import handover
 from .init import init
 from .init_from_existing import init_from_existing
 from .settings import settings
+from .generate_all_templates import generate_all_templates

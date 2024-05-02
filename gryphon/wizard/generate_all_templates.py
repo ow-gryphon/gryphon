@@ -4,7 +4,7 @@ from ..constants import BACK
 from ..fsm import Machine, HaltSignal
 
 
-def download_all_templates(data_path, registry):
+def generate_all_templates(data_path, registry):
     """Download all methodology templates into the current gryphon project"""
 
 #    ask_category = AskCategory(data_path, registry)
