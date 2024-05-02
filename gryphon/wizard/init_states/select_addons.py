@@ -61,7 +61,7 @@ class SelectAddons(State):
             
             if template.force_env == PIPENV:
                 context["selected_addons"] = InitQuestions.ask_addons([
-                              {"addon_name": NB_EXTENSIONS, "checked": False}
+#                              {"addon_name": NB_EXTENSIONS, "checked": False}
                               ])
                 
             else:
