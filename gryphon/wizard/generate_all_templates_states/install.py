@@ -13,22 +13,8 @@ class Install(State):
     transitions = []
 
     def on_start(self, context: dict) -> dict:
-    
-        # template = context["template"]
-        #
-        # if template.command == DOWNLOAD:
-        #
-        #     # This should never be reached, as a different path of the finite state machine should have been reached for DOWNLOAD templates
-        #     raise ValueError("An error has occured. Please notify the Gryphon support team")
-        #
-        # else:
-        #
-        #     core_generate(
-        #         template=context["template"],
-        #         **context["extra_parameters"]
-        #     )
 
-        for template in context["templates"]:
+        for counter, template in enumerate(context["templates"].values()):
 
             if isinstance(template, VersionedTemplate):
 
@@ -39,12 +25,14 @@ class Install(State):
 
             context["extra_parameters"] = {}
 
-            if context["template"].command == GENERATE:
+            # if context["template"].command == GENERATE:
 
-                core_generate(
-                    template=context["template"],
-                    install_dependencies=False,
-                    **context["extra_parameters"]
-                )
+            core_generate(
+                template=context["template"],
+                install_dependencies=False,
+                **context["extra_parameters"]
+            )
+
+            logger.info(f"Downloaded {counter+1} out of {len(context['templates'])} templates.")
 
         return context
