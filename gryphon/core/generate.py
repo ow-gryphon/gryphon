@@ -20,7 +20,7 @@ from ..constants import GENERATE, VENV, CONDA, PIPENV, REMOTE_INDEX, LOCAL_TEMPL
 logger = logging.getLogger('gryphon')
 
 
-def generate(template: Template, folder=Path.cwd(), **kwargs):
+def generate(template: Template, folder=Path.cwd(), install_dependencies=True, **kwargs):
     """
     Generate command from the OW Gryphon CLI.
     """
@@ -83,17 +83,17 @@ def generate(template: Template, folder=Path.cwd(), **kwargs):
         pipenv_requirements = list(set(pipenv_requirements))
 
     RCManager.log_add_library(template.dependencies)
-    if env_type == VENV:
+    if env_type == VENV and install_dependencies:
         EnvironmentManagerOperations.install_libraries_venv(
             environment_path=env_path,
             requirements_path=current_path / REQUIREMENTS
         )
-    elif env_type == CONDA:
+    elif env_type == CONDA and install_dependencies:
         EnvironmentManagerOperations.install_libraries_conda(
             environment_path=env_path,
             requirements_path=current_path / REQUIREMENTS
         )
-    elif env_type == PIPENV:
+    elif env_type == PIPENV and install_dependencies:
     
         # Check where to install these libraries
         

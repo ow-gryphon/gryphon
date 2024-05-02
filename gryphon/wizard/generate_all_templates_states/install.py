@@ -43,6 +43,7 @@ class Install(State):
 
                 core_generate(
                     template=context["template"],
+                    install_dependencies=False,
                     **context["extra_parameters"]
                 )
 
