@@ -18,7 +18,7 @@ from .constants import (
     INIT, DOWNLOAD, GENERATE, ADD, ABOUT, QUIT, BACK, SETTINGS, INIT_FROM_EXISTING,
     GRYPHON_HOME, DEFAULT_CONFIG_FILE, CONFIG_FILE, DATA_PATH, HANDOVER,
     CONFIGURE_PROJECT, GRYPHON_RC, YES, EMAIL_RECIPIENT, EMAIL_RECIPIENT_CC,
-    CONTACT_US
+    CONTACT_US, GENERATE_ALL_METHODOLOGY_TEMPLATES
 )
 from .core.common_operations import sort_versions
 from .core.core_text import Text as CoreText
@@ -28,7 +28,7 @@ from .logger import logger
 from .wizard import (
     init, download, generate, add, about, exit_program,
     settings, init_from_existing, handover, configure_project,
-    contact_us
+    contact_us, generate_all_templates
 )
 from .wizard.questions import CommonQuestions
 from .wizard.wizard_text import Text
@@ -354,6 +354,7 @@ def start_ui(settings_file):
             SETTINGS: settings,
             QUIT: exit_program,
             CONTACT_US: contact_us,
+            GENERATE_ALL_METHODOLOGY_TEMPLATES: generate_all_templates
         }[chosen_command]
 
         try:

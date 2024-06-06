@@ -18,6 +18,7 @@ SETTINGS = "settings"
 CONTACT_US = "contact_us"
 EMAIL_APPROVER = "email_approver"
 MMC_GITHUB_SETUP = "mmc_github_setup"
+GENERATE_ALL_METHODOLOGY_TEMPLATES = "generate_all_methodology_templates"
 
 # tree related
 NODE = "node"

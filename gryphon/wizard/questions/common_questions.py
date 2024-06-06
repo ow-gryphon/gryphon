@@ -1,10 +1,11 @@
 import questionary
+import argparse
 from questionary import Choice, Separator
 from .common_functions import base_question, get_back_choice
 from ..wizard_text import Text
 from ...constants import (
     INIT, INIT_FROM_EXISTING, DOWNLOAD, GENERATE, ADD, HANDOVER, ABOUT, QUIT, SETTINGS, CONFIGURE_PROJECT,
-    VALUE, LATEST, REPORT_BUG, FEEDBACK, YES, NO, CONTACT_US
+    VALUE, LATEST, REPORT_BUG, FEEDBACK, YES, NO, CONTACT_US, GENERATE_ALL_METHODOLOGY_TEMPLATES
 )
 
 
@@ -13,6 +14,10 @@ class CommonQuestions:
     @staticmethod
     @base_question
     def main_question(inside_existing_project: bool = False):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--debug', '-d', action='store_true')
+        debug = parser.parse_args().debug
+
         choices = [
             Choice(
                 title=Text.init_display_option,
@@ -68,6 +73,15 @@ class CommonQuestions:
                 Choice(
                     title=Text.configure_project_display_option,
                     value=CONFIGURE_PROJECT
+                )
+            )
+
+        if debug:
+            choices.insert(
+                -2,
+                Choice(
+                    title="Generate all methodology templates",
+                    value=GENERATE_ALL_METHODOLOGY_TEMPLATES
                 )
             )
 
