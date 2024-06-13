@@ -1,6 +1,6 @@
 import logging
 import os
-import psutil
+# import psutil
 import platform
 from pathlib import Path
 
@@ -80,14 +80,12 @@ class EnvironmentManagerOperations:
         
         if current_folder:
             if platform.system() == "Windows":
-                # On Windows the venv folder structure is different from unix
+                # On Windows the venv folder structure is different from unix. 
                 
-                process_name = psutil.Process(os.getppid()).name()
-                
-                logger.debug(f"Process Name: {process_name}")
-
 # Doesn't work, since process_name is gryphon.exe
-                
+#                process_name = psutil.Process(os.getppid()).name()               
+#                logger.debug(f"Process Name: {process_name}")
+#
 #                if process_name in ["cmd.exe", "powershell.exe"]:
 #                    environment_prefix = "SET PIPENV_VENV_IN_PROJECT=1 & "
 #                elif process_name in ["winpty-agent.exe"]:
